@@ -57,6 +57,7 @@ Highlighted Yank | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/b
 Indent Object | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object)
 Multiple Cursors | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors)
 Surround | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-surround](https://github.com/tpope/vim-surround)
+Sneak | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-sneak](https://github.com/justinmk/vim-sneak)
 Unimpaired | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-unimpaired](https://github.com/tpope/vim-unimpaired)
 
 ## Contributing
