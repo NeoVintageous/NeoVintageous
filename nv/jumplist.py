@@ -15,12 +15,20 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from Default.history_list import get_jump_history
+import sublime
 
+if int(sublime.version()) < 4082:
+    from Default.history_list import get_jump_history
 
-def jumplist_update(view) -> None:
-    get_jump_history(view.window().id()).push_selection(view)
+    def jumplist_update(view) -> None:
+        get_jump_history(view.window().id()).push_selection(view)
 
+    def jumplist_back(view) -> tuple:
+        return get_jump_history(view.window().id()).jump_back(view)
 
-def jumplist_back(view) -> tuple:
-    return get_jump_history(view.window().id()).jump_back(view)
+else:
+    def jumplist_update(view) -> None:
+        pass  # TODO Fixme See https://github.com/NeoVintageous/NeoVintageous/issues/741
+
+    def jumplist_back(view) -> tuple:
+        return (None, [])  # TODO Fixme See https://github.com/NeoVintageous/NeoVintageous/issues/741
