@@ -9,6 +9,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#733](https://github.com/NeoVintageous/NeoVintageous/issues/733): `[or`, `]or`, `yor`, enable, disable, and toggle `'relativenumber'` (Unimpaired) (ST4)
 * Added [#732](https://github.com/NeoVintageous/NeoVintageous/issues/732): new option `'relativenumber'` `'rnu'` `'norelativenumber'` `'nornu'` (ST4)
 
+## 1.21.2 - 2020-08-20
+
+* Fixed [#741](https://github.com/NeoVintageous/NeoVintageous/issues/741): Latest version of Sublime Text (4082 and up) has breaking changes
+
 ## 1.21.1 - 2020-05-06
 
 * Fixed [#731](https://github.com/NeoVintageous/NeoVintageous/issues/731): Disable Sneak plugin by default

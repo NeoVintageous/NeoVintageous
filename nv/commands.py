@@ -1869,7 +1869,6 @@ class _vi_backtick(TextCommand):
             return s
 
         target = get_mark(self.view, character)
-
         if target is None:
             ui_bell('E20: mark not set')
             return

@@ -35,6 +35,7 @@ def set_mark(view, name: str) -> None:
 
 
 def get_mark(view, name: str):
+    # Returns None, list[Region], or tuple[sublime.View, list[Region]]
     if name in ('\'', '`'):
         marks_view, marks = jumplist_back(view)
         if len(marks) > 0:
