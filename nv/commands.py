@@ -494,6 +494,20 @@ class _nv_run_cmds(TextCommand):
             self.view.run_command(cmd, args)
 
 
+def _fix_malformed_selection(view, mode: str) -> str:
+    # If multiple cursor selection has been made by the mouse or a built-in ST
+    # command the mode may be incorrectly set to Normal mode.
+    # See https://github.com/NeoVintageous/NeoVintageous/issues/742
+    if mode == NORMAL and len(view.sel()) > 1:
+        mode = VISUAL
+        set_mode(view, mode)
+
+    # TODO Extract fix malformed selections specific logic from init_state()
+    init_state(view)
+
+    return mode
+
+
 class _nv_feed_key(WindowCommand):
 
     def run(self, key, repeat_count=None, do_eval=True, check_user_mappings=True):
@@ -525,10 +539,11 @@ class _nv_feed_key(WindowCommand):
 
         _log.debug('mode: %s', mode)
 
-        # If the user has made selections with the mouse, we may be in an
-        # inconsistent state. Try to remedy that.
+        # Try to fix possibly malformed selections: if the user has made a
+        # selection with the mouse or a built-in ST command (non-vim), the
+        # selection may be in an incorrect mode or inconsistent state.
         if mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, SELECT) and self.view.has_non_empty_selection_region():
-            init_state(self.view)
+            _fix_malformed_selection(self.view, mode)
 
         if key.lower() == '<esc>':
             if mode == SELECT:
