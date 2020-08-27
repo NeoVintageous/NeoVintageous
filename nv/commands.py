@@ -543,7 +543,7 @@ class _nv_feed_key(WindowCommand):
         # selection with the mouse or a built-in ST command (non-vim), the
         # selection may be in an incorrect mode or inconsistent state.
         if mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, SELECT) and self.view.has_non_empty_selection_region():
-            _fix_malformed_selection(self.view, mode)
+            mode = _fix_malformed_selection(self.view, mode)
 
         if key.lower() == '<esc>':
             if mode == SELECT:
