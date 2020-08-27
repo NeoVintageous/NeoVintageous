@@ -351,21 +351,15 @@ def evaluate_state(view) -> None:
 
 
 def init_state(view) -> None:
-    # Initialise view state.
-    #
-    # Runs every time a view is activated, loaded, etc.
+    # Initialise view state e.g. runs every time a view is activated.
 
-    # Don't initialise if we get a console, widget, panel, or any other view
-    # where Vim modes are not relevant. Some related initialised settings that
-    # may cause unexpected behaviours if they exist are erased "cleaned" too.
+    # Don't initialise view if it's a console, widget, panel, non-view, or any
+    # view where Vim behaviours should be disabled or are not applicable.
     if not is_view(view):
-        try:
-            # TODO "cleaning" views that are not initialised shouldn't be necessary?
-            clean_view(view)
-        except Exception:
-            _log.debug('could not clean an object: console, widget, panel, etc.')
-        finally:
-            return
+        # Some initialised state may cause unexpected behaviours.
+        # TODO Is cleaning the view necessary?
+        clean_view(view)
+        return
 
     if not get_reset_during_init(view):
         # Probably exiting from an input panel, like when using '/'. Don't reset
