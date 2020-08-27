@@ -62,7 +62,7 @@ Unimpaired | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/ma
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+See [CONTRIBUTING.md](.github/CONTRIBUTING.md).
 
 ## Changelog
 
