@@ -144,13 +144,13 @@ def enter_visual_block_mode(view_or_window, mode: str, force: bool = False) -> N
     view_or_window.run_command('_enter_visual_block_mode', {'mode': mode})
 
 
-def clean_views():
+def clean_views() -> None:
     for window in _windows():
         for view in window.views():
             clean_view(view)
 
 
-def clean_view(view):
+def clean_view(view) -> None:
 
     # Resets cursor and mode. In the case of errors loading the plugin this can
     # help prevent the normal functioning of editor becoming unusable e.g. the
