@@ -63,8 +63,20 @@ class Test_c(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('one |two\nthree four', '2cw', 'i_one | four')
         self.eq('one |two\nthree\nfour', '2cw', 'i_one |\nfour')
 
+    def test_ciw(self):
+        self.eq('a |fizz b', 'ciw', 'i_a | b')
+        self.eq('a fi|zz b', 'ciw', 'i_a | b')
+        self.eq('a fiz|z b', 'ciw', 'i_a | b')
+        self.eq('a| b', 'ciw', 'i_a|b')
+        self.eq('a|    b', 'ciw', 'i_a|b')
+        self.eq('a .|.. b', 'ciw', 'i_a | b')
+        self.eq('a.|..b', 'ciw', 'i_a|b')
+
     def test_caw(self):
-        self.eq('a fi|zz b', 'caw', 'i_a | b')
+        self.eq('a fi|zz...', 'caw', 'i_a|...')
+        self.eq('a    fi|zz...', 'caw', 'i_a|...')
+        # self.eq('a fi|zz b', 'caw', 'i_a |b')  # FIXME NeoVintageous/NeoVintageous#748
+        # self.eq('a fi|zz    b', 'caw', 'i_a |b')  # FIXME NeoVintageous/NeoVintageous#748
         self.eq('1\na fi|zz b\n3', 'caw', 'i_1\na | b\n3')
         self.eq('one t|wo\nthree four', '2caw', 'i_one | four')
         self.eq('one t|wo\nthree\nfour', '2caw', 'i_one|\nfour')

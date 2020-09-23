@@ -103,6 +103,18 @@ class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegistersEmpty('"-01')
         self.assertBell()
 
+    def test_diw(self):
+        self.eq('a fi|zz.b', 'diw', 'a |.b')
+        self.eq('a .|..b', 'diw', 'a |b')
+        # self.eq('a fi|zz b', 'diw', 'a | b')  # FIXME NeoVintageous/NeoVintageous#748
+        # self.eq('a fi|zz    b', 'diw', 'a |    b')  # FIXME NeoVintageous/NeoVintageous#748
+
+    def test_daw(self):
+        self.eq('a fi|zz b', 'daw', 'a |b')
+        self.eq('a fi|zz    b', 'daw', 'a |b')
+        self.eq('a fi|zz.b', 'daw', 'a|.b')
+        self.eq('a    fi|zz.b', 'daw', 'a|.b')
+
     def test_d__dollar(self):
         self.eq('one t|wo three', 'd$', 'one |t')
         self.assertRegisters('"-', 'wo three')

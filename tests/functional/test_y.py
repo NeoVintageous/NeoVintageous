@@ -79,6 +79,16 @@ class Test_y(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegister('0word')
         self.assertRegisterEmpty('1')
         self.assertRegisterEmpty('-')
+        self.eq('x fiz|z x', 'yiw', 'x |fizz x')
+        self.assertRegisters('"0', 'fizz', '1-')
+        # self.eq('x    x', 'yiw', 'x    |x')  # FIXME NeoVintageous/NeoVintageous#748
+
+    def test_yaw(self):
+        self.eq('x wo|rd x', 'yaw', 'x |word x')
+        self.assertRegisters('"0', 'word ', '1-')
+        self.eq('x fi|zz    x', 'yaw', 'x |fizz    x')
+        self.assertRegisters('"0', 'fizz    ', '1-')
+        # self.eq('x    fi|zz.x', 'yaw', 'x|    fizz.x')  # FIXME NeoVintageous/NeoVintageous#748
 
     def test_y_into_readonly_registers(self):
         self.eq('x fi|zz x', '"xyiw', 'x |fizz x')

@@ -25,6 +25,8 @@ class TestTextObjectSelection(unittest.FunctionalTestCase):
         self.eq('x    |fizz    xx', 'v_aw', 'x    |fizz    |xx')
         self.eq('x  |  f|izz    xx', 'v_aw', 'x  |  fizz    |xx')
         self.eq('x    fi|zz    xx    yy    zz', 'v_3aw', 'x    |fizz    xx    yy    |zz')
+        self.eq(' f|iz    b', 'v_aw', ' |fiz    |b')
+        # self.eq(' fi|z    b', 'v_aw', ' |fiz    |b')  # FIXME NeoVintageous/NeoVintageous#748
 
     def test_viw(self):
         self.eq('x    fi|zz    xx', 'v_iw', 'x    |fizz|    xx')
@@ -34,6 +36,13 @@ class TestTextObjectSelection(unittest.FunctionalTestCase):
         self.eq('x    fi|zz    xx    yy    zz', 'v_3iw', 'x    |fizz    xx|    yy    zz')
         self.eq('x  .,|-;abc#"]  y', 'v_iw', 'x  |.,-;|abc#"]  y')
         self.eq('x  .,-;a|bc#"]  y', 'v_iw', 'x  .,-;|abc|#"]  y')
+        self.eq(' f|iz|z b', 'v_iw', ' f|izz| b')
+        self.eq(' f|iz| b', 'v_iw', ' f|iz |b')
+        self.eq(' f|iz|    b', 'v_iw', ' f|iz    |b')
+        self.eq(' |fiz| b', 'v_iw', ' |fiz |b')
+        self.eq(' |fiz|    b', 'v_iw', ' |fiz    |b')
+        self.eq(' |fiz|...b', 'v_iw', ' |fiz...|b')
+        # self.eq('a fi|z b', 'v_iw', 'a |fiz| b')  # FIXME NeoVintageous/NeoVintageous#748
 
     def test_vaW(self):
         self.eq('x    fi|zz    xx', 'v_aW', 'x    |fizz    |xx')
