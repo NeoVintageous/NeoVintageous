@@ -15,9 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+
 from NeoVintageous.tests import unittest
 
 
+@unittest.skipIf(unittest.ST_VERSION >= 4000, 'broken in ST4 see https://github.com/sublimehq/sublime_text/issues/3177')
 class Test_gq_wrapped_at_5(unittest.FunctionalTestCase):
 
     def setUp(self):
@@ -27,10 +29,10 @@ class Test_gq_wrapped_at_5(unittest.FunctionalTestCase):
 
     def test_n(self):
         self.eq('  a1 a2 a3\n  x1 |x2 x3\n  b1 b2 b3\n', 'gq$', '  a1 a2 a3\n  x1\n  x2\n  |x3\n  b1 b2 b3\n')
-
         self.eq('  a1 a2 a3\n  x1 |x2 x3\n  b1 b2 b3\n', 'gq$', '  a1 a2 a3\n  x1\n  x2\n  |x3\n  b1 b2 b3\n')
 
 
+@unittest.skipIf(unittest.ST_VERSION >= 4000, 'broken in ST4 see https://github.com/sublimehq/sublime_text/issues/3177')
 class Test_gq_wrapped_at_80(unittest.FunctionalTestCase):
 
     def setUp(self):

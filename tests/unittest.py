@@ -83,6 +83,9 @@ _MODES = (
 )
 
 
+ST_VERSION = int(_version())
+
+
 class ViewTestCase(unittest.TestCase):
 
     def setUp(self) -> None:

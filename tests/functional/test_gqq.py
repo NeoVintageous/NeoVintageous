@@ -18,6 +18,7 @@
 from NeoVintageous.tests import unittest
 
 
+@unittest.skipIf(unittest.ST_VERSION >= 4000, 'broken in ST4 see https://github.com/sublimehq/sublime_text/issues/3177')
 class Test_gqq(unittest.FunctionalTestCase):
 
     def setUp(self):
