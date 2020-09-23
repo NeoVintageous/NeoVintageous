@@ -55,6 +55,7 @@ from NeoVintageous.nv.settings import get_xpos as _get_xpos
 from NeoVintageous.nv.settings import set_last_buffer_search as _set_last_buffer_search
 from NeoVintageous.nv.settings import set_last_buffer_search_command as _set_last_buffer_search_command
 from NeoVintageous.nv.settings import set_mode as _set_mode
+from NeoVintageous.nv.settings import set_reset_during_init as _set_reset_during_init
 from NeoVintageous.nv.settings import set_visual_block_direction as _set_visual_block_direction
 from NeoVintageous.nv.settings import set_xpos as _set_xpos
 
@@ -728,12 +729,13 @@ class ViewTestCase(unittest.TestCase):
         class MockCmdlineOnDone(_Cmdline):
             _mock_pattern = None
 
-            def prompt(self, pattern: str) -> None:
+            def prompt(cmdline, pattern: str) -> None:
                 args = []
-                if self._mock_pattern is not None:
-                    args.append(self._mock_pattern)
+                if cmdline._mock_pattern is not None:
+                    args.append(cmdline._mock_pattern)
 
-                self._callbacks[self._mock_event](*args)
+                cmdline._callbacks[cmdline._mock_event](*args)
+                _set_reset_during_init(self.view, True)
 
         if type == '?':
             mock.SEARCH_BACKWARD = '?'
@@ -742,6 +744,7 @@ class ViewTestCase(unittest.TestCase):
 
         if pattern is not None:
             MockCmdlineOnDone._mock_pattern = pattern
+
         MockCmdlineOnDone._mock_event = event
         mock.side_effect = MockCmdlineOnDone
 

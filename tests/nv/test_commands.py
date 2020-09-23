@@ -17,6 +17,8 @@
 
 from NeoVintageous.tests import unittest
 
+from NeoVintageous.nv.settings import set_reset_during_init
+
 
 @unittest.mock.patch.dict('NeoVintageous.nv.session._session', {})
 @unittest.mock.patch('NeoVintageous.nv.session.save_session', unittest.mock.Mock())
@@ -498,6 +500,7 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.normal('1\nfi|zz\n3\n4\n5\n6')
         self.feedkey(',m2')
         self.assertNormal('1\nfizz\n3\n4|fizz\n\n5\n6')
+        set_reset_during_init(self.view, True)
 
     @unittest.mock.patch('NeoVintageous.nv.utils.run_window_command')
     def test_slash_search_opens_input_panel(self, run_command):
