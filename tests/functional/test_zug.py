@@ -25,11 +25,11 @@ class Test_zug(unittest.FunctionalTestCase):
         self.eq('x fi|zz x', 'n_zug', 'x fi|zz x')
         spell_undo.assert_called_once_with('fizz')
         self.eq('x bu|zz x', 'n_zug', 'x bu|zz x')
-        spell_undo.assert_called__with('buzz')
+        spell_undo.assert_called_with('buzz')
 
     @unittest.mock.patch('NeoVintageous.nv.utils.spell_undo')
     def test_v(self, spell_undo):
         self.eq('x |fiz|z x', 'v_zug', 'x |fiz|z x')
         spell_undo.assert_called_once_with('fiz')
         self.eq('k|apo|w', 'n_zug', 'k|apo|w')
-        spell_undo.assert_called__with('apo')
+        spell_undo.assert_called_with('kapow')
