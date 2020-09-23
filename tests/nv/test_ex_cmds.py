@@ -444,7 +444,7 @@ class Test_do_ex_user_cmdline(unittest.ViewTestCase):
 
         do_ex_user_cmdline(window, ':')
 
-        window.run_command.assert_called_with('_nv_cmdline')
+        window.run_command.assert_called_with('nv_cmdline')
         self.assertEqual(default_ex_cmd.call_count, 0)
         self.assertEqual(do_ex_command.call_count, 0)
         self.assertEqual(do_ex_cmdline.call_count, 0)
@@ -457,7 +457,7 @@ class Test_do_ex_user_cmdline(unittest.ViewTestCase):
 
         do_ex_user_cmdline(window, ':reg')
 
-        window.run_command.assert_called_with('_nv_cmdline', args={'initial_text': ':reg'})
+        window.run_command.assert_called_with('nv_cmdline', args={'initial_text': ':reg'})
         self.assertEqual(default_ex_cmd.call_count, 0)
         self.assertEqual(do_ex_command.call_count, 0)
         self.assertEqual(do_ex_cmdline.call_count, 0)

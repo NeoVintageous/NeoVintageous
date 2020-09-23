@@ -18,20 +18,20 @@
 from NeoVintageous.tests import unittest
 
 
-class Test__vi_big_s(unittest.ViewTestCase):
+class Test__nv_vi_big_s(unittest.ViewTestCase):
 
     def test_deletes_whole_line_in_internal_normal_mode(self):
         self.write('aaa aaa\nbbb bbb\nccc ccc\n')
         self.select(8)
 
-        self.view.run_command('_vi_big_s', {'mode': unittest.INTERNAL_NORMAL})
+        self.view.run_command('nv_vi_big_s', {'mode': unittest.INTERNAL_NORMAL})
 
         self.assertContent('aaa aaa\n\nccc ccc\n')
 
         self.write('aaa aaa\nbbb bbb\nccc ccc\n')
         self.select(16)
 
-        self.view.run_command('_vi_big_s', {'mode': unittest.INTERNAL_NORMAL})
+        self.view.run_command('nv_vi_big_s', {'mode': unittest.INTERNAL_NORMAL})
 
         self.assertContent('aaa aaa\nbbb bbb\n\n')
 
@@ -40,6 +40,6 @@ class Test__vi_big_s(unittest.ViewTestCase):
         self.write("\taaa aaa\nbbb bbb\nccc ccc")
         self.select(9)
 
-        self.view.run_command('_vi_big_s', {'mode': unittest.INTERNAL_NORMAL})
+        self.view.run_command('nv_vi_big_s', {'mode': unittest.INTERNAL_NORMAL})
 
         self.assertContent("\taaa aaa\n\t\nccc ccc")

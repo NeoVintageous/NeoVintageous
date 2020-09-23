@@ -387,7 +387,7 @@ class TestSeqToCommand(unittest.TestCase):
         self.assertEqual(_seq_to_command(seq='ep', view=View(), mode='b'), ep)
         self.assertEqual(_seq_to_command(seq='s', view=View(), mode='c'), 'plugin_csv')
 
-    def test_unkown_mode(self):
+    def test_unknown_mode(self):
         class View():
             def settings(self):
                 pass

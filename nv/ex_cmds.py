@@ -527,7 +527,7 @@ def ex_help(window, subject: str = None, forceit: bool = False, **kwargs) -> Non
         settings.set('trim_automatic_white_space', False)
         settings.set('word_wrap', False)
         view.assign_syntax('Packages/NeoVintageous/res/Help.sublime-syntax')
-        view.run_command('_nv_view', {'action': 'insert', 'text': load_resource(help_file_resource)})
+        view.run_command('nv_view', {'action': 'insert', 'text': load_resource(help_file_resource)})
         view.set_read_only(True)
 
     # Format the tag so that we can
@@ -1331,8 +1331,8 @@ def _get_ex_cmd(name: str):
     return ex_cmd
 
 
-# This function is used by the command **_nv_ex_cmd_edit_wrap**. The
-# **_nv_ex_cmd_edit_wrap** command is required to wrap ex commands that need a
+# This function is used by the command **nv_ex_cmd_edit_wrap**. The
+# **nv_ex_cmd_edit_wrap** command is required to wrap ex commands that need a
 # Sublime Text edit token. Edit tokens can only be obtained from a TextCommand.
 # Some ex commands don't need an edit token, those commands don't need to be
 # wrapped by a text command.
@@ -1418,7 +1418,7 @@ def do_ex_command(window, name: str, args=None) -> None:
     if 'edit' in inspect.signature(ex_cmd).parameters:
         args['_name'] = name
 
-        return window.run_command('_nv_ex_cmd_edit_wrap', args)
+        return window.run_command('nv_ex_cmd_edit_wrap', args)
 
     view = window.active_view()
     if view:
@@ -1550,7 +1550,7 @@ def do_ex_cmdline(window, line: str) -> None:
 
     # TODO [review] Objects like the RangeNode() can't be passed through Sublime Text  commands, command args only accept simple data types, which is why we send the line which will be parsed again by the wrapper command. Ideally we wouldn't need to parse the line again.  # noqa: E501
     if 'edit' in inspect.signature(ex_cmd).parameters:
-        return window.run_command('_nv_ex_cmd_edit_wrap', {'_line': line})
+        return window.run_command('nv_ex_cmd_edit_wrap', {'_line': line})
 
     args = cmdline.command.params
 
@@ -1584,8 +1584,8 @@ def do_ex_user_cmdline(window, line: str) -> None:
         do_ex_cmdline(window, line[:-4])
     else:
         if ':' == line:
-            return window.run_command('_nv_cmdline')
+            return window.run_command('nv_cmdline')
         elif line[0] != ':':
             raise RuntimeError('user cmdline must begin with a colon')
 
-        return window.run_command('_nv_cmdline', args={'initial_text': line})
+        return window.run_command('nv_cmdline', args={'initial_text': line})

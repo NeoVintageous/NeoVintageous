@@ -17,7 +17,7 @@
 
 from NeoVintageous.tests import unittest
 
-from NeoVintageous.nv.commands import _nv_feed_key
+from NeoVintageous.nv.commands import nv_feed_key
 from NeoVintageous.nv.settings import append_sequence
 from NeoVintageous.nv.settings import get_action_count
 from NeoVintageous.nv.settings import get_count
@@ -237,7 +237,7 @@ class TestStateSetCommand(unittest.ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        self.command = _nv_feed_key(self.view.window())
+        self.command = nv_feed_key(self.view.window())
         self.command.view = self.view
 
     def test_raise_error_if_unknown_command_type(self):

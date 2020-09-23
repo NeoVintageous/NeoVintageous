@@ -40,7 +40,7 @@ from NeoVintageous.nv.window import window_tab_control
 
 
 __all__ = [
-    '_nv_unimpaired_command'
+    'nv_unimpaired_command'
 ]
 
 
@@ -48,7 +48,7 @@ __all__ = [
 class UnimpairedContextPrevious(ViOperatorDef):
     def translate(self, view):
         return {
-            'action': '_nv_unimpaired',
+            'action': 'nv_unimpaired',
             'action_args': {
                 'mode': get_mode(view),
                 'count': get_count(view),
@@ -61,7 +61,7 @@ class UnimpairedContextPrevious(ViOperatorDef):
 class UnimpairedContextNext(ViOperatorDef):
     def translate(self, view):
         return {
-            'action': '_nv_unimpaired',
+            'action': 'nv_unimpaired',
             'action_args': {
                 'mode': get_mode(view),
                 'count': get_count(view),
@@ -79,7 +79,7 @@ class UnimpairedGotoPrevConflictMarker(ViOperatorDef):
 
     def translate(self, view):
         return {
-            'action': '_nv_unimpaired',
+            'action': 'nv_unimpaired',
             'action_args': {
                 'mode': get_mode(view),
                 'count': get_count(view),
@@ -97,7 +97,7 @@ class UnimpairedGotoNextConflictMarker(ViOperatorDef):
 
     def translate(self, view):
         return {
-            'action': '_nv_unimpaired',
+            'action': 'nv_unimpaired',
             'action_args': {
                 'mode': get_mode(view),
                 'count': get_count(view),
@@ -110,7 +110,7 @@ class UnimpairedGotoNextConflictMarker(ViOperatorDef):
 class UnimpairedBlankUp(ViOperatorDef):
     def translate(self, view):
         return {
-            'action': '_nv_unimpaired',
+            'action': 'nv_unimpaired',
             'action_args': {
                 'mode': get_mode(view),
                 'count': get_count(view),
@@ -123,7 +123,7 @@ class UnimpairedBlankUp(ViOperatorDef):
 class UnimpairedBlankDown(ViOperatorDef):
     def translate(self, view):
         return {
-            'action': '_nv_unimpaired',
+            'action': 'nv_unimpaired',
             'action_args': {
                 'mode': get_mode(view),
                 'count': get_count(view),
@@ -136,7 +136,7 @@ class UnimpairedBlankDown(ViOperatorDef):
 class UnimpairedBprevious(ViOperatorDef):
     def translate(self, view):
         return {
-            'action': '_nv_unimpaired',
+            'action': 'nv_unimpaired',
             'action_args': {
                 'mode': get_mode(view),
                 'count': get_count(view),
@@ -149,7 +149,7 @@ class UnimpairedBprevious(ViOperatorDef):
 class UnimpairedBnext(ViOperatorDef):
     def translate(self, view):
         return {
-            'action': '_nv_unimpaired',
+            'action': 'nv_unimpaired',
             'action_args': {
                 'mode': get_mode(view),
                 'count': get_count(view),
@@ -162,7 +162,7 @@ class UnimpairedBnext(ViOperatorDef):
 class UnimpairedBfirst(ViOperatorDef):
     def translate(self, view):
         return {
-            'action': '_nv_unimpaired',
+            'action': 'nv_unimpaired',
             'action_args': {
                 'mode': get_mode(view),
                 'count': get_count(view),
@@ -175,7 +175,7 @@ class UnimpairedBfirst(ViOperatorDef):
 class UnimpairedBlast(ViOperatorDef):
     def translate(self, view):
         return {
-            'action': '_nv_unimpaired',
+            'action': 'nv_unimpaired',
             'action_args': {
                 'mode': get_mode(view),
                 'count': get_count(view),
@@ -188,7 +188,7 @@ class UnimpairedBlast(ViOperatorDef):
 class UnimpairedMoveUp(ViOperatorDef):
     def translate(self, view):
         return {
-            'action': '_nv_unimpaired',
+            'action': 'nv_unimpaired',
             'action_args': {
                 'mode': get_mode(view),
                 'count': get_count(view),
@@ -201,7 +201,7 @@ class UnimpairedMoveUp(ViOperatorDef):
 class UnimpairedMoveDown(ViOperatorDef):
     def translate(self, view):
         return {
-            'action': '_nv_unimpaired',
+            'action': 'nv_unimpaired',
             'action_args': {
                 'mode': get_mode(view),
                 'count': get_count(view),
@@ -214,7 +214,7 @@ class UnimpairedMoveDown(ViOperatorDef):
 class UnimpairedTabprevious(ViOperatorDef):
     def translate(self, view):
         return {
-            'action': '_nv_unimpaired',
+            'action': 'nv_unimpaired',
             'action_args': {
                 'mode': get_mode(view),
                 'count': get_count(view),
@@ -227,7 +227,7 @@ class UnimpairedTabprevious(ViOperatorDef):
 class UnimpairedTabnext(ViOperatorDef):
     def translate(self, view):
         return {
-            'action': '_nv_unimpaired',
+            'action': 'nv_unimpaired',
             'action_args': {
                 'mode': get_mode(view),
                 'count': get_count(view),
@@ -240,7 +240,7 @@ class UnimpairedTabnext(ViOperatorDef):
 class UnimpairedTabfirst(ViOperatorDef):
     def translate(self, view):
         return {
-            'action': '_nv_unimpaired',
+            'action': 'nv_unimpaired',
             'action_args': {
                 'mode': get_mode(view),
                 'count': get_count(view),
@@ -253,7 +253,7 @@ class UnimpairedTabfirst(ViOperatorDef):
 class UnimpairedTablast(ViOperatorDef):
     def translate(self, view):
         return {
-            'action': '_nv_unimpaired',
+            'action': 'nv_unimpaired',
             'action_args': {
                 'mode': get_mode(view),
                 'count': get_count(view),
@@ -284,7 +284,7 @@ class OptionMixin(ViOperatorDef):
 class UnimpairedToggle(OptionMixin):
     def translate(self, view):
         return {
-            'action': '_nv_unimpaired',
+            'action': 'nv_unimpaired',
             'action_args': {
                 'action': 'toggle_option',
                 'name': self.inp
@@ -296,7 +296,7 @@ class UnimpairedToggle(OptionMixin):
 class UnimpairedToggleOn(OptionMixin):
     def translate(self, view):
         return {
-            'action': '_nv_unimpaired',
+            'action': 'nv_unimpaired',
             'action_args': {
                 'action': 'enable_option',
                 'name': self.inp
@@ -308,7 +308,7 @@ class UnimpairedToggleOn(OptionMixin):
 class UnimpairedToggleOff(OptionMixin):
     def translate(self, view):
         return {
-            'action': '_nv_unimpaired',
+            'action': 'nv_unimpaired',
             'action_args': {
                 'action': 'disable_option',
                 'name': self.inp
@@ -532,7 +532,7 @@ def _toggle_option(view, key, value=None) -> None:
         raise ValueError('unknown option type')
 
 
-class _nv_unimpaired_command(TextCommand):
+class nv_unimpaired_command(TextCommand):
     def run(self, edit, action, mode=None, count=1, **kwargs):
         if action == 'move_down':
             _move_down(self.view, count)

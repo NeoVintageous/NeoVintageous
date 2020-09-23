@@ -41,14 +41,14 @@ TESTS_VISUAL_SINGLE_SEL_START_LEN_1 = (
 TESTS = TESTS_NORMAL_SINGLE_SEL + TESTS_VISUAL_SINGLE_SEL_START_LEN_1
 
 
-class Test__vi_b(unittest.ViewTestCase):
+class Test__nv_vi_b(unittest.ViewTestCase):
 
     def test_all(self):
         for (i, data) in enumerate(TESTS):
             self.write(data.initial_text)
             self.select([self._R(*region) for region in data.regions])
 
-            self.view.run_command('_vi_b', data.cmd_params)
+            self.view.run_command('nv_vi_b', data.cmd_params)
             actual = data.actual_func(self)
 
             self.assertEqual(self._R(*data.expected), actual, "failed at test index {0} {1}".format(i, data.msg))

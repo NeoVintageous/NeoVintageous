@@ -247,11 +247,11 @@ class ViewTestCase(unittest.TestCase):
         return os.path.join(os.path.dirname(__file__), 'fixtures', *args)
 
     def write(self, text: str) -> None:
-        self.view.run_command('_nv_test_write', {'text': text})
+        self.view.run_command('nv_test_write', {'text': text})
 
     def _setupView(self, text: str, mode: str, reverse: bool = False, vblock_direction: int = None):
         if mode in (VISUAL, VISUAL_BLOCK, VISUAL_LINE, INTERNAL_NORMAL, SELECT):
-            self.view.run_command('_nv_test_write', {'text': text.replace('|', '')})
+            self.view.run_command('nv_test_write', {'text': text.replace('|', '')})
             sels = [i for i, c in enumerate(text) if c == '|']
             sel_len = len(sels)
 
@@ -293,7 +293,7 @@ class ViewTestCase(unittest.TestCase):
                 elif len(self.view.sel()) > 1:
                     _set_visual_block_direction(self.view, DIRECTION_DOWN)
         else:
-            self.view.run_command('_nv_test_write', {'text': text.replace('|', '')})
+            self.view.run_command('nv_test_write', {'text': text.replace('|', '')})
             sels = [i for i, c in enumerate(text) if c == '|']
             if sels:
                 self.view.sel().clear()
@@ -859,8 +859,8 @@ class FunctionalTestCase(ViewTestCase):
 
         try:
             # The reason for this try catch is because  some sequences map to
-            # different commands by mode. For example n_u -> _vi_visual_u, and
-            # all other modes u -> _vi_u (in other words all other modes).
+            # different commands by mode. For example n_u -> nv_vi_visual_u, and
+            # all other modes u -> nv_vi_u (in other words all other modes).
             if orig_seq in _SEQ2CMD:
                 seq = orig_seq
 
@@ -893,15 +893,15 @@ class FunctionalTestCase(ViewTestCase):
         if not window:
             raise Exception('window not found')
 
-        if command == '_nv_feed_key':
+        if command == 'nv_feed_key':
             if 'count' in args and args['count'] >= 1:
-                window.run_command('_nv_feed_key', {'key': str(args['count']), 'check_user_mappings': False})
+                window.run_command('nv_feed_key', {'key': str(args['count']), 'check_user_mappings': False})
 
             if 'key' in args:
-                window.run_command('_nv_feed_key', {'key': args['key'], 'check_user_mappings': False})
+                window.run_command('nv_feed_key', {'key': args['key'], 'check_user_mappings': False})
             elif 'keys' in args:
                 for key in args['keys']:
-                    window.run_command('_nv_feed_key', {'key': key, 'check_user_mappings': False})
+                    window.run_command('nv_feed_key', {'key': key, 'check_user_mappings': False})
             else:
                 for key in seq:
                     try:
@@ -909,7 +909,7 @@ class FunctionalTestCase(ViewTestCase):
                     except Exception:
                         pass
 
-                    window.run_command('_nv_feed_key', {'key': key, 'check_user_mappings': False})
+                    window.run_command('nv_feed_key', {'key': key, 'check_user_mappings': False})
         else:
             window.run_command(command, args)
 
@@ -1043,7 +1043,7 @@ class PatchFeedCommandXpos(FunctionalTestCase):
         # Commands like k receive a motion xpos argument on operations like
         # "dk". This updates the command with whatever the test fixture xpos
         # should to be. It's a bit hacky, but just a temporary solution.
-        if command == '_nv_feed_key':
+        if command == 'nv_feed_key':
             self.setXpos(xpos)
         else:
             if 'motion' in args and 'motion_args' in args['motion']:
@@ -1374,672 +1374,672 @@ def mock_run_commands(*methods):
 # impact the existing tests.
 _SEQ2CMD = {
 
-    '"#yiw':        {'command': '_nv_feed_key'},  # noqa: E241
-    '"%yiw':        {'command': '_nv_feed_key'},  # noqa: E241
-    '"':            {'command': '_nv_feed_key'},  # noqa: E241
-    '"*y':          {'command': '_nv_feed_key'},  # noqa: E241
-    '"+y':          {'command': '_nv_feed_key'},  # noqa: E241
-    '".yiw':        {'command': '_nv_feed_key'},  # noqa: E241
-    '"1P':          {'command': '_nv_feed_key'},  # noqa: E241
-    '"1Y':          {'command': '_nv_feed_key'},  # noqa: E241
-    '"1p':          {'command': '_nv_feed_key'},  # noqa: E241
-    '"1y':          {'command': '_nv_feed_key'},  # noqa: E241
-    '"1yy':         {'command': '_nv_feed_key'},  # noqa: E241
-    '"2P':          {'command': '_nv_feed_key'},  # noqa: E241
-    '"2Y':          {'command': '_nv_feed_key'},  # noqa: E241
-    '"2p':          {'command': '_nv_feed_key'},  # noqa: E241
-    '"2y':          {'command': '_nv_feed_key'},  # noqa: E241
-    '"2yy':         {'command': '_nv_feed_key'},  # noqa: E241
-    '":yiw':        {'command': '_nv_feed_key'},  # noqa: E241
-    '"Byy':         {'command': '_nv_feed_key'},  # noqa: E241
-    '"_y':          {'command': '_nv_feed_key'},  # noqa: E241
-    '"_yiw':        {'command': '_nv_feed_key'},  # noqa: E241
-    '"aY':          {'command': '_nv_feed_key'},  # noqa: E241
-    '"ay':          {'command': '_nv_feed_key'},  # noqa: E241
-    '"ayy':         {'command': '_nv_feed_key'},  # noqa: E241
-    '"bY':          {'command': '_nv_feed_key'},  # noqa: E241
-    '"by':          {'command': '_nv_feed_key'},  # noqa: E241
-    '"byy':         {'command': '_nv_feed_key'},  # noqa: E241
-    '"x':           {'command': '_nv_feed_key'},  # noqa: E241
-    '"xP':          {'command': '_nv_feed_key'},  # noqa: E241
-    '"xY':          {'command': '_nv_feed_key'},  # noqa: E241
-    '"xp':          {'command': '_nv_feed_key'},  # noqa: E241
-    '"xy':          {'command': '_nv_feed_key'},  # noqa: E241
-    '"xyiw':        {'command': '_nv_feed_key'},  # noqa: E241
-    '"xyy':         {'command': '_nv_feed_key'},  # noqa: E241
-    '#':            {'command': '_nv_feed_key'},  # noqa: E241
-    '$':            {'command': '_nv_feed_key'},  # noqa: E241
-    '%':            {'command': '_nv_feed_key'},  # noqa: E241
-    '(':            {'command': '_nv_feed_key'},  # noqa: E241
-    ')':            {'command': '_nv_feed_key'},  # noqa: E241
-    '*':            {'command': '_nv_feed_key'},  # noqa: E241
-    ',':            {'command': '_nv_feed_key'},  # noqa: E241
-    '-':            {'command': '_nv_feed_key'},  # noqa: E241
-    '.':            {'command': '_nv_feed_key'},  # noqa: E241
-    '/':            {'command': '_nv_feed_key'},  # noqa: E241
-    '/aBc':         {'command': '_vi_slash_impl', 'args': {'pattern': 'aBc'}},  # noqa: E241
-    '/abc':         {'command': '_vi_slash_impl', 'args': {'pattern': 'abc'}},  # noqa: E241
-    '/abc\\C':      {'command': '_vi_slash_impl', 'args': {'pattern': 'abc\\C'}},  # noqa: E241
-    '/abc\\c':      {'command': '_vi_slash_impl', 'args': {'pattern': 'abc\\c'}},  # noqa: E241
-    '/x':           {'command': '_vi_slash_impl', 'args': {'pattern': 'x'}},  # noqa: E241
-    '0':            {'command': '_nv_feed_key'},  # noqa: E241
-    ';':            {'command': '_nv_feed_key'},  # noqa: E241
-    '<':            {'command': '_nv_feed_key'},  # noqa: E241
-    '<<':           {'command': '_nv_feed_key'},  # noqa: E241
-    '<C-[>':        {'command': '_nv_feed_key', 'args': {'key': '<C-[>'}},  # noqa: E241
-    '<C-]>':        {'command': '_nv_feed_key', 'args': {'key': '<C-]>'}},  # noqa: E241
-    '<C-a>':        {'command': '_nv_feed_key', 'args': {'key': '<C-a>'}},  # noqa: E241
-    '<C-c>':        {'command': '_nv_feed_key', 'args': {'key': '<C-c>'}},  # noqa: E241
-    '<C-d>':        {'command': '_nv_feed_key', 'args': {'key': '<C-d>'}},  # noqa: E241
-    '<C-e>':        {'command': '_nv_feed_key', 'args': {'key': '<C-e>'}},  # noqa: E241
-    '<C-g>':        {'command': '_nv_feed_key', 'args': {'key': '<C-g>'}},  # noqa: E241
-    '<C-i>':        {'command': '_nv_feed_key', 'args': {'key': '<C-i>'}},  # noqa: E241
-    '<C-n>':        {'command': '_nv_feed_key', 'args': {'key': '<C-n>'}},  # noqa: E241
-    '<C-o>':        {'command': '_nv_feed_key', 'args': {'key': '<C-o>'}},  # noqa: E241
-    '<C-p>':        {'command': '_nv_feed_key', 'args': {'key': '<C-p>'}},  # noqa: E241
-    '<C-r>':        {'command': '_nv_feed_key', 'args': {'key': '<C-r>'}},  # noqa: E241
-    '<C-u>':        {'command': '_nv_feed_key', 'args': {'key': '<C-u>'}},  # noqa: E241
-    '<C-v>':        {'command': '_nv_feed_key', 'args': {'key': '<C-v>'}},  # noqa: E241
-    '<C-x>':        {'command': '_nv_feed_key', 'args': {'key': '<C-x>'}},  # noqa: E241
-    '<C-y>':        {'command': '_nv_feed_key', 'args': {'key': '<C-y>'}},  # noqa: E241
-    '<CR>':         {'command': '_nv_feed_key', 'args': {'key': '<cr>'}},  # noqa: E241
-    '<Esc>':        {'command': '_nv_feed_key', 'args': {'key': '<esc>'}},  # noqa: E241
-    '<M-n>':        {'command': '_nv_feed_key', 'args': {'key': '<M-n>'}},  # noqa: E241
-    '<{':           {'command': '_nv_feed_key'},  # noqa: E241
-    '=':            {'command': '_nv_feed_key'},  # noqa: E241
-    '==':           {'command': '_nv_feed_key'},  # noqa: E241
-    '=}':           {'command': '_nv_feed_key'},  # noqa: E241
-    '>':            {'command': '_nv_feed_key'},  # noqa: E241
-    '>>':           {'command': '_nv_feed_key'},  # noqa: E241
-    '>G':           {'command': '_nv_feed_key'},  # noqa: E241
-    '>ip':          {'command': '_nv_feed_key'},  # noqa: E241
-    '?':            {'command': '_nv_feed_key'},  # noqa: E241
-    '?aBc':         {'command': '_vi_question_mark_impl', 'args': {'pattern': 'aBc'}},  # noqa: E241
-    '?abc':         {'command': '_vi_question_mark_impl', 'args': {'pattern': 'abc'}},  # noqa: E241
-    '@#':           {'command': '_nv_feed_key'},  # noqa: E241
-    '@%':           {'command': '_nv_feed_key'},  # noqa: E241
-    '@-':           {'command': '_nv_feed_key'},  # noqa: E241
-    '@@':           {'command': '_nv_feed_key'},  # noqa: E241
-    '@A':           {'command': '_nv_feed_key'},  # noqa: E241
-    '@a':           {'command': '_nv_feed_key'},  # noqa: E241
-    'A':            {'command': '_nv_feed_key'},  # noqa: E241
-    'B':            {'command': '_nv_feed_key'},  # noqa: E241
-    'C':            {'command': '_nv_feed_key'},  # noqa: E241
-    'D':            {'command': '_nv_feed_key'},  # noqa: E241
-    'E':            {'command': '_nv_feed_key'},  # noqa: E241
-    'F0':           {'command': '_nv_feed_key'},  # noqa: E241
-    'F4':           {'command': '_nv_feed_key'},  # noqa: E241
-    'F5':           {'command': '_nv_feed_key'},  # noqa: E241
-    'Ff':           {'command': '_nv_feed_key'},  # noqa: E241
-    'Fr':           {'command': '_nv_feed_key'},  # noqa: E241
-    'Fx':           {'command': '_nv_feed_key'},  # noqa: E241
-    'G':            {'command': '_nv_feed_key'},  # noqa: E241
-    'H':            {'command': '_nv_feed_key'},  # noqa: E241
-    'I':            {'command': '_nv_feed_key'},  # noqa: E241
-    'J':            {'command': '_nv_feed_key'},  # noqa: E241
-    'L':            {'command': '_nv_feed_key'},  # noqa: E241
-    'M':            {'command': '_nv_feed_key'},  # noqa: E241
-    'N':            {'command': '_nv_feed_key'},  # noqa: E241
-    'O':            {'command': '_nv_feed_key'},  # noqa: E241
-    'P':            {'command': '_nv_feed_key'},  # noqa: E241
-    'R':            {'command': '_nv_feed_key'},  # noqa: E241
-    'S"':           {'command': '_nv_feed_key'},  # noqa: E241
-    'S':            {'command': '_nv_feed_key'},  # noqa: E241
-    'S<CR>':        {'command': '_nv_feed_key', 'args': {'keys': ['S', '<CR>']}},  # noqa: E241
-    'Sab':          {'command': '_nv_feed_key'},  # noqa: E241
-    'Siz':          {'command': '_nv_feed_key'},  # noqa: E241
-    'Sx<CR>':       {'command': '_nv_feed_key', 'args': {'keys': ['S', 'x', '<CR>']}},  # noqa: E241
-    'T0':           {'command': '_nv_feed_key'},  # noqa: E241
-    'T4':           {'command': '_nv_feed_key'},  # noqa: E241
-    'T5':           {'command': '_nv_feed_key'},  # noqa: E241
-    'Tf':           {'command': '_nv_feed_key'},  # noqa: E241
-    'Tr':           {'command': '_nv_feed_key'},  # noqa: E241
-    'Tx':           {'command': '_nv_feed_key'},  # noqa: E241
-    'U':            {'command': '_nv_feed_key'},  # noqa: E241
-    'V':            {'command': '_nv_feed_key'},  # noqa: E241
-    'W':            {'command': '_nv_feed_key'},  # noqa: E241
-    'X':            {'command': '_nv_feed_key'},  # noqa: E241
-    'Y':            {'command': '_nv_feed_key'},  # noqa: E241
-    'Z<CR>':        {'command': '_nv_feed_key', 'args': {'keys': ['Z', '<CR>']}},  # noqa: E241
-    'Ziz':          {'command': '_nv_feed_key'},  # noqa: E241
-    'Zx<CR>':       {'command': '_nv_feed_key', 'args': {'keys': ['Z', 'x', '<CR>']}},  # noqa: E241
-    '[ ':           {'command': '_nv_feed_key'},  # noqa: E241
-    '[(':           {'command': '_nv_feed_key'},  # noqa: E241
-    '[B':           {'command': '_nv_feed_key'},  # noqa: E241
-    '[P':           {'command': '_nv_feed_key'},  # noqa: E241
-    '[T':           {'command': '_nv_feed_key'},  # noqa: E241
-    '[b':           {'command': '_nv_feed_key'},  # noqa: E241
-    '[e':           {'command': '_nv_feed_key'},  # noqa: E241
-    '[l':           {'command': '_nv_feed_key'},  # noqa: E241
-    '[n':           {'command': '_nv_feed_key'},  # noqa: E241
-    '[oa':          {'command': '_nv_feed_key'},  # noqa: E241
-    '[oe':          {'command': '_nv_feed_key'},  # noqa: E241
-    '[oh':          {'command': '_nv_feed_key'},  # noqa: E241
-    '[oi':          {'command': '_nv_feed_key'},  # noqa: E241
-    '[ol':          {'command': '_nv_feed_key'},  # noqa: E241
-    '[om':          {'command': '_nv_feed_key'},  # noqa: E241
-    '[on':          {'command': '_nv_feed_key'},  # noqa: E241
-    '[ot':          {'command': '_nv_feed_key'},  # noqa: E241
-    '[ow':          {'command': '_nv_feed_key'},  # noqa: E241
-    '[t':           {'command': '_nv_feed_key'},  # noqa: E241
-    '[{':           {'command': '_nv_feed_key'},  # noqa: E241
-    '\'a':          {'command': '_nv_feed_key'},  # noqa: E241
-    '\'p':          {'command': '_nv_feed_key'},  # noqa: E241
-    '\'x':          {'command': '_nv_feed_key'},  # noqa: E241
-    '] ':           {'command': '_nv_feed_key'},  # noqa: E241
-    '])':           {'command': '_nv_feed_key'},  # noqa: E241
-    ']B':           {'command': '_nv_feed_key'},  # noqa: E241
-    ']P':           {'command': '_nv_feed_key'},  # noqa: E241
-    ']T':           {'command': '_nv_feed_key'},  # noqa: E241
-    ']b':           {'command': '_nv_feed_key'},  # noqa: E241
-    ']e':           {'command': '_nv_feed_key'},  # noqa: E241
-    ']l':           {'command': '_nv_feed_key'},  # noqa: E241
-    ']n':           {'command': '_nv_feed_key'},  # noqa: E241
-    ']oa':          {'command': '_nv_feed_key'},  # noqa: E241
-    ']oe':          {'command': '_nv_feed_key'},  # noqa: E241
-    ']oh':          {'command': '_nv_feed_key'},  # noqa: E241
-    ']oi':          {'command': '_nv_feed_key'},  # noqa: E241
-    ']ol':          {'command': '_nv_feed_key'},  # noqa: E241
-    ']om':          {'command': '_nv_feed_key'},  # noqa: E241
-    ']on':          {'command': '_nv_feed_key'},  # noqa: E241
-    ']ot':          {'command': '_nv_feed_key'},  # noqa: E241
-    ']ow':          {'command': '_nv_feed_key'},  # noqa: E241
-    ']t':           {'command': '_nv_feed_key'},  # noqa: E241
-    ']}':           {'command': '_nv_feed_key'},  # noqa: E241
-    '^':            {'command': '_nv_feed_key'},  # noqa: E241
-    '_':            {'command': '_nv_feed_key'},  # noqa: E241
-    '`a':           {'command': '_nv_feed_key'},  # noqa: E241
-    '`p':           {'command': '_nv_feed_key'},  # noqa: E241
-    '`x':           {'command': '_nv_feed_key'},  # noqa: E241
-    'a"':           {'command': '_nv_feed_key'},  # noqa: E241
-    'a':            {'command': '_nv_feed_key'},  # noqa: E241
-    'a(':           {'command': '_nv_feed_key'},  # noqa: E241
-    'a)':           {'command': '_nv_feed_key'},  # noqa: E241
-    'a/':           {'command': '_nv_feed_key'},  # noqa: E241
-    'a<':           {'command': '_nv_feed_key'},  # noqa: E241
-    'a>':           {'command': '_nv_feed_key'},  # noqa: E241
-    'aB':           {'command': '_nv_feed_key'},  # noqa: E241
-    'aI':           {'command': '_nv_feed_key'},  # noqa: E241
-    'aW':           {'command': '_nv_feed_key'},  # noqa: E241
-    'a[':           {'command': '_nv_feed_key'},  # noqa: E241
-    'a\'':          {'command': '_nv_feed_key'},  # noqa: E241
-    'a]':           {'command': '_nv_feed_key'},  # noqa: E241
-    'a_':           {'command': '_nv_feed_key'},  # noqa: E241
-    'a`':           {'command': '_nv_feed_key'},  # noqa: E241
-    'ab':           {'command': '_nv_feed_key'},  # noqa: E241
-    'ai':           {'command': '_nv_feed_key'},  # noqa: E241
-    'ap':           {'command': '_nv_feed_key'},  # noqa: E241
-    'as':           {'command': '_nv_feed_key'},  # noqa: E241
-    'at':           {'command': '_nv_feed_key'},  # noqa: E241
-    'aw':           {'command': '_nv_feed_key'},  # noqa: E241
-    'a{':           {'command': '_nv_feed_key'},  # noqa: E241
-    'a}':           {'command': '_nv_feed_key'},  # noqa: E241
-    'b':            {'command': '_nv_feed_key'},  # noqa: E241
-    'c$':           {'command': '_nv_feed_key'},  # noqa: E241
-    'c':            {'command': '_nv_feed_key'},  # noqa: E241
-    'c0':           {'command': '_nv_feed_key'},  # noqa: E241
-    'cM':           {'command': '_nv_feed_key'},  # noqa: E241
-    'cZiz':         {'command': '_nv_feed_key'},  # noqa: E241
-    'c^':           {'command': '_nv_feed_key'},  # noqa: E241
-    'c_':           {'command': '_nv_feed_key'},  # noqa: E241
-    'ca"':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ca(':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ca)':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ca/':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ca<':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ca>':          {'command': '_nv_feed_key'},  # noqa: E241
-    'caB':          {'command': '_nv_feed_key'},  # noqa: E241
-    'caW':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ca[':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ca\'':         {'command': '_nv_feed_key'},  # noqa: E241
-    'ca]':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ca_':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ca`':          {'command': '_nv_feed_key'},  # noqa: E241
-    'cab':          {'command': '_nv_feed_key'},  # noqa: E241
-    'cap':          {'command': '_nv_feed_key'},  # noqa: E241
-    'cas':          {'command': '_nv_feed_key'},  # noqa: E241
-    'cat':          {'command': '_nv_feed_key'},  # noqa: E241
-    'caw':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ca{':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ca}':          {'command': '_nv_feed_key'},  # noqa: E241
-    'cb':           {'command': '_nv_feed_key'},  # noqa: E241
-    'cc':           {'command': '_nv_feed_key'},  # noqa: E241
-    'ce':           {'command': '_nv_feed_key'},  # noqa: E241
-    'cgE':          {'command': '_nv_feed_key'},  # noqa: E241
-    'cgN':          {'command': '_nv_feed_key'},  # noqa: E241
-    'cg_':          {'command': '_nv_feed_key'},  # noqa: E241
-    'cge':          {'command': '_nv_feed_key'},  # noqa: E241
-    'cgn':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ch':           {'command': '_nv_feed_key'},  # noqa: E241
-    'ci"':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ci(':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ci)':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ci/':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ci<':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ci>':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ciB':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ciW':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ci[':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ci\'':         {'command': '_nv_feed_key'},  # noqa: E241
-    'ci]':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ci_':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ci`':          {'command': '_nv_feed_key'},  # noqa: E241
-    'cib':          {'command': '_nv_feed_key'},  # noqa: E241
-    'cip':          {'command': '_nv_feed_key'},  # noqa: E241
-    'cis':          {'command': '_nv_feed_key'},  # noqa: E241
-    'cit':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ciw':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ci{':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ci}':          {'command': '_nv_feed_key'},  # noqa: E241
-    'cl':           {'command': '_nv_feed_key'},  # noqa: E241
-    'cr ':          {'command': '_nv_feed_key'},  # noqa: E241
-    'cr-':          {'command': '_nv_feed_key'},  # noqa: E241
-    'cr.':          {'command': '_nv_feed_key'},  # noqa: E241
-    'crU':          {'command': '_nv_feed_key'},  # noqa: E241
-    'cr_':          {'command': '_nv_feed_key'},  # noqa: E241
-    'crc':          {'command': '_nv_feed_key'},  # noqa: E241
-    'cre':          {'command': '_nv_feed_key'},  # noqa: E241
-    'crk':          {'command': '_nv_feed_key'},  # noqa: E241
-    'crm':          {'command': '_nv_feed_key'},  # noqa: E241
-    'crs':          {'command': '_nv_feed_key'},  # noqa: E241
-    'crt':          {'command': '_nv_feed_key'},  # noqa: E241
-    'cru':          {'command': '_nv_feed_key'},  # noqa: E241
-    'cs""':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs"(':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs")':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs"2':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs"<':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs"<i x="y">': {'command': '_nv_feed_key'},  # noqa: E241
-    'cs"<x>':       {'command': '_nv_feed_key'},  # noqa: E241
-    'cs">':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs"[':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs"\'':        {'command': '_nv_feed_key'},  # noqa: E241
-    'cs"]':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs"`':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs"ti x="y">': {'command': '_nv_feed_key'},  # noqa: E241
-    'cs"{':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs("':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs((':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs()':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs(2':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs([':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs(\'':        {'command': '_nv_feed_key'},  # noqa: E241
-    'cs(]':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs({':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs(}':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs)"':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs)(':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs))':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs)2':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs)[':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs)\'':        {'command': '_nv_feed_key'},  # noqa: E241
-    'cs)]':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs){':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs)}':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs,`':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs-_':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs."':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs>"':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs>{':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs>}':         {'command': '_nv_feed_key'},  # noqa: E241
-    'csB"':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs["':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs\'"':        {'command': '_nv_feed_key'},  # noqa: E241
-    'cs\'(':        {'command': '_nv_feed_key'},  # noqa: E241
-    'cs\'<div>':    {'command': '_nv_feed_key'},  # noqa: E241
-    'cs\'<q>':      {'command': '_nv_feed_key'},  # noqa: E241
-    'cs\'`':        {'command': '_nv_feed_key'},  # noqa: E241
-    'cs\'tdiv>':    {'command': '_nv_feed_key'},  # noqa: E241
-    'cs\'tq>':      {'command': '_nv_feed_key'},  # noqa: E241
-    'cs]"':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs]>':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs]{':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs_-':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs`"':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs`\'':        {'command': '_nv_feed_key'},  # noqa: E241
-    'csa"':         {'command': '_nv_feed_key'},  # noqa: E241
-    'csb"':         {'command': '_nv_feed_key'},  # noqa: E241
-    'csr"':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cst"':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cst<a>':       {'command': '_nv_feed_key'},  # noqa: E241
-    'cstta>':       {'command': '_nv_feed_key'},  # noqa: E241
-    'cs{(':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs{)':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs}(':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cs})':         {'command': '_nv_feed_key'},  # noqa: E241
-    'cw':           {'command': '_nv_feed_key'},  # noqa: E241
-    'cziz':         {'command': '_nv_feed_key'},  # noqa: E241
-    'c|':           {'command': '_nv_feed_key'},  # noqa: E241
-    'd#':           {'command': '_nv_feed_key'},  # noqa: E241
-    'd$':           {'command': '_nv_feed_key'},  # noqa: E241
-    'd%':           {'command': '_nv_feed_key'},  # noqa: E241
-    'd':            {'command': '_nv_feed_key'},  # noqa: E241
-    'd(':           {'command': '_nv_feed_key'},  # noqa: E241
-    'd)':           {'command': '_nv_feed_key'},  # noqa: E241
-    'd*':           {'command': '_nv_feed_key'},  # noqa: E241
-    'd-':           {'command': '_nv_feed_key'},  # noqa: E241
-    'd/abc':        {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'pattern': 'abc'}, 'motion': '_vi_slash_impl'}}},  # noqa: E241,E501
-    'd0':           {'command': '_nv_feed_key'},  # noqa: E241
-    'd2ft':         {'command': '_nv_feed_key'},  # noqa: E241
-    'd<C-d>':       {'command': '_nv_feed_key', 'args': {'keys': ['d', '<C-d>']}},  # noqa: E241
-    'd<C-u>':       {'command': '_nv_feed_key', 'args': {'keys': ['d', '<C-u>']}},  # noqa: E241
-    'd?abc':        {'command': '_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'pattern': 'abc'}, 'motion': '_vi_question_mark_impl'}}},  # noqa: E241,E501
-    'dB':           {'command': '_nv_feed_key'},  # noqa: E241
-    'dE':           {'command': '_nv_feed_key'},  # noqa: E241
-    'dFx':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dG':           {'command': '_nv_feed_key'},  # noqa: E241
-    'dH':           {'command': '_nv_feed_key'},  # noqa: E241
-    'dL':           {'command': '_nv_feed_key'},  # noqa: E241
-    'dM':           {'command': '_nv_feed_key'},  # noqa: E241
-    'dTx':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dW':           {'command': '_nv_feed_key'},  # noqa: E241
-    'dZiz':         {'command': '_nv_feed_key'},  # noqa: E241
-    'd[{':          {'command': '_nv_feed_key'},  # noqa: E241
-    'd\'a':         {'command': '_nv_feed_key'},  # noqa: E241
-    'd\'x':         {'command': '_nv_feed_key'},  # noqa: E241
-    'd]}':          {'command': '_nv_feed_key'},  # noqa: E241
-    'd^':           {'command': '_nv_feed_key'},  # noqa: E241
-    'd_':           {'command': '_nv_feed_key'},  # noqa: E241
-    'd`a':          {'command': '_nv_feed_key'},  # noqa: E241
-    'd`x':          {'command': '_nv_feed_key'},  # noqa: E241
-    'da"':          {'command': '_nv_feed_key'},  # noqa: E241
-    'da(':          {'command': '_nv_feed_key'},  # noqa: E241
-    'da)':          {'command': '_nv_feed_key'},  # noqa: E241
-    'da/':          {'command': '_nv_feed_key'},  # noqa: E241
-    'da<':          {'command': '_nv_feed_key'},  # noqa: E241
-    'da>':          {'command': '_nv_feed_key'},  # noqa: E241
-    'daB':          {'command': '_nv_feed_key'},  # noqa: E241
-    'daW':          {'command': '_nv_feed_key'},  # noqa: E241
-    'da[':          {'command': '_nv_feed_key'},  # noqa: E241
-    'da\'':         {'command': '_nv_feed_key'},  # noqa: E241
-    'da]':          {'command': '_nv_feed_key'},  # noqa: E241
-    'da_':          {'command': '_nv_feed_key'},  # noqa: E241
-    'da`':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dab':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dap':          {'command': '_nv_feed_key'},  # noqa: E241
-    'das':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dat':          {'command': '_nv_feed_key'},  # noqa: E241
-    'daw':          {'command': '_nv_feed_key'},  # noqa: E241
-    'da{':          {'command': '_nv_feed_key'},  # noqa: E241
-    'da}':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dd':           {'command': '_nv_feed_key'},  # noqa: E241
-    'de':           {'command': '_nv_feed_key'},  # noqa: E241
-    'df=':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dft':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dfx':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dgE':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dg_':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dge':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dgg':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dh':           {'command': '_nv_feed_key'},  # noqa: E241
-    'di"':          {'command': '_nv_feed_key'},  # noqa: E241
-    'di(':          {'command': '_nv_feed_key'},  # noqa: E241
-    'di)':          {'command': '_nv_feed_key'},  # noqa: E241
-    'di/':          {'command': '_nv_feed_key'},  # noqa: E241
-    'di>':          {'command': '_nv_feed_key'},  # noqa: E241
-    'diB':          {'command': '_nv_feed_key'},  # noqa: E241
-    'diW':          {'command': '_nv_feed_key'},  # noqa: E241
-    'di[':          {'command': '_nv_feed_key'},  # noqa: E241
-    'di\'':         {'command': '_nv_feed_key'},  # noqa: E241
-    'di]':          {'command': '_nv_feed_key'},  # noqa: E241
-    'di_':          {'command': '_nv_feed_key'},  # noqa: E241
-    'di`':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dib':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dip':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dis':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dit':          {'command': '_nv_feed_key'},  # noqa: E241
-    'diw':          {'command': '_nv_feed_key'},  # noqa: E241
-    'di{':          {'command': '_nv_feed_key'},  # noqa: E241
-    'di}':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dj':           {'command': '_nv_feed_key'},  # noqa: E241
-    'dk':           {'command': '_nv_feed_key'},  # noqa: E241
-    'dl':           {'command': '_nv_feed_key'},  # noqa: E241
-    'ds ':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ds"':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ds(':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ds)':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ds,':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ds-':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ds.':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ds0':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ds2':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ds<':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ds>':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dsB':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dsW':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ds[':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ds\'':         {'command': '_nv_feed_key'},  # noqa: E241
-    'ds]':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ds_':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ds`':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dsa':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dsb':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dse':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dsp':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dsq':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dsr':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dss':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dst':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dsw':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ds{':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ds}':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dtx':          {'command': '_nv_feed_key'},  # noqa: E241
-    'dw':           {'command': '_nv_feed_key'},  # noqa: E241
-    'dziz':         {'command': '_nv_feed_key'},  # noqa: E241
-    'd{':           {'command': '_nv_feed_key'},  # noqa: E241
-    'd|':           {'command': '_nv_feed_key'},  # noqa: E241
-    'd}':           {'command': '_nv_feed_key'},  # noqa: E241
-    'e':            {'command': '_nv_feed_key'},  # noqa: E241
-    'f2':           {'command': '_nv_feed_key'},  # noqa: E241
-    'f6':           {'command': '_nv_feed_key'},  # noqa: E241
-    'f8':           {'command': '_nv_feed_key'},  # noqa: E241
-    'f:':           {'command': '_nv_feed_key'},  # noqa: E241
-    'f<k4>':        {'command': '_nv_feed_key', 'args': {'keys': ['f', '<k4>']}},  # noqa: E241
-    'f<kminus>':    {'command': '_nv_feed_key', 'args': {'keys': ['f', '<kminus>']}},  # noqa: E241
-    'f\\':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ff':           {'command': '_nv_feed_key'},  # noqa: E241
-    'fr':           {'command': '_nv_feed_key'},  # noqa: E241
-    'fx':           {'command': '_nv_feed_key'},  # noqa: E241
-    'f|':           {'command': '_nv_feed_key'},  # noqa: E241
-    'gC':           {'command': '_nv_feed_key'},  # noqa: E241
-    'gC}':          {'command': '_nv_feed_key'},  # noqa: E241
-    'gE':           {'command': '_nv_feed_key'},  # noqa: E241
-    'gH':           {'command': '_nv_feed_key'},  # noqa: E241
-    'gJ':           {'command': '_nv_feed_key'},  # noqa: E241
-    'gN':           {'command': '_nv_feed_key'},  # noqa: E241
-    'gP':           {'command': '_nv_feed_key'},  # noqa: E241
-    'gT':           {'command': '_nv_feed_key'},  # noqa: E241
-    'gU':           {'command': '_nv_feed_key'},  # noqa: E241
-    'gUU':          {'command': '_nv_feed_key'},  # noqa: E241
-    'gUb':          {'command': '_nv_feed_key'},  # noqa: E241
-    'gUip':         {'command': '_nv_feed_key'},  # noqa: E241
-    'g_':           {'command': '_nv_feed_key'},  # noqa: E241
-    'ga':           {'command': '_nv_feed_key'},  # noqa: E241
-    'gc':           {'command': '_nv_feed_key'},  # noqa: E241
-    'gc7G':         {'command': '_nv_feed_key'},  # noqa: E241
-    'gcG':          {'command': '_nv_feed_key'},  # noqa: E241
-    'gcc':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ge':           {'command': '_nv_feed_key'},  # noqa: E241
-    'gf':           {'command': '_nv_feed_key'},  # noqa: E241
-    'gg':           {'command': '_nv_feed_key'},  # noqa: E241
-    'gh':           {'command': '_nv_feed_key'},  # noqa: E241
-    'gj':           {'command': '_nv_feed_key'},  # noqa: E241
-    'gk':           {'command': '_nv_feed_key'},  # noqa: E241
-    'gn':           {'command': '_nv_feed_key'},  # noqa: E241
-    'gp':           {'command': '_nv_feed_key'},  # noqa: E241
-    'gq$':          {'command': '_nv_feed_key'},  # noqa: E241
-    'gq':           {'command': '_nv_feed_key'},  # noqa: E241
-    'gqgq':         {'command': '_nv_feed_key'},  # noqa: E241
-    'gqip':         {'command': '_nv_feed_key'},  # noqa: E241
-    'gqq':          {'command': '_nv_feed_key'},  # noqa: E241
-    'gq}':          {'command': '_nv_feed_key'},  # noqa: E241
-    'gt':           {'command': '_nv_feed_key'},  # noqa: E241
-    'gu':           {'command': '_nv_feed_key'},  # noqa: E241
-    'gub':          {'command': '_nv_feed_key'},  # noqa: E241
-    'guis':         {'command': '_nv_feed_key'},  # noqa: E241
-    'guu':          {'command': '_nv_feed_key'},  # noqa: E241
-    'gv':           {'command': '_nv_feed_key'},  # noqa: E241
-    'gx':           {'command': '_nv_feed_key'},  # noqa: E241
-    'g~$':          {'command': '_nv_feed_key'},  # noqa: E241
-    'g~':           {'command': '_nv_feed_key'},  # noqa: E241
-    'g~~':          {'command': '_nv_feed_key'},  # noqa: E241
-    'h':            {'command': '_nv_feed_key'},  # noqa: E241
-    'i"':           {'command': '_nv_feed_key'},  # noqa: E241
-    'i':            {'command': '_nv_feed_key'},  # noqa: E241
-    'i(':           {'command': '_nv_feed_key'},  # noqa: E241
-    'i)':           {'command': '_nv_feed_key'},  # noqa: E241
-    'i/':           {'command': '_nv_feed_key'},  # noqa: E241
-    'i<':           {'command': '_nv_feed_key'},  # noqa: E241
-    'i>':           {'command': '_nv_feed_key'},  # noqa: E241
-    'iB':           {'command': '_nv_feed_key'},  # noqa: E241
-    'iI':           {'command': '_nv_feed_key'},  # noqa: E241
-    'iW':           {'command': '_nv_feed_key'},  # noqa: E241
-    'i[':           {'command': '_nv_feed_key'},  # noqa: E241
-    'i\'':          {'command': '_nv_feed_key'},  # noqa: E241
-    'i]':           {'command': '_nv_feed_key'},  # noqa: E241
-    'i_':           {'command': '_nv_feed_key'},  # noqa: E241
-    'i`':           {'command': '_nv_feed_key'},  # noqa: E241
-    'ib':           {'command': '_nv_feed_key'},  # noqa: E241
-    'ii':           {'command': '_nv_feed_key'},  # noqa: E241
-    'ip':           {'command': '_nv_feed_key'},  # noqa: E241
-    'is':           {'command': '_nv_feed_key'},  # noqa: E241
-    'it':           {'command': '_nv_feed_key'},  # noqa: E241
-    'iw':           {'command': '_nv_feed_key'},  # noqa: E241
-    'i{':           {'command': '_nv_feed_key'},  # noqa: E241
-    'i}':           {'command': '_nv_feed_key'},  # noqa: E241
-    'j':            {'command': '_nv_feed_key'},  # noqa: E241
-    'k':            {'command': '_nv_feed_key'},  # noqa: E241
-    'l':            {'command': '_nv_feed_key'},  # noqa: E241
-    'ma':           {'command': '_nv_feed_key'},  # noqa: E241
-    'mx':           {'command': '_nv_feed_key'},  # noqa: E241
-    'n':            {'command': '_nv_feed_key'},  # noqa: E241
-    'o':            {'command': '_nv_feed_key'},  # noqa: E241
-    'p':            {'command': '_nv_feed_key'},  # noqa: E241
-    'q':            {'command': '_nv_feed_key'},  # noqa: E241
-    'q-':           {'command': '_nv_feed_key'},  # noqa: E241
-    'q@':           {'command': '_nv_feed_key'},  # noqa: E241
-    'qA':           {'command': '_nv_feed_key'},  # noqa: E241
-    'qa':           {'command': '_nv_feed_key'},  # noqa: E241
-    'qx':           {'command': '_nv_feed_key'},  # noqa: E241
-    'r<cr>':        {'command': '_nv_feed_key', 'args': {'keys': ['r', '<cr>']}},  # noqa: E241
-    'r<k0>':        {'command': '_nv_feed_key', 'args': {'keys': ['r', '<k0>']}},  # noqa: E241
-    'r<k1>':        {'command': '_nv_feed_key', 'args': {'keys': ['r', '<k1>']}},  # noqa: E241
-    'r<k2>':        {'command': '_nv_feed_key', 'args': {'keys': ['r', '<k2>']}},  # noqa: E241
-    'r<k3>':        {'command': '_nv_feed_key', 'args': {'keys': ['r', '<k3>']}},  # noqa: E241
-    'r<k4>':        {'command': '_nv_feed_key', 'args': {'keys': ['r', '<k4>']}},  # noqa: E241
-    'r<k5>':        {'command': '_nv_feed_key', 'args': {'keys': ['r', '<k5>']}},  # noqa: E241
-    'r<k6>':        {'command': '_nv_feed_key', 'args': {'keys': ['r', '<k6>']}},  # noqa: E241
-    'r<k7>':        {'command': '_nv_feed_key', 'args': {'keys': ['r', '<k7>']}},  # noqa: E241
-    'r<k8>':        {'command': '_nv_feed_key', 'args': {'keys': ['r', '<k8>']}},  # noqa: E241
-    'r<k9>':        {'command': '_nv_feed_key', 'args': {'keys': ['r', '<k9>']}},  # noqa: E241
-    'r<kdivide>':   {'command': '_nv_feed_key', 'args': {'keys': ['r', '<kdivide>']}},  # noqa: E241
-    'r<kenter>':    {'command': '_nv_feed_key', 'args': {'keys': ['r', '<kenter>']}},  # noqa: E241
-    'r<kminus>':    {'command': '_nv_feed_key', 'args': {'keys': ['r', '<kminus>']}},  # noqa: E241
-    'r<kmultiply>': {'command': '_nv_feed_key', 'args': {'keys': ['r', '<kmultiply>']}},  # noqa: E241
-    'r<kperiod>':   {'command': '_nv_feed_key', 'args': {'keys': ['r', '<kperiod>']}},  # noqa: E241
-    'r<kplus>':     {'command': '_nv_feed_key', 'args': {'keys': ['r', '<kplus>']}},  # noqa: E241
-    'rx':           {'command': '_nv_feed_key'},  # noqa: E241
-    's':            {'command': '_nv_feed_key'},  # noqa: E241
-    's<CR>':        {'command': '_nv_feed_key', 'args': {'keys': ['s', '<CR>']}},  # noqa: E241
-    'sab':          {'command': '_nv_feed_key'},  # noqa: E241
-    'siz':          {'command': '_nv_feed_key'},  # noqa: E241
-    'sx<CR>':       {'command': '_nv_feed_key', 'args': {'keys': ['s', 'x', '<CR>']}},  # noqa: E241
-    'sxy':          {'command': '_nv_feed_key'},  # noqa: E241
-    't2':           {'command': '_nv_feed_key'},  # noqa: E241
-    't6':           {'command': '_nv_feed_key'},  # noqa: E241
-    't8':           {'command': '_nv_feed_key'},  # noqa: E241
-    't:':           {'command': '_nv_feed_key'},  # noqa: E241
-    't<kmultiply>': {'command': '_nv_feed_key', 'args': {'keys': ['t', '<kmultiply>']}},  # noqa: E241
-    't\\':          {'command': '_nv_feed_key'},  # noqa: E241
-    'tf':           {'command': '_nv_feed_key'},  # noqa: E241
-    'tr':           {'command': '_nv_feed_key'},  # noqa: E241
-    'tx':           {'command': '_nv_feed_key'},  # noqa: E241
-    't|':           {'command': '_nv_feed_key'},  # noqa: E241
-    'u':            {'command': '_nv_feed_key'},  # noqa: E241
-    'v':            {'command': '_nv_feed_key'},  # noqa: E241
-    'w':            {'command': '_nv_feed_key'},  # noqa: E241
-    'x':            {'command': '_nv_feed_key'},  # noqa: E241
-    'y$':           {'command': '_nv_feed_key'},  # noqa: E241
-    'y':            {'command': '_nv_feed_key'},  # noqa: E241
-    'ya"':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ya(':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ya)':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ya<':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ya>':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yaB':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yaW':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ya[':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ya\'':         {'command': '_nv_feed_key'},  # noqa: E241
-    'ya]':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ya`':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yab':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yap':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yas':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yat':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yaw':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ya{':          {'command': '_nv_feed_key'},  # noqa: E241
-    'ya}':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yi"':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yi(':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yi)':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yi<':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yi>':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yiB':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yiW':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yi[':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yi\'':         {'command': '_nv_feed_key'},  # noqa: E241
-    'yi]':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yi`':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yib':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yip':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yis':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yit':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yiw':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yi{':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yi}':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yoa':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yoe':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yoh':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yoi':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yol':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yom':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yon':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yot':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yow':          {'command': '_nv_feed_key'},  # noqa: E241
-    'yse"':         {'command': '_nv_feed_key'},  # noqa: E241
-    'yse(':         {'command': '_nv_feed_key'},  # noqa: E241
-    'yse)':         {'command': '_nv_feed_key'},  # noqa: E241
-    'yse2':         {'command': '_nv_feed_key'},  # noqa: E241
-    'yse<foo>':     {'command': '_nv_feed_key'},  # noqa: E241
-    'yse[':         {'command': '_nv_feed_key'},  # noqa: E241
-    'yse\'':        {'command': '_nv_feed_key'},  # noqa: E241
-    'yse]':         {'command': '_nv_feed_key'},  # noqa: E241
-    'yse{':         {'command': '_nv_feed_key'},  # noqa: E241
-    'yse}':         {'command': '_nv_feed_key'},  # noqa: E241
-    'ysiw"':        {'command': '_nv_feed_key'},  # noqa: E241
-    'ysiw(':        {'command': '_nv_feed_key'},  # noqa: E241
-    'ysiw)':        {'command': '_nv_feed_key'},  # noqa: E241
-    'ysiw2':        {'command': '_nv_feed_key'},  # noqa: E241
-    'ysiw<foo>':    {'command': '_nv_feed_key'},  # noqa: E241
-    'ysiw<i x="y">':{'command': '_nv_feed_key'},  # noqa: E231,E241
-    'ysiwB':        {'command': '_nv_feed_key'},  # noqa: E241
-    'ysiw[':        {'command': '_nv_feed_key'},  # noqa: E241
-    'ysiw\'':       {'command': '_nv_feed_key'},  # noqa: E241
-    'ysiw]':        {'command': '_nv_feed_key'},  # noqa: E241
-    'ysiwafoo>':    {'command': '_nv_feed_key'},  # noqa: E241
-    'ysiwb':        {'command': '_nv_feed_key'},  # noqa: E241
-    'ysiwr':        {'command': '_nv_feed_key'},  # noqa: E241
-    'ysiwti x="y">':{'command': '_nv_feed_key'},  # noqa: E231,E241
-    'ysiw{':        {'command': '_nv_feed_key'},  # noqa: E241
-    'ysiw}':        {'command': '_nv_feed_key'},  # noqa: E241
-    'yss)':         {'command': '_nv_feed_key'},  # noqa: E241
-    'yy':           {'command': '_nv_feed_key'},  # noqa: E241
-    'z=':           {'command': '_nv_feed_key'},  # noqa: E241
-    'zg':           {'command': '_nv_feed_key'},  # noqa: E241
-    'zug':          {'command': '_nv_feed_key'},  # noqa: E241
-    '{':            {'command': '_nv_feed_key'},  # noqa: E241
-    '|':            {'command': '_nv_feed_key'},  # noqa: E241
-    '}':            {'command': '_nv_feed_key'},  # noqa: E241
-    '~':            {'command': '_nv_feed_key'},  # noqa: E241
+    '"#yiw':        {'command': 'nv_feed_key'},  # noqa: E241
+    '"%yiw':        {'command': 'nv_feed_key'},  # noqa: E241
+    '"':            {'command': 'nv_feed_key'},  # noqa: E241
+    '"*y':          {'command': 'nv_feed_key'},  # noqa: E241
+    '"+y':          {'command': 'nv_feed_key'},  # noqa: E241
+    '".yiw':        {'command': 'nv_feed_key'},  # noqa: E241
+    '"1P':          {'command': 'nv_feed_key'},  # noqa: E241
+    '"1Y':          {'command': 'nv_feed_key'},  # noqa: E241
+    '"1p':          {'command': 'nv_feed_key'},  # noqa: E241
+    '"1y':          {'command': 'nv_feed_key'},  # noqa: E241
+    '"1yy':         {'command': 'nv_feed_key'},  # noqa: E241
+    '"2P':          {'command': 'nv_feed_key'},  # noqa: E241
+    '"2Y':          {'command': 'nv_feed_key'},  # noqa: E241
+    '"2p':          {'command': 'nv_feed_key'},  # noqa: E241
+    '"2y':          {'command': 'nv_feed_key'},  # noqa: E241
+    '"2yy':         {'command': 'nv_feed_key'},  # noqa: E241
+    '":yiw':        {'command': 'nv_feed_key'},  # noqa: E241
+    '"Byy':         {'command': 'nv_feed_key'},  # noqa: E241
+    '"_y':          {'command': 'nv_feed_key'},  # noqa: E241
+    '"_yiw':        {'command': 'nv_feed_key'},  # noqa: E241
+    '"aY':          {'command': 'nv_feed_key'},  # noqa: E241
+    '"ay':          {'command': 'nv_feed_key'},  # noqa: E241
+    '"ayy':         {'command': 'nv_feed_key'},  # noqa: E241
+    '"bY':          {'command': 'nv_feed_key'},  # noqa: E241
+    '"by':          {'command': 'nv_feed_key'},  # noqa: E241
+    '"byy':         {'command': 'nv_feed_key'},  # noqa: E241
+    '"x':           {'command': 'nv_feed_key'},  # noqa: E241
+    '"xP':          {'command': 'nv_feed_key'},  # noqa: E241
+    '"xY':          {'command': 'nv_feed_key'},  # noqa: E241
+    '"xp':          {'command': 'nv_feed_key'},  # noqa: E241
+    '"xy':          {'command': 'nv_feed_key'},  # noqa: E241
+    '"xyiw':        {'command': 'nv_feed_key'},  # noqa: E241
+    '"xyy':         {'command': 'nv_feed_key'},  # noqa: E241
+    '#':            {'command': 'nv_feed_key'},  # noqa: E241
+    '$':            {'command': 'nv_feed_key'},  # noqa: E241
+    '%':            {'command': 'nv_feed_key'},  # noqa: E241
+    '(':            {'command': 'nv_feed_key'},  # noqa: E241
+    ')':            {'command': 'nv_feed_key'},  # noqa: E241
+    '*':            {'command': 'nv_feed_key'},  # noqa: E241
+    ',':            {'command': 'nv_feed_key'},  # noqa: E241
+    '-':            {'command': 'nv_feed_key'},  # noqa: E241
+    '.':            {'command': 'nv_feed_key'},  # noqa: E241
+    '/':            {'command': 'nv_feed_key'},  # noqa: E241
+    '/aBc':         {'command': 'nv_vi_slash_impl', 'args': {'pattern': 'aBc'}},  # noqa: E241
+    '/abc':         {'command': 'nv_vi_slash_impl', 'args': {'pattern': 'abc'}},  # noqa: E241
+    '/abc\\C':      {'command': 'nv_vi_slash_impl', 'args': {'pattern': 'abc\\C'}},  # noqa: E241
+    '/abc\\c':      {'command': 'nv_vi_slash_impl', 'args': {'pattern': 'abc\\c'}},  # noqa: E241
+    '/x':           {'command': 'nv_vi_slash_impl', 'args': {'pattern': 'x'}},  # noqa: E241
+    '0':            {'command': 'nv_feed_key'},  # noqa: E241
+    ';':            {'command': 'nv_feed_key'},  # noqa: E241
+    '<':            {'command': 'nv_feed_key'},  # noqa: E241
+    '<<':           {'command': 'nv_feed_key'},  # noqa: E241
+    '<C-[>':        {'command': 'nv_feed_key', 'args': {'key': '<C-[>'}},  # noqa: E241
+    '<C-]>':        {'command': 'nv_feed_key', 'args': {'key': '<C-]>'}},  # noqa: E241
+    '<C-a>':        {'command': 'nv_feed_key', 'args': {'key': '<C-a>'}},  # noqa: E241
+    '<C-c>':        {'command': 'nv_feed_key', 'args': {'key': '<C-c>'}},  # noqa: E241
+    '<C-d>':        {'command': 'nv_feed_key', 'args': {'key': '<C-d>'}},  # noqa: E241
+    '<C-e>':        {'command': 'nv_feed_key', 'args': {'key': '<C-e>'}},  # noqa: E241
+    '<C-g>':        {'command': 'nv_feed_key', 'args': {'key': '<C-g>'}},  # noqa: E241
+    '<C-i>':        {'command': 'nv_feed_key', 'args': {'key': '<C-i>'}},  # noqa: E241
+    '<C-n>':        {'command': 'nv_feed_key', 'args': {'key': '<C-n>'}},  # noqa: E241
+    '<C-o>':        {'command': 'nv_feed_key', 'args': {'key': '<C-o>'}},  # noqa: E241
+    '<C-p>':        {'command': 'nv_feed_key', 'args': {'key': '<C-p>'}},  # noqa: E241
+    '<C-r>':        {'command': 'nv_feed_key', 'args': {'key': '<C-r>'}},  # noqa: E241
+    '<C-u>':        {'command': 'nv_feed_key', 'args': {'key': '<C-u>'}},  # noqa: E241
+    '<C-v>':        {'command': 'nv_feed_key', 'args': {'key': '<C-v>'}},  # noqa: E241
+    '<C-x>':        {'command': 'nv_feed_key', 'args': {'key': '<C-x>'}},  # noqa: E241
+    '<C-y>':        {'command': 'nv_feed_key', 'args': {'key': '<C-y>'}},  # noqa: E241
+    '<CR>':         {'command': 'nv_feed_key', 'args': {'key': '<cr>'}},  # noqa: E241
+    '<Esc>':        {'command': 'nv_feed_key', 'args': {'key': '<esc>'}},  # noqa: E241
+    '<M-n>':        {'command': 'nv_feed_key', 'args': {'key': '<M-n>'}},  # noqa: E241
+    '<{':           {'command': 'nv_feed_key'},  # noqa: E241
+    '=':            {'command': 'nv_feed_key'},  # noqa: E241
+    '==':           {'command': 'nv_feed_key'},  # noqa: E241
+    '=}':           {'command': 'nv_feed_key'},  # noqa: E241
+    '>':            {'command': 'nv_feed_key'},  # noqa: E241
+    '>>':           {'command': 'nv_feed_key'},  # noqa: E241
+    '>G':           {'command': 'nv_feed_key'},  # noqa: E241
+    '>ip':          {'command': 'nv_feed_key'},  # noqa: E241
+    '?':            {'command': 'nv_feed_key'},  # noqa: E241
+    '?aBc':         {'command': 'nv_vi_question_mark_impl', 'args': {'pattern': 'aBc'}},  # noqa: E241
+    '?abc':         {'command': 'nv_vi_question_mark_impl', 'args': {'pattern': 'abc'}},  # noqa: E241
+    '@#':           {'command': 'nv_feed_key'},  # noqa: E241
+    '@%':           {'command': 'nv_feed_key'},  # noqa: E241
+    '@-':           {'command': 'nv_feed_key'},  # noqa: E241
+    '@@':           {'command': 'nv_feed_key'},  # noqa: E241
+    '@A':           {'command': 'nv_feed_key'},  # noqa: E241
+    '@a':           {'command': 'nv_feed_key'},  # noqa: E241
+    'A':            {'command': 'nv_feed_key'},  # noqa: E241
+    'B':            {'command': 'nv_feed_key'},  # noqa: E241
+    'C':            {'command': 'nv_feed_key'},  # noqa: E241
+    'D':            {'command': 'nv_feed_key'},  # noqa: E241
+    'E':            {'command': 'nv_feed_key'},  # noqa: E241
+    'F0':           {'command': 'nv_feed_key'},  # noqa: E241
+    'F4':           {'command': 'nv_feed_key'},  # noqa: E241
+    'F5':           {'command': 'nv_feed_key'},  # noqa: E241
+    'Ff':           {'command': 'nv_feed_key'},  # noqa: E241
+    'Fr':           {'command': 'nv_feed_key'},  # noqa: E241
+    'Fx':           {'command': 'nv_feed_key'},  # noqa: E241
+    'G':            {'command': 'nv_feed_key'},  # noqa: E241
+    'H':            {'command': 'nv_feed_key'},  # noqa: E241
+    'I':            {'command': 'nv_feed_key'},  # noqa: E241
+    'J':            {'command': 'nv_feed_key'},  # noqa: E241
+    'L':            {'command': 'nv_feed_key'},  # noqa: E241
+    'M':            {'command': 'nv_feed_key'},  # noqa: E241
+    'N':            {'command': 'nv_feed_key'},  # noqa: E241
+    'O':            {'command': 'nv_feed_key'},  # noqa: E241
+    'P':            {'command': 'nv_feed_key'},  # noqa: E241
+    'R':            {'command': 'nv_feed_key'},  # noqa: E241
+    'S"':           {'command': 'nv_feed_key'},  # noqa: E241
+    'S':            {'command': 'nv_feed_key'},  # noqa: E241
+    'S<CR>':        {'command': 'nv_feed_key', 'args': {'keys': ['S', '<CR>']}},  # noqa: E241
+    'Sab':          {'command': 'nv_feed_key'},  # noqa: E241
+    'Siz':          {'command': 'nv_feed_key'},  # noqa: E241
+    'Sx<CR>':       {'command': 'nv_feed_key', 'args': {'keys': ['S', 'x', '<CR>']}},  # noqa: E241
+    'T0':           {'command': 'nv_feed_key'},  # noqa: E241
+    'T4':           {'command': 'nv_feed_key'},  # noqa: E241
+    'T5':           {'command': 'nv_feed_key'},  # noqa: E241
+    'Tf':           {'command': 'nv_feed_key'},  # noqa: E241
+    'Tr':           {'command': 'nv_feed_key'},  # noqa: E241
+    'Tx':           {'command': 'nv_feed_key'},  # noqa: E241
+    'U':            {'command': 'nv_feed_key'},  # noqa: E241
+    'V':            {'command': 'nv_feed_key'},  # noqa: E241
+    'W':            {'command': 'nv_feed_key'},  # noqa: E241
+    'X':            {'command': 'nv_feed_key'},  # noqa: E241
+    'Y':            {'command': 'nv_feed_key'},  # noqa: E241
+    'Z<CR>':        {'command': 'nv_feed_key', 'args': {'keys': ['Z', '<CR>']}},  # noqa: E241
+    'Ziz':          {'command': 'nv_feed_key'},  # noqa: E241
+    'Zx<CR>':       {'command': 'nv_feed_key', 'args': {'keys': ['Z', 'x', '<CR>']}},  # noqa: E241
+    '[ ':           {'command': 'nv_feed_key'},  # noqa: E241
+    '[(':           {'command': 'nv_feed_key'},  # noqa: E241
+    '[B':           {'command': 'nv_feed_key'},  # noqa: E241
+    '[P':           {'command': 'nv_feed_key'},  # noqa: E241
+    '[T':           {'command': 'nv_feed_key'},  # noqa: E241
+    '[b':           {'command': 'nv_feed_key'},  # noqa: E241
+    '[e':           {'command': 'nv_feed_key'},  # noqa: E241
+    '[l':           {'command': 'nv_feed_key'},  # noqa: E241
+    '[n':           {'command': 'nv_feed_key'},  # noqa: E241
+    '[oa':          {'command': 'nv_feed_key'},  # noqa: E241
+    '[oe':          {'command': 'nv_feed_key'},  # noqa: E241
+    '[oh':          {'command': 'nv_feed_key'},  # noqa: E241
+    '[oi':          {'command': 'nv_feed_key'},  # noqa: E241
+    '[ol':          {'command': 'nv_feed_key'},  # noqa: E241
+    '[om':          {'command': 'nv_feed_key'},  # noqa: E241
+    '[on':          {'command': 'nv_feed_key'},  # noqa: E241
+    '[ot':          {'command': 'nv_feed_key'},  # noqa: E241
+    '[ow':          {'command': 'nv_feed_key'},  # noqa: E241
+    '[t':           {'command': 'nv_feed_key'},  # noqa: E241
+    '[{':           {'command': 'nv_feed_key'},  # noqa: E241
+    '\'a':          {'command': 'nv_feed_key'},  # noqa: E241
+    '\'p':          {'command': 'nv_feed_key'},  # noqa: E241
+    '\'x':          {'command': 'nv_feed_key'},  # noqa: E241
+    '] ':           {'command': 'nv_feed_key'},  # noqa: E241
+    '])':           {'command': 'nv_feed_key'},  # noqa: E241
+    ']B':           {'command': 'nv_feed_key'},  # noqa: E241
+    ']P':           {'command': 'nv_feed_key'},  # noqa: E241
+    ']T':           {'command': 'nv_feed_key'},  # noqa: E241
+    ']b':           {'command': 'nv_feed_key'},  # noqa: E241
+    ']e':           {'command': 'nv_feed_key'},  # noqa: E241
+    ']l':           {'command': 'nv_feed_key'},  # noqa: E241
+    ']n':           {'command': 'nv_feed_key'},  # noqa: E241
+    ']oa':          {'command': 'nv_feed_key'},  # noqa: E241
+    ']oe':          {'command': 'nv_feed_key'},  # noqa: E241
+    ']oh':          {'command': 'nv_feed_key'},  # noqa: E241
+    ']oi':          {'command': 'nv_feed_key'},  # noqa: E241
+    ']ol':          {'command': 'nv_feed_key'},  # noqa: E241
+    ']om':          {'command': 'nv_feed_key'},  # noqa: E241
+    ']on':          {'command': 'nv_feed_key'},  # noqa: E241
+    ']ot':          {'command': 'nv_feed_key'},  # noqa: E241
+    ']ow':          {'command': 'nv_feed_key'},  # noqa: E241
+    ']t':           {'command': 'nv_feed_key'},  # noqa: E241
+    ']}':           {'command': 'nv_feed_key'},  # noqa: E241
+    '^':            {'command': 'nv_feed_key'},  # noqa: E241
+    '_':            {'command': 'nv_feed_key'},  # noqa: E241
+    '`a':           {'command': 'nv_feed_key'},  # noqa: E241
+    '`p':           {'command': 'nv_feed_key'},  # noqa: E241
+    '`x':           {'command': 'nv_feed_key'},  # noqa: E241
+    'a"':           {'command': 'nv_feed_key'},  # noqa: E241
+    'a':            {'command': 'nv_feed_key'},  # noqa: E241
+    'a(':           {'command': 'nv_feed_key'},  # noqa: E241
+    'a)':           {'command': 'nv_feed_key'},  # noqa: E241
+    'a/':           {'command': 'nv_feed_key'},  # noqa: E241
+    'a<':           {'command': 'nv_feed_key'},  # noqa: E241
+    'a>':           {'command': 'nv_feed_key'},  # noqa: E241
+    'aB':           {'command': 'nv_feed_key'},  # noqa: E241
+    'aI':           {'command': 'nv_feed_key'},  # noqa: E241
+    'aW':           {'command': 'nv_feed_key'},  # noqa: E241
+    'a[':           {'command': 'nv_feed_key'},  # noqa: E241
+    'a\'':          {'command': 'nv_feed_key'},  # noqa: E241
+    'a]':           {'command': 'nv_feed_key'},  # noqa: E241
+    'a_':           {'command': 'nv_feed_key'},  # noqa: E241
+    'a`':           {'command': 'nv_feed_key'},  # noqa: E241
+    'ab':           {'command': 'nv_feed_key'},  # noqa: E241
+    'ai':           {'command': 'nv_feed_key'},  # noqa: E241
+    'ap':           {'command': 'nv_feed_key'},  # noqa: E241
+    'as':           {'command': 'nv_feed_key'},  # noqa: E241
+    'at':           {'command': 'nv_feed_key'},  # noqa: E241
+    'aw':           {'command': 'nv_feed_key'},  # noqa: E241
+    'a{':           {'command': 'nv_feed_key'},  # noqa: E241
+    'a}':           {'command': 'nv_feed_key'},  # noqa: E241
+    'b':            {'command': 'nv_feed_key'},  # noqa: E241
+    'c$':           {'command': 'nv_feed_key'},  # noqa: E241
+    'c':            {'command': 'nv_feed_key'},  # noqa: E241
+    'c0':           {'command': 'nv_feed_key'},  # noqa: E241
+    'cM':           {'command': 'nv_feed_key'},  # noqa: E241
+    'cZiz':         {'command': 'nv_feed_key'},  # noqa: E241
+    'c^':           {'command': 'nv_feed_key'},  # noqa: E241
+    'c_':           {'command': 'nv_feed_key'},  # noqa: E241
+    'ca"':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ca(':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ca)':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ca/':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ca<':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ca>':          {'command': 'nv_feed_key'},  # noqa: E241
+    'caB':          {'command': 'nv_feed_key'},  # noqa: E241
+    'caW':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ca[':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ca\'':         {'command': 'nv_feed_key'},  # noqa: E241
+    'ca]':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ca_':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ca`':          {'command': 'nv_feed_key'},  # noqa: E241
+    'cab':          {'command': 'nv_feed_key'},  # noqa: E241
+    'cap':          {'command': 'nv_feed_key'},  # noqa: E241
+    'cas':          {'command': 'nv_feed_key'},  # noqa: E241
+    'cat':          {'command': 'nv_feed_key'},  # noqa: E241
+    'caw':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ca{':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ca}':          {'command': 'nv_feed_key'},  # noqa: E241
+    'cb':           {'command': 'nv_feed_key'},  # noqa: E241
+    'cc':           {'command': 'nv_feed_key'},  # noqa: E241
+    'ce':           {'command': 'nv_feed_key'},  # noqa: E241
+    'cgE':          {'command': 'nv_feed_key'},  # noqa: E241
+    'cgN':          {'command': 'nv_feed_key'},  # noqa: E241
+    'cg_':          {'command': 'nv_feed_key'},  # noqa: E241
+    'cge':          {'command': 'nv_feed_key'},  # noqa: E241
+    'cgn':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ch':           {'command': 'nv_feed_key'},  # noqa: E241
+    'ci"':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ci(':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ci)':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ci/':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ci<':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ci>':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ciB':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ciW':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ci[':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ci\'':         {'command': 'nv_feed_key'},  # noqa: E241
+    'ci]':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ci_':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ci`':          {'command': 'nv_feed_key'},  # noqa: E241
+    'cib':          {'command': 'nv_feed_key'},  # noqa: E241
+    'cip':          {'command': 'nv_feed_key'},  # noqa: E241
+    'cis':          {'command': 'nv_feed_key'},  # noqa: E241
+    'cit':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ciw':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ci{':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ci}':          {'command': 'nv_feed_key'},  # noqa: E241
+    'cl':           {'command': 'nv_feed_key'},  # noqa: E241
+    'cr ':          {'command': 'nv_feed_key'},  # noqa: E241
+    'cr-':          {'command': 'nv_feed_key'},  # noqa: E241
+    'cr.':          {'command': 'nv_feed_key'},  # noqa: E241
+    'crU':          {'command': 'nv_feed_key'},  # noqa: E241
+    'cr_':          {'command': 'nv_feed_key'},  # noqa: E241
+    'crc':          {'command': 'nv_feed_key'},  # noqa: E241
+    'cre':          {'command': 'nv_feed_key'},  # noqa: E241
+    'crk':          {'command': 'nv_feed_key'},  # noqa: E241
+    'crm':          {'command': 'nv_feed_key'},  # noqa: E241
+    'crs':          {'command': 'nv_feed_key'},  # noqa: E241
+    'crt':          {'command': 'nv_feed_key'},  # noqa: E241
+    'cru':          {'command': 'nv_feed_key'},  # noqa: E241
+    'cs""':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs"(':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs")':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs"2':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs"<':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs"<i x="y">': {'command': 'nv_feed_key'},  # noqa: E241
+    'cs"<x>':       {'command': 'nv_feed_key'},  # noqa: E241
+    'cs">':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs"[':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs"\'':        {'command': 'nv_feed_key'},  # noqa: E241
+    'cs"]':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs"`':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs"ti x="y">': {'command': 'nv_feed_key'},  # noqa: E241
+    'cs"{':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs("':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs((':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs()':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs(2':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs([':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs(\'':        {'command': 'nv_feed_key'},  # noqa: E241
+    'cs(]':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs({':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs(}':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs)"':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs)(':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs))':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs)2':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs)[':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs)\'':        {'command': 'nv_feed_key'},  # noqa: E241
+    'cs)]':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs){':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs)}':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs,`':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs-_':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs."':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs>"':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs>{':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs>}':         {'command': 'nv_feed_key'},  # noqa: E241
+    'csB"':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs["':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs\'"':        {'command': 'nv_feed_key'},  # noqa: E241
+    'cs\'(':        {'command': 'nv_feed_key'},  # noqa: E241
+    'cs\'<div>':    {'command': 'nv_feed_key'},  # noqa: E241
+    'cs\'<q>':      {'command': 'nv_feed_key'},  # noqa: E241
+    'cs\'`':        {'command': 'nv_feed_key'},  # noqa: E241
+    'cs\'tdiv>':    {'command': 'nv_feed_key'},  # noqa: E241
+    'cs\'tq>':      {'command': 'nv_feed_key'},  # noqa: E241
+    'cs]"':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs]>':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs]{':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs_-':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs`"':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs`\'':        {'command': 'nv_feed_key'},  # noqa: E241
+    'csa"':         {'command': 'nv_feed_key'},  # noqa: E241
+    'csb"':         {'command': 'nv_feed_key'},  # noqa: E241
+    'csr"':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cst"':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cst<a>':       {'command': 'nv_feed_key'},  # noqa: E241
+    'cstta>':       {'command': 'nv_feed_key'},  # noqa: E241
+    'cs{(':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs{)':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs}(':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cs})':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cw':           {'command': 'nv_feed_key'},  # noqa: E241
+    'cziz':         {'command': 'nv_feed_key'},  # noqa: E241
+    'c|':           {'command': 'nv_feed_key'},  # noqa: E241
+    'd#':           {'command': 'nv_feed_key'},  # noqa: E241
+    'd$':           {'command': 'nv_feed_key'},  # noqa: E241
+    'd%':           {'command': 'nv_feed_key'},  # noqa: E241
+    'd':            {'command': 'nv_feed_key'},  # noqa: E241
+    'd(':           {'command': 'nv_feed_key'},  # noqa: E241
+    'd)':           {'command': 'nv_feed_key'},  # noqa: E241
+    'd*':           {'command': 'nv_feed_key'},  # noqa: E241
+    'd-':           {'command': 'nv_feed_key'},  # noqa: E241
+    'd/abc':        {'command': 'nv_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'pattern': 'abc'}, 'motion': 'nv_vi_slash_impl'}}},  # noqa: E241,E501
+    'd0':           {'command': 'nv_feed_key'},  # noqa: E241
+    'd2ft':         {'command': 'nv_feed_key'},  # noqa: E241
+    'd<C-d>':       {'command': 'nv_feed_key', 'args': {'keys': ['d', '<C-d>']}},  # noqa: E241
+    'd<C-u>':       {'command': 'nv_feed_key', 'args': {'keys': ['d', '<C-u>']}},  # noqa: E241
+    'd?abc':        {'command': 'nv_vi_d', 'args': {'motion': {'motion_args': {'count': 1, 'mode': INTERNAL_NORMAL, 'pattern': 'abc'}, 'motion': 'nv_vi_question_mark_impl'}}},  # noqa: E241,E501
+    'dB':           {'command': 'nv_feed_key'},  # noqa: E241
+    'dE':           {'command': 'nv_feed_key'},  # noqa: E241
+    'dFx':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dG':           {'command': 'nv_feed_key'},  # noqa: E241
+    'dH':           {'command': 'nv_feed_key'},  # noqa: E241
+    'dL':           {'command': 'nv_feed_key'},  # noqa: E241
+    'dM':           {'command': 'nv_feed_key'},  # noqa: E241
+    'dTx':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dW':           {'command': 'nv_feed_key'},  # noqa: E241
+    'dZiz':         {'command': 'nv_feed_key'},  # noqa: E241
+    'd[{':          {'command': 'nv_feed_key'},  # noqa: E241
+    'd\'a':         {'command': 'nv_feed_key'},  # noqa: E241
+    'd\'x':         {'command': 'nv_feed_key'},  # noqa: E241
+    'd]}':          {'command': 'nv_feed_key'},  # noqa: E241
+    'd^':           {'command': 'nv_feed_key'},  # noqa: E241
+    'd_':           {'command': 'nv_feed_key'},  # noqa: E241
+    'd`a':          {'command': 'nv_feed_key'},  # noqa: E241
+    'd`x':          {'command': 'nv_feed_key'},  # noqa: E241
+    'da"':          {'command': 'nv_feed_key'},  # noqa: E241
+    'da(':          {'command': 'nv_feed_key'},  # noqa: E241
+    'da)':          {'command': 'nv_feed_key'},  # noqa: E241
+    'da/':          {'command': 'nv_feed_key'},  # noqa: E241
+    'da<':          {'command': 'nv_feed_key'},  # noqa: E241
+    'da>':          {'command': 'nv_feed_key'},  # noqa: E241
+    'daB':          {'command': 'nv_feed_key'},  # noqa: E241
+    'daW':          {'command': 'nv_feed_key'},  # noqa: E241
+    'da[':          {'command': 'nv_feed_key'},  # noqa: E241
+    'da\'':         {'command': 'nv_feed_key'},  # noqa: E241
+    'da]':          {'command': 'nv_feed_key'},  # noqa: E241
+    'da_':          {'command': 'nv_feed_key'},  # noqa: E241
+    'da`':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dab':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dap':          {'command': 'nv_feed_key'},  # noqa: E241
+    'das':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dat':          {'command': 'nv_feed_key'},  # noqa: E241
+    'daw':          {'command': 'nv_feed_key'},  # noqa: E241
+    'da{':          {'command': 'nv_feed_key'},  # noqa: E241
+    'da}':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dd':           {'command': 'nv_feed_key'},  # noqa: E241
+    'de':           {'command': 'nv_feed_key'},  # noqa: E241
+    'df=':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dft':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dfx':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dgE':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dg_':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dge':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dgg':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dh':           {'command': 'nv_feed_key'},  # noqa: E241
+    'di"':          {'command': 'nv_feed_key'},  # noqa: E241
+    'di(':          {'command': 'nv_feed_key'},  # noqa: E241
+    'di)':          {'command': 'nv_feed_key'},  # noqa: E241
+    'di/':          {'command': 'nv_feed_key'},  # noqa: E241
+    'di>':          {'command': 'nv_feed_key'},  # noqa: E241
+    'diB':          {'command': 'nv_feed_key'},  # noqa: E241
+    'diW':          {'command': 'nv_feed_key'},  # noqa: E241
+    'di[':          {'command': 'nv_feed_key'},  # noqa: E241
+    'di\'':         {'command': 'nv_feed_key'},  # noqa: E241
+    'di]':          {'command': 'nv_feed_key'},  # noqa: E241
+    'di_':          {'command': 'nv_feed_key'},  # noqa: E241
+    'di`':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dib':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dip':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dis':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dit':          {'command': 'nv_feed_key'},  # noqa: E241
+    'diw':          {'command': 'nv_feed_key'},  # noqa: E241
+    'di{':          {'command': 'nv_feed_key'},  # noqa: E241
+    'di}':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dj':           {'command': 'nv_feed_key'},  # noqa: E241
+    'dk':           {'command': 'nv_feed_key'},  # noqa: E241
+    'dl':           {'command': 'nv_feed_key'},  # noqa: E241
+    'ds ':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ds"':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ds(':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ds)':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ds,':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ds-':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ds.':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ds0':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ds2':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ds<':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ds>':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dsB':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dsW':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ds[':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ds\'':         {'command': 'nv_feed_key'},  # noqa: E241
+    'ds]':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ds_':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ds`':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dsa':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dsb':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dse':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dsp':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dsq':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dsr':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dss':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dst':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dsw':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ds{':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ds}':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dtx':          {'command': 'nv_feed_key'},  # noqa: E241
+    'dw':           {'command': 'nv_feed_key'},  # noqa: E241
+    'dziz':         {'command': 'nv_feed_key'},  # noqa: E241
+    'd{':           {'command': 'nv_feed_key'},  # noqa: E241
+    'd|':           {'command': 'nv_feed_key'},  # noqa: E241
+    'd}':           {'command': 'nv_feed_key'},  # noqa: E241
+    'e':            {'command': 'nv_feed_key'},  # noqa: E241
+    'f2':           {'command': 'nv_feed_key'},  # noqa: E241
+    'f6':           {'command': 'nv_feed_key'},  # noqa: E241
+    'f8':           {'command': 'nv_feed_key'},  # noqa: E241
+    'f:':           {'command': 'nv_feed_key'},  # noqa: E241
+    'f<k4>':        {'command': 'nv_feed_key', 'args': {'keys': ['f', '<k4>']}},  # noqa: E241
+    'f<kminus>':    {'command': 'nv_feed_key', 'args': {'keys': ['f', '<kminus>']}},  # noqa: E241
+    'f\\':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ff':           {'command': 'nv_feed_key'},  # noqa: E241
+    'fr':           {'command': 'nv_feed_key'},  # noqa: E241
+    'fx':           {'command': 'nv_feed_key'},  # noqa: E241
+    'f|':           {'command': 'nv_feed_key'},  # noqa: E241
+    'gC':           {'command': 'nv_feed_key'},  # noqa: E241
+    'gC}':          {'command': 'nv_feed_key'},  # noqa: E241
+    'gE':           {'command': 'nv_feed_key'},  # noqa: E241
+    'gH':           {'command': 'nv_feed_key'},  # noqa: E241
+    'gJ':           {'command': 'nv_feed_key'},  # noqa: E241
+    'gN':           {'command': 'nv_feed_key'},  # noqa: E241
+    'gP':           {'command': 'nv_feed_key'},  # noqa: E241
+    'gT':           {'command': 'nv_feed_key'},  # noqa: E241
+    'gU':           {'command': 'nv_feed_key'},  # noqa: E241
+    'gUU':          {'command': 'nv_feed_key'},  # noqa: E241
+    'gUb':          {'command': 'nv_feed_key'},  # noqa: E241
+    'gUip':         {'command': 'nv_feed_key'},  # noqa: E241
+    'g_':           {'command': 'nv_feed_key'},  # noqa: E241
+    'ga':           {'command': 'nv_feed_key'},  # noqa: E241
+    'gc':           {'command': 'nv_feed_key'},  # noqa: E241
+    'gc7G':         {'command': 'nv_feed_key'},  # noqa: E241
+    'gcG':          {'command': 'nv_feed_key'},  # noqa: E241
+    'gcc':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ge':           {'command': 'nv_feed_key'},  # noqa: E241
+    'gf':           {'command': 'nv_feed_key'},  # noqa: E241
+    'gg':           {'command': 'nv_feed_key'},  # noqa: E241
+    'gh':           {'command': 'nv_feed_key'},  # noqa: E241
+    'gj':           {'command': 'nv_feed_key'},  # noqa: E241
+    'gk':           {'command': 'nv_feed_key'},  # noqa: E241
+    'gn':           {'command': 'nv_feed_key'},  # noqa: E241
+    'gp':           {'command': 'nv_feed_key'},  # noqa: E241
+    'gq$':          {'command': 'nv_feed_key'},  # noqa: E241
+    'gq':           {'command': 'nv_feed_key'},  # noqa: E241
+    'gqgq':         {'command': 'nv_feed_key'},  # noqa: E241
+    'gqip':         {'command': 'nv_feed_key'},  # noqa: E241
+    'gqq':          {'command': 'nv_feed_key'},  # noqa: E241
+    'gq}':          {'command': 'nv_feed_key'},  # noqa: E241
+    'gt':           {'command': 'nv_feed_key'},  # noqa: E241
+    'gu':           {'command': 'nv_feed_key'},  # noqa: E241
+    'gub':          {'command': 'nv_feed_key'},  # noqa: E241
+    'guis':         {'command': 'nv_feed_key'},  # noqa: E241
+    'guu':          {'command': 'nv_feed_key'},  # noqa: E241
+    'gv':           {'command': 'nv_feed_key'},  # noqa: E241
+    'gx':           {'command': 'nv_feed_key'},  # noqa: E241
+    'g~$':          {'command': 'nv_feed_key'},  # noqa: E241
+    'g~':           {'command': 'nv_feed_key'},  # noqa: E241
+    'g~~':          {'command': 'nv_feed_key'},  # noqa: E241
+    'h':            {'command': 'nv_feed_key'},  # noqa: E241
+    'i"':           {'command': 'nv_feed_key'},  # noqa: E241
+    'i':            {'command': 'nv_feed_key'},  # noqa: E241
+    'i(':           {'command': 'nv_feed_key'},  # noqa: E241
+    'i)':           {'command': 'nv_feed_key'},  # noqa: E241
+    'i/':           {'command': 'nv_feed_key'},  # noqa: E241
+    'i<':           {'command': 'nv_feed_key'},  # noqa: E241
+    'i>':           {'command': 'nv_feed_key'},  # noqa: E241
+    'iB':           {'command': 'nv_feed_key'},  # noqa: E241
+    'iI':           {'command': 'nv_feed_key'},  # noqa: E241
+    'iW':           {'command': 'nv_feed_key'},  # noqa: E241
+    'i[':           {'command': 'nv_feed_key'},  # noqa: E241
+    'i\'':          {'command': 'nv_feed_key'},  # noqa: E241
+    'i]':           {'command': 'nv_feed_key'},  # noqa: E241
+    'i_':           {'command': 'nv_feed_key'},  # noqa: E241
+    'i`':           {'command': 'nv_feed_key'},  # noqa: E241
+    'ib':           {'command': 'nv_feed_key'},  # noqa: E241
+    'ii':           {'command': 'nv_feed_key'},  # noqa: E241
+    'ip':           {'command': 'nv_feed_key'},  # noqa: E241
+    'is':           {'command': 'nv_feed_key'},  # noqa: E241
+    'it':           {'command': 'nv_feed_key'},  # noqa: E241
+    'iw':           {'command': 'nv_feed_key'},  # noqa: E241
+    'i{':           {'command': 'nv_feed_key'},  # noqa: E241
+    'i}':           {'command': 'nv_feed_key'},  # noqa: E241
+    'j':            {'command': 'nv_feed_key'},  # noqa: E241
+    'k':            {'command': 'nv_feed_key'},  # noqa: E241
+    'l':            {'command': 'nv_feed_key'},  # noqa: E241
+    'ma':           {'command': 'nv_feed_key'},  # noqa: E241
+    'mx':           {'command': 'nv_feed_key'},  # noqa: E241
+    'n':            {'command': 'nv_feed_key'},  # noqa: E241
+    'o':            {'command': 'nv_feed_key'},  # noqa: E241
+    'p':            {'command': 'nv_feed_key'},  # noqa: E241
+    'q':            {'command': 'nv_feed_key'},  # noqa: E241
+    'q-':           {'command': 'nv_feed_key'},  # noqa: E241
+    'q@':           {'command': 'nv_feed_key'},  # noqa: E241
+    'qA':           {'command': 'nv_feed_key'},  # noqa: E241
+    'qa':           {'command': 'nv_feed_key'},  # noqa: E241
+    'qx':           {'command': 'nv_feed_key'},  # noqa: E241
+    'r<cr>':        {'command': 'nv_feed_key', 'args': {'keys': ['r', '<cr>']}},  # noqa: E241
+    'r<k0>':        {'command': 'nv_feed_key', 'args': {'keys': ['r', '<k0>']}},  # noqa: E241
+    'r<k1>':        {'command': 'nv_feed_key', 'args': {'keys': ['r', '<k1>']}},  # noqa: E241
+    'r<k2>':        {'command': 'nv_feed_key', 'args': {'keys': ['r', '<k2>']}},  # noqa: E241
+    'r<k3>':        {'command': 'nv_feed_key', 'args': {'keys': ['r', '<k3>']}},  # noqa: E241
+    'r<k4>':        {'command': 'nv_feed_key', 'args': {'keys': ['r', '<k4>']}},  # noqa: E241
+    'r<k5>':        {'command': 'nv_feed_key', 'args': {'keys': ['r', '<k5>']}},  # noqa: E241
+    'r<k6>':        {'command': 'nv_feed_key', 'args': {'keys': ['r', '<k6>']}},  # noqa: E241
+    'r<k7>':        {'command': 'nv_feed_key', 'args': {'keys': ['r', '<k7>']}},  # noqa: E241
+    'r<k8>':        {'command': 'nv_feed_key', 'args': {'keys': ['r', '<k8>']}},  # noqa: E241
+    'r<k9>':        {'command': 'nv_feed_key', 'args': {'keys': ['r', '<k9>']}},  # noqa: E241
+    'r<kdivide>':   {'command': 'nv_feed_key', 'args': {'keys': ['r', '<kdivide>']}},  # noqa: E241
+    'r<kenter>':    {'command': 'nv_feed_key', 'args': {'keys': ['r', '<kenter>']}},  # noqa: E241
+    'r<kminus>':    {'command': 'nv_feed_key', 'args': {'keys': ['r', '<kminus>']}},  # noqa: E241
+    'r<kmultiply>': {'command': 'nv_feed_key', 'args': {'keys': ['r', '<kmultiply>']}},  # noqa: E241
+    'r<kperiod>':   {'command': 'nv_feed_key', 'args': {'keys': ['r', '<kperiod>']}},  # noqa: E241
+    'r<kplus>':     {'command': 'nv_feed_key', 'args': {'keys': ['r', '<kplus>']}},  # noqa: E241
+    'rx':           {'command': 'nv_feed_key'},  # noqa: E241
+    's':            {'command': 'nv_feed_key'},  # noqa: E241
+    's<CR>':        {'command': 'nv_feed_key', 'args': {'keys': ['s', '<CR>']}},  # noqa: E241
+    'sab':          {'command': 'nv_feed_key'},  # noqa: E241
+    'siz':          {'command': 'nv_feed_key'},  # noqa: E241
+    'sx<CR>':       {'command': 'nv_feed_key', 'args': {'keys': ['s', 'x', '<CR>']}},  # noqa: E241
+    'sxy':          {'command': 'nv_feed_key'},  # noqa: E241
+    't2':           {'command': 'nv_feed_key'},  # noqa: E241
+    't6':           {'command': 'nv_feed_key'},  # noqa: E241
+    't8':           {'command': 'nv_feed_key'},  # noqa: E241
+    't:':           {'command': 'nv_feed_key'},  # noqa: E241
+    't<kmultiply>': {'command': 'nv_feed_key', 'args': {'keys': ['t', '<kmultiply>']}},  # noqa: E241
+    't\\':          {'command': 'nv_feed_key'},  # noqa: E241
+    'tf':           {'command': 'nv_feed_key'},  # noqa: E241
+    'tr':           {'command': 'nv_feed_key'},  # noqa: E241
+    'tx':           {'command': 'nv_feed_key'},  # noqa: E241
+    't|':           {'command': 'nv_feed_key'},  # noqa: E241
+    'u':            {'command': 'nv_feed_key'},  # noqa: E241
+    'v':            {'command': 'nv_feed_key'},  # noqa: E241
+    'w':            {'command': 'nv_feed_key'},  # noqa: E241
+    'x':            {'command': 'nv_feed_key'},  # noqa: E241
+    'y$':           {'command': 'nv_feed_key'},  # noqa: E241
+    'y':            {'command': 'nv_feed_key'},  # noqa: E241
+    'ya"':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ya(':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ya)':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ya<':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ya>':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yaB':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yaW':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ya[':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ya\'':         {'command': 'nv_feed_key'},  # noqa: E241
+    'ya]':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ya`':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yab':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yap':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yas':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yat':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yaw':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ya{':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ya}':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yi"':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yi(':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yi)':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yi<':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yi>':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yiB':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yiW':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yi[':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yi\'':         {'command': 'nv_feed_key'},  # noqa: E241
+    'yi]':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yi`':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yib':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yip':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yis':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yit':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yiw':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yi{':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yi}':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yoa':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yoe':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yoh':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yoi':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yol':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yom':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yon':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yot':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yow':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yse"':         {'command': 'nv_feed_key'},  # noqa: E241
+    'yse(':         {'command': 'nv_feed_key'},  # noqa: E241
+    'yse)':         {'command': 'nv_feed_key'},  # noqa: E241
+    'yse2':         {'command': 'nv_feed_key'},  # noqa: E241
+    'yse<foo>':     {'command': 'nv_feed_key'},  # noqa: E241
+    'yse[':         {'command': 'nv_feed_key'},  # noqa: E241
+    'yse\'':        {'command': 'nv_feed_key'},  # noqa: E241
+    'yse]':         {'command': 'nv_feed_key'},  # noqa: E241
+    'yse{':         {'command': 'nv_feed_key'},  # noqa: E241
+    'yse}':         {'command': 'nv_feed_key'},  # noqa: E241
+    'ysiw"':        {'command': 'nv_feed_key'},  # noqa: E241
+    'ysiw(':        {'command': 'nv_feed_key'},  # noqa: E241
+    'ysiw)':        {'command': 'nv_feed_key'},  # noqa: E241
+    'ysiw2':        {'command': 'nv_feed_key'},  # noqa: E241
+    'ysiw<foo>':    {'command': 'nv_feed_key'},  # noqa: E241
+    'ysiw<i x="y">':{'command': 'nv_feed_key'},  # noqa: E231,E241
+    'ysiwB':        {'command': 'nv_feed_key'},  # noqa: E241
+    'ysiw[':        {'command': 'nv_feed_key'},  # noqa: E241
+    'ysiw\'':       {'command': 'nv_feed_key'},  # noqa: E241
+    'ysiw]':        {'command': 'nv_feed_key'},  # noqa: E241
+    'ysiwafoo>':    {'command': 'nv_feed_key'},  # noqa: E241
+    'ysiwb':        {'command': 'nv_feed_key'},  # noqa: E241
+    'ysiwr':        {'command': 'nv_feed_key'},  # noqa: E241
+    'ysiwti x="y">':{'command': 'nv_feed_key'},  # noqa: E231,E241
+    'ysiw{':        {'command': 'nv_feed_key'},  # noqa: E241
+    'ysiw}':        {'command': 'nv_feed_key'},  # noqa: E241
+    'yss)':         {'command': 'nv_feed_key'},  # noqa: E241
+    'yy':           {'command': 'nv_feed_key'},  # noqa: E241
+    'z=':           {'command': 'nv_feed_key'},  # noqa: E241
+    'zg':           {'command': 'nv_feed_key'},  # noqa: E241
+    'zug':          {'command': 'nv_feed_key'},  # noqa: E241
+    '{':            {'command': 'nv_feed_key'},  # noqa: E241
+    '|':            {'command': 'nv_feed_key'},  # noqa: E241
+    '}':            {'command': 'nv_feed_key'},  # noqa: E241
+    '~':            {'command': 'nv_feed_key'},  # noqa: E241
 
 }  # type: dict

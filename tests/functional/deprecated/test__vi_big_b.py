@@ -64,14 +64,14 @@ TESTS = (
 )
 
 
-class Test__vi_b(unittest.ViewTestCase):
+class Test__nv_vi_b(unittest.ViewTestCase):
 
     def test_all(self):
         for (i, data) in enumerate(TESTS):
             self.write(data.content)
             self.select([self._R(*region) for region in data.sel])
 
-            self.view.run_command('_vi_big_b', data.params)
+            self.view.run_command('nv_vi_big_b', data.params)
 
             msg = "failed at test index {0}: {1}".format(i, data.msg)
             actual = data.actual_func(self)

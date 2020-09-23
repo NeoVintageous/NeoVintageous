@@ -30,7 +30,7 @@ from NeoVintageous.nv.vim import NORMAL
 
 
 __all__ = [
-    '_nv_abolish_command'
+    'nv_abolish_command'
 ]
 
 
@@ -111,14 +111,14 @@ class AbolishCoercions(RequiresOneCharMixinDef, ViOperatorDef):
 
     def translate(self, view):
         return {
-            'action': '_nv_abolish',
+            'action': 'nv_abolish',
             'action_args': {
                 'to': self.inp
             }
         }
 
 
-class _nv_abolish_command(TextCommand):
+class nv_abolish_command(TextCommand):
     def run(self, edit, to=None, mode=None):
         try:
             to = _ALIASES[to]

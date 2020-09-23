@@ -20,7 +20,7 @@ from sublime_plugin import TextCommand
 from NeoVintageous.nv.polyfill import view_to_region
 
 
-class _nv_test_write(TextCommand):
+class nv_test_write(TextCommand):
 
     def run(self, edit, text):
         self.view.erase(edit, view_to_region(self.view))

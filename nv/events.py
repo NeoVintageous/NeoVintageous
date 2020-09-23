@@ -147,24 +147,24 @@ class NeoVintageousEvents(EventListener):
                     return
                 elif args.get('by') == 'lines':
                     # Triple click: enter VISUAL LINE.
-                    return ('_nv_run_cmds', {'commands': [
+                    return ('nv_run_cmds', {'commands': [
                         ['drag_select', args],
-                        ['_enter_visual_line_mode', {'mode': mode}]
+                        ['nv_enter_visual_line_mode', {'mode': mode}]
                     ]})
                 elif not args.get('extend'):
                     # Single click: enter NORMAL.
-                    return ('_nv_run_cmds', {'commands': [
+                    return ('nv_run_cmds', {'commands': [
                         ['drag_select', args],
-                        ['_enter_normal_mode', {'mode': mode}]
+                        ['nv_enter_normal_mode', {'mode': mode}]
                     ]})
 
             elif mode == NORMAL:
                 # TODO Dragging the mouse does not seem to fire a different event than simply clicking. This makes it hard to update the xpos. See https://github.com/SublimeTextIssues/Core/issues/2117.  # noqa: E501
                 if args.get('extend') or (args.get('by') == 'words'):
                     # Double click: enter VISUAL.
-                    return ('_nv_run_cmds', {'commands': [
+                    return ('nv_run_cmds', {'commands': [
                         ['drag_select', args],
-                        ['_enter_visual_mode', {'mode': mode}]
+                        ['nv_enter_visual_mode', {'mode': mode}]
                     ]})
 
     def on_post_text_command(self, view, command, args):

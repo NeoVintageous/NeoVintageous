@@ -74,14 +74,14 @@ MULTI_COUNT_VISUAL_CASES = (
 )
 
 
-class Test__vi_underscore(unittest.ViewTestCase):
+class Test__nv_vi_underscore(unittest.ViewTestCase):
 
     def runTests(self, data):
         for (i, data) in enumerate(data):
             self.write(data.text)
             self.select(self._R(*data.startRegion))
 
-            self.view.run_command('_vi_underscore', {'mode': data.mode, 'count': data.count})
+            self.view.run_command('nv_vi_underscore', {'mode': data.mode, 'count': data.count})
 
             self._assertRegionsEqual(
                 self._R(*data.expectedRegion),

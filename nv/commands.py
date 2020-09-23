@@ -240,147 +240,147 @@ from NeoVintageous.nv.window import window_tab_control
 __all__ = [
     'Neovintageous',
     'SequenceCommand',
-    '_enter_insert_mode',
-    '_enter_normal_mode',
-    '_enter_replace_mode',
-    '_enter_select_mode',
-    '_enter_visual_block_mode',
-    '_enter_visual_line_mode',
-    '_enter_visual_mode',
-    '_nv_cmdline',
-    '_nv_cmdline_feed_key',
-    '_nv_ex_cmd_edit_wrap',
-    '_nv_feed_key',
-    '_nv_process_notation',
-    '_nv_run_cmds',
-    '_nv_view',
-    '_vi_a',
-    '_vi_at',
-    '_vi_b',
-    '_vi_backtick',
-    '_vi_bar',
-    '_vi_big_a',
-    '_vi_big_b',
-    '_vi_big_c',
-    '_vi_big_d',
-    '_vi_big_e',
-    '_vi_big_g',
-    '_vi_big_h',
-    '_vi_big_i',
-    '_vi_big_j',
-    '_vi_big_l',
-    '_vi_big_m',
-    '_vi_big_o',
-    '_vi_big_s',
-    '_vi_big_w',
-    '_vi_big_x',
-    '_vi_big_z_big_q',
-    '_vi_big_z_big_z',
-    '_vi_c',
-    '_vi_cc',
-    '_vi_ctrl_b',
-    '_vi_ctrl_d',
-    '_vi_ctrl_e',
-    '_vi_ctrl_f',
-    '_vi_ctrl_g',
-    '_vi_ctrl_r',
-    '_vi_ctrl_right_square_bracket',
-    '_vi_ctrl_u',
-    '_vi_ctrl_w',
-    '_vi_ctrl_x_ctrl_l',
-    '_vi_ctrl_y',
-    '_vi_d',
-    '_vi_dd',
-    '_vi_dollar',
-    '_vi_dot',
-    '_vi_e',
-    '_vi_enter',
-    '_vi_equal',
-    '_vi_equal_equal',
-    '_vi_find_in_line',
-    '_vi_g',
-    '_vi_g__',
-    '_vi_g_big_e',
-    '_vi_g_big_h',
-    '_vi_g_big_t',
-    '_vi_g_big_u',
-    '_vi_g_big_u_big_u',
-    '_vi_g_tilde',
-    '_vi_g_tilde_g_tilde',
-    '_vi_ga',
-    '_vi_ge',
-    '_vi_gg',
-    '_vi_gj',
-    '_vi_gk',
-    '_vi_gm',
-    '_vi_go_to_symbol',
-    '_vi_gq',
-    '_vi_greater_than',
-    '_vi_greater_than_greater_than',
-    '_vi_gt',
-    '_vi_gu',
-    '_vi_guu',
-    '_vi_gv',
-    '_vi_gx',
-    '_vi_h',
-    '_vi_hat',
-    '_vi_j',
-    '_vi_k',
-    '_vi_l',
-    '_vi_left_brace',
-    '_vi_left_paren',
-    '_vi_left_square_bracket',
-    '_vi_less_than',
-    '_vi_less_than_less_than',
-    '_vi_m',
-    '_vi_minus',
-    '_vi_modify_numbers',
-    '_vi_o',
-    '_vi_octothorp',
-    '_vi_paste',
-    '_vi_percent',
-    '_vi_q',
-    '_vi_question_mark',
-    '_vi_question_mark_impl',
-    '_vi_quote',
-    '_vi_r',
-    '_vi_repeat_buffer_search',
-    '_vi_reverse_find_in_line',
-    '_vi_right_brace',
-    '_vi_right_paren',
-    '_vi_right_square_bracket',
-    '_vi_s',
-    '_vi_search',
-    '_vi_select_big_j',
-    '_vi_select_j',
-    '_vi_select_k',
-    '_vi_select_text_object',
-    '_vi_shift_enter',
-    '_vi_slash',
-    '_vi_slash_impl',
-    '_vi_star',
-    '_vi_tilde',
-    '_vi_u',
-    '_vi_underscore',
-    '_vi_visual_big_u',
-    '_vi_visual_o',
-    '_vi_visual_u',
-    '_vi_w',
-    '_vi_x',
-    '_vi_y',
-    '_vi_yy',
-    '_vi_z',
-    '_vi_z_enter',
-    '_vi_z_minus',
-    '_vi_zero',
-    '_vi_zz'
+    'nv_enter_insert_mode',
+    'nv_enter_normal_mode',
+    'nv_enter_replace_mode',
+    'nv_enter_select_mode',
+    'nv_enter_visual_block_mode',
+    'nv_enter_visual_line_mode',
+    'nv_enter_visual_mode',
+    'nv_cmdline',
+    'nv_cmdline_feed_key',
+    'nv_ex_cmd_edit_wrap',
+    'nv_feed_key',
+    'nv_process_notation',
+    'nv_run_cmds',
+    'nv_view',
+    'nv_vi_a',
+    'nv_vi_at',
+    'nv_vi_b',
+    'nv_vi_backtick',
+    'nv_vi_bar',
+    'nv_vi_big_a',
+    'nv_vi_big_b',
+    'nv_vi_big_c',
+    'nv_vi_big_d',
+    'nv_vi_big_e',
+    'nv_vi_big_g',
+    'nv_vi_big_h',
+    'nv_vi_big_i',
+    'nv_vi_big_j',
+    'nv_vi_big_l',
+    'nv_vi_big_m',
+    'nv_vi_big_o',
+    'nv_vi_big_s',
+    'nv_vi_big_w',
+    'nv_vi_big_x',
+    'nv_vi_big_z_big_q',
+    'nv_vi_big_z_big_z',
+    'nv_vi_c',
+    'nv_vi_cc',
+    'nv_vi_ctrl_b',
+    'nv_vi_ctrl_d',
+    'nv_vi_ctrl_e',
+    'nv_vi_ctrl_f',
+    'nv_vi_ctrl_g',
+    'nv_vi_ctrl_r',
+    'nv_vi_ctrl_right_square_bracket',
+    'nv_vi_ctrl_u',
+    'nv_vi_ctrl_w',
+    'nv_vi_ctrl_x_ctrl_l',
+    'nv_vi_ctrl_y',
+    'nv_vi_d',
+    'nv_vi_dd',
+    'nv_vi_dollar',
+    'nv_vi_dot',
+    'nv_vi_e',
+    'nv_vi_enter',
+    'nv_vi_equal',
+    'nv_vi_equal_equal',
+    'nv_vi_find_in_line',
+    'nv_vi_g',
+    'nv_vi_g__',
+    'nv_vi_g_big_e',
+    'nv_vi_g_big_h',
+    'nv_vi_g_big_t',
+    'nv_vi_g_big_u',
+    'nv_vi_g_big_u_big_u',
+    'nv_vi_g_tilde',
+    'nv_vi_g_tilde_g_tilde',
+    'nv_vi_ga',
+    'nv_vi_ge',
+    'nv_vi_gg',
+    'nv_vi_gj',
+    'nv_vi_gk',
+    'nv_vi_gm',
+    'nv_vi_go_to_symbol',
+    'nv_vi_gq',
+    'nv_vi_greater_than',
+    'nv_vi_greater_than_greater_than',
+    'nv_vi_gt',
+    'nv_vi_gu',
+    'nv_vi_guu',
+    'nv_vi_gv',
+    'nv_vi_gx',
+    'nv_vi_h',
+    'nv_vi_hat',
+    'nv_vi_j',
+    'nv_vi_k',
+    'nv_vi_l',
+    'nv_vi_left_brace',
+    'nv_vi_left_paren',
+    'nv_vi_left_square_bracket',
+    'nv_vi_less_than',
+    'nv_vi_less_than_less_than',
+    'nv_vi_m',
+    'nv_vi_minus',
+    'nv_vi_modify_numbers',
+    'nv_vi_o',
+    'nv_vi_octothorp',
+    'nv_vi_paste',
+    'nv_vi_percent',
+    'nv_vi_q',
+    'nv_vi_question_mark',
+    'nv_vi_question_mark_impl',
+    'nv_vi_quote',
+    'nv_vi_r',
+    'nv_vi_repeat_buffer_search',
+    'nv_vi_reverse_find_in_line',
+    'nv_vi_right_brace',
+    'nv_vi_right_paren',
+    'nv_vi_right_square_bracket',
+    'nv_vi_s',
+    'nv_vi_search',
+    'nv_vi_select_big_j',
+    'nv_vi_select_j',
+    'nv_vi_select_k',
+    'nv_vi_select_text_object',
+    'nv_vi_shift_enter',
+    'nv_vi_slash',
+    'nv_vi_slash_impl',
+    'nv_vi_star',
+    'nv_vi_tilde',
+    'nv_vi_u',
+    'nv_vi_underscore',
+    'nv_vi_visual_big_u',
+    'nv_vi_visual_o',
+    'nv_vi_visual_u',
+    'nv_vi_w',
+    'nv_vi_x',
+    'nv_vi_y',
+    'nv_vi_yy',
+    'nv_vi_z',
+    'nv_vi_z_enter',
+    'nv_vi_z_minus',
+    'nv_vi_zero',
+    'nv_vi_zz'
 ]
 
 
 _log = logging.getLogger(__name__)
 
 
-class _nv_cmdline_feed_key(TextCommand):
+class nv_cmdline_feed_key(TextCommand):
 
     LAST_HISTORY_ITEM_INDEX = None
 
@@ -447,24 +447,24 @@ class _nv_cmdline_feed_key(TextCommand):
         if not history_get_type(firstc):
             raise RuntimeError('expected a valid command-line')
 
-        if _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX is None:
-            _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = -1 if backwards else 0
+        if nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX is None:
+            nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = -1 if backwards else 0
         else:
-            _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX += -1 if backwards else 1
+            nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX += -1 if backwards else 1
 
         count = history_len(firstc)
         if count == 0:
-            _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = None
+            nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = None
 
             return ui_bell()
 
-        if abs(_nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX) > count:
-            _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = -count
+        if abs(nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX) > count:
+            nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = -count
 
             return ui_bell()
 
-        if _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX >= 0:
-            _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = 0
+        if nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX >= 0:
+            nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = 0
 
             if self.view.size() > 1:
                 return self.view.erase(edit, Region(1, self.view.size()))
@@ -474,16 +474,16 @@ class _nv_cmdline_feed_key(TextCommand):
         if self.view.size() > 1:
             self.view.erase(edit, Region(1, self.view.size()))
 
-        item = history_get(firstc, _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX)
+        item = history_get(firstc, nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX)
         if item:
             self.view.insert(edit, 1, item)
 
     @staticmethod
     def reset_last_history_index() -> None:
-        _nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = None
+        nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = None
 
 
-class _nv_run_cmds(TextCommand):
+class nv_run_cmds(TextCommand):
 
     def run(self, edit, commands):
         # Run a list of commands one after the other.
@@ -508,7 +508,7 @@ def _fix_malformed_selection(view, mode: str) -> str:
     return mode
 
 
-class _nv_feed_key(WindowCommand):
+class nv_feed_key(WindowCommand):
 
     def run(self, key, repeat_count=None, do_eval=True, check_user_mappings=True):
         start_time = time.time()
@@ -530,7 +530,7 @@ class _nv_feed_key(WindowCommand):
         #   do_eval (bool): Whether to evaluate the global state when it's in a
         #       runnable state. Most of the time, the default value of `True` should
         #       be used. Set to `False` when you want to manually control the global
-        #       state's evaluation. For example, this is what the _nv_feed_key
+        #       state's evaluation. For example, this is what the nv_feed_key
         #       command does.
         #   check_user_mappings (bool):
         self.view = self.window.active_view()
@@ -547,7 +547,7 @@ class _nv_feed_key(WindowCommand):
 
         if key.lower() == '<esc>':
             if mode == SELECT:
-                self.view.run_command('_vi_select_big_j', {'mode': mode})
+                self.view.run_command('nv_vi_select_big_j', {'mode': mode})
             else:
                 enter_normal_mode(self.window, mode)
                 reset_command_data(self.view)
@@ -664,17 +664,17 @@ class _nv_feed_key(WindowCommand):
                     _log.debug('parsed user mapping before="%s", cmd="%s", after="%s"', leading, command, trailing)
 
                     if leading:
-                        self.window.run_command('_nv_process_notation',
+                        self.window.run_command('nv_process_notation',
                                                 {'keys': leading, 'check_user_mappings': False})
 
                     do_ex_user_cmdline(self.window, command)
 
                     if trailing:
-                        self.window.run_command('_nv_process_notation',
+                        self.window.run_command('nv_process_notation',
                                                 {'keys': trailing, 'check_user_mappings': False})
 
                 else:
-                    self.window.run_command('_nv_process_notation', {'keys': rhs, 'check_user_mappings': False})
+                    self.window.run_command('nv_process_notation', {'keys': rhs, 'check_user_mappings': False})
 
             return
 
@@ -783,7 +783,7 @@ class _nv_feed_key(WindowCommand):
         return False
 
 
-class _nv_process_notation(WindowCommand):
+class nv_process_notation(WindowCommand):
 
     def run(self, keys, repeat_count=None, check_user_mappings=True):
         # Args:
@@ -808,7 +808,7 @@ class _nv_process_notation(WindowCommand):
         # undo history, but store the full sequence for '.' to use.
         leading_motions = ''
         for key in tokenize_keys(keys):
-            self.window.run_command('_nv_feed_key', {
+            self.window.run_command('nv_feed_key', {
                 'key': key,
                 'do_eval': False,
                 'repeat_count': repeat_count,
@@ -857,7 +857,7 @@ class _nv_process_notation(WindowCommand):
                             continue
 
                         elif get_mode(self.view) not in (INSERT, REPLACE):
-                            self.window.run_command('_nv_feed_key', {
+                            self.window.run_command('nv_feed_key', {
                                 'key': key,
                                 'repeat_count': repeat_count,
                                 'check_user_mappings': check_user_mappings
@@ -926,7 +926,7 @@ class _nv_process_notation(WindowCommand):
             set_interactive(self.view, True)
 
 
-class _nv_ex_cmd_edit_wrap(TextCommand):
+class nv_ex_cmd_edit_wrap(TextCommand):
 
     # This command is required to wrap ex commands that need a Sublime Text edit
     # token. Edit tokens can only be obtained from a TextCommand. Some ex
@@ -937,7 +937,7 @@ class _nv_ex_cmd_edit_wrap(TextCommand):
         do_ex_cmd_edit_wrap(self, edit, **kwargs)
 
 
-class _nv_cmdline(WindowCommand):
+class nv_cmdline(WindowCommand):
 
     def is_enabled(self):
         return bool(self.window.active_view())
@@ -976,15 +976,15 @@ class _nv_cmdline(WindowCommand):
         on_change_cmdline_completion_prefix(self.window, Cmdline.EX + cmdline)
 
     def on_done(self, cmdline):
-        _nv_cmdline_feed_key.reset_last_history_index()
+        nv_cmdline_feed_key.reset_last_history_index()
         history_update(Cmdline.EX + cmdline)
         do_ex_cmdline(self.window, Cmdline.EX + cmdline)
 
     def on_cancel(self):
-        _nv_cmdline_feed_key.reset_last_history_index()
+        nv_cmdline_feed_key.reset_last_history_index()
 
 
-class _nv_view(TextCommand):
+class nv_view(TextCommand):
 
     def run(self, edit, action, **kwargs):
         action_method = getattr(self, '_%s_action' % action, None)
@@ -1014,7 +1014,7 @@ class Neovintageous(WindowCommand):
             toggle_super_keys()
 
 
-# DEPRECATED Use _nv_run_cmds instead
+# DEPRECATED Use nv_run_cmds instead
 class SequenceCommand(TextCommand):
 
     def run(self, edit, commands):
@@ -1026,7 +1026,7 @@ class SequenceCommand(TextCommand):
             self.view.run_command(cmd, args)
 
 
-class _vi_g_big_u(TextCommand):
+class nv_vi_g_big_u(TextCommand):
 
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
@@ -1048,7 +1048,7 @@ class _vi_g_big_u(TextCommand):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_gu(TextCommand):
+class nv_vi_gu(TextCommand):
 
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
@@ -1070,7 +1070,7 @@ class _vi_gu(TextCommand):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_gq(TextCommand):
+class nv_vi_gq(TextCommand):
 
     def run(self, edit, mode=None, count=1, motion=None, linewise=False):
         def _wrap_lines(view):
@@ -1127,7 +1127,7 @@ class _vi_gq(TextCommand):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_u(WindowCommand):
+class nv_vi_u(WindowCommand):
 
     def run(self, mode=None, count=1, **kwargs):
         self.view = self.window.active_view()
@@ -1152,7 +1152,7 @@ class _vi_u(WindowCommand):
         ui_highlight_yank_clear(self.view)
 
 
-class _vi_ctrl_r(WindowCommand):
+class nv_vi_ctrl_r(WindowCommand):
 
     def run(self, mode=None, count=1, **kwargs):
         self.view = self.window.active_view()
@@ -1181,10 +1181,10 @@ class _vi_ctrl_r(WindowCommand):
         regions_transformer(self.view, fixup_eol)
 
 
-class _vi_a(TextCommand):
+class nv_vi_a(TextCommand):
 
     def run(self, edit, mode=None, count=1):
-        # Abort if the *actual* mode is insert mode. This prevents _vi_a from
+        # Abort if the *actual* mode is insert mode. This prevents nv_vi_a from
         # adding spaces between text fragments when used with a count, as in
         # 5aFOO. In that case, we only need to run 'a' the first time, not for
         # every iteration.
@@ -1204,13 +1204,13 @@ class _vi_a(TextCommand):
 
         regions_transformer(self.view, f)
 
-        self.view.window().run_command('_enter_insert_mode', {
+        self.view.window().run_command('nv_enter_insert_mode', {
             'mode': mode,
             'count': get_normal_insert_count(self.view)
         })
 
 
-class _vi_c(TextCommand):
+class nv_vi_c(TextCommand):
 
     def run(self, edit, mode=None, count=1, motion=None, register=None):
         if mode is None:
@@ -1253,7 +1253,7 @@ class _vi_c(TextCommand):
         enter_insert_mode(self.view, mode)
 
 
-class _enter_normal_mode(TextCommand):
+class nv_enter_normal_mode(TextCommand):
 
     def run(self, edit, mode=None, from_init=False):
         _log.debug('enter NORMAL mode from=%s, from_init=%s', mode, from_init)
@@ -1262,7 +1262,7 @@ class _enter_normal_mode(TextCommand):
         self.view.window().run_command('hide_overlay')
 
         if ((not from_init and (mode == NORMAL) and not get_sequence(self.view)) or not is_view(self.view)):
-            # When _enter_normal_mode is requested from init_state, we
+            # When nv_enter_normal_mode is requested from init_state, we
             # should not hide output panels; hide them only if the user
             # pressed Esc and we're not cancelling partial state data, or if a
             # panel has the focus.
@@ -1354,9 +1354,9 @@ class _enter_normal_mode(TextCommand):
                 # Required here so that the macro gets recorded.
                 set_glue_until_normal_mode(self.view, False)
                 add_macro_step(self.view, *self.view.command_history(0)[:2])
-                add_macro_step(self.view, '_enter_normal_mode', {'mode': mode, 'from_init': from_init})
+                add_macro_step(self.view, 'nv_enter_normal_mode', {'mode': mode, 'from_init': from_init})
             else:
-                add_macro_step(self.view, '_enter_normal_mode', {'mode': mode, 'from_init': from_init})
+                add_macro_step(self.view, 'nv_enter_normal_mode', {'mode': mode, 'from_init': from_init})
                 self.view.window().run_command('unmark_undo_groups_for_gluing')
                 set_glue_until_normal_mode(self.view, False)
 
@@ -1370,7 +1370,7 @@ class _enter_normal_mode(TextCommand):
             self.view.sel().add_all(new_sels)
             times = normal_insert_count - 1
             set_normal_insert_count(self.view, 1)
-            self.view.window().run_command('_vi_dot', {
+            self.view.window().run_command('nv_vi_dot', {
                 'count': times,
                 'mode': mode,
                 'repeat_data': get_repeat_data(self.view),
@@ -1386,7 +1386,7 @@ class _enter_normal_mode(TextCommand):
         # offset by 1 to account for transition from INSERT to NORMAL mode.
         if get_setting(self.view, 'clear_auto_indent_on_esc'):
             if mode == INSERT and self.view.is_dirty():
-                if self.view.command_history(0)[0] in ('_vi_big_o', '_vi_o'):
+                if self.view.command_history(0)[0] in ('nv_vi_big_o', 'nv_vi_o'):
                     for s in reversed(list(self.view.sel())):
                         line = self.view.line(s.b)
                         line_str = self.view.substr(line)
@@ -1396,7 +1396,7 @@ class _enter_normal_mode(TextCommand):
                             set_xpos(self.view, col + 1)
 
 
-class _enter_select_mode(TextCommand):
+class nv_enter_select_mode(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         _log.debug('enter SELECT mode from=%s, count=%s', mode, count)
@@ -1406,7 +1406,7 @@ class _enter_select_mode(TextCommand):
         if mode == INTERNAL_NORMAL:
             self.view.window().run_command('find_under_expand')
         elif mode in (VISUAL, VISUAL_LINE):
-            self.view.window().run_command('_vi_select_j', {'mode': get_mode(self.view)})
+            self.view.window().run_command('nv_vi_select_j', {'mode': get_mode(self.view)})
         elif mode == VISUAL_BLOCK:
             resolve_visual_block_reverse(self.view)
             enter_normal_mode(self.view.window())
@@ -1414,7 +1414,7 @@ class _enter_select_mode(TextCommand):
         update_status_line(self.view)
 
 
-class _enter_insert_mode(TextCommand):
+class nv_enter_insert_mode(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         _log.debug('enter INSERT mode from=%s, count=%s', mode, count)
@@ -1434,7 +1434,7 @@ class _enter_insert_mode(TextCommand):
         update_status_line(self.view)
 
 
-class _enter_visual_mode(TextCommand):
+class nv_enter_visual_mode(TextCommand):
 
     def run(self, edit, mode=None, force=False):
         _log.debug('enter VISUAL mode from=%s, force=%s', mode, force)
@@ -1479,7 +1479,7 @@ class _enter_visual_mode(TextCommand):
         update_status_line(self.view)
 
 
-class _enter_visual_line_mode(TextCommand):
+class nv_enter_visual_line_mode(TextCommand):
 
     def run(self, edit, mode=None, force=False):
         _log.debug('enter VISUAL LINE mode from=%s, force=%s', mode, force)
@@ -1527,7 +1527,7 @@ class _enter_visual_line_mode(TextCommand):
         update_status_line(self.view)
 
 
-class _enter_replace_mode(TextCommand):
+class nv_enter_replace_mode(TextCommand):
 
     def run(self, edit, **kwargs):
         _log.debug('enter REPLACE mode kwargs=%s', kwargs)
@@ -1545,7 +1545,7 @@ class _enter_replace_mode(TextCommand):
         reset_command_data(self.view)
 
 
-class _vi_dot(WindowCommand):
+class nv_vi_dot(WindowCommand):
 
     def run(self, mode=None, count=None, repeat_data=None):
         self.view = self.window.active_view()
@@ -1575,7 +1575,7 @@ class _vi_dot(WindowCommand):
             return ui_bell()
 
         if type_ == 'vi':
-            self.window.run_command('_nv_process_notation', {'keys': seq_or_cmd, 'repeat_count': count})
+            self.window.run_command('nv_process_notation', {'keys': seq_or_cmd, 'repeat_count': count})
         elif type_ == 'native':
             # FIXME: We're not repeating as we should. It's the motion that should receive this count.
             for i in range(count or 1):
@@ -1587,7 +1587,7 @@ class _vi_dot(WindowCommand):
         set_repeat_data(self.view, repeat_data)
 
 
-class _vi_dd(TextCommand):
+class nv_vi_dd(TextCommand):
 
     def run(self, edit, mode=None, count=1, register='"'):
         def f(view, s):
@@ -1615,7 +1615,7 @@ class _vi_dd(TextCommand):
         fixup_sel_pos()
 
 
-class _vi_cc(TextCommand):
+class nv_vi_cc(TextCommand):
 
     def run(self, edit, mode=None, count=1, register='"'):
         def f(view, s):
@@ -1642,7 +1642,7 @@ class _vi_cc(TextCommand):
             raise ValueError('could not set xpos:' + str(e))
 
 
-class _vi_visual_o(TextCommand):
+class nv_vi_visual_o(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         def f(view, s):
@@ -1655,7 +1655,7 @@ class _vi_visual_o(TextCommand):
         self.view.show(self.view.sel()[0].b, False)
 
 
-class _vi_yy(TextCommand):
+class nv_vi_yy(TextCommand):
 
     def run(self, edit, mode=None, count=1, register=None):
         def f(view, s):
@@ -1691,7 +1691,7 @@ class _vi_yy(TextCommand):
             enter_normal_mode(self.view, mode)
 
 
-class _vi_y(TextCommand):
+class nv_vi_y(TextCommand):
 
     def run(self, edit, mode=None, count=1, motion=None, register=None):
         if mode == INTERNAL_NORMAL:
@@ -1719,7 +1719,7 @@ class _vi_y(TextCommand):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_d(TextCommand):
+class nv_vi_d(TextCommand):
 
     def run(self, edit, mode=None, count=1, motion=None, register=None):
         if mode not in (INTERNAL_NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK, SELECT):
@@ -1751,7 +1751,7 @@ class _vi_d(TextCommand):
                 def f(view, s):
                     if motion:
                         if 'motion' in motion:
-                            if motion['motion'] in ('_vi_e', '_vi_big_e'):
+                            if motion['motion'] in ('nv_vi_e', 'nv_vi_big_e'):
                                 return Region(s.begin())
 
                     return Region(next_non_blank(self.view, s.b))
@@ -1766,7 +1766,7 @@ class _vi_d(TextCommand):
         fix_eol_cursor(self.view, mode)
 
 
-class _vi_big_a(TextCommand):
+class nv_vi_big_a(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         def f(view, s):
@@ -1807,7 +1807,7 @@ class _vi_big_a(TextCommand):
         enter_insert_mode(self.view, mode)
 
 
-class _vi_big_i(TextCommand):
+class nv_vi_big_i(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         def f(view, s):
@@ -1824,13 +1824,13 @@ class _vi_big_i(TextCommand):
         enter_insert_mode(self.view, mode)
 
 
-class _vi_m(TextCommand):
+class nv_vi_m(TextCommand):
 
     def run(self, edit, mode=None, count=1, character=None):
         set_mark(self.view, character)
 
 
-class _vi_quote(TextCommand):
+class nv_vi_quote(TextCommand):
 
     def run(self, edit, mode=None, count=1, character=None):
         def f(view, s):
@@ -1865,7 +1865,7 @@ class _vi_quote(TextCommand):
             self.view.show_at_center(target)
 
 
-class _vi_backtick(TextCommand):
+class nv_vi_backtick(TextCommand):
 
     def run(self, edit, mode=None, count=1, character=None):
         def f(view, s):
@@ -1897,7 +1897,7 @@ class _vi_backtick(TextCommand):
         jumplist_update(self.view)
 
 
-class _vi_big_d(TextCommand):
+class nv_vi_big_d(TextCommand):
 
     def run(self, edit, mode=None, count=1, register=None):
         def f(view, s):
@@ -1938,7 +1938,7 @@ class _vi_big_d(TextCommand):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_big_c(TextCommand):
+class nv_vi_big_c(TextCommand):
 
     def run(self, edit, mode=None, count=1, register=None):
         def f(view, s):
@@ -1965,7 +1965,7 @@ class _vi_big_c(TextCommand):
         enter_insert_mode(self.view, mode)
 
 
-class _vi_big_s(TextCommand):
+class nv_vi_big_s(TextCommand):
 
     def run(self, edit, mode=None, count=1, register=None):
         def f(view, s):
@@ -1994,7 +1994,7 @@ class _vi_big_s(TextCommand):
         enter_insert_mode(self.view, mode)
 
 
-class _vi_s(TextCommand):
+class nv_vi_s(TextCommand):
 
     def run(self, edit, mode=None, count=1, register=None):
         def f(view, s):
@@ -2026,7 +2026,7 @@ class _vi_s(TextCommand):
         enter_insert_mode(self.view, mode)
 
 
-class _vi_x(TextCommand):
+class nv_vi_x(TextCommand):
 
     def run(self, edit, mode=None, count=1, register=None):
         def select(view, s):
@@ -2053,7 +2053,7 @@ class _vi_x(TextCommand):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_r(TextCommand):
+class nv_vi_r(TextCommand):
 
     def make_replacement_text(self, char: str, r: Region) -> str:
         frags = split_by_newlines(self.view, r)
@@ -2093,7 +2093,7 @@ class _vi_r(TextCommand):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_less_than_less_than(TextCommand):
+class nv_vi_less_than_less_than(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         regions_transform_extend_to_line_count(self.view, count)
@@ -2102,7 +2102,7 @@ class _vi_less_than_less_than(TextCommand):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_equal_equal(TextCommand):
+class nv_vi_equal_equal(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         regions_transform_extend_to_line_count(self.view, count)
@@ -2111,7 +2111,7 @@ class _vi_equal_equal(TextCommand):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_greater_than_greater_than(TextCommand):
+class nv_vi_greater_than_greater_than(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         regions_transform_extend_to_line_count(self.view, count)
@@ -2120,7 +2120,7 @@ class _vi_greater_than_greater_than(TextCommand):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_greater_than(TextCommand):
+class nv_vi_greater_than(TextCommand):
 
     def run(self, edit, mode=None, count=1, motion=None):
         if mode == VISUAL_BLOCK:
@@ -2154,7 +2154,7 @@ class _vi_greater_than(TextCommand):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_less_than(TextCommand):
+class nv_vi_less_than(TextCommand):
 
     def run(self, edit, mode=None, count=1, motion=None):
         if motion:
@@ -2172,7 +2172,7 @@ class _vi_less_than(TextCommand):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_equal(TextCommand):
+class nv_vi_equal(TextCommand):
 
     def run(self, edit, mode=None, count=1, motion=None):
         if motion:
@@ -2189,7 +2189,7 @@ class _vi_equal(TextCommand):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_big_o(TextCommand):
+class nv_vi_big_o(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         def f(view, sel, index):
@@ -2206,7 +2206,7 @@ class _vi_big_o(TextCommand):
         self.view.run_command('reindent', {'force_indent': False})
 
 
-class _vi_o(TextCommand):
+class nv_vi_o(TextCommand):
     def run(self, edit, mode=None, count=1):
         def f(view, sel, index):
             real_sel = sel if index == 0 else Region(sel.a + index * count, sel.b + index * count)
@@ -2222,7 +2222,7 @@ class _vi_o(TextCommand):
         self.view.run_command('reindent', {'force_indent': False})
 
 
-class _vi_big_x(TextCommand):
+class nv_vi_big_x(TextCommand):
 
     def run(self, edit, mode=None, count=1, register=None):
         def f(view, s):
@@ -2253,19 +2253,19 @@ class _vi_big_x(TextCommand):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_big_z_big_q(WindowCommand):
+class nv_vi_big_z_big_q(WindowCommand):
 
     def run(self):
         do_ex_command(self.window, 'quit', {'forceit': True})
 
 
-class _vi_big_z_big_z(WindowCommand):
+class nv_vi_big_z_big_z(WindowCommand):
 
     def run(self):
         do_ex_command(self.window, 'exit')
 
 
-class _vi_paste(TextCommand):
+class nv_vi_paste(TextCommand):
 
     def run(self, edit, before_cursor, mode=None, count=1, register=None, adjust_indent=False, adjust_cursor=False):
         contents, linewise = registers_get_for_paste(self.view, register, mode)
@@ -2453,7 +2453,7 @@ class _vi_paste(TextCommand):
         return sels, contents, before_cursor, resolve_to_specific_pt
 
 
-class _vi_ga(WindowCommand):
+class nv_vi_ga(WindowCommand):
 
     def run(self, **kwargs):
         def char_to_notation(char: str) -> str:
@@ -2482,7 +2482,7 @@ class _vi_ga(WindowCommand):
             status_message('%7s %3s,  Hex %4s,  Octal %5s' % (c_not, c_ord, c_hex, c_oct))
 
 
-class _vi_gt(WindowCommand):
+class nv_vi_gt(WindowCommand):
 
     def run(self, mode=None, count=0):
         if count > 0:
@@ -2493,14 +2493,14 @@ class _vi_gt(WindowCommand):
         enter_normal_mode(self.window, mode)
 
 
-class _vi_g_big_t(WindowCommand):
+class nv_vi_g_big_t(WindowCommand):
 
     def run(self, mode=None, count=1):
         window_tab_control(self.window, 'previous', count)
         enter_normal_mode(self.window, mode)
 
 
-class _vi_g(TextCommand):
+class nv_vi_g(TextCommand):
 
     def run(self, edit, action, **kwargs):
         if action == 'f':
@@ -2514,7 +2514,7 @@ class _vi_g(TextCommand):
             raise ValueError('unknown action')
 
 
-class _vi_ctrl_right_square_bracket(WindowCommand):
+class nv_vi_ctrl_right_square_bracket(WindowCommand):
 
     def run(self, **kwargs):
         view = self.window.active_view()
@@ -2524,13 +2524,13 @@ class _vi_ctrl_right_square_bracket(WindowCommand):
             self.window.run_command('goto_definition')
 
 
-class _vi_ctrl_w(WindowCommand):
+class nv_vi_ctrl_w(WindowCommand):
 
     def run(self, **kwargs):
         window_control(self.window, **kwargs)
 
 
-class _vi_z_enter(TextCommand):
+class nv_vi_z_enter(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         pt = get_insertion_point_at_b(self.view.sel()[0])
@@ -2539,7 +2539,7 @@ class _vi_z_enter(TextCommand):
         self.view.set_viewport_position(taget_pt)
 
 
-class _vi_z_minus(TextCommand):
+class nv_vi_z_minus(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         layout_coord = self.view.text_to_layout(self.view.sel()[0].b)
@@ -2548,7 +2548,7 @@ class _vi_z_minus(TextCommand):
         self.view.set_viewport_position(new_pos)
 
 
-class _vi_zz(TextCommand):
+class nv_vi_zz(TextCommand):
 
     def run(self, edit, mode=None, count=1, first_non_blank=False):
         first_sel = self.view.sel()[0]
@@ -2563,7 +2563,7 @@ class _vi_zz(TextCommand):
                 set_selection(self.view, first_non_blank_pt)
 
 
-class _vi_z(TextCommand):
+class nv_vi_z(TextCommand):
 
     def run(self, edit, action, count, **kwargs):
         if action == 'c':
@@ -2592,7 +2592,7 @@ class _vi_z(TextCommand):
             raise ValueError('unknown action')
 
 
-class _vi_modify_numbers(TextCommand):
+class nv_vi_modify_numbers(TextCommand):
 
     DIGIT_PAT = re.compile('(\\D+?)?(-)?(\\d+)(\\D+)?')
     NUM_PAT = re.compile('\\d')
@@ -2662,7 +2662,7 @@ class _vi_modify_numbers(TextCommand):
             self.view.sel().add(Region(self.view.text_point(row, col)))
 
 
-class _vi_select_big_j(TextCommand):
+class nv_vi_select_big_j(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         if get_setting(self.view, 'multi_cursor_exit_from_visual_mode'):
@@ -2671,7 +2671,7 @@ class _vi_select_big_j(TextCommand):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_big_j(TextCommand):
+class nv_vi_big_j(TextCommand):
     WHITE_SPACE = ' \t'
 
     def run(self, edit, mode=None, count=1, dont_insert_or_remove_spaces=False):
@@ -2772,7 +2772,7 @@ class _vi_big_j(TextCommand):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_gv(TextCommand):
+class nv_vi_gv(TextCommand):
 
     def run(self, edit, mode=None, count=None):
         visual_sel, visual_sel_mode = get_previous_selection(self.view)
@@ -2800,7 +2800,7 @@ class _vi_gv(TextCommand):
             _do_cmd(enter_visual_block_mode)
 
 
-class _vi_gx(TextCommand):
+class nv_vi_gx(TextCommand):
 
     def run(self, edit, **kwargs):
         url = extract_url(self.view)
@@ -2808,25 +2808,25 @@ class _vi_gx(TextCommand):
             webbrowser.open_new_tab(url)
 
 
-class _vi_ctrl_e(TextCommand):
+class nv_vi_ctrl_e(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         self.view.run_command('scroll_lines', {'amount': -count})
 
 
-class _vi_ctrl_g(WindowCommand):
+class nv_vi_ctrl_g(WindowCommand):
 
     def run(self, **kwargs):
         do_ex_command(self.window, 'file')
 
 
-class _vi_ctrl_y(TextCommand):
+class nv_vi_ctrl_y(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         self.view.run_command('scroll_lines', {'amount': count})
 
 
-class _vi_q(TextCommand):
+class nv_vi_q(TextCommand):
 
     def run(self, edit, mode=None, count=1, name=None):
         window = self.view.window()
@@ -2840,7 +2840,7 @@ class _vi_q(TextCommand):
             macros.start_recording(window, name)
 
 
-class _vi_at(TextCommand):
+class nv_vi_at(TextCommand):
 
     def run(self, edit, name, mode=None, count=1):
         window = self.view.window()
@@ -2875,7 +2875,7 @@ class _vi_at(TextCommand):
                 self.view.window().run_command(cmd, args)
 
 
-class _enter_visual_block_mode(TextCommand):
+class nv_enter_visual_block_mode(TextCommand):
 
     def run(self, edit, mode=None, force=False):
         _log.debug('enter VISUAL BLOCK mode from=%s, force=%s', mode, force)
@@ -2890,8 +2890,8 @@ class _enter_visual_block_mode(TextCommand):
             update_status_line(self.view)
 
 
-# TODO Refactor into _vi_j
-class _vi_select_j(WindowCommand):
+# TODO Refactor into nv_vi_j
+class nv_vi_select_j(WindowCommand):
 
     def run(self, mode=None, count=1):
         if mode != SELECT:
@@ -2901,8 +2901,8 @@ class _vi_select_j(WindowCommand):
             self.window.run_command('find_under_expand')
 
 
-# TODO Refactor into _vi_k
-class _vi_select_k(WindowCommand):
+# TODO Refactor into nv_vi_k
+class nv_vi_select_k(WindowCommand):
 
     def run(self, mode=None, count=1):
         self.view = self.window.active_view()
@@ -2916,7 +2916,7 @@ class _vi_select_k(WindowCommand):
                 enter_normal_mode(self.view, mode)
 
 
-class _vi_tilde(TextCommand):
+class nv_vi_tilde(TextCommand):
 
     def run(self, edit, mode=None, count=1, motion=None):
         def select(view, s):
@@ -2936,7 +2936,7 @@ class _vi_tilde(TextCommand):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_g_tilde(TextCommand):
+class nv_vi_g_tilde(TextCommand):
 
     def run(self, edit, mode=None, count=1, motion=None):
         def f(view, s):
@@ -2963,7 +2963,7 @@ class _vi_g_tilde(TextCommand):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_visual_u(TextCommand):
+class nv_vi_visual_u(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         for s in self.view.sel():
@@ -2976,7 +2976,7 @@ class _vi_visual_u(TextCommand):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_visual_big_u(TextCommand):
+class nv_vi_visual_big_u(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         for s in self.view.sel():
@@ -2989,7 +2989,7 @@ class _vi_visual_big_u(TextCommand):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_g_tilde_g_tilde(TextCommand):
+class nv_vi_g_tilde_g_tilde(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         def select(view, s):
@@ -3006,7 +3006,7 @@ class _vi_g_tilde_g_tilde(TextCommand):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_g_big_u_big_u(TextCommand):
+class nv_vi_g_big_u_big_u(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         def select(view, s):
@@ -3021,7 +3021,7 @@ class _vi_g_big_u_big_u(TextCommand):
         enter_normal_mode(self.view, mode)
 
 
-class _vi_guu(TextCommand):
+class nv_vi_guu(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         def select(view, s):
@@ -3040,7 +3040,7 @@ class _vi_guu(TextCommand):
 
 # Non-standard command. Select all search occurrences and enter multiple cursor
 # mode (supports search results from commands such as /, ?, *, #).
-class _vi_g_big_h(WindowCommand):
+class nv_vi_g_big_h(WindowCommand):
 
     def run(self, mode=None, count=1):
         self.view = self.window.active_view()
@@ -3055,7 +3055,7 @@ class _vi_g_big_h(WindowCommand):
         reset_command_data(self.view)
 
 
-class _vi_ctrl_x_ctrl_l(TextCommand):
+class nv_vi_ctrl_x_ctrl_l(TextCommand):
     MAX_MATCHES = 20
 
     def find_matches(self, prefix: str, end: int) -> list:
@@ -3096,12 +3096,12 @@ class _vi_ctrl_x_ctrl_l(TextCommand):
         self.view.window().show_quick_panel(items, self.replace, MONOSPACE_FONT)
 
     def replace(self, s):
-        self.view.run_command('_nv_view', {'action': 'replace_line', 'replacement': self._matches[s]})
+        self.view.run_command('nv_view', {'action': 'replace_line', 'replacement': self._matches[s]})
         del self.__dict__['_matches']
         set_selection(self.view, self.view.sel()[0].b)
 
 
-class _vi_find_in_line(TextCommand):
+class nv_vi_find_in_line(TextCommand):
 
     # Contrary to *f*, *t* does not look past the caret's position, so if
     # @character is under the caret, nothing happens.
@@ -3159,7 +3159,7 @@ class _vi_find_in_line(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_reverse_find_in_line(TextCommand):
+class nv_vi_reverse_find_in_line(TextCommand):
 
     # Contrary to *F*, *T* does not look past the caret's position, so if
     # ``character`` is right before the caret, nothing happens.
@@ -3216,7 +3216,7 @@ class _vi_reverse_find_in_line(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_slash(TextCommand):
+class nv_vi_slash(TextCommand):
 
     def run(self, edit, pattern=''):
         set_reset_during_init(self.view, False)
@@ -3233,7 +3233,7 @@ class _vi_slash(TextCommand):
 
     def on_done(self, pattern: str):
         history_update(Cmdline.SEARCH_FORWARD + pattern)
-        _nv_cmdline_feed_key.reset_last_history_index()
+        nv_cmdline_feed_key.reset_last_history_index()
         clear_search_highlighting(self.view)
         append_sequence(self.view, pattern + '<CR>')
         set_motion(self.view, ViSearchForwardImpl(term=pattern))
@@ -3264,11 +3264,11 @@ class _vi_slash(TextCommand):
     def on_cancel(self):
         clear_search_highlighting(self.view)
         reset_command_data(self.view)
-        _nv_cmdline_feed_key.reset_last_history_index()
+        nv_cmdline_feed_key.reset_last_history_index()
         show_if_not_visible(self.view)
 
 
-class _vi_slash_impl(TextCommand):
+class nv_vi_slash_impl(TextCommand):
     def run(self, edit, pattern, mode=None, count=1, save=True):
         if not pattern:
             pattern = get_last_buffer_search(self.view)
@@ -3277,7 +3277,7 @@ class _vi_slash_impl(TextCommand):
                 return
 
         if save:
-            set_last_buffer_search_command(self.view, 'vi_slash')
+            set_last_buffer_search_command(self.view, 'nv_vi_slash')
             set_last_buffer_search(self.view, pattern)
 
         sel = self.view.sel()[0]
@@ -3311,7 +3311,7 @@ class _vi_slash_impl(TextCommand):
         add_search_highlighting(self.view, find_search_occurrences(self.view, pattern, flags))
 
 
-class _vi_l(TextCommand):
+class nv_vi_l(TextCommand):
     def run(self, edit, mode=None, count=1):
         def f(view, s):
             if mode == NORMAL:
@@ -3347,7 +3347,7 @@ class _vi_l(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_h(TextCommand):
+class nv_vi_h(TextCommand):
     def run(self, edit, mode=None, count=1):
         def f(view, s):
             if mode == INTERNAL_NORMAL:
@@ -3397,7 +3397,7 @@ class _vi_h(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_j(TextCommand):
+class nv_vi_j(TextCommand):
 
     def run(self, edit, mode=None, count=1, xpos=0):
         def f(view, s):
@@ -3465,7 +3465,7 @@ class _vi_j(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_k(TextCommand):
+class nv_vi_k(TextCommand):
 
     def run(self, edit, mode=None, count=1, xpos=0):
         def f(view, s):
@@ -3535,7 +3535,7 @@ class _vi_k(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_gg(TextCommand):
+class nv_vi_gg(TextCommand):
     def run(self, edit, mode=None, count=None):
         if count:
             goto_line(self.view, mode, count)
@@ -3558,7 +3558,7 @@ class _vi_gg(TextCommand):
         jumplist_update(self.view)
 
 
-class _vi_big_g(TextCommand):
+class nv_vi_big_g(TextCommand):
     def run(self, edit, mode=None, count=None):
         if count:
             goto_line(self.view, mode, count)
@@ -3582,7 +3582,7 @@ class _vi_big_g(TextCommand):
         jumplist_update(self.view)
 
 
-class _vi_dollar(TextCommand):
+class nv_vi_dollar(TextCommand):
     def run(self, edit, mode=None, count=1):
         def _get_target(view, start, count):
             if count > 1:
@@ -3616,7 +3616,7 @@ class _vi_dollar(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_w(TextCommand):
+class nv_vi_w(TextCommand):
     def run(self, edit, mode=None, count=1):
         if mode == VISUAL_BLOCK:
             resolve_visual_block_target(self.view, word_starts, count)
@@ -3640,7 +3640,7 @@ class _vi_w(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_big_w(TextCommand):
+class nv_vi_big_w(TextCommand):
     def run(self, edit, mode=None, count=1):
         if mode == VISUAL_BLOCK:
             resolve_visual_block_target(self.view, big_word_starts, count)
@@ -3664,7 +3664,7 @@ class _vi_big_w(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_e(TextCommand):
+class nv_vi_e(TextCommand):
     def run(self, edit, mode=None, count=1):
         def _get_target(view, start, count):
             # TODO Is the word_ends() function off-by-one?
@@ -3695,7 +3695,7 @@ class _vi_e(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_zero(TextCommand):
+class nv_vi_zero(TextCommand):
     def run(self, edit, mode=None, count=1):
         def _get_target(view, start, count):
             return view.line(start).a
@@ -3721,7 +3721,7 @@ class _vi_zero(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_right_brace(TextCommand):
+class nv_vi_right_brace(TextCommand):
     def run(self, edit, mode=None, count=1):
         def f(view, s):
             target = next_paragraph_start(view, get_insertion_point_at_b(s), count)
@@ -3745,7 +3745,7 @@ class _vi_right_brace(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_left_brace(TextCommand):
+class nv_vi_left_brace(TextCommand):
     def run(self, edit, mode=None, count=1):
         def f(view, s):
             target = prev_paragraph_start(view, get_insertion_point_at_b(s), count)
@@ -3767,7 +3767,7 @@ class _vi_left_brace(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_percent(TextCommand):
+class nv_vi_percent(TextCommand):
 
     def run(self, edit, mode=None, count=None):
         if count:
@@ -3813,7 +3813,7 @@ class _vi_percent(TextCommand):
             regions_transformer(self.view, f)
 
 
-class _vi_big_h(TextCommand):
+class nv_vi_big_h(TextCommand):
     def run(self, edit, mode=None, count=None):
         def f(view, s):
             if mode == NORMAL:
@@ -3831,7 +3831,7 @@ class _vi_big_h(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_big_l(TextCommand):
+class nv_vi_big_l(TextCommand):
     def run(self, edit, mode=None, count=None):
         def f(view, s):
             if mode == NORMAL:
@@ -3849,7 +3849,7 @@ class _vi_big_l(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_big_m(TextCommand):
+class nv_vi_big_m(TextCommand):
     def run(self, edit, mode=None, count=None):
         def f(view, s):
             if mode == NORMAL:
@@ -3870,7 +3870,7 @@ class _vi_big_m(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_star(TextCommand):
+class nv_vi_star(TextCommand):
     def run(self, edit, mode=None, count=1, pattern=None, save=True):
         def f(view, s):
             match = find_wrapping(
@@ -3911,12 +3911,12 @@ class _vi_star(TextCommand):
 
         if save:
             set_last_buffer_search(self.view, word)
-            set_last_buffer_search_command(self.view, 'vi_star')
+            set_last_buffer_search_command(self.view, 'nv_vi_star')
 
         show_if_not_visible(self.view)
 
 
-class _vi_octothorp(TextCommand):
+class nv_vi_octothorp(TextCommand):
     def run(self, edit, mode=None, count=1, pattern=None, save=True):
         def f(view, s):
             match = reverse_find_wrapping(
@@ -3958,12 +3958,12 @@ class _vi_octothorp(TextCommand):
 
         if save:
             set_last_buffer_search(self.view, word)
-            set_last_buffer_search_command(self.view, 'vi_octothorp')
+            set_last_buffer_search_command(self.view, 'nv_vi_octothorp')
 
         show_if_not_visible(self.view)
 
 
-class _vi_b(TextCommand):
+class nv_vi_b(TextCommand):
     def run(self, edit, mode=None, count=1):
         if mode == VISUAL_BLOCK:
             resolve_visual_block_target(self.view, word_reverse, count)
@@ -3984,7 +3984,7 @@ class _vi_b(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_big_b(TextCommand):
+class nv_vi_big_b(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         if mode == VISUAL_BLOCK:
@@ -4006,7 +4006,7 @@ class _vi_big_b(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_underscore(TextCommand):
+class nv_vi_underscore(TextCommand):
     def run(self, edit, mode=None, count=1):
         def _get_target(view, start, count):
             current_row = view.rowcol(start)[0]
@@ -4038,7 +4038,7 @@ class _vi_underscore(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_hat(TextCommand):
+class nv_vi_hat(TextCommand):
     def run(self, edit, mode=None, count=None):
         def _get_target(view, start, count):
             return next_non_blank(view, view.line(start).a)
@@ -4062,7 +4062,7 @@ class _vi_hat(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_gj(TextCommand):
+class nv_vi_gj(TextCommand):
     def run(self, edit, mode=None, count=1):
         if mode == NORMAL:
             for i in range(count):
@@ -4071,13 +4071,13 @@ class _vi_gj(TextCommand):
             for i in range(count):
                 self.view.run_command('move', {'by': 'lines', 'forward': True, 'extend': True})
         elif mode == VISUAL_LINE:
-            self.view.run_command('_vi_j', {'mode': mode, 'count': count})
+            self.view.run_command('nv_vi_j', {'mode': mode, 'count': count})
         elif mode == INTERNAL_NORMAL:
             for i in range(count):
                 self.view.run_command('move', {'by': 'lines', 'forward': True, 'extend': False})
 
 
-class _vi_gk(TextCommand):
+class nv_vi_gk(TextCommand):
     def run(self, edit, mode=None, count=1):
         if mode == NORMAL:
             for i in range(count):
@@ -4086,13 +4086,13 @@ class _vi_gk(TextCommand):
             for i in range(count):
                 self.view.run_command('move', {'by': 'lines', 'forward': False, 'extend': True})
         elif mode == VISUAL_LINE:
-            self.view.run_command('_vi_k', {'mode': mode, 'count': count})
+            self.view.run_command('nv_vi_k', {'mode': mode, 'count': count})
         elif mode == INTERNAL_NORMAL:
             for i in range(count):
                 self.view.run_command('move', {'by': 'lines', 'forward': False, 'extend': False})
 
 
-class _vi_g__(TextCommand):
+class nv_vi_g__(TextCommand):
     def run(self, edit, mode=None, count=1):
         def _get_target(view, start, count):
             current_row = view.rowcol(start)[0]
@@ -4127,7 +4127,7 @@ class _vi_g__(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_ctrl_u(TextCommand):
+class nv_vi_ctrl_u(TextCommand):
     def run(self, edit, mode=None, count=0):
         def f(view, s):
             if mode == NORMAL:
@@ -4151,7 +4151,7 @@ class _vi_ctrl_u(TextCommand):
             scroll_viewport_position(self.view, number_of_scroll_lines, forward=False)
 
 
-class _vi_ctrl_d(TextCommand):
+class nv_vi_ctrl_d(TextCommand):
     def run(self, edit, mode=None, count=0):
         def f(view, s):
             if mode == NORMAL:
@@ -4175,7 +4175,7 @@ class _vi_ctrl_d(TextCommand):
             scroll_viewport_position(self.view, number_of_scroll_lines)
 
 
-class _vi_bar(TextCommand):
+class nv_vi_bar(TextCommand):
     def run(self, edit, mode=None, count=1):
         def _get_target(view, start, col):
             line = view.line(start)
@@ -4207,7 +4207,7 @@ class _vi_bar(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_ge(TextCommand):
+class nv_vi_ge(TextCommand):
     def run(self, edit, mode=None, count=1):
         if mode == VISUAL_BLOCK:
             resolve_visual_block_target(self.view, word_end_reverse, count)
@@ -4228,7 +4228,7 @@ class _vi_ge(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_g_big_e(TextCommand):
+class nv_vi_g_big_e(TextCommand):
     def run(self, edit, mode=None, count=1):
         if mode == VISUAL_BLOCK:
             resolve_visual_block_target(self.view, big_word_end_reverse, count)
@@ -4249,7 +4249,7 @@ class _vi_g_big_e(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_left_paren(TextCommand):
+class nv_vi_left_paren(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         def f(view, s):
@@ -4271,7 +4271,7 @@ class _vi_left_paren(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_right_paren(TextCommand):
+class nv_vi_right_paren(TextCommand):
 
     def run(self, edit, mode=None, count=1):
         def f(view, s):
@@ -4295,7 +4295,7 @@ class _vi_right_paren(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_question_mark_impl(TextCommand):
+class nv_vi_question_mark_impl(TextCommand):
     def run(self, edit, pattern, mode=None, count=1, save=True):
         if not pattern:
             pattern = get_last_buffer_search(self.view)
@@ -4304,7 +4304,7 @@ class _vi_question_mark_impl(TextCommand):
                 return
 
         if save:
-            set_last_buffer_search_command(self.view, 'vi_question_mark')
+            set_last_buffer_search_command(self.view, 'nv_vi_question_mark')
             set_last_buffer_search(self.view, pattern)
 
         sel = self.view.sel()[0]
@@ -4339,7 +4339,7 @@ class _vi_question_mark_impl(TextCommand):
         add_search_highlighting(self.view, find_search_occurrences(self.view, pattern, flags))
 
 
-class _vi_question_mark(TextCommand):
+class nv_vi_question_mark(TextCommand):
 
     def run(self, edit, pattern=''):
         set_reset_during_init(self.view, False)
@@ -4356,7 +4356,7 @@ class _vi_question_mark(TextCommand):
 
     def on_done(self, pattern: str):
         history_update(Cmdline.SEARCH_BACKWARD + pattern)
-        _nv_cmdline_feed_key.reset_last_history_index()
+        nv_cmdline_feed_key.reset_last_history_index()
         clear_search_highlighting(self.view)
         append_sequence(self.view, pattern + '<CR>')
         set_motion(self.view, ViSearchBackwardImpl(term=pattern))
@@ -4387,17 +4387,17 @@ class _vi_question_mark(TextCommand):
     def on_cancel(self):
         clear_search_highlighting(self.view)
         reset_command_data(self.view)
-        _nv_cmdline_feed_key.reset_last_history_index()
+        nv_cmdline_feed_key.reset_last_history_index()
         show_if_not_visible(self.view)
 
 
-class _vi_repeat_buffer_search(TextCommand):
+class nv_vi_repeat_buffer_search(TextCommand):
 
     commands = {
-        'vi_slash': ['_vi_slash_impl', '_vi_question_mark_impl'],
-        'vi_question_mark': ['_vi_question_mark_impl', '_vi_slash_impl'],
-        'vi_star': ['_vi_star', '_vi_octothorp'],
-        'vi_octothorp': ['_vi_octothorp', '_vi_star'],
+        'nv_vi_slash': ['nv_vi_slash_impl', 'nv_vi_question_mark_impl'],
+        'nv_vi_question_mark': ['nv_vi_question_mark_impl', 'nv_vi_slash_impl'],
+        'nv_vi_star': ['nv_vi_star', 'nv_vi_octothorp'],
+        'nv_vi_octothorp': ['nv_vi_octothorp', 'nv_vi_star'],
     }
 
     def run(self, edit, mode=None, count=1, reverse=False):
@@ -4417,7 +4417,7 @@ class _vi_repeat_buffer_search(TextCommand):
         self.view.show(self.view.sel(), show_surrounds=True)
 
 
-class _vi_search(TextCommand):
+class nv_vi_search(TextCommand):
 
     def run(self, edit, mode=None, count=1, forward=True):
         last_search = get_last_buffer_search(self.view)
@@ -4457,7 +4457,7 @@ class _vi_search(TextCommand):
                     break
 
 
-class _vi_big_e(TextCommand):
+class nv_vi_big_e(TextCommand):
     def run(self, edit, mode=None, count=1):
         def _get_target(view, start, count):
             # TODO Is the big_word_ends() function off-by-one?
@@ -4482,7 +4482,7 @@ class _vi_big_e(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_ctrl_f(TextCommand):
+class nv_vi_ctrl_f(TextCommand):
     def run(self, edit, mode=None, count=1):
         if mode == NORMAL:
             self.view.run_command('move', {'by': 'pages', 'forward': True})
@@ -4503,7 +4503,7 @@ class _vi_ctrl_f(TextCommand):
                 set_selection(self.view, new_sels)
 
 
-class _vi_ctrl_b(TextCommand):
+class nv_vi_ctrl_b(TextCommand):
     def run(self, edit, mode=None, count=1):
         if mode == NORMAL:
             self.view.run_command('move', {'by': 'pages', 'forward': False})
@@ -4524,9 +4524,9 @@ class _vi_ctrl_b(TextCommand):
                 set_selection(self.view, new_sels)
 
 
-class _vi_enter(TextCommand):
+class nv_vi_enter(TextCommand):
     def run(self, edit, mode=None, count=1):
-        self.view.run_command('_vi_j', {'mode': mode, 'count': count})
+        self.view.run_command('nv_vi_j', {'mode': mode, 'count': count})
 
         def f(view, s):
             target = next_non_blank(view, get_insertion_point_at_b(s))
@@ -4543,9 +4543,9 @@ class _vi_enter(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_minus(TextCommand):
+class nv_vi_minus(TextCommand):
     def run(self, edit, mode=None, count=1):
-        self.view.run_command('_vi_k', {'mode': mode, 'count': count})
+        self.view.run_command('nv_vi_k', {'mode': mode, 'count': count})
 
         def f(view, s):
             target = next_non_blank(view, get_insertion_point_at_b(s))
@@ -4562,12 +4562,12 @@ class _vi_minus(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_shift_enter(TextCommand):
+class nv_vi_shift_enter(TextCommand):
     def run(self, edit, mode=None, count=1):
-        self.view.run_command('_vi_ctrl_f', {'mode': mode, 'count': count})
+        self.view.run_command('nv_vi_ctrl_f', {'mode': mode, 'count': count})
 
 
-class _vi_select_text_object(TextCommand):
+class nv_vi_select_text_object(TextCommand):
     def run(self, edit, text_object=None, mode=None, count=1, extend=False, inclusive=False):
         def f(view, s):
             if mode in (INTERNAL_NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK):
@@ -4580,7 +4580,7 @@ class _vi_select_text_object(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_go_to_symbol(TextCommand):
+class nv_vi_go_to_symbol(TextCommand):
     """
     Go to local declaration.
 
@@ -4646,7 +4646,7 @@ class _vi_go_to_symbol(TextCommand):
         jumplist_update(self.view)
 
 
-class _vi_gm(TextCommand):
+class nv_vi_gm(TextCommand):
     def run(self, edit, mode=None, count=1):
         def f(view, s):
             line = view.line(s.b)
@@ -4664,7 +4664,7 @@ class _vi_gm(TextCommand):
         regions_transformer(self.view, f)
 
 
-class _vi_left_square_bracket(TextCommand):
+class nv_vi_left_square_bracket(TextCommand):
     def run(self, edit, action, mode, count=1, **kwargs):
         if action == 'c':
             goto_prev_change(self.view, mode, count)
@@ -4676,7 +4676,7 @@ class _vi_left_square_bracket(TextCommand):
             raise ValueError('unknown action')
 
 
-class _vi_right_square_bracket(TextCommand):
+class nv_vi_right_square_bracket(TextCommand):
     def run(self, edit, action, mode, count=1, **kwargs):
         if action == 'c':
             goto_next_change(self.view, mode, count)

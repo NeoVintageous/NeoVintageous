@@ -25,11 +25,11 @@ from NeoVintageous.nv.settings import set_reset_during_init
 class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def feedkey(self, key):
-        self.view.window().run_command('_nv_feed_key', {'key': key})
+        self.view.window().run_command('nv_feed_key', {'key': key})
 
     def feedkeys(self, keys):
         for key in keys:
-            self.view.window().run_command('_nv_feed_key', {'key': key})
+            self.view.window().run_command('nv_feed_key', {'key': key})
 
     def setUp(self):
         super().setUp()
@@ -506,10 +506,10 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
     def test_slash_search_opens_input_panel(self, run_command):
         self.normal('|fizz')
         self.feedkey('/')
-        run_command.assert_called_once_with('_vi_slash')
+        run_command.assert_called_once_with('nv_vi_slash')
 
     @unittest.mock.patch('NeoVintageous.nv.utils.run_window_command')
     def test_question_search_opens_input_panel(self, run_command):
         self.normal('|fizz')
         self.feedkey('?')
-        run_command.assert_called_once_with('_vi_question_mark')
+        run_command.assert_called_once_with('nv_vi_question_mark')

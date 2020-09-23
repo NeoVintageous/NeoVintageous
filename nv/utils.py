@@ -1122,13 +1122,13 @@ def fixup_eof(view, pt: int) -> int:
 # regressions. TODO When enough commands are updated, this should be removed.
 def should_motion_apply_op_transformer(motion) -> bool:
     blacklist = (
-        '_vi_bar',
-        '_vi_dollar',
-        '_vi_find_in_line',
-        '_vi_g__',
-        '_vi_h',
-        '_vi_hat',
-        '_vi_l',
+        'nv_vi_bar',
+        'nv_vi_dollar',
+        'nv_vi_find_in_line',
+        'nv_vi_g__',
+        'nv_vi_h',
+        'nv_vi_hat',
+        'nv_vi_l',
     )
 
     return motion and 'motion' in motion and motion['motion'] not in blacklist

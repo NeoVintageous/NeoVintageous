@@ -72,7 +72,7 @@ class Test_dot(unittest.FunctionalTestCase):
     @unittest.mock.patch('sublime.View.command_history')
     def test_repeat_append_sequence(self, command_history):
         command_history.return_value = ('sequence', {'commands': [
-            ['_vi_a', {'count': 1, 'mode': 'mode_internal_normal'}],
+            ['nv_vi_a', {'count': 1, 'mode': 'mode_internal_normal'}],
             ['insert', {'characters': 'buzz'}]]}, 1)
 
         self.normal('fizz | x')

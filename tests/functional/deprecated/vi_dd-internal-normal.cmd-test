@@ -1,4 +1,4 @@
-_vi_dd mode:mode_internal_normal
+nv_vi_dd mode:mode_internal_normal
 Can dd one line.
 ***
 aaa
@@ -8,7 +8,7 @@ bbb
 aaa
 ^$bbb
 ---///---
-_vi_dd mode:mode_internal_normal
+nv_vi_dd mode:mode_internal_normal
 Can delete empty line.
 ***
 aaa
@@ -18,7 +18,7 @@ bbb
 aaa
 ^$bbb
 ---///---
-_vi_dd mode:mode_internal_normal
+nv_vi_dd mode:mode_internal_normal
 Can delete indented line.
 ***
 aaa
@@ -28,7 +28,7 @@ bbb
 aaa
 ^$bbb
 ---///---
-_vi_dd mode:mode_internal_normal count:2
+nv_vi_dd mode:mode_internal_normal count:2
 Can delete 2 lines
 ***
 aaa

@@ -39,7 +39,7 @@ class MultipleCursorsStart(ViOperatorDef):
 
     def translate(self, view):
         return {
-            'action': '_enter_select_mode',
+            'action': 'nv_enter_select_mode',
             'action_args': {
                 'mode': get_mode(view)
             }
@@ -57,7 +57,7 @@ class MultipleCursorsExit(ViOperatorDef):
 
     def translate(self, view):
         return {
-            'action': '_vi_select_big_j',
+            'action': 'nv_vi_select_big_j',
             'action_args': {
                 'mode': get_mode(view),
                 'count': get_count(view)
@@ -75,7 +75,7 @@ class MultipleCursorsAdd(ViOperatorDef):
 
     def translate(self, view):
         return {
-            'action': '_vi_select_j',
+            'action': 'nv_vi_select_j',
             'action_args': {
                 'mode': get_mode(view),
                 'count': get_count(view)
@@ -93,7 +93,7 @@ class MultipleCursorsRemove(ViOperatorDef):
 
     def translate(self, view):
         return {
-            'action': '_vi_select_k',
+            'action': 'nv_vi_select_k',
             'action_args': {
                 'mode': get_mode(view),
                 'count': get_count(view)
@@ -124,6 +124,6 @@ class MultipleCursorsAll(ViOperatorDef):
 
     def translate(self, view):
         return {
-            'action': '_vi_g_big_h',
+            'action': 'nv_vi_g_big_h',
             'action_args': {}
         }

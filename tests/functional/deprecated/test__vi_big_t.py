@@ -85,14 +85,14 @@ SKIP_CASES = (
 )
 
 
-class Test__vi_big_t(unittest.ViewTestCase):
+class Test__nv_vi_big_t(unittest.ViewTestCase):
 
     def runTests(self, data, skipping=False):
         for (i, data) in enumerate(data):
             self.write(data.text)
             self.select(self._R(*data.startRegion))
 
-            self.view.run_command('_vi_reverse_find_in_line', {
+            self.view.run_command('nv_vi_reverse_find_in_line', {
                 'mode': data.mode,
                 'count': 1,
                 'char': data.findChar,

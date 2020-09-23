@@ -98,7 +98,7 @@ def add_macro_step(view, cmd: str, args: dict) -> None:
 
     if is_recording(window):
         # don't store the ending macro step
-        if cmd == '_vi_q':
+        if cmd == 'nv_vi_q':
             return
 
         if not get_glue_until_normal_mode(view):

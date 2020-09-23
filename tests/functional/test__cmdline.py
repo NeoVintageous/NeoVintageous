@@ -30,7 +30,7 @@ class TestCmdlineEditing(unittest.FunctionalTestCase):
 
     # TODO [refactor] Into usable run test command-line mode command via feed.
     def feed(self, seq):
-        self.view.run_command('_nv_cmdline_feed_key', {'key': seq})
+        self.view.run_command('nv_cmdline_feed_key', {'key': seq})
 
     def test_c_ctrl_b(self):
         for test_key in ('<C-b>', '<home>'):

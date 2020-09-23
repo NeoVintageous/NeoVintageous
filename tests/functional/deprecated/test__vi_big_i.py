@@ -44,14 +44,14 @@ TESTS = (
 )
 
 
-class Test__vi_big_i(unittest.ViewTestCase):
+class Test__nv_vi_big_i(unittest.ViewTestCase):
 
     def test_all(self):
         for (i, data) in enumerate(TESTS):
             self.write(data.initial_text)
             self.select([self._R(*region) for region in data.regions])
 
-            self.view.run_command('_vi_big_i', data.cmd_params)
+            self.view.run_command('nv_vi_big_i', data.cmd_params)
             actual = data.actual_func(self)
 
             self.assertEqual(self._R(*data.expected), actual, "[{0}] {1}".format(i, data.msg))

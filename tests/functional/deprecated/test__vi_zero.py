@@ -34,14 +34,14 @@ TESTS = (
 )
 
 
-class Test__vi_zero(unittest.ViewTestCase):
+class Test__nv_vi_zero(unittest.ViewTestCase):
 
     def test_all(self):
         for (i, data) in enumerate(TESTS):
             self.write(data.initial_text)
             self.select([self._R(*region) for region in data.regions])
 
-            self.view.run_command('_vi_zero', data.cmd_params)
+            self.view.run_command('nv_vi_zero', data.cmd_params)
 
             msg = "[{0}] {1}".format(i, data.msg)
             actual = data.actual_func(self)

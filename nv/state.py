@@ -321,12 +321,12 @@ def evaluate_state(view) -> None:
             # Special-case exclusion: saving the previous selection would
             # overwrite the previous selection needed e.g. gv in a VISUAL
             # mode needs to expand or contract to previous selection.
-            if action_cmd['action'] != '_vi_gv':
+            if action_cmd['action'] != 'nv_vi_gv':
                 save_previous_selection(view, get_mode(view))
 
         # Some commands, like 'i' or 'a', open a series of edits that need
         # to be grouped together unless we are gluing a larger sequence
-        # through _nv_process_notation. For example, aFOOBAR<Esc> should be
+        # through nv_process_notation. For example, aFOOBAR<Esc> should be
         # grouped atomically, but not inside a sequence like
         # iXXX<Esc>llaYYY<Esc>, where we want to group the whole sequence
         # instead.
@@ -398,15 +398,15 @@ def init_state(view) -> None:
         # when pressing i<Esc>i<Esc>i<Esc> the cursor moves one point each time,
         # which is expected, but not expected when initialising state. But not
         # passing the mode may also be causing some other hidden bugs too.
-        view.window().run_command('_enter_normal_mode', {'from_init': True})
+        view.window().run_command('nv_enter_normal_mode', {'from_init': True})
     elif mode != VISUAL and view.has_non_empty_selection_region():
         # Try to fixup a malformed visual state. For example, apparently this
         # can happen when a search is performed via a search panel and "Find
         # All" is pressed. In that case, multiple selections may need fixing.
-        view.window().run_command('_enter_visual_mode', {'mode': mode})
+        view.window().run_command('nv_enter_visual_mode', {'mode': mode})
     else:
         # This may be run when we're coming from cmdline mode.
         mode = VISUAL if view.has_non_empty_selection_region() else mode
-        view.window().run_command('_enter_normal_mode', {'mode': mode, 'from_init': True})
+        view.window().run_command('nv_enter_normal_mode', {'mode': mode, 'from_init': True})
 
     reset_command_data(view)

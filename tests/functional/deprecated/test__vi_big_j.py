@@ -59,7 +59,7 @@ TESTS = (
 )
 
 
-class Test__vi_big_j(unittest.ViewTestCase):
+class Test__nv_vi_big_j(unittest.ViewTestCase):
 
     def test_all(self):
         for (i, data) in enumerate(TESTS):
@@ -67,6 +67,6 @@ class Test__vi_big_j(unittest.ViewTestCase):
             regions = [self._R(*region) for region in data.regions]
             self.select(regions)
 
-            self.view.run_command('_vi_big_j', data.cmd_params)
+            self.view.run_command('nv_vi_big_j', data.cmd_params)
 
             self.assertEqual(data.expected, self.content(), "[{0}] {1}".format(i, data.msg))

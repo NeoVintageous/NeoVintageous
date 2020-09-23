@@ -31,13 +31,13 @@ TESTS = (
 )
 
 
-class Test__vi_double_antilambda(unittest.ViewTestCase):
+class Test__nv_vi_double_antilambda(unittest.ViewTestCase):
 
     def test_all(self):
         for (i, data) in enumerate(TESTS):
             self.write(data.initial_text)
             self.select([self._R(*region) for region in data.regions])
 
-            self.view.run_command('_vi_less_than_less_than', data.cmd_params)
+            self.view.run_command('nv_vi_less_than_less_than', data.cmd_params)
 
             self.assertEqual(data.expected, self.content(), "[{0}] {1}".format(i, data.msg).format(i))

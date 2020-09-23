@@ -48,7 +48,7 @@ TESTS = (
 )
 
 
-class Test__vi_percent(unittest.ViewTestCase):
+class Test__nv_vi_percent(unittest.ViewTestCase):
 
     def test_all(self):
         for (i, data) in enumerate(TESTS):
@@ -58,7 +58,7 @@ class Test__vi_percent(unittest.ViewTestCase):
             for region in data.regions:
                 self.select(self._R(*region))
 
-            self.view.run_command('_vi_percent', data.cmd_params)
+            self.view.run_command('nv_vi_percent', data.cmd_params)
 
             msg = "[{0}] {1}".format(i, data.msg)
             actual = data.actual_func(self)

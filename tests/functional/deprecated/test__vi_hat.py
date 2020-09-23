@@ -58,14 +58,14 @@ VISUAL_MULTI_LINE_CASES = (
 )
 
 
-class Test__vi_hat(unittest.ViewTestCase):
+class Test__nv_vi_hat(unittest.ViewTestCase):
 
     def runTests(self, data):
         for (i, data) in enumerate(data):
             self.write(data.text)
             self.select(self._R(*data.startRegion))
 
-            self.view.run_command('_vi_hat', {'mode': data.mode, 'count': 1})
+            self.view.run_command('nv_vi_hat', {'mode': data.mode, 'count': 1})
 
             self._assertRegionsEqual(
                 self._R(*data.expectedRegion),

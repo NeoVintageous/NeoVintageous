@@ -30,7 +30,7 @@ class F():
             self.write(data.text)
             self.select(self._R(*data.startRegion))
 
-            self.view.run_command('_vi_find_in_line', {
+            self.view.run_command('nv_vi_find_in_line', {
                 'mode': data.mode,
                 'count': 1,
                 'char': data.findChar,

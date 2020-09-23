@@ -40,7 +40,7 @@ from NeoVintageous.nv.vim import run_motion
 
 
 __all__ = [
-    '_nv_surround_command'
+    'nv_surround_command'
 ]
 
 
@@ -68,7 +68,7 @@ class Surroundys(ViOperatorDef):
 
     def translate(self, view):
         return {
-            'action': '_nv_surround',
+            'action': 'nv_surround',
             'action_args': {
                 'action': 'ys',
                 'mode': get_mode(view),
@@ -86,12 +86,12 @@ class Surroundyss(Surroundys):
 
     def translate(self, view):
         return {
-            'action': '_nv_surround',
+            'action': 'nv_surround',
             'action_args': {
                 'action': 'ys',
                 'mode': get_mode(view),
                 'motion': {
-                    'motion': '_vi_select_text_object',
+                    'motion': 'nv_vi_select_text_object',
                     'motion_args': {
                         'mode': INTERNAL_NORMAL,
                         'count': 1,
@@ -136,7 +136,7 @@ class Surroundds(ViOperatorDef):
 
     def translate(self, view):
         return {
-            'action': '_nv_surround',
+            'action': 'nv_surround',
             'action_args': {
                 'action': 'ds',
                 'mode': get_mode(view),
@@ -179,7 +179,7 @@ class Surroundcs(ViOperatorDef):
 
     def translate(self, view):
         return {
-            'action': '_nv_surround',
+            'action': 'nv_surround',
             'action_args': {
                 'action': 'cs',
                 'mode': get_mode(view),
@@ -189,7 +189,7 @@ class Surroundcs(ViOperatorDef):
         }
 
 
-class _nv_surround_command(TextCommand):
+class nv_surround_command(TextCommand):
     def run(self, edit, action, **kwargs):
         if action == 'cs':
             _do_cs(self.view, edit, **kwargs)

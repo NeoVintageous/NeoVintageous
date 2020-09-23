@@ -33,45 +33,45 @@ region_data = namedtuple('region_data', 'regions')
 
 TESTS_MODES = (
     # NORMAL mode
-    test_data(cmd='_vi_k', initial_text='abc\nabc', regions=[[(1, 1), (1, 1)]], cmd_params={'mode': unittest.NORMAL, 'xpos': 1},  # noqa: E241,E501
+    test_data(cmd='nv_vi_k', initial_text='abc\nabc', regions=[[(1, 1), (1, 1)]], cmd_params={'mode': unittest.NORMAL, 'xpos': 1},  # noqa: E241,E501
               expected=region_data([(0, 1), (0, 1)]), actual_func=first_sel, msg='should move up one line (normal mode)'),  # noqa: E241,E501
-    test_data(cmd='_vi_k', initial_text='abc\nabc\nabc', regions=[[(2, 1), (2, 1)]], cmd_params={'mode': unittest.NORMAL, 'xpos': 1, 'count': 2},  # noqa: E241,E501
+    test_data(cmd='nv_vi_k', initial_text='abc\nabc\nabc', regions=[[(2, 1), (2, 1)]], cmd_params={'mode': unittest.NORMAL, 'xpos': 1, 'count': 2},  # noqa: E241,E501
               expected=region_data([(0, 1), (0, 1)]), actual_func=first_sel, msg='should move up two lines (normal mode)'),  # noqa: E241,E501
-    test_data(cmd='_vi_k', initial_text='foo bar\nfoo', regions=[[(1, 1), (1, 1)]], cmd_params={'mode': unittest.NORMAL, 'xpos': 1},  # noqa: E241,E501
+    test_data(cmd='nv_vi_k', initial_text='foo bar\nfoo', regions=[[(1, 1), (1, 1)]], cmd_params={'mode': unittest.NORMAL, 'xpos': 1},  # noqa: E241,E501
               expected=region_data([(0, 1), (0, 1)]), actual_func=first_sel, msg='should move up one line onto longer line (normal mode)'),  # noqa: E241,E501
 
-    test_data(cmd='_vi_k', initial_text='foo\nfoo bar', regions=[[(1, 5), (1, 5)]], cmd_params={'mode': unittest.NORMAL, 'xpos': 5},  # noqa: E241,E501
+    test_data(cmd='nv_vi_k', initial_text='foo\nfoo bar', regions=[[(1, 5), (1, 5)]], cmd_params={'mode': unittest.NORMAL, 'xpos': 5},  # noqa: E241,E501
               expected=region_data([(0, 2), (0, 2)]), actual_func=first_sel, msg='should move onto shorter line (mode normal)'),  # noqa: E241,E501
-    test_data(cmd='_vi_k', initial_text='foo\n\n', regions=[[(1, 0), (1, 0)]], cmd_params={'mode': unittest.NORMAL, 'xpos': 1},  # noqa: E241,E501
+    test_data(cmd='nv_vi_k', initial_text='foo\n\n', regions=[[(1, 0), (1, 0)]], cmd_params={'mode': unittest.NORMAL, 'xpos': 1},  # noqa: E241,E501
               expected=region_data([(0, 1), (0, 1)]), actual_func=first_sel, msg='should be able to move from empty line (mode normal)'),  # noqa: E241,E501
-    test_data(cmd='_vi_k', initial_text='\n\n\n', regions=[[(1, 0), (1, 0)]], cmd_params={'mode': unittest.NORMAL, 'xpos': 0},  # noqa: E241,E501
+    test_data(cmd='nv_vi_k', initial_text='\n\n\n', regions=[[(1, 0), (1, 0)]], cmd_params={'mode': unittest.NORMAL, 'xpos': 0},  # noqa: E241,E501
               expected=region_data([(0, 0), (0, 0)]), actual_func=first_sel, msg='should move from empty line to empty line (mode normal)'),  # noqa: E241,E501
-    test_data(cmd='_vi_k', initial_text='foo\nbar\nbaz\n', regions=[[(2, 1), (2, 1)]], cmd_params={'mode': unittest.NORMAL, 'xpos': 1, 'count': 100},  # noqa: E241,E501
+    test_data(cmd='nv_vi_k', initial_text='foo\nbar\nbaz\n', regions=[[(2, 1), (2, 1)]], cmd_params={'mode': unittest.NORMAL, 'xpos': 1, 'count': 100},  # noqa: E241,E501
               expected=region_data([(0, 1), (0, 1)]), actual_func=first_sel, msg='should not move too far (mode normal)'),  # noqa: E241,E501
 
-    test_data(cmd='_vi_k', initial_text='foo\nbar\nbaz\n', regions=[[(1, 1), (1, 2)]], cmd_params={'mode': unittest.VISUAL, 'count': 1, 'xpos': 2},  # noqa: E241,E501
+    test_data(cmd='nv_vi_k', initial_text='foo\nbar\nbaz\n', regions=[[(1, 1), (1, 2)]], cmd_params={'mode': unittest.VISUAL, 'count': 1, 'xpos': 2},  # noqa: E241,E501
               expected=region_data([(1, 2), (0, 2)]), actual_func=first_sel, msg='move one line (visual mode)'),  # noqa: E241,E501
-    test_data(cmd='_vi_k', initial_text='foo\nbar\nbaz\n', regions=[[(2, 1), (2, 2)]], cmd_params={'mode': unittest.VISUAL, 'count': 1, 'xpos': 2},  # noqa: E241,E501
+    test_data(cmd='nv_vi_k', initial_text='foo\nbar\nbaz\n', regions=[[(2, 1), (2, 2)]], cmd_params={'mode': unittest.VISUAL, 'count': 1, 'xpos': 2},  # noqa: E241,E501
               expected=region_data([(2, 2), (1, 2)]), actual_func=first_sel, msg='move opposite end greater with sel of size 1 (visual mode)'),  # noqa: E241,E501
-    test_data(cmd='_vi_k', initial_text='foo\nfoo\nbaz', regions=[[(1, 1), (1, 3)]], cmd_params={'mode': unittest.VISUAL, 'xpos': 3},  # noqa: E241,E501
+    test_data(cmd='nv_vi_k', initial_text='foo\nfoo\nbaz', regions=[[(1, 1), (1, 3)]], cmd_params={'mode': unittest.VISUAL, 'xpos': 3},  # noqa: E241,E501
               expected=region_data([(1, 2), (0, 3)]), actual_func=first_sel, msg='move opposite end smaller with sel of size 2'),  # noqa: E241,E501
-    test_data(cmd='_vi_k', initial_text='foobar\nbarfoo\nbuzzfizz\n', regions=[[(1, 1), (1, 4)]], cmd_params={'mode': unittest.VISUAL, 'xpos': 3},  # noqa: E241,E501
+    test_data(cmd='nv_vi_k', initial_text='foobar\nbarfoo\nbuzzfizz\n', regions=[[(1, 1), (1, 4)]], cmd_params={'mode': unittest.VISUAL, 'xpos': 3},  # noqa: E241,E501
               expected=region_data([(1, 2), (0, 3)]), actual_func=first_sel, msg='move opposite end smaller with sel of size 3'),  # noqa: E241,E501
-    test_data(cmd='_vi_k', initial_text='foo\nbar\nbaz\n', regions=[[(0, 1), (2, 1)]], cmd_params={'mode': unittest.VISUAL, 'xpos': 1},  # noqa: E241,E501
+    test_data(cmd='nv_vi_k', initial_text='foo\nbar\nbaz\n', regions=[[(0, 1), (2, 1)]], cmd_params={'mode': unittest.VISUAL, 'xpos': 1},  # noqa: E241,E501
               expected=region_data([(0, 1), (1, 2)]), actual_func=first_sel, msg='move opposite end smaller different lines no cross over'),  # noqa: E241,E501
 
-    test_data(cmd='_vi_k', initial_text='foo\nbar\nbaz\n', regions=[[(1, 0), (2, 1)]], cmd_params={'mode': unittest.VISUAL, 'xpos': 0},  # noqa: E241,E501
+    test_data(cmd='nv_vi_k', initial_text='foo\nbar\nbaz\n', regions=[[(1, 0), (2, 1)]], cmd_params={'mode': unittest.VISUAL, 'xpos': 0},  # noqa: E241,E501
               expected=region_data([(1, 0), (1, 1)]), actual_func=first_sel, msg='move opposite end smaller different lines cross over xpos at 0'),  # noqa: E241,E501
-    test_data(cmd='_vi_k', initial_text='foo bar\nfoo bar\nfoo bar\n', regions=[[(1, 4), (2, 4)]], cmd_params={'mode': unittest.VISUAL, 'xpos': 4, 'count': 2},  # noqa: E241,E501
+    test_data(cmd='nv_vi_k', initial_text='foo bar\nfoo bar\nfoo bar\n', regions=[[(1, 4), (2, 4)]], cmd_params={'mode': unittest.VISUAL, 'xpos': 4, 'count': 2},  # noqa: E241,E501
               expected=region_data([(1, 5), (0, 4)]), actual_func=first_sel, msg='move opposite end smaller different lines cross over non 0 xpos'),  # noqa: E241,E501
-    test_data(cmd='_vi_k', initial_text='foo\nbar\nbaz\n', regions=[[(0, 1), (1, 1)]], cmd_params={'mode': unittest.VISUAL, 'xpos': 0, 'count': 1},  # noqa: E241,E501
+    test_data(cmd='nv_vi_k', initial_text='foo\nbar\nbaz\n', regions=[[(0, 1), (1, 1)]], cmd_params={'mode': unittest.VISUAL, 'xpos': 0, 'count': 1},  # noqa: E241,E501
               expected=region_data([(0, 2), (0, 0)]), actual_func=first_sel, msg='move back to same line same xpos'),  # noqa: E241,E501
 
-    test_data(cmd='_vi_k', initial_text='foo\nbar\nbaz\n', regions=[[(0, 2), (1, 0)]], cmd_params={'mode': unittest.VISUAL, 'xpos': 0, 'count': 1},  # noqa: E241,E501
+    test_data(cmd='nv_vi_k', initial_text='foo\nbar\nbaz\n', regions=[[(0, 2), (1, 0)]], cmd_params={'mode': unittest.VISUAL, 'xpos': 0, 'count': 1},  # noqa: E241,E501
               expected=region_data([(0, 3), (0, 0)]), actual_func=first_sel, msg='move back to same line opposite end has greater xpos'),  # noqa: E241,E501
-    test_data(cmd='_vi_k', initial_text=(''.join(('foo\n',) * 50)), regions=[[(20, 2), (20, 1)]], cmd_params={'mode': unittest.VISUAL, 'xpos': 1, 'count': 10},  # noqa: E241,E501
+    test_data(cmd='nv_vi_k', initial_text=(''.join(('foo\n',) * 50)), regions=[[(20, 2), (20, 1)]], cmd_params={'mode': unittest.VISUAL, 'xpos': 1, 'count': 10},  # noqa: E241,E501
               expected=region_data([(20, 2), (10, 1)]), actual_func=first_sel, msg='move many opposite end greater from same line'),  # noqa: E241,E501
-    test_data(cmd='_vi_k', initial_text=(''.join(('foo\n',) * 50)), regions=[[(21, 2), (20, 1)]], cmd_params={'mode': unittest.VISUAL, 'xpos': 1, 'count': 10},  # noqa: E241,E501
+    test_data(cmd='nv_vi_k', initial_text=(''.join(('foo\n',) * 50)), regions=[[(21, 2), (20, 1)]], cmd_params={'mode': unittest.VISUAL, 'xpos': 1, 'count': 10},  # noqa: E241,E501
               expected=region_data([(21, 2), (10, 1)]), actual_func=first_sel, msg='move many opposite end greater from same line'),  # noqa: E241,E501
 )
 
@@ -79,7 +79,7 @@ TESTS_MODES = (
 TESTS = TESTS_MODES
 
 
-class Test__vi_h(unittest.ViewTestCase):
+class Test__nv_vi_h(unittest.ViewTestCase):
 
     def test_all(self):
         for (i, data) in enumerate(TESTS):
@@ -145,7 +145,7 @@ aaa bbb ccc ddd
 )
 
 
-class Test__vi_k_new(unittest.ViewTestCase):
+class Test__nv_vi_k_new(unittest.ViewTestCase):
 
     def test_all(self):
         for (i, data) in enumerate(MORE_TESTS):
@@ -153,7 +153,7 @@ class Test__vi_k_new(unittest.ViewTestCase):
             self.write(data.content)
             self.select([self._R(*region) for region in data.regions])
 
-            self.view.run_command('_vi_k', data.kwargs)
+            self.view.run_command('nv_vi_k', data.kwargs)
 
             msg = "failed at test index {0}: {1}".format(i, data.msg)
             actual = self.view.sel()[0]

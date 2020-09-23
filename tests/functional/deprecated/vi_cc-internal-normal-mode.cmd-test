@@ -1,4 +1,4 @@
-_vi_cc mode:mode_internal_normal
+nv_vi_cc mode:mode_internal_normal
 Can cc one line.
 ***
 aaa
@@ -9,7 +9,7 @@ aaa
 ^$
 bbb
 ---///---
-_vi_cc mode:mode_internal_normal
+nv_vi_cc mode:mode_internal_normal
 Does not delete empty line.
 ***
 aaa
@@ -20,7 +20,7 @@ aaa
 ^$
 bbb
 ---///---
-_vi_cc mode:mode_internal_normal
+nv_vi_cc mode:mode_internal_normal
 Skips over lhs indentation
 ***
 aaa
@@ -31,7 +31,7 @@ aaa
     ^$
 bbb
 ---///---
-_vi_cc mode:mode_internal_normal count:2
+nv_vi_cc mode:mode_internal_normal count:2
 Can delete 2 lines
 ***
 aaa

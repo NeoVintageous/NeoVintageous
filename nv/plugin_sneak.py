@@ -47,7 +47,7 @@ from NeoVintageous.nv.vim import VISUAL_LINE
 
 
 __all__ = [
-    '_nv_sneak_command'
+    'nv_sneak_command'
 ]
 
 
@@ -73,7 +73,7 @@ class SneakInputMotion(ViMotionDef):
 class Sneaks(SneakInputMotion):
     def translate(self, view):
         return {
-            'motion': '_nv_sneak',
+            'motion': 'nv_sneak',
             'motion_args': {
                 'mode': get_mode(view),
                 'count': get_count(view),
@@ -87,7 +87,7 @@ class Sneaks(SneakInputMotion):
 class SneakS(SneakInputMotion):
     def translate(self, view):
         return {
-            'motion': '_nv_sneak',
+            'motion': 'nv_sneak',
             'motion_args': {
                 'mode': get_mode(view),
                 'count': get_count(view),
@@ -105,7 +105,7 @@ def _set_last_sneak_search(view, value: str) -> None:
     set_internal_setting(view.window(), 'last_sneak_search', value)
 
 
-class _nv_sneak_command(TextCommand):
+class nv_sneak_command(TextCommand):
     def run(self, edit, mode, count, search=None, forward=True, save=True):
         if len(self.view.sel()) != 1:
             ui_bell('sneak does not support multiple cursors')

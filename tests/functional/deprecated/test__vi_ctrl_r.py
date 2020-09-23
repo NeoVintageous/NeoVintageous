@@ -18,15 +18,15 @@
 from NeoVintageous.tests import unittest
 
 
-class Test__vi_ctrl_r(unittest.ViewTestCase):
+class Test__nv_vi_ctrl_r(unittest.ViewTestCase):
 
     def test_does_not_linger_past_soft_eol(self):
         self.write('abc\nxxx\nabc\nabc')
         self.select(4)
 
-        self.view.run_command('_vi_dd', {'mode': unittest.INTERNAL_NORMAL})
-        self.view.window().run_command('_vi_u')
-        self.view.window().run_command('_vi_ctrl_r')  # passing mode is irrelevant
+        self.view.run_command('nv_vi_dd', {'mode': unittest.INTERNAL_NORMAL})
+        self.view.window().run_command('nv_vi_u')
+        self.view.window().run_command('nv_vi_ctrl_r')  # passing mode is irrelevant
 
         self.assertContent('abc\nabc\nabc')
         self.assertSelection(4)
@@ -35,9 +35,9 @@ class Test__vi_ctrl_r(unittest.ViewTestCase):
         self.write('abc\nxxx foo bar\nabc\nabc')
         self.select(12)
 
-        self.view.run_command('_vi_big_d', {'mode': unittest.INTERNAL_NORMAL})
-        self.view.window().run_command('_vi_u')
-        self.view.window().run_command('_vi_ctrl_r')  # passing mode is irrelevant
+        self.view.run_command('nv_vi_big_d', {'mode': unittest.INTERNAL_NORMAL})
+        self.view.window().run_command('nv_vi_u')
+        self.view.window().run_command('nv_vi_ctrl_r')  # passing mode is irrelevant
 
         self.assertContent('abc\nxxx foo \nabc\nabc')
         self.assertSelection(11)

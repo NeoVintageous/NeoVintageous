@@ -41,7 +41,7 @@ from NeoVintageous.nv.vim import run_motion
 
 
 __all__ = [
-    '_nv_commentary_command'
+    'nv_commentary_command'
 ]
 
 
@@ -56,7 +56,7 @@ class CommentaryMotion(ViOperatorDef):
 
     def translate(self, view):
         return {
-            'action': '_nv_commentary',
+            'action': 'nv_commentary',
             'action_args': {
                 'action': 'c',
                 'mode': get_mode(view),
@@ -75,7 +75,7 @@ class CommentaryLines(ViOperatorDef):
 
     def translate(self, view):
         return {
-            'action': '_nv_commentary',
+            'action': 'nv_commentary',
             'action_args': {
                 'action': 'cc',
                 'mode': get_mode(view),
@@ -97,7 +97,7 @@ class CommentaryBlock(ViOperatorDef):
 
     def translate(self, view):
         return {
-            'action': '_nv_commentary',
+            'action': 'nv_commentary',
             'action_args': {
                 'action': 'C',
                 'mode': get_mode(view),
@@ -106,7 +106,7 @@ class CommentaryBlock(ViOperatorDef):
         }
 
 
-class _nv_commentary_command(TextCommand):
+class nv_commentary_command(TextCommand):
     def run(self, edit, action, **kwargs):
         if action == 'c':
             _do_c(self.view, edit, **kwargs)

@@ -1,4 +1,4 @@
-_vi_right_brace mode:mode_normal
+nv_vi_right_brace mode:mode_normal
 can move 1 block
 ***
 ^$
@@ -17,7 +17,7 @@ bbb
 bbb
 
 ---///---
-_vi_right_brace mode:mode_normal count:2
+nv_vi_right_brace mode:mode_normal count:2
 can move 2 blocks
 ***
 ^$
@@ -36,7 +36,7 @@ bbb
 bbb
 ^$
 ---///---
-_vi_right_brace mode:mode_normal count:1
+nv_vi_right_brace mode:mode_normal count:1
 skips over blank lines
 ***
 ^$
@@ -57,7 +57,7 @@ bbb
 bbb
 
 ---///---
-_vi_right_brace mode:mode_normal count:2
+nv_vi_right_brace mode:mode_normal count:2
 skips over blank lines count >1
 ***
 ^$
@@ -80,7 +80,7 @@ bbb
 bbb
 ^$
 ---///---
-_vi_right_brace mode:mode_normal count:20
+nv_vi_right_brace mode:mode_normal count:20
 can reach EOF with large count
 ***
 ^$

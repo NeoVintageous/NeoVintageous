@@ -166,7 +166,7 @@ def get_last_buffer_search(view) -> str:
 
 def get_last_buffer_search_command(view) -> str:
     # Supports repeating the last search commands. For example the command "n".
-    return _get_private(view.window(), 'last_buffer_search_command', 'vi_slash')
+    return _get_private(view.window(), 'last_buffer_search_command', 'nv_vi_slash')
 
 
 def set_last_buffer_search(view, value: str) -> None:
@@ -200,7 +200,7 @@ def set_motion_count(view, value: str) -> None:
     set_session_view_value(view, 'motion_count', value)
 
 
-# This setting isn't reset automatically. _enter_normal_mode mode must take care
+# This setting isn't reset automatically. nv_enter_normal_mode mode must take care
 # of that so it can repeat the commands issued while in insert mode.
 def get_normal_insert_count(view) -> int:
     # Count issued to 'i' or 'a', etc. These commands enter insert mode. If
@@ -234,9 +234,9 @@ def set_partial_sequence(view, value: str) -> None:
 
 
 def is_processing_notation(view) -> bool:
-    # Indicate whether _nv_process_notation is running.
+    # Indicate whether nv_process_notation is running.
     #
-    # Indicates whether _nv_process_notation is running a command and is
+    # Indicates whether nv_process_notation is running a command and is
     # grouping all edits in one single undo step. That is, we are running a non-
     # interactive sequence of commands.
     #
@@ -336,7 +336,7 @@ def append_sequence(view, value: str) -> None:
 def get_glue_until_normal_mode(view) -> bool:
     # Indicate that editing commands should be grouped together. They should be
     # grouped together in a single undo step after the user requested
-    # `_enter_normal_mode` next. This property is *VOLATILE*; it shouldn't be
+    # `nv_enter_normal_mode` next. This property is *VOLATILE*; it shouldn't be
     # persisted between sessions.
     return get_session_view_value(view, 'glue_until_normal_mode', False)
 

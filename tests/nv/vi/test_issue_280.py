@@ -31,7 +31,7 @@ class TestIssue280(unittest.ViewTestCase):
 
     def _run_caW(self):
         self.view.run_command(
-            '_vi_c',
+            'nv_vi_c',
             {
                 'motion': {
                     'motion_args': {
@@ -40,7 +40,7 @@ class TestIssue280(unittest.ViewTestCase):
                         'count': 1,
                         'inclusive': True
                     },
-                    'motion': '_vi_select_text_object'
+                    'motion': 'nv_vi_select_text_object'
                 },
                 'mode': unittest.INTERNAL_NORMAL,
                 'count': 1,
@@ -73,10 +73,10 @@ class TestIssue280(unittest.ViewTestCase):
 
     def _run_daW(self):
         self.view.run_command(
-            '_vi_d',
+            'nv_vi_d',
             {
                 'motion': {
-                    'motion': '_vi_select_text_object',
+                    'motion': 'nv_vi_select_text_object',
                     'motion_args': {
                         'inclusive': True,
                         'count': 1,
