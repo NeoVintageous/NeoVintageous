@@ -186,7 +186,7 @@ _options = {
     'modelines': NumberOption('modelines', 5),
     'number': BooleanViewOption('line_numbers'),
     'relativenumber': BooleanViewOption('relative_line_numbers'),
-    'scrolloff': NumberOption('scrolloff', 5),
+    'scrolloff': NumberViewOption('scroll_context_lines'),
     'shell': StringOption('shell', _get_default_shell()),
     'sidebar': BooleanIsVisibleOption('sidebar', True),  # {not in Vim}
     'sidescrolloff': NumberOption('sidescrolloff', 5),

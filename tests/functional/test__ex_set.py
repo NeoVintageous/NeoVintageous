@@ -88,6 +88,15 @@ class Test_ex_set(unittest.FunctionalTestCase):
         self.assertStatusMessage('modelines=5')
 
     @unittest.mock_status_message()
+    def test_set_scrolloff(self):
+        self.feed(':set scrolloff=8')
+        self.assertOption('scrolloff', 8)
+        self.feed(':set scrolloff=5')
+        self.assertOption('scrolloff', 5)
+        self.feed(':set scrolloff?')
+        self.assertStatusMessage('scrolloff=5')
+
+    @unittest.mock_status_message()
     def test_set_spell(self):
         self.assertOption('spell', False)
         self.feed(':set spell')
