@@ -147,12 +147,12 @@ class TestStateCounts(unittest.ViewTestCase):
     def test_fails_if_bad_action_count(self):
         def set_count():
             set_action_count(self.view, 'x')
-        self.assertRaises(AssertionError, set_count)
+        self.assertRaises(ValueError, set_count)
 
     def test_fails_if_bad_motion_count(self):
         def set_count():
             set_motion_count(self.view, 'x')
-        self.assertRaises(AssertionError, set_count)
+        self.assertRaises(ValueError, set_count)
 
     def test_count_is_never_less_than1(self):
         set_motion_count(self.view, '0')
@@ -161,7 +161,7 @@ class TestStateCounts(unittest.ViewTestCase):
         def set_count():
             set_motion_count(self.view, '-1')
 
-        self.assertRaises(AssertionError, set_count)
+        self.assertRaises(ValueError, set_count)
 
     def test_can_retrieve_good_motion_count(self):
         set_motion_count(self.view, '10')

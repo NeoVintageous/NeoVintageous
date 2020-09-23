@@ -209,11 +209,11 @@ class TestRegister(RegistersTestCase):
         self.assertEqual(registers_get(self.view, _UNNAMED), ["foo"])
 
     def test_setting_long_register_name_throws_assertion_error(self):
-        with self.assertRaisesRegex(AssertionError, 'names must be 1 char long'):
+        with self.assertRaisesRegex(ValueError, 'Register names must be 1 char long: name'):
             registers_set(self.view, 'name', 'foo')  # type: ignore
 
     def test_setting_non_list_value_throws_assertion_error(self):
-        with self.assertRaisesRegex(AssertionError, 'values must be inside a list'):
+        with self.assertRaisesRegex(ValueError, 'Register values must be inside a list'):
             registers_set(self.view, 'a', 'foo')  # type: ignore
 
     def test_register_data_is_always_stored_as_string(self):

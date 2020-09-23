@@ -267,7 +267,9 @@ def registers_get_for_paste(view, register: str, mode: str) -> tuple:
 def _set(view, name: str, values: list, linewise: bool = False) -> None:
     name = str(name)
 
-    assert len(name) == 1, "Register names must be 1 char long: " + name
+    # TODO Is this check necessary; this was an assertion which are disabled in <4000 which is good
+    if len(name) != 1:
+        raise ValueError('Register names must be 1 char long: ' + name)
 
     if name == _BLACK_HOLE:
         return
@@ -275,7 +277,9 @@ def _set(view, name: str, values: list, linewise: bool = False) -> None:
     if not _is_writable_register(name):
         return None  # Vim fails silently.
 
-    assert isinstance(values, list), "Register values must be inside a list."
+    # TODO Is this check necessary; this was an assertion which are disabled in <4000 which is good
+    if not isinstance(values, list):
+        raise ValueError('Register values must be inside a list')
 
     values = [str(v) for v in values]
 
