@@ -86,6 +86,10 @@ _MODES = (
 ST_VERSION = int(_version())
 
 
+def is_py38() -> bool:
+    return sys.version_info >= (3, 8)
+
+
 class ViewTestCase(unittest.TestCase):
 
     def setUp(self) -> None:

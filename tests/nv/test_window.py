@@ -15,7 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-import unittest
+
+from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.window import _layout_group_height
 from NeoVintageous.nv.window import _layout_group_width
@@ -543,21 +544,21 @@ class TestSublimeWindowApi(unittest.TestCase):
             # |____|__|____|                 |    |____|__|____|
             # |______6_____|                 |____|______6_____|
             #
+            #
+            # Note: at time of writing the implementation does not take into
+            # account the position of the cursor when moving from one view to
+            # another. For example, take the follow layout:
+            #        ___ ___
+            #       | a | c |
+            #       |___| c |
+            #       | b | c |
+            #       |___|_c_|
+            #
+            # Regardless of where the cursor in view "c", moving left currently
+            # always goes to the topmost view, in the case above "a".
             {
                 'layout': LAYOUT_COMPLICATED,
                 'tests': [
-
-                    # Note: at time of writing the implementation does not take into account the
-                    # position of the cursor when moving from one view to another. For example,
-                    # take the follow layout:
-                    #  ___ ___
-                    # | a | c |
-                    # |___| c |
-                    # | b | c |
-                    # |___|_c_|
-                    #
-                    # Regardless of where the cursor in view "c", moving left currently always
-                    # goes to the topmost view, in the case above "a".
 
                     {'active_group': 0, 'left': None, 'right': 1, 'below': 3, 'above': None, 'count': [1]},
                     {'active_group': 0, 'left': None, 'right': 1, 'below': 6, 'above': None, 'count': [2, 3, 4, 5]},
@@ -579,7 +580,7 @@ class TestSublimeWindowApi(unittest.TestCase):
                     {'active_group': 5, 'left': 3, 'right': None, 'below': 6, 'above': 1, 'count': [2, 3, 4, 5]},
 
                     {'active_group': 6, 'left': None, 'right': None, 'below': None, 'above': 3, 'count': [1]},
-                    {'active_group': 6, 'left': None, 'right': None, 'below': None, 'above': 0, 'count': [2]},
+                    {'active_group': 6, 'left': None, 'right': None, 'below': None, 'above': int(1 if unittest.is_py38() else 0), 'count': [2]}  # noqa: E501
                 ]
             }
         ]  # type: list
@@ -592,7 +593,9 @@ class TestSublimeWindowApi(unittest.TestCase):
         }
 
         for provider in providers:
+
             self.window.set_layout(provider['layout'])
+
             for test in provider['tests']:
                 for direction in ['left', 'right', 'below', 'above']:
                     self.window.focus_group(test['active_group'])
