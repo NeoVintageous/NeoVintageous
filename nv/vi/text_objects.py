@@ -314,7 +314,7 @@ def _get_text_object_paragraph(view, s: Region, inclusive: bool, count: int) -> 
     return find_paragraph_text_object(view, s, inclusive, count)
 
 
-def _get_text_object_bracket(view, s: Region, inclusive: bool, count: int, delims: dict) -> Region:
+def _get_text_object_bracket(view, s: Region, inclusive: bool, count: int, delims: tuple) -> Region:
     opening = find_prev_lone_bracket(view, max(0, s.begin() - 1), delims)
     closing = find_next_lone_bracket(view, s.end(), delims)
 
@@ -344,7 +344,7 @@ def _get_text_object_bracket(view, s: Region, inclusive: bool, count: int, delim
     return Region(a, b)
 
 
-def _get_text_object_quote(view, s: Region, inclusive: bool, count: int, delims) -> Region:
+def _get_text_object_quote(view, s: Region, inclusive: bool, count: int, delims: tuple) -> Region:
     line = view.line(s)
 
     delim_open = delims[0]
