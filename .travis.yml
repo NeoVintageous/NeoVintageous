@@ -45,7 +45,7 @@ install:
                 pip install flake8-docstrings;
                 pip install pydocstyle;
                 pip install coverage==4.5.4;
-                pip install codecov==2.0.15;
+                pip install codecov;
                 pip install python-coveralls;
                 pip install mypy;
                 flake8 --version;

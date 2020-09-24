@@ -11,6 +11,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#733](https://github.com/NeoVintageous/NeoVintageous/issues/733): `[or`, `]or`, `yor`, enable, disable, and toggle `'relativenumber'` (Unimpaired) (ST4)
 * Added [#732](https://github.com/NeoVintageous/NeoVintageous/issues/732): new option `'relativenumber'` `'rnu'` `'norelativenumber'` `'nornu'` (ST4)
 
+## 1.21.5 - Unreleased
+
+* Fixed [#747](https://github.com/NeoVintageous/NeoVintageous/issues/747): Key mapping doesn't work with foreign character č
+
 ## 1.21.4 - 2020-08-27
 
 * Fixed [#742](https://github.com/NeoVintageous/NeoVintageous/issues/742): Escaping from ST's own multi-cursor selection removes all selections
