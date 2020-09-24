@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.21.5 - Unreleased
+
+* Fixed [#747](https://github.com/NeoVintageous/NeoVintageous/issues/747): Key mapping doesn't work with foreign character č
+
 ## 1.21.4 - 2020-08-27
 
 * Fixed [#742](https://github.com/NeoVintageous/NeoVintageous/issues/742): Escaping from ST's own multi-cursor selection removes all selections

@@ -171,6 +171,7 @@
     {"keys": ["ç"],         "command": "_nv_feed_key", "args": {"key": "ç"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["ñ"],         "command": "_nv_feed_key", "args": {"key": "ñ"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["ö"],         "command": "_nv_feed_key", "args": {"key": "ö"},        "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["č"],         "command": "_nv_feed_key", "args": {"key": "č"},        "context": [{"key": "vi_command_mode_aware"}]},
 
     {"keys": ["alt+backspace"], "command": "_nv_feed_key", "args": {"key": "<M-bs>"}, "context": [{"key": "nv.alt_key_enabled", "operand": "backspace"}]},
     {"keys": ["alt+delete"], "command": "_nv_feed_key", "args": {"key": "<M-del>"}, "context": [{"key": "nv.alt_key_enabled", "operand": "backspace"}]},
