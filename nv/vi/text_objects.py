@@ -179,7 +179,7 @@ def current_word_end(view, pt: int) -> int:
 
 # https://vimhelp.appspot.com/motion.txt.html#word
 # Used for motions in operations like daw and caw
-def a_word(view, pt: int, inclusive: bool = True, count: int = 1) -> Region:
+def _a_word(view, pt: int, inclusive: bool = True, count: int = 1) -> Region:
     assert count > 0
     start = current_word_start(view, pt)
     end = pt
@@ -367,7 +367,7 @@ def _get_text_object_quote(view, s: Region, inclusive: bool, count: int, delims:
 
 
 def _get_text_object_word(view, s: Region, inclusive: bool, count: int) -> Region:
-    w = a_word(view, s.b, inclusive=inclusive, count=count)
+    w = _a_word(view, s.b, inclusive=inclusive, count=count)
     if s.size() <= 1:
         return w
 
