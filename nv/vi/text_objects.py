@@ -100,15 +100,15 @@ PAIRS = {
 
 
 def is_at_punctuation(view, pt: int) -> bool:
-    next_char = view.substr(pt)
+    char = view.substr(pt)
     # FIXME Wrong if pt is at '\t'
-    return (not (is_at_word(view, pt) or next_char.isspace() or next_char == '\n') and next_char.isprintable())
+    return (not (is_at_word(view, pt) or char.isspace() or char == '\n') and char.isprintable())
 
 
 def is_at_word(view, pt: int) -> bool:
-    next_char = view.substr(pt)
+    char = view.substr(pt)
 
-    return (next_char.isalnum() or next_char == '_')
+    return char.isalnum() or char == '_'
 
 
 def is_at_space(view, pt: int) -> bool:
@@ -160,7 +160,6 @@ def next_word_start(view, pt: int) -> int:
 def current_word_start(view, pt: int) -> int:
     if is_at_punctuation(view, pt):
         return get_punctuation_region(view, pt).a
-
     elif is_at_space(view, pt):
         return get_space_region(view, pt).a
 
@@ -170,7 +169,6 @@ def current_word_start(view, pt: int) -> int:
 def current_word_end(view, pt: int) -> int:
     if is_at_punctuation(view, pt):
         return get_punctuation_region(view, pt).b
-
     elif is_at_space(view, pt):
         return get_space_region(view, pt).b
 
