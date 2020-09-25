@@ -26,7 +26,14 @@ class TestTextObjectSelection(unittest.FunctionalTestCase):
         self.eq('x  |  f|izz    xx', 'v_aw', 'x  |  fizz    |xx')
         self.eq('x    fi|zz    xx    yy    zz', 'v_3aw', 'x    |fizz    xx    yy    |zz')
         self.eq(' f|iz    b', 'v_aw', ' |fiz    |b')
-        # self.eq(' fi|z    b', 'v_aw', ' |fiz    |b')  # FIXME NeoVintageous/NeoVintageous#748
+
+    @unittest.expectedFailure
+    def test_vaw_issue_748_01(self):
+        self.eq(' fi|z    b', 'v_aw', ' |fiz    |b')
+
+    @unittest.expectedFailure
+    def test_vaw_issue_748_02(self):
+        self.eq('fi|z\nbuz x', 'v_aw', '|fiz|\nbuz x')
 
     def test_viw(self):
         self.eq('x    fi|zz    xx', 'v_iw', 'x    |fizz|    xx')
@@ -42,7 +49,30 @@ class TestTextObjectSelection(unittest.FunctionalTestCase):
         self.eq(' |fiz| b', 'v_iw', ' |fiz |b')
         self.eq(' |fiz|    b', 'v_iw', ' |fiz    |b')
         self.eq(' |fiz|...b', 'v_iw', ' |fiz...|b')
-        # self.eq('a fi|z b', 'v_iw', 'a |fiz| b')  # FIXME NeoVintageous/NeoVintageous#748
+
+    @unittest.expectedFailure
+    def test_viw_issue_748_01(self):
+        self.eq('a fi|z b', 'v_iw', 'a |fiz| b')
+
+    @unittest.expectedFailure
+    def test_viw_issue_748_02(self):
+        self.eq('fi|z\nbuz x', 'v_iw', '|fiz|\nbuz x')
+
+    @unittest.expectedFailure
+    def test_viw_issue_748_03(self):
+        self.eq('|fiz|\nbuz x', 'v_iw', '|fiz\nbuz| x')
+
+    @unittest.expectedFailure
+    def test_viw_issue_748_04(self):
+        self.eq('r_fiz...b|uz|z', 'v_iw', 'r_fiz...|buz|z')
+
+    @unittest.expectedFailure
+    def test_viw_issue_748_05(self):
+        self.eq('r_fiz...|buz|z', 'v_iw', 'r_fiz|...buz|z')
+
+    @unittest.expectedFailure
+    def test_viw_issue_748_06(self):
+        self.eq('r_fiz   |buz|z', 'v_iw', 'r_fiz|   buz|z')
 
     def test_vaW(self):
         self.eq('x    fi|zz    xx', 'v_aW', 'x    |fizz    |xx')

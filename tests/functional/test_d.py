@@ -106,14 +106,21 @@ class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
     def test_diw(self):
         self.eq('a fi|zz.b', 'diw', 'a |.b')
         self.eq('a .|..b', 'diw', 'a |b')
-        # self.eq('a fi|zz b', 'diw', 'a | b')  # FIXME NeoVintageous/NeoVintageous#748
-        # self.eq('a fi|zz    b', 'diw', 'a |    b')  # FIXME NeoVintageous/NeoVintageous#748
+
+    @unittest.expectedFailure
+    def test_diw_issue_748_01(self):
+        self.eq('a fi|zz b', 'diw', 'a | b')
+
+    @unittest.expectedFailure
+    def test_diw_issue_748_02(self):
+        self.eq('a fi|zz    b', 'diw', 'a |    b')
 
     def test_daw(self):
         self.eq('a fi|zz b', 'daw', 'a |b')
         self.eq('a fi|zz    b', 'daw', 'a |b')
         self.eq('a fi|zz.b', 'daw', 'a|.b')
         self.eq('a    fi|zz.b', 'daw', 'a|.b')
+        self.eq('\n\n|\n\n\n', 'daw', '\n\n|\n\n')
 
     def test_d__dollar(self):
         self.eq('one t|wo three', 'd$', 'one |t')

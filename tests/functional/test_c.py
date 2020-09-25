@@ -72,17 +72,44 @@ class Test_c(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('a .|.. b', 'ciw', 'i_a | b')
         self.eq('a.|..b', 'ciw', 'i_a|b')
 
+    @unittest.expectedFailure
+    def test_ciw_issue_748_01(self):
+        self.eq('x\n\n|\n\nx', 'ciw', 'i_x\n\n|\n\nx')
+
+    @unittest.expectedFailure
+    def test_ciw_issue_748_02(self):
+        self.eq('\n|\nx\nx\n', 'ciw', 'i_\n|\nx\nx\n')
+
     def test_caw(self):
         self.eq('a fi|zz...', 'caw', 'i_a|...')
         self.eq('a    fi|zz...', 'caw', 'i_a|...')
-        # self.eq('a fi|zz b', 'caw', 'i_a |b')  # FIXME NeoVintageous/NeoVintageous#748
-        # self.eq('a fi|zz    b', 'caw', 'i_a |b')  # FIXME NeoVintageous/NeoVintageous#748
-        self.eq('1\na fi|zz b\n3', 'caw', 'i_1\na | b\n3')
-        self.eq('one t|wo\nthree four', '2caw', 'i_one | four')
         self.eq('one t|wo\nthree\nfour', '2caw', 'i_one|\nfour')
         self.eq('one |two\nthree\nfour', '2caw', 'i_one|\nfour')
-        self.eq('one |two\nthree\nfour', '2caw', 'i_one|\nfour')
-        self.eq('one |two\nthree four', '2caw', 'i_one | four')
+        self.eq('x\n\n|\n\nx', 'caw', 'i_x\n\n|\nx')
+
+    @unittest.expectedFailure
+    def test_caw_issue_748_01(self):
+        self.eq('a fi|zz b', 'caw', 'i_a |b')
+
+    @unittest.expectedFailure
+    def test_caw_issue_748_02(self):
+        self.eq('a fi|zz    b', 'caw', 'i_a |b')
+
+    @unittest.expectedFailure
+    def test_caw_issue_748_03(self):
+        self.eq('\n|\nfoo\nx\n', 'caw', 'i_x\n|\nx\n')
+
+    @unittest.expectedFailure
+    def test_caw_issue_748_04(self):
+        self.eq('1\na fi|zz b\n3', 'caw', 'i_1\na |b\n3')
+
+    @unittest.expectedFailure
+    def test_caw_issue_748_05(self):
+        self.eq('one t|wo\nthree four', '2caw', 'i_one |four')
+
+    @unittest.expectedFailure
+    def test_caw_issue_748_06(self):
+        self.eq('one |two\nthree four', '2caw', 'i_one |four')
 
     def test_c__dollar(self):
         self.eq('one |two three', 'c$', 'i_one |')
