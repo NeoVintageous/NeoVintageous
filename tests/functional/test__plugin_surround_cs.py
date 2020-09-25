@@ -82,16 +82,13 @@ class TestSurround_cs(unittest.FunctionalTestCase):
         self.eq('"a|bc"', 'cs"\'', "|'abc'")
         self.eq('"ab|c"', 'cs"\'', "|'abc'")
         self.eq('"abc|"', 'cs"\'', "|'abc'")
-        # FIXME self.eq('x|(abc)y', 'cs("', 'x|"abc"y')
         self.eq('x(|abc)y', 'cs("', 'x|"abc"y')
         self.eq('x(a|bc)y', 'cs("', 'x|"abc"y')
         self.eq('x(ab|c)y', 'cs("', 'x|"abc"y')
         self.eq('x(abc|)y', 'cs("', 'x|"abc"y')
-        # FIXME self.eq('x|(abc)y', 'cs)"', 'x|"abc"y')
         self.eq('x(a|bc)y', 'cs)"', 'x|"abc"y')
         self.eq('x(ab|c)y', 'cs)"', 'x|"abc"y')
         self.eq('x(abc|)y', 'cs)"', 'x|"abc"y')
-        # FIXME self.eq('x|(abc)y', 'csb"', 'x|"abc"y')
         self.eq('x(|abc)y', 'csb"', 'x|"abc"y')
         self.eq('x(a|bc)y', 'csb"', 'x|"abc"y')
         self.eq('x(ab|c)y', 'csb"', 'x|"abc"y')
@@ -101,6 +98,18 @@ class TestSurround_cs(unittest.FunctionalTestCase):
         self.eq('x"ab"x|"cd"x"ef"', 'cs"\'', 'x"ab|\'x\'cd"x"ef"')
         self.eq('x"ab"x"cd|"x"ef"', 'cs"\'', 'x"ab"x|\'cd\'x"ef"')
         self.eq('x"ab"x"cd"x|"ef"', 'cs"\'', 'x"ab"x"cd|\'x\'ef"')
+
+    @unittest.expectedFailure
+    def test_should_work_in_all_cursor_positions_bug_01(self):
+        self.eq('x|(abc)y', 'cs("', 'x|"abc"y')
+
+    @unittest.expectedFailure
+    def test_should_work_in_all_cursor_positions_bug_02(self):
+        self.eq('x|(abc)y', 'cs)"', 'x|"abc"y')
+
+    @unittest.expectedFailure
+    def test_should_work_in_all_cursor_positions_bug_03(self):
+        self.eq('x|(abc)y', 'csb"', 'x|"abc"y')
 
     def test_should_work_within_line_for_quote_marks(self):
         self.eq('x"abc|"\n"def"', 'cs"\'', 'x|\'abc\'\n"def"')

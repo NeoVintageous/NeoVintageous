@@ -16,6 +16,7 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 from unittest import TestCase  # noqa: F401
+from unittest import expectedFailure  # noqa: F401
 from unittest import mock  # noqa: F401
 from unittest import skipIf  # noqa: F401
 import copy

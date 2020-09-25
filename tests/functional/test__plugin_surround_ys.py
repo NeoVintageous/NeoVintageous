@@ -44,9 +44,12 @@ class TestSurround_ys(unittest.FunctionalTestCase):
         self.eq('one |two three', 'ysiwr', 'one |[two] three')
         self.eq('one |two three', 'ysiw{', 'one |{ two } three')
         self.eq('one |two three', 'ysiw}', 'one |{two} three')
-        # FIXME self.eq('one |two three', 'ysiwafoo>', 'one |<foo>two</foo> three')
         self.eq('one |two three', 'ysiwB', 'one |{two} three')
         self.eq('one |two three', 'ysiw<foo>', 'one |<foo>two</foo> three')
+
+    @unittest.expectedFailure
+    def test_ysiw_bug_01(self):
+        self.eq('one |two three', 'ysiwafoo>', 'one |<foo>two</foo> three')
 
     def test_yss(self):
         self.eq('abc', 'yss)', '|(abc)')
@@ -61,4 +64,7 @@ class TestSurround_ys(unittest.FunctionalTestCase):
 
     def test_tags(self):
         self.eq('"fi|zz"', 'ysiw<i x="y">', '"|<i x="y">fizz</i>"')
-        # FIXME self.eq('"fi|zz"', 'ysiwti x="y">', '"|<i x="y">fizz</i>"')
+
+    @unittest.expectedFailure
+    def test_tags_bug_01(self):
+        self.eq('"fi|zz"', 'ysiwti x="y">', '"|<i x="y">fizz</i>"')
