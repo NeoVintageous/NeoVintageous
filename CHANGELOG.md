@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.22.0 - Unreleased
+## 1.22.0 - 2020-10-25
 
 ### Added
 
