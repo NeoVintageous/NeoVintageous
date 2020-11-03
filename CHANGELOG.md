@@ -11,6 +11,20 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#733](https://github.com/NeoVintageous/NeoVintageous/issues/733): `[or`, `]or`, `yor`, enable, disable, and toggle `'relativenumber'` (Unimpaired) (ST4)
 * Added [#732](https://github.com/NeoVintageous/NeoVintageous/issues/732): new option `'relativenumber'` `'rnu'` `'norelativenumber'` `'nornu'` (ST4)
 
+### Changed
+
+* Changed [#751](https://github.com/NeoVintageous/NeoVintageous/issues/751): All commands that started with an underscore have been renamed with prefix "nv_". You don't need to do anything unless you have customisations that use those commands. The reason for the change is in ST4 Python 3.8 leading underscored commands are ignored.
+
+  Here are some some examples of changed commands:
+
+  old | new
+  --- | ---
+  `_enter_normal_mode` | `nv_enter_normal_mode`
+  `_enter_insert_mode` | `nv_enter_insert_mode`
+  `_nv_feed_key` | `nv_feed_key`
+  `_vi_w` | `nv_vi_w`
+  `_vi_w` | `nv_vi_w`
+
 ## 1.21.5 - 2020-10-25
 
 * Fixed [#747](https://github.com/NeoVintageous/NeoVintageous/issues/747): Key mapping doesn't work with foreign character č
