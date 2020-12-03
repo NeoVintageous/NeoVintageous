@@ -7,11 +7,11 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Added
 
 * Added [#754](https://github.com/NeoVintageous/NeoVintageous/issues/754): Implement `ctrl-w_ctrl-]` split view and and jump to definition (ST4)
-* Added [#470](https://github.com/NeoVintageous/NeoVintageous/issues/470): New setting `vintageous_handle_keys` for granular control of key handler
+* Added [#470](https://github.com/NeoVintageous/NeoVintageous/issues/470): New setting `vintageous_handle_keys` for granular control of enabled keys
 
 ### Changed
 
-* Changed [#711](https://github.com/NeoVintageous/NeoVintageous/issues/711): Ctrl keys are now enabled by defaule, to disable set `vintageous_use_ctrl_keys` to false or use the new setting `vintageous_handle_keys` to disable specific keys
+* Changed [#711](https://github.com/NeoVintageous/NeoVintageous/issues/711): Ctrl keys are now enabled by default, to disable set `vintageous_use_ctrl_keys` to false or use the new `vintageous_handle_keys` setting to disable specific keys
 
 ## 1.22.0 - 2020-10-25
 
