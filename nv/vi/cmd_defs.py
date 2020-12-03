@@ -1719,6 +1719,21 @@ class ViJumpToDefinition(ViOperatorDef):
         }
 
 
+@assign(seqs.CTRL_W_CTRL_RIGHT_SQUARE_BRACKET, ACTION_MODES)
+@assign(seqs.CTRL_W_RIGHT_SQUARE_BRACKET, ACTION_MODES)
+class ViSplitAndJumpToDefinition(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def translate(self, view):
+        return {
+            'action': 'nv_vi_ctrl_w',
+            'action_args': {
+                'action': ']'
+            }
+        }
+
+
 @assign(seqs.A, (NORMAL,))
 class ViInsertAfterChar(ViOperatorDef):
     def __init__(self, *args, **kwargs):

@@ -673,6 +673,8 @@ def window_control(window, action: str, count: int = 1, **kwargs) -> None:
         _split_vertically(window, count)
     elif action == 'x':
         _exchange_view_by_count(window, count)
+    elif action == ']':
+        window.run_command('goto_definition', {'side_by_side': True})
     else:
         raise ValueError('unknown action')
 
