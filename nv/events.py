@@ -23,6 +23,7 @@ from NeoVintageous.nv.modeline import do_modeline
 from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.session import session_on_close
 from NeoVintageous.nv.settings import get_mode
+from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.state import init_state
 from NeoVintageous.nv.utils import fix_eol_cursor
 from NeoVintageous.nv.utils import is_view
@@ -119,6 +120,15 @@ class NeoVintageousEvents(EventListener):
         # Returns:
         #   bool: If the context is known.
         #   None: If the context is unknown.
+        if key == 'nv_handle_key':
+            handle_keys = get_setting(view, 'handle_keys')
+
+            try:
+                return bool(handle_keys[operand])
+            except KeyError:
+                # By default all keys are handled.
+                return True
+
         try:
             return _query_contexts[key](view, operator, operand, match_all)
         except KeyError:
