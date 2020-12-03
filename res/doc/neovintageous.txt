@@ -769,12 +769,16 @@ List of available settings:
 
 'vintageous_handle_keys'                            *'vintageous_handle_keys'*
                         boolean (default {})
-        Delegate configured keys to be handled by Sublime Text instead of by
-        NeoVintageous. Any keybinding defined in the Default.sublime-keymap
+        Delegate configured keys to be handled by Sublime Text. Any keybinding
         that has a `{"key": "nv_handle_key", "operand": "<...>"}]}` in the
-        context argument can be delegated back to ST. Example: to use ctrl+f
-        for find (native ST behaviour):
-        `"vintageous_handle_keys": {"<C-f>": false}`.
+        context argument can be delegated back to ST. For example to use
+        ctrl+f for find (native ST behaviour):
+
+            "vintageous_handle_keys": {
+                "<C-f>": false
+            }
+
+        See https://github.com/NeoVintageous/NeoVintageous/blob/master/Default.sublime-keymap
 
                                               *'vintageous_i_escape_jj'*
 'vintageous_i_escape_jj'

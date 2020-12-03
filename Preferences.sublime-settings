@@ -70,11 +70,16 @@
     // Plugin: A port of https://github.com/tpope/vim-unimpaired.
     "vintageous_enable_unimpaired": true,
 
-    // Delegate configured keys to be handled by Sublime Text instead of by
-    // NeoVintageous. Any keybinding defined in the Default.sublime-keymap that
-    // has a `{"key": "nv_handle_key", "operand": "<...>"}]}` in the context
-    // argument can be delegated back to ST. Example: to use ctrl+f for find
-    // (native ST behaviour): `"vintageous_handle_keys": {"<C-f>": false}`.
+    // Delegate configured keys to be handled by Sublime Text. Any keybinding
+    // that has a `{"key": "nv_handle_key", "operand": "<...>"}]}` in the
+    // context argument can be delegated back to ST. For example to use ctrl+f
+    // for find (native ST behaviour): 
+    //
+    //      "vintageous_handle_keys": {
+    //          "<C-f>": false
+    //      }
+    //
+    // https://github.com/NeoVintageous/NeoVintageous/blob/master/Default.sublime-keymap
     "vintageous_handle_keys": {},
 
     // If set to false then pressing a quit key (<Esc> or J) in multiple cursor
