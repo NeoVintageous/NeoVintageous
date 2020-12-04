@@ -123,11 +123,11 @@ class NeoVintageousEvents(EventListener):
         #   None: If the context is unknown.
         if key == 'nv_handle_key':
             handle_keys = get_setting(view, 'handle_keys')
+            if handle_keys:
 
-            try:
-                # Check if a key should be handled only for a specific mode. The
-                # format is "{mode_char}_{key}" e.g. "n_<C-w>", "v_<C-w>"
-                # meaning normal, visual respectively. No prefix implies all
+                # Check if the key should be handled only for a specific mode.
+                # The format is "{mode}_{key}" e.g. "n_<C-w>", "v_<C-w>"
+                # meaning NORMAL, VISUAL respectively. No prefix implies all
                 # modes. See mode_to_char() for a list of valid mode prefixes.
                 cur_mode_char = mode_to_char(get_mode(view))
                 if cur_mode_char:
@@ -136,10 +136,14 @@ class NeoVintageousEvents(EventListener):
                     except KeyError:
                         pass
 
-                return bool(handle_keys[operand])
-            except KeyError:
-                # By default all keys are handled.
-                return True
+                # Check if the key (no mode prefix; all modes) should be handled.
+                try:
+                    return bool(handle_keys[operand])
+                except KeyError:
+                    pass
+
+            # By default all keys are handled.
+            return True
 
         try:
             return _query_contexts[key](view, operator, operand, match_all)
