@@ -769,15 +769,36 @@ List of available settings:
 
 'vintageous_handle_keys'                            *'vintageous_handle_keys'*
                         boolean (default {})
-        Delegate configured keys to be handled by Sublime Text. Any keybinding
-        that has a `{"key": "nv_handle_key", "operand": "<...>"}]}` in the
-        context argument can be delegated back to ST. For example to use
-        ctrl+f for find (native ST behaviour):
+        Delegate configured keys to be handled by Sublime Text. 
+
+        For example to use ctrl+f for find (native ST behaviour):
 
             "vintageous_handle_keys": {
                 "<C-f>": false
             }
 
+        Keys can be delegated by mode too e.g. i_<C-w>, v_<C-w>. The following
+        will only delegate <C-w> back to ST when in insert or visual mode:
+
+            "vintageous_handle_keys": {
+                "i_<C-w>": false
+                "v_<C-w>": false
+            }
+
+        The valid mode prefixes are:
+
+            n_ - Normal
+            i_ - Insert
+            v_ - Visual
+            V_ - Visual line
+            b_ - Visual block
+            s_ - Select
+
+        No prefix implies all modes.
+
+        Any keybinding defined in the default keymap file that has
+        a "nv_handle_key" context constraint can be configured to delegate
+        back to ST.
         See https://github.com/NeoVintageous/NeoVintageous/blob/master/Default.sublime-keymap
 
                                               *'vintageous_i_escape_jj'*

@@ -33,6 +33,7 @@ from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import enter_normal_mode
+from NeoVintageous.nv.vim import mode_to_char
 
 __all__ = ['NeoVintageousEvents']
 
@@ -124,6 +125,17 @@ class NeoVintageousEvents(EventListener):
             handle_keys = get_setting(view, 'handle_keys')
 
             try:
+                # Check if a key should be handled only for a specific mode. The
+                # format is "{mode_char}_{key}" e.g. "n_<C-w>", "v_<C-w>"
+                # meaning normal, visual respectively. No prefix implies all
+                # modes. See mode_to_char() for a list of valid mode prefixes.
+                cur_mode_char = mode_to_char(get_mode(view))
+                if cur_mode_char:
+                    try:
+                        return bool(handle_keys['%s_%s' % (cur_mode_char, operand)])
+                    except KeyError:
+                        pass
+
                 return bool(handle_keys[operand])
             except KeyError:
                 # By default all keys are handled.
