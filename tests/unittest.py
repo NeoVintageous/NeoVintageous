@@ -1942,6 +1942,7 @@ _SEQ2CMD = {
     'rx':           {'command': 'nv_feed_key'},  # noqa: E241
     's':            {'command': 'nv_feed_key'},  # noqa: E241
     's<CR>':        {'command': 'nv_feed_key', 'args': {'keys': ['s', '<CR>']}},  # noqa: E241
+    'sIZ':          {'command': 'nv_feed_key'},  # noqa: E241
     'sab':          {'command': 'nv_feed_key'},  # noqa: E241
     'siz':          {'command': 'nv_feed_key'},  # noqa: E241
     'sx<CR>':       {'command': 'nv_feed_key', 'args': {'keys': ['s', 'x', '<CR>']}},  # noqa: E241

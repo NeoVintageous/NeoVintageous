@@ -829,6 +829,12 @@ List of available settings:
                         boolean (default off)
         Show output panel from shell commands.
 
+                                               *'vintageous_sneak_use_ic_scs'*
+'vintageous_sneak_use_ic_scs'
+                        number (default 0)
+        0: Always case-sensitive
+        1: Case sensitivity is determined by 'ignorecase' and 'smartcase'.
+
                                                   *'vintageous_use_ctrl_keys'*
 'vintageous_use_ctrl_keys'
                         boolean (default on)

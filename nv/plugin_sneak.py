@@ -17,17 +17,21 @@
 
 # A Port of https://github.com/justinmk/vim-sneak.
 
+from sublime import IGNORECASE
 from sublime import LITERAL
 from sublime_plugin import TextCommand
 
+from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.plugin import register
 from NeoVintageous.nv.polyfill import view_find_all_in_range
 from NeoVintageous.nv.polyfill import view_rfind_all
 from NeoVintageous.nv.search import add_search_highlighting
 from NeoVintageous.nv.search import clear_search_highlighting
+from NeoVintageous.nv.search import is_smartcase_pattern
 from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_internal_setting
 from NeoVintageous.nv.settings import get_mode
+from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import set_internal_setting
 from NeoVintageous.nv.settings import set_last_char_search_command
 from NeoVintageous.nv.ui import ui_bell
@@ -105,6 +109,16 @@ def _set_last_sneak_search(view, value: str) -> None:
     set_internal_setting(view.window(), 'last_sneak_search', value)
 
 
+def _get_search_flags(view, search: str) -> int:
+    flags = LITERAL
+
+    if search and get_setting(view, 'sneak_use_ic_scs') == 1:
+        if get_option(view, 'ignorecase') and not is_smartcase_pattern(view, search):
+            flags |= IGNORECASE
+
+    return flags
+
+
 class nv_sneak_command(TextCommand):
     def run(self, edit, mode, count, search=None, forward=True, save=True):
         if len(self.view.sel()) != 1:
@@ -119,12 +133,14 @@ class nv_sneak_command(TextCommand):
 
         clear_search_highlighting(self.view)
 
+        flags = _get_search_flags(self.view, search)
         s = self.view.sel()[0]
         start_pt = get_insertion_point_at_b(s)
+
         if forward:
-            occurrences = view_find_all_in_range(self.view, search, start_pt + 1, self.view.size(), LITERAL)
+            occurrences = view_find_all_in_range(self.view, search, start_pt + 1, self.view.size(), flags)
         else:
-            occurrences = list(view_rfind_all(self.view, search, start_pt, LITERAL))
+            occurrences = list(view_rfind_all(self.view, search, start_pt, flags))
 
         occurrences = occurrences[count - 1:]
 
