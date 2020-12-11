@@ -2,6 +2,19 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.23.0 - Unreleased
+
+### Added
+
+* Added [#750](https://github.com/NeoVintageous/NeoVintageous/issues/750): New setting `vintageous_sneak_use_ic_scs` support sneak `'smartcase'`
+* Added [#109](https://github.com/NeoVintageous/NeoVintageous/issues/109): Implement `i_ctrl-u` delete all entered characters before the cursor in the current line
+* Added [#754](https://github.com/NeoVintageous/NeoVintageous/issues/754): Implement `ctrl-w_ctrl-]` split view and and jump to definition (ST4)
+* Added [#470](https://github.com/NeoVintageous/NeoVintageous/issues/470): New setting `vintageous_handle_keys` for granular control of enabled keys
+
+### Changed
+
+* Changed [#711](https://github.com/NeoVintageous/NeoVintageous/issues/711): Ctrl keys are now enabled by default, to disable set `vintageous_use_ctrl_keys` to false or use the new `vintageous_handle_keys` setting to disable specific keys
+
 ## 1.22.0 - 2020-10-25
 
 ### Added

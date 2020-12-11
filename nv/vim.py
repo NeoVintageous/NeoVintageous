@@ -65,12 +65,28 @@ _MODES = {
     SELECT: 'SELECT',
 }
 
+_MODE2CHAR = {
+    INSERT: 'i',
+    NORMAL: 'n',
+    SELECT: 's',
+    VISUAL: 'v',
+    VISUAL_LINE: 'V',
+    VISUAL_BLOCK: 'b',
+}
+
 
 def mode_to_name(mode: str) -> str:
     try:
         return _MODES[mode]
     except KeyError:
         return '*UNKNOWN'
+
+
+def mode_to_char(mode: str) -> str:
+    try:
+        return _MODE2CHAR[mode]
+    except KeyError:
+        return ''
 
 
 def reset_status_line(view, mode: str) -> None:

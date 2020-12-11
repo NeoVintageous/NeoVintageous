@@ -23,6 +23,7 @@ from NeoVintageous.nv.modeline import do_modeline
 from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.session import session_on_close
 from NeoVintageous.nv.settings import get_mode
+from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.state import init_state
 from NeoVintageous.nv.utils import fix_eol_cursor
 from NeoVintageous.nv.utils import is_view
@@ -32,6 +33,7 @@ from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import enter_normal_mode
+from NeoVintageous.nv.vim import mode_to_char
 
 __all__ = ['NeoVintageousEvents']
 
@@ -119,6 +121,27 @@ class NeoVintageousEvents(EventListener):
         # Returns:
         #   bool: If the context is known.
         #   None: If the context is unknown.
+        if key == 'nv_handle_key':
+            handle_keys = get_setting(view, 'handle_keys')
+            if handle_keys:
+                try:
+                    # Check if the key (no mode prefix; all modes) should be handled.
+                    return bool(handle_keys[operand])
+                except KeyError:
+                    # Check if the key should be handled only for a specific mode.
+                    # The format is "{mode}_{key}" e.g. "n_<C-w>", "v_<C-w>"
+                    # meaning NORMAL, VISUAL respectively. No prefix implies all
+                    # modes. See mode_to_char() for a list of valid mode prefixes.
+                    cur_mode_char = mode_to_char(get_mode(view))
+                    if cur_mode_char:
+                        try:
+                            return bool(handle_keys['%s_%s' % (cur_mode_char, operand)])
+                        except KeyError:
+                            pass
+
+            # By default all keys are handled.
+            return True
+
         try:
             return _query_contexts[key](view, operator, operand, match_all)
         except KeyError:

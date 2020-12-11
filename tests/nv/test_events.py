@@ -154,6 +154,30 @@ class TestOnQueryContextDisabledOrIgnored(unittest.ViewTestCase):
         self.assertEqual(None, self.events.on_query_context(self.view, 'foo', OP_NOT_EQUAL, False, True))
 
 
+class TestOnQueryContextHandleKey(unittest.ViewTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.events = NeoVintageousEvents()
+
+    def test_can_disable_handled_keys(self):
+        self.normal('fi|zz')
+        self.set_setting('handle_keys', {})
+        self.assertEqual(True, self.events.on_query_context(self.view, 'nv_handle_key', OP_EQUAL, '<C-u>', True))
+        self.set_setting('handle_keys', {'<C-u>': False})
+        self.assertEqual(False, self.events.on_query_context(self.view, 'nv_handle_key', OP_EQUAL, '<C-u>', True))
+        self.set_setting('handle_keys', {'v_<C-u>': False})
+        self.assertEqual(True, self.events.on_query_context(self.view, 'nv_handle_key', OP_EQUAL, '<C-u>', True))
+        self.visual('fi|zz')
+        self.assertEqual(False, self.events.on_query_context(self.view, 'nv_handle_key', OP_EQUAL, '<C-u>', True))
+        self.insert('fi|zz')
+        self.assertEqual(True, self.events.on_query_context(self.view, 'nv_handle_key', OP_EQUAL, '<C-u>', True))
+        self.set_setting('handle_keys', {'i_<C-u>': False})
+        self.assertEqual(False, self.events.on_query_context(self.view, 'nv_handle_key', OP_EQUAL, '<C-u>', True))
+        self.set_setting('handle_keys', {'V_<C-u>': False})
+        self.assertEqual(True, self.events.on_query_context(self.view, 'nv_handle_key', OP_EQUAL, '<C-u>', True))
+
+
 class TestFalseForUnsupportedOperators(unittest.ViewTestCase):
 
     def setUp(self):
@@ -237,7 +261,7 @@ class TestAltKeyEnabled(unittest.ViewTestCase):
         self.assertEqual(False, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'x', True))
 
 
-class OnLoadDoModeline(unittest.ViewTestCase):
+class TestOnLoadDoModeline(unittest.ViewTestCase):
 
     def setUp(self):
         super().setUp()

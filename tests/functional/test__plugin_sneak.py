@@ -84,6 +84,41 @@ class Test_s(unittest.FunctionalTestCase):
         self.assertNoSearch()
         self.assertStatusMessage('not found: x')
 
+    @unittest.mock_status_message()
+    def test_n_use_ic_scs(self):
+        def _case_sensitive_assertions():
+            self.eq('| iz IZ iz IZ', 'n_sIZ', ' iz |IZ iz IZ')
+            self.assertSearch(' iz |IZ| iz |IZ|')
+            self.assertSearchCurrent(' iz |IZ| iz IZ')
+
+        self.set_setting('sneak_use_ic_scs', 0)
+        self.set_option('ignorecase', False)
+        self.set_option('smartcase', False)
+        _case_sensitive_assertions()
+        self.set_option('ignorecase', True)
+        self.set_option('smartcase', False)
+        _case_sensitive_assertions()
+        self.set_option('ignorecase', True)
+        self.set_option('smartcase', True)
+        _case_sensitive_assertions()
+
+        self.set_setting('sneak_use_ic_scs', 1)
+        self.set_option('ignorecase', False)
+        self.set_option('smartcase', False)
+        _case_sensitive_assertions()
+
+        self.set_option('ignorecase', True)
+        self.set_option('smartcase', False)
+        self.eq('| iz IZ iz IZ', 'n_sIZ', ' |iz IZ iz IZ')
+        self.assertSearch(' |iz| |IZ| |iz| |IZ|')
+        self.assertSearchCurrent(' |iz| IZ iz IZ')
+
+        self.set_option('ignorecase', True)
+        self.set_option('smartcase', True)
+        self.eq('| iz IZ iz IZ', 'n_sIZ', ' iz |IZ iz IZ')
+        self.assertSearch(' iz |IZ| iz |IZ|')
+        self.assertSearchCurrent(' iz |IZ| iz IZ')
+
     def test_v(self):
         self.eq('x|xx|x fizz', 'v_siz', 'x|xxx fi|zz')
         self.eq('iz iz x|xx|x iz iz iz', 'v_siz', 'iz iz x|xxx i|z iz iz')

@@ -767,6 +767,40 @@ List of available settings:
                         boolean (default on)
         Plugin: A port of https://github.com/tpope/vim-unimpaired.
 
+'vintageous_handle_keys'                            *'vintageous_handle_keys'*
+                        boolean (default {})
+        Delegate configured keys to be handled by Sublime Text. 
+
+        For example to use ctrl+f for find (native ST behaviour):
+
+            "vintageous_handle_keys": {
+                "<C-f>": false
+            }
+
+        Keys can be delegated by mode too e.g. i_<C-w>, v_<C-w>. The following
+        will only delegate <C-w> back to ST when in insert or visual mode:
+
+            "vintageous_handle_keys": {
+                "i_<C-w>": false
+                "v_<C-w>": false
+            }
+
+        The valid mode prefixes are:
+
+            n_ - Normal
+            i_ - Insert
+            v_ - Visual
+            V_ - Visual line
+            b_ - Visual block
+            s_ - Select
+
+        No prefix implies all modes.
+
+        Any keybinding defined in the default keymap file that has
+        a "nv_handle_key" context constraint can be configured to delegate
+        back to ST.
+        See https://github.com/NeoVintageous/NeoVintageous/blob/master/Default.sublime-keymap
+
                                               *'vintageous_i_escape_jj'*
 'vintageous_i_escape_jj'
                         boolean (default off)
@@ -795,9 +829,15 @@ List of available settings:
                         boolean (default off)
         Show output panel from shell commands.
 
+                                               *'vintageous_sneak_use_ic_scs'*
+'vintageous_sneak_use_ic_scs'
+                        number (default 0)
+        0: Always case-sensitive
+        1: Case sensitivity is determined by 'ignorecase' and 'smartcase'.
+
                                                   *'vintageous_use_ctrl_keys'*
 'vintageous_use_ctrl_keys'
-                        boolean (default: false)
+                        boolean (default on)
         Enable key bindings prefaced by the ctrl-key.
 
                                                  *'vintageous_use_super_keys'*

@@ -70,6 +70,39 @@
     // Plugin: A port of https://github.com/tpope/vim-unimpaired.
     "vintageous_enable_unimpaired": true,
 
+    // Delegate configured keys to be handled by Sublime Text. 
+    //
+    // For example to use ctrl+f for find (native ST behaviour):
+    //
+    //     "vintageous_handle_keys": {
+    //         "<C-f>": false
+    //     }
+    //
+    // Keys can be delegated by mode too e.g. i_<C-w>, v_<C-w>. The following
+    // will only delegate <C-w> back to ST when in insert or visual mode:
+    //
+    //     "vintageous_handle_keys": {
+    //         "i_<C-w>": false
+    //         "v_<C-w>": false
+    //     }
+    //
+    // The valid mode prefixes are:
+    //
+    //     n_ - Normal
+    //     i_ - Insert
+    //     v_ - Visual
+    //     V_ - Visual line
+    //     b_ - Visual block
+    //     s_ - Select
+    //
+    // No prefix implies all modes.
+    //
+    // Any keybinding defined in the default keymap file that has
+    // a "nv_handle_key" context constraint can be configured to delegate
+    // back to ST.
+    // See https://github.com/NeoVintageous/NeoVintageous/blob/master/Default.sublime-keymap
+    "vintageous_handle_keys": {},
+
     // If set to false then pressing a quit key (<Esc> or J) in multiple cursor
     // mode, will not quit and delete all existing cursors. Useful if you want
     // to go back to Normal mode and still operate on all the cursors.
@@ -81,12 +114,16 @@
     // Show output panel from shell commands.
     "vintageous_shell_silent": false,
 
+    // 0: Always case-sensitive
+    // 1: Case sensitivity is determined by 'ignorecase' and 'smartcase'.
+    "vintageous_sneak_use_ic_scs": 0,
+
     // Name of program to use when starting a ":shell".
     // Example: gnome-terminal
     "vintageous_terminal": null,
 
     // Enable key bindings prefaced by the control-key.
-    "vintageous_use_ctrl_keys": false,
+    "vintageous_use_ctrl_keys": true,
 
     // Enable key bindings prefaced by the super-key, otherwise known as the
     // command-key in OSX, and as the windows-key in Windows.

@@ -115,14 +115,6 @@ def _init_backwards_compat_patches():
         # digits e.g. 1.11.0 -> 11100, 1.11.3 -> 11103, 1.17.1 -> 11701.
         build_version = int(preferences.get('neovintageous_build_version', 0))
 
-        if build_version < 11000:  # pragma: no cover
-            preferences.set('neovintageous_build_version', 11000)
-            # Set user deprecated default settings. Both ctrl keys and super
-            # keys will be  enabled by default in version 2.0. This sets the
-            # user default not to avoid disruption for existing users later.
-            preferences.set('vintageous_use_ctrl_keys', preferences.get('vintageous_use_ctrl_keys'))
-            preferences.set('vintageous_use_super_keys', preferences.get('vintageous_use_super_keys'))
-
         if build_version < 11100:  # pragma: no cover
             preferences.set('neovintageous_build_version', 11100)
             # Migrate the ".vintageousrc" (runtime configuation) file. The new
