@@ -518,7 +518,7 @@ class nv_feed_key(WindowCommand):
             self._feed_key(key, repeat_count, do_eval, check_user_mappings)
         except Exception as e:
             print('NeoVintageous: An error occurred during key press handle:')
-            _log.exception(e)
+            _log.exception(str(e))
             clean_views()
 
         _log.info('key processed in %s secs', '{:.4f}'.format(time.time() - start_time))
