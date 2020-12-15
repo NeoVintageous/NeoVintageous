@@ -3,6 +3,7 @@ language: python
 env:
     global:
         - PACKAGE="NeoVintageous"
+        - NO_AT_BRIDGE=1
     matrix:
         - SUBLIME_TEXT_VERSION="3"
 
