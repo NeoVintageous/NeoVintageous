@@ -6,9 +6,6 @@ env:
     matrix:
         - SUBLIME_TEXT_VERSION="3"
 
-services:
-  - xvfb
-
 matrix:
     include:
         - os: linux
@@ -16,6 +13,7 @@ matrix:
           dist: trusty
         - os: linux
           python: 3.8
+          services: xvfb
         - os: osx
           language: generic
 
