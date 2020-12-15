@@ -9,11 +9,11 @@ env:
 matrix:
     include:
         - os: linux
-          python: 3.3
           dist: trusty
+          python: 3.3
         - os: linux
-          python: 3.8
           services: xvfb
+          python: 3.8
         - os: osx
           language: generic
 
@@ -70,8 +70,8 @@ script:
             else
                 mypy --show-error-codes "../$PACKAGE";
             fi;
-            cd "$TRAVIS_BUILD_DIR";
       fi
+    - cd "$TRAVIS_BUILD_DIR";
 
 after_success:
     - coveralls
