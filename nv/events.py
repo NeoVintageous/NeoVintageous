@@ -95,7 +95,30 @@ def _is_alt_key_enabled(view, operator, operand, match_all):
     return False if winaltkeys == 'yes' else _is_command_mode(view)
 
 
+def _handle_key(view, operator: int, operand: str, match_all: bool) -> bool:
+    handle_keys = get_setting(view, 'handle_keys')
+    if handle_keys:
+        try:
+            # Check if the key (no mode prefix; all modes) should be handled.
+            return bool(handle_keys[operand])
+        except KeyError:
+            # Check if the key should be handled only for a specific mode.
+            # The format is "{mode}_{key}" e.g. "n_<C-w>", "v_<C-w>"
+            # meaning NORMAL, VISUAL respectively. No prefix implies all
+            # modes. See mode_to_char() for a list of valid mode prefixes.
+            cur_mode_char = mode_to_char(get_mode(view))
+            if cur_mode_char:
+                try:
+                    return bool(handle_keys['%s_%s' % (cur_mode_char, operand)])
+                except KeyError:
+                    pass
+
+    # By default all keys are handled.
+    return True
+
+
 _query_contexts = {
+    'nv_handle_key': _handle_key,
     'vi_command_mode_aware': _is_command_mode,
     'vi_insert_mode_aware': _is_insert_mode,
     'nv.alt_key_enabled': _is_alt_key_enabled,
@@ -121,27 +144,6 @@ class NeoVintageousEvents(EventListener):
         # Returns:
         #   bool: If the context is known.
         #   None: If the context is unknown.
-        if key == 'nv_handle_key':
-            handle_keys = get_setting(view, 'handle_keys')
-            if handle_keys:
-                try:
-                    # Check if the key (no mode prefix; all modes) should be handled.
-                    return bool(handle_keys[operand])
-                except KeyError:
-                    # Check if the key should be handled only for a specific mode.
-                    # The format is "{mode}_{key}" e.g. "n_<C-w>", "v_<C-w>"
-                    # meaning NORMAL, VISUAL respectively. No prefix implies all
-                    # modes. See mode_to_char() for a list of valid mode prefixes.
-                    cur_mode_char = mode_to_char(get_mode(view))
-                    if cur_mode_char:
-                        try:
-                            return bool(handle_keys['%s_%s' % (cur_mode_char, operand)])
-                        except KeyError:
-                            pass
-
-            # By default all keys are handled.
-            return True
-
         try:
             return _query_contexts[key](view, operator, operand, match_all)
         except KeyError:
