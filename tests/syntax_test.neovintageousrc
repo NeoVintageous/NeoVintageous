@@ -342,6 +342,8 @@ map x y
 " ^^^^^ invalid
 :map x y
 " ^^^^^^ invalid
+imap x y
+" ^^^^^^ invalid
 nmap x y
 " ^^^^^^ invalid
 :nmap x y
@@ -362,6 +364,8 @@ vmap x y
 noremap x y
 " ^ keyword.control
 :noremap x y
+" ^ keyword.control
+inoremap x y
 " ^ keyword.control
 nnoremap x y
 " ^ keyword.control

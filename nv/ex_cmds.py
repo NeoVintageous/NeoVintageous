@@ -79,6 +79,7 @@ from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.utils import set_selection
+from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
 from NeoVintageous.nv.vim import SELECT
@@ -556,6 +557,13 @@ def ex_history(window, name: str = 'all', **kwargs) -> None:
     output = CmdlineOutput(window)
     output.write(history(name))
     output.show()
+
+
+def ex_inoremap(lhs: str = None, rhs: str = None, **kwargs) -> None:
+    if not (lhs and rhs):
+        return status_message('Listing key mappings is not implemented')
+
+    mappings_add(INSERT, lhs, rhs)
 
 
 def ex_let(name, value, **kwargs) -> None:

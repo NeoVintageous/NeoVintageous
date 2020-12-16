@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.24.0 - Unreleased
+
+### Added
+
+* Added [#755](https://github.com/NeoVintageous/NeoVintageous/issues/755): New ex command `:inoremap` (note only a few keys are currently mappable in insert mode)
+
 ## 1.23.0 - 2020-12-12
 
 ### Added

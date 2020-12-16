@@ -15,13 +15,13 @@ contexts:
       scope: comment.line.neovintageourc
 
     # Mapping commands.
-    - match: ^:?((n|o|s|v)?noremap)\b
+    - match: ^:?((i|n|o|s|v)?noremap)\b
       scope: keyword.control.neovintageourc
 
     # Recursive mappings were replaced with non-recursive mappings because they
     # were not implemented properly and can cause infinite loop problems.
     # https://github.com/NeoVintageous/NeoVintageous/blob/master/CHANGELOG.md#removed-3
-    - match: ^:?\b(n|o|s|v)?map.*
+    - match: ^:?\b(i|n|o|s|v)?map.*
       scope: invalid.neovintageourc
 
     # Mapleader.

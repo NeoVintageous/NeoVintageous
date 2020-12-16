@@ -265,6 +265,7 @@ class TestRoutes(unittest.TestCase):
         self.assertRoute('_ex_route_global', ['global', 'g'])
         self.assertRoute('_ex_route_help', ['help', 'h'])
         self.assertRoute('_ex_route_history', ['history', 'his'])
+        self.assertRoute('_ex_route_inoremap', ['inoremap', 'ino'])
         self.assertRoute('_ex_route_let', ['let '])
         self.assertRoute('_ex_route_move', ['move', 'm'])
         self.assertRoute('_ex_route_new', ['new'])

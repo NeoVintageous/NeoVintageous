@@ -58,6 +58,7 @@ class TestRcfile(unittest.TestCase):
     def test_parse_line_returns_valid_commands(self):
         self.assertEquals(':let mapleader=,', _parse_line(':let mapleader=,'))
         self.assertEquals(':noremap x yz', _parse_line(':noremap x yz'))
+        self.assertEquals(':inoremap x yz', _parse_line(':inoremap x yz'))
         self.assertEquals(':nnoremap x yz', _parse_line(':nnoremap x yz'))
         self.assertEquals(':onoremap x yz', _parse_line(':onoremap x yz'))
         self.assertEquals(':snoremap x yz', _parse_line(':snoremap x yz'))
@@ -66,6 +67,7 @@ class TestRcfile(unittest.TestCase):
     def test_parse_line_colon_prefix_should_be_optional(self):
         self.assertEquals(':let mapleader=,', _parse_line('let mapleader=,'))
         self.assertEquals(':noremap x yz', _parse_line('noremap x yz'))
+        self.assertEquals(':inoremap x yz', _parse_line('inoremap x yz'))
         self.assertEquals(':nnoremap x yz', _parse_line('nnoremap x yz'))
         self.assertEquals(':onoremap x yz', _parse_line('onoremap x yz'))
         self.assertEquals(':snoremap x yz', _parse_line('snoremap x yz'))
@@ -77,6 +79,7 @@ class TestRcfile(unittest.TestCase):
 
     def test_regex_does_not_match_recursive_mappings(self):
         self.assertIsNone(_PARSE_LINE_PATTERN.match('map x y'))
+        self.assertIsNone(_PARSE_LINE_PATTERN.match('imap x y'))
         self.assertIsNone(_PARSE_LINE_PATTERN.match('nmap x y'))
         self.assertIsNone(_PARSE_LINE_PATTERN.match('omap x y'))
         self.assertIsNone(_PARSE_LINE_PATTERN.match('smap x y'))
@@ -92,11 +95,13 @@ class TestRcfile(unittest.TestCase):
         #   fine, but now cause a hange due the mapping now being recursive.
 
         self.assertEquals(None, _parse_line(':map x yz'))
+        self.assertEquals(None, _parse_line(':imap x yz'))
         self.assertEquals(None, _parse_line(':nmap x yz'))
         self.assertEquals(None, _parse_line(':omap x yz'))
         self.assertEquals(None, _parse_line(':smap x yz'))
         self.assertEquals(None, _parse_line(':vmap x yz'))
         self.assertEquals(None, _parse_line('map x yz'))
+        self.assertEquals(None, _parse_line('imap x yz'))
         self.assertEquals(None, _parse_line('nmap x yz'))
         self.assertEquals(None, _parse_line('omap x yz'))
         self.assertEquals(None, _parse_line('smap x yz'))

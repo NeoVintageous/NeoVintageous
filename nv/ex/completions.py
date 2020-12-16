@@ -249,16 +249,15 @@ def reset_cmdline_completion_state() -> None:
 
 _CMDLINE_COMPLETIONS = [
     'bNext', 'bfirst', 'blast', 'bnext', 'bprevious', 'brewind', 'browse',
-    'buffer',
-    'buffers', 'cd', 'close', 'copy', 'cquit', 'delete', 'edit', 'exit',
-    'file', 'files', 'global', 'help', 'history', 'let', 'ls', 'move', 'new',
-    'nnoremap', 'nohlsearch', 'noremap', 'nunmap', 'only', 'onoremap',
-    'ounmap', 'print', 'pwd', 'qall', 'quit', 'read', 'registers', 'set',
-    'setlocal', 'shell', 'silent', 'snoremap', 'sort', 'spellgood',
+    'buffer', 'buffers', 'cd', 'close', 'copy', 'cquit', 'delete', 'edit',
+    'exit', 'file', 'files', 'global', 'help', 'history', 'inoremap', 'let',
+    'ls', 'move', 'new', 'nnoremap', 'nohlsearch', 'noremap', 'nunmap', 'only',
+    'onoremap', 'ounmap', 'print', 'pwd', 'qall', 'quit', 'read', 'registers',
+    'set', 'setlocal', 'shell', 'silent', 'snoremap', 'sort', 'spellgood',
     'spellundo', 'split', 'substitute', 'sunmap', 'tabNext', 'tabclose',
     'tabfirst', 'tablast', 'tabnext', 'tabonly', 'tabprevious', 'tabrewind',
     'unmap', 'unvsplit', 'vnoremap', 'vsplit', 'vunmap', 'wall', 'wq', 'wqall',
-    'write', 'xall', 'xit', 'yank',
+    'write', 'xall', 'xit', 'yank'
 ]
 
 # Keeps track of current completion completion.
