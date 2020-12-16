@@ -74,7 +74,7 @@ def _is_insert_mode(view, operator: int, operand: bool, match_all: bool) -> bool
     )
 
 
-def _is_alt_key_enabled(view, operator: int, operand: str, match_all: bool) -> bool:
+def _winaltkeys(view, operator: int, operand: str, match_all: bool) -> bool:
     # Some GUI versions allow the access to menu entries by using the ALT
     # key in combination with a character that appears underlined in the
     # menu.  This conflicts with the use of the ALT key for mappings and
@@ -119,9 +119,9 @@ def _handle_key(view, operator: int, operand: str, match_all: bool) -> bool:
 
 _query_contexts = {
     'nv_handle_key': _handle_key,
+    'nv_winaltkeys': _winaltkeys,
     'vi_command_mode_aware': _is_command_mode,
     'vi_insert_mode_aware': _is_insert_mode,
-    'nv.alt_key_enabled': _is_alt_key_enabled,
 }  # type: dict
 
 

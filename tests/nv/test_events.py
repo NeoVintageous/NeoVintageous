@@ -225,40 +225,40 @@ class TestAltKeyEnabled(unittest.ViewTestCase):
         self.settings().set('command_mode', True)
 
         self.view.window().is_menu_visible.return_value = False
-        self.assertEqual(False, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'f', True))
-        self.assertEqual(False, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'x', True))
+        self.assertEqual(False, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'f', True))
+        self.assertEqual(False, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'x', True))
 
         self.view.window().is_menu_visible.return_value = True
-        self.assertEqual(False, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'f', True))
-        self.assertEqual(False, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'x', True))
+        self.assertEqual(False, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'f', True))
+        self.assertEqual(False, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'x', True))
 
     def test_winaltkeys_no(self):
         self.set_option('winaltkeys', 'no', setting=False)
         self.settings().set('command_mode', True)
 
         self.view.window().is_menu_visible.return_value = False
-        self.assertEqual(True, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'f', True))
-        self.assertEqual(True, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'x', True))
+        self.assertEqual(True, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'f', True))
+        self.assertEqual(True, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'x', True))
 
         self.view.window().is_menu_visible.return_value = True
-        self.assertEqual(True, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'f', True))
-        self.assertEqual(True, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'x', True))
+        self.assertEqual(True, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'f', True))
+        self.assertEqual(True, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'x', True))
 
     def test_winaltkeys_menu(self):
         self.set_option('winaltkeys', 'menu', setting=False)
         self.settings().set('command_mode', True)
 
         self.view.window().is_menu_visible.return_value = False
-        self.assertEqual(True, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'f', True))
-        self.assertEqual(True, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'x', True))
+        self.assertEqual(True, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'f', True))
+        self.assertEqual(True, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'x', True))
 
         self.view.window().is_menu_visible.return_value = True
-        self.assertEqual(False, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'f', True))
-        self.assertEqual(True, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'x', True))
+        self.assertEqual(False, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'f', True))
+        self.assertEqual(True, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'x', True))
 
         self.settings().set('command_mode', False)
-        self.assertEqual(False, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'f', True))
-        self.assertEqual(False, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'x', True))
+        self.assertEqual(False, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'f', True))
+        self.assertEqual(False, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'x', True))
 
 
 class TestOnLoadDoModeline(unittest.ViewTestCase):
