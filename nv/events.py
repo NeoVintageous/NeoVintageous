@@ -38,7 +38,7 @@ from NeoVintageous.nv.vim import mode_to_char
 __all__ = ['NeoVintageousEvents']
 
 
-def _check_query_context_value(value, operator, operand, match_all):
+def _check_query_context_value(value: bool, operator: int, operand: bool, match_all: bool) -> bool:
     if operator == OP_EQUAL:
         if operand is True:
             return value
@@ -53,7 +53,7 @@ def _check_query_context_value(value, operator, operand, match_all):
     return False
 
 
-def _is_command_mode(view, operator=OP_EQUAL, operand=True, match_all=False):
+def _is_command_mode(view, operator: int = OP_EQUAL, operand: bool = True, match_all: bool = False) -> bool:
     return _check_query_context_value(
         (view.settings().get('command_mode') and is_view(view)),
         operator,
@@ -62,7 +62,7 @@ def _is_command_mode(view, operator=OP_EQUAL, operand=True, match_all=False):
     )
 
 
-def _is_insert_mode(view, operator, operand, match_all):
+def _is_insert_mode(view, operator: int, operand: bool, match_all: bool) -> bool:
     # TODO This currently returns true for all non-normal modes e.g. Replace
     # mode. Fixing this will break things, for example <Esc> in replace mode
     # would break, a few things need to be reworked to fix this.
@@ -74,7 +74,7 @@ def _is_insert_mode(view, operator, operand, match_all):
     )
 
 
-def _is_alt_key_enabled(view, operator, operand, match_all):
+def _is_alt_key_enabled(view, operator: int, operand: str, match_all: bool) -> bool:
     # Some GUI versions allow the access to menu entries by using the ALT
     # key in combination with a character that appears underlined in the
     # menu.  This conflicts with the use of the ALT key for mappings and
@@ -127,7 +127,7 @@ _query_contexts = {
 
 class NeoVintageousEvents(EventListener):
 
-    def on_query_context(self, view, key, operator, operand, match_all):
+    def on_query_context(self, view, key: str, operator: int, operand: bool, match_all: bool):
         # Called when determining to trigger a key binding with the given context key.
         #
         # If the plugin knows how to respond to the context, it should return
