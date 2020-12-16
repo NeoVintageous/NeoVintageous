@@ -1,6 +1,6 @@
 [
 
-    // sidebar
+    // Sidebar.
     {"keys": ["J"], "command": "move_to", "args": {"to": "eol", "extend": false}, "context": [{"key": "control", "operand": "sidebar_tree"}]},
     {"keys": ["P"], "command": "move_to", "args": {"to": "bol", "extend": false}, "context": [{"key": "control", "operand": "sidebar_tree"}]},
     {"keys": ["h"], "command": "move", "args": {"by": "characters", "forward": false}, "context": [{"key": "control", "operand": "sidebar_tree"}]},
@@ -10,26 +10,26 @@
     {"keys": ["p"], "command": "move", "args": {"by": "characters", "forward": false}, "context": [{"key": "control", "operand": "sidebar_tree"}]},
     {"keys": ["q"], "command": "neovintageous", "args": {"action": "toggle_side_bar"}, "context": [{"key": "control", "operand": "sidebar_tree"}]},
 
-    // overlay
+    // Overlay.
     { "keys": ["ctrl+j"], "command": "move", "args": {"by": "lines", "forward": true}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     { "keys": ["ctrl+k"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     { "keys": ["ctrl+n"], "command": "move", "args": {"by": "lines", "forward": true}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     { "keys": ["ctrl+p"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
 
-    // auto complete
+    // Auto complete.
     {"keys": ["ctrl+j"], "command": "move", "args": {"by": "lines", "forward": true}, "context": [{"key": "auto_complete_visible"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+k"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [{"key": "auto_complete_visible"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+n"], "command": "move", "args": {"by": "lines", "forward": true}, "context": [{"key": "auto_complete_visible"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+p"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [{"key": "auto_complete_visible"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
 
-    // Common "Two-key" "map-to-Esc" from insert mode combinations.
+    // Escape mappings.
     { "keys": ["j", "j"], "command": "nv_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_i_escape_jj"}]},
     { "keys": ["j", "k"], "command": "nv_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_i_escape_jk"}]},
 
-    // Command-line output
+    // Command-line output.
     {"keys": ["enter"], "command": "show_panel", "args": {"panel": "output.Command-line", "toggle": true}, "context": [{"key": "setting.nv_cmdline_output"}]},
 
-    // Command-line
+    // Command-line.
     {"keys": ["ctrl+["],    "command": "nv_cmdline_feed_key", "args": {"key": "<C-[>"},    "context": [{"key": "setting._nv_ex_mode"}]},
     {"keys": ["ctrl+b"],    "command": "nv_cmdline_feed_key", "args": {"key": "<C-b>"},    "context": [{"key": "setting._nv_ex_mode"}]},
     {"keys": ["ctrl+c"],    "command": "nv_cmdline_feed_key", "args": {"key": "<C-c>"},    "context": [{"key": "setting._nv_ex_mode"}]},
