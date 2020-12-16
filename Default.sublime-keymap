@@ -188,7 +188,7 @@
     {"keys": ["alt+tab"],       "command": "nv_feed_key", "args": {"key": "<M-tab>"},      "context": [{"key": "nv.alt_key_enabled", "operand": "tab"},       {"key": "nv_handle_key", "operand": "<M-tab>"}]},
     {"keys": ["alt+up"],        "command": "nv_feed_key", "args": {"key": "<M-up>"},       "context": [{"key": "nv.alt_key_enabled", "operand": "up"},        {"key": "nv_handle_key", "operand": "<M-up>"}]},
 
-    {"keys": ["alt+#"],  "command": "nv_feed_key", "args": {"key": "<M-#>"},      "context": [{"key": "nv.alt_key_enabled", "operand": "'"},  {"key": "nv_handle_key", "operand": "<M-#>"}]},
+    {"keys": ["alt+#"],  "command": "nv_feed_key", "args": {"key": "<M-#>"},      "context": [{"key": "nv.alt_key_enabled", "operand": "#"},  {"key": "nv_handle_key", "operand": "<M-#>"}]},
     {"keys": ["alt+'"],  "command": "nv_feed_key", "args": {"key": "<M-'>"},      "context": [{"key": "nv.alt_key_enabled", "operand": "'"},  {"key": "nv_handle_key", "operand": "<M-'>"}]},
     {"keys": ["alt+,"],  "command": "nv_feed_key", "args": {"key": "<M-,>"},      "context": [{"key": "nv.alt_key_enabled", "operand": ","},  {"key": "nv_handle_key", "operand": "<M-,>"}]},
     {"keys": ["alt+-"],  "command": "nv_feed_key", "args": {"key": "<M-->"},      "context": [{"key": "nv.alt_key_enabled", "operand": "-"},  {"key": "nv_handle_key", "operand": "<M-->"}]},
