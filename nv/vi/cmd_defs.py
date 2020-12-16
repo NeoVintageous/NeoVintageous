@@ -1707,7 +1707,7 @@ class ViEnterInserMode(ViOperatorDef):
 @assign(seqs.V, (SELECT, ))
 @assign(seqs.ESC, ACTION_MODES)
 @assign(seqs.CTRL_C, ACTION_MODES + (SELECT,))
-@assign(seqs.CTRL_LEFT_SQUARE_BRACKET, ACTION_MODES + (SELECT,))
+@assign(seqs.CTRL_LEFT_SQUARE_BRACKET, ACTION_MODES + (INSERT, SELECT))
 class ViEnterNormalMode(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

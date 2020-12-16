@@ -263,7 +263,6 @@
     {"keys": ["shift+alt+y"], "command": "nv_feed_key", "args": {"key": "<M-Y>"}, "context": [{"key": "nv_winaltkeys", "operand": "Y"}, {"key": "nv_handle_key", "operand": "<M-Y>"}]},
     {"keys": ["shift+alt+z"], "command": "nv_feed_key", "args": {"key": "<M-Z>"}, "context": [{"key": "nv_winaltkeys", "operand": "Z"}, {"key": "nv_handle_key", "operand": "<M-Z>"}]},
 
-    {"keys": ["ctrl+["], "command": "nv_feed_key", "args": {"key": "<esc>"},    "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}, {"key": "nv_handle_key", "operand": "<C-[>"}]},
     {"keys": ["ctrl+c"], "command": "nv_feed_key", "args": {"key": "<esc>"},    "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}, {"key": "nv_handle_key", "operand": "<C-c>"}]},
 
     {"keys": ["ctrl+backspace"], "command": "nv_feed_key", "args": {"key": "<C-bs>"},       "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}, {"key": "nv_handle_key", "operand": "<C-bs>"}]},
@@ -289,7 +288,7 @@
     {"keys": ["ctrl+7"], "command": "nv_feed_key", "args": {"key": "<C-7>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}, {"key": "nv_handle_key", "operand": "<C-7>"}]},
     {"keys": ["ctrl+8"], "command": "nv_feed_key", "args": {"key": "<C-8>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}, {"key": "nv_handle_key", "operand": "<C-8>"}]},
     {"keys": ["ctrl+9"], "command": "nv_feed_key", "args": {"key": "<C-9>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}, {"key": "nv_handle_key", "operand": "<C-9>"}]},
-    {"keys": ["ctrl+["], "command": "nv_feed_key", "args": {"key": "<C-[>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}, {"key": "nv_handle_key", "operand": "<C-[>"}]},
+    {"keys": ["ctrl+["], "command": "nv_feed_key", "args": {"key": "<C-[>"}, "context": [{"key": "nv_command_or_insert"},  {"key": "setting.vintageous_use_ctrl_keys"}, {"key": "nv_handle_key", "operand": "<C-[>"}]},
     {"keys": ["ctrl+]"], "command": "nv_feed_key", "args": {"key": "<C-]>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}, {"key": "nv_handle_key", "operand": "<C-]>"}]},
     {"keys": ["ctrl+a"], "command": "nv_feed_key", "args": {"key": "<C-a>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}, {"key": "nv_handle_key", "operand": "<C-a>"}]},
     {"keys": ["ctrl+b"], "command": "nv_feed_key", "args": {"key": "<C-b>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}, {"key": "nv_handle_key", "operand": "<C-b>"}]},
