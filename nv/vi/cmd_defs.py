@@ -1057,6 +1057,21 @@ class ViActivatePreviousTab(ViOperatorDef):
         }
 
 
+@assign(seqs.CTRL_W, (INSERT,))
+class ViDeleteUpToCursor(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, view):
+        return {
+            'action': 'delete_word',
+            'action_args': {
+                'forward': False
+            }
+        }
+
+
 @assign(seqs.CTRL_W_B, ACTION_MODES)
 @assign(seqs.CTRL_W_CTRL_B, ACTION_MODES)
 class ViMoveCursorToBottomRightWindow(ViOperatorDef):
