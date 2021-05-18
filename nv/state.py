@@ -189,7 +189,8 @@ def reset_command_data(view) -> None:
         # Intentionally using the active view because the previous command
         # may have switched views and view would be the previous one.
         active_view = active_window().active_view()
-        _scroll_into_view(active_view, get_mode(active_view))
+        if active_view:
+            _scroll_into_view(active_view, get_mode(active_view))
 
     action and action.reset()
     set_action(view, None)
