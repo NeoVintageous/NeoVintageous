@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#767](https://github.com/NeoVintageous/NeoVintageous/issues/767): Support window splitting for latest version of Origami
 * Added [#755](https://github.com/NeoVintageous/NeoVintageous/issues/755): New ex command `:inoremap` (note only a few keys are currently mappable in insert mode)
 
 ## 1.23.0 - 2020-12-12

@@ -529,11 +529,11 @@ def _split(window, file: str = None) -> None:
         window.run_command('create_pane', {'direction': 'down', 'give_focus': True})
         window.open_file(file)
     else:
-        window.run_command('create_pane_with_cloned_file', {'direction': 'down'})
+        window.run_command('clone_file_to_pane', {'direction': 'down'})
 
 
 def _split_vertically(window, count: int = None) -> None:
-    window.run_command('create_pane_with_cloned_file', {'direction': 'right'})
+    window.run_command('clone_file_to_pane', {'direction': 'right'})
 
 
 def _split_with_new_file(window, n: int = None) -> None:
