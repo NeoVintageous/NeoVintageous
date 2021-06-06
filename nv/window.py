@@ -17,7 +17,6 @@
 
 import os
 
-from NeoVintageous.nv.polyfill import view_to_str
 from NeoVintageous.nv.settings import get_cmdline_cwd
 from NeoVintageous.nv.utils import set_selection
 from NeoVintageous.nv.vim import status_message
