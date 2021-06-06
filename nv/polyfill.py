@@ -88,7 +88,7 @@ def view_find(view, pattern: str, start_pt: int, flags: int = 0):
 # There's no Sublime API to find patterns in reverse direction.
 # See: https://github.com/SublimeTextIssues/Core/issues/245.
 def view_rfind_all(view, pattern: str, start_pt: int, flags: int = 0):
-    matches = view.find_all(pattern)
+    matches = view.find_all(pattern, flags)
     for region in matches:
         if region.b > start_pt:
             return reversed(matches[:matches.index(region)])

@@ -11,6 +11,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#772](https://github.com/NeoVintageous/NeoVintageous/issues/772): Backwards sneak special characters
 * Fixed [#760](https://github.com/NeoVintageous/NeoVintageous/issues/760): `ci"` with space at the end of a string doesn't remove the space
 * Fixed [#771](https://github.com/NeoVintageous/NeoVintageous/issues/771): `cit` leaves newline
 * Fixed [#762](https://github.com/NeoVintageous/NeoVintageous/issues/762): `P` and `p` aren't supposed to paste lines starting from the current cursor position

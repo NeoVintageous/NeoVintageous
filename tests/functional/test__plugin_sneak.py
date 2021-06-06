@@ -136,6 +136,12 @@ class Test_s(unittest.FunctionalTestCase):
         self.eq('|fizz |buzz', 'n_siz', '|fizz |buzz')
         self.assertBell('sneak does not support multiple cursors')
 
+    @unittest.mock_status_message()
+    def test_issue_772(self):
+        self.eq('|  $this $this $this', 'n_s$t', '  |$this $this $this')
+        self.assertSearch('  |$t|his |$t|his |$t|his')
+        self.assertSearchCurrent('  |$t|his $this $this')
+
 
 class Test_S(unittest.FunctionalTestCase):
 
@@ -184,6 +190,12 @@ class Test_S(unittest.FunctionalTestCase):
         self.assertNormal(' |x x x x')
         self.assertNoSearch()
         self.assertStatusMessage('not found: x')
+
+    @unittest.mock_status_message()
+    def test_issue_772(self):
+        self.eq('$this $this $thi|s', 'n_S$t', '$this $this |$this')
+        self.assertSearch('|$t|his |$t|his |$t|his')
+        self.assertSearchCurrent('$this $this |$t|his')
 
 
 class Test_Z(unittest.FunctionalTestCase):
