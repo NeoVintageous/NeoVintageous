@@ -2000,6 +2000,8 @@ _SEQ2CMD = {
     'yiw':          {'command': 'nv_feed_key'},  # noqa: E241
     'yi{':          {'command': 'nv_feed_key'},  # noqa: E241
     'yi}':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yj':           {'command': 'nv_feed_key'},  # noqa: E241
+    'yk':           {'command': 'nv_feed_key'},  # noqa: E241
     'yoa':          {'command': 'nv_feed_key'},  # noqa: E241
     'yoe':          {'command': 'nv_feed_key'},  # noqa: E241
     'yoh':          {'command': 'nv_feed_key'},  # noqa: E241

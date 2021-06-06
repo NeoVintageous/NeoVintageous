@@ -126,6 +126,20 @@ class Test_y(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegisters('"x', 'ab', '01-')
         self.assertClipboard('iz')
 
+    def test_yk(self):
+        self.eq('fiz\nbuz\n|bish\nbosh\n', 'yk', 'fiz\n|buz\nbish\nbosh\n')
+        self.assertRegisters('"0', 'buz\nbish\n', '1-')
+        self.eq('fiz\nbuz\nbish\n|bosh\n', '2yk', 'fiz\n|buz\nbish\nbosh\n')
+        self.assertLinewiseRegisters('"0', 'buz\nbish\nbosh\n', '1-')
+
+    def test_yj(self):
+        self.eq('fiz\n|buz\nbish\nbosh\n', 'yj', 'fiz\n|buz\nbish\nbosh\n')
+        self.assertRegisters('"0', 'buz\nbish\n', '1-')
+        self.eq('fiz\n|buz\nbish\nbosh\n', '2yj', 'fiz\n|buz\nbish\nbosh\n')
+        self.assertLinewiseRegisters('"0', 'buz\nbish\nbosh\n', '1-')
+        self.eq('|fiz\nbuz\nbish\nbosh\n', '3yj', '|fiz\nbuz\nbish\nbosh\n')
+        self.assertLinewiseRegisters('"0', 'fiz\nbuz\nbish\nbosh\n', '1-')
+
     def test_yib(self):
         self.eq('(wo|rd)', 'yi(', '(|word)')
         self.eq('(wo|rd)', 'yi)', '(|word)')

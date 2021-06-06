@@ -11,6 +11,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#762](https://github.com/NeoVintageous/NeoVintageous/issues/762): `P` and `p` aren't supposed to paste lines starting from the current cursor position
 * Fixed [#748](https://github.com/NeoVintageous/NeoVintageous/issues/748): `viw`, `vaw` behaviour does not copy Vim behaviour
 * Fixed [#765](https://github.com/NeoVintageous/NeoVintageous/issues/765): `viw` wrong selection last character in `()`
 * Fixed [#770](https://github.com/NeoVintageous/NeoVintageous/issues/770): `:q` (quit) on empty panes or non-existent files fails with "E32: No file name"
