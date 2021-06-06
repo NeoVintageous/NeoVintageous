@@ -791,6 +791,8 @@ def ex_registers(window, view, **kwargs) -> None:
 
 def ex_set(option: str, value, **kwargs) -> None:
     view = kwargs.get('view', None)
+    if not view:
+        return
 
     try:
         if option.endswith('?'):
