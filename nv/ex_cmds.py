@@ -90,6 +90,7 @@ from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import status_message
 from NeoVintageous.nv.window import window_buffer_control
 from NeoVintageous.nv.window import window_control
+from NeoVintageous.nv.window import window_quit_view
 from NeoVintageous.nv.window import window_tab_control
 
 
@@ -734,27 +735,8 @@ def ex_qall(window, forceit: bool = False, **kwargs) -> None:
     window.run_command('exit')
 
 
-# TODO [refactor] into window module
-def ex_quit(window, view, forceit: bool = False, **kwargs) -> None:
-    if forceit:
-        view.set_scratch(True)
-
-    if view.is_dirty() and not forceit:
-        status_message("E37: No write since last change")
-        return
-
-    if not view.file_name() and not forceit:
-        status_message("E32: No file name")
-        return
-
-    window.run_command('close')
-
-    if len(window.views()) == 0:
-        window.run_command('close')
-        return
-
-    if not window.views_in_group(window.active_group()):
-        ex_unvsplit(window=window, view=view, forceit=forceit, **kwargs)
+def ex_quit(**kwargs) -> None:
+    window_quit_view(**kwargs)
 
 
 @_init_cwd

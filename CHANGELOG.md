@@ -9,6 +9,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#767](https://github.com/NeoVintageous/NeoVintageous/issues/767): Support window splitting for latest version of Origami
 * Added [#755](https://github.com/NeoVintageous/NeoVintageous/issues/755): New ex command `:inoremap` (note only a few keys are currently mappable in insert mode)
 
+### Fixed
+
+* Fixed [#770](https://github.com/NeoVintageous/NeoVintageous/issues/770): `:q` (quit) on empty panes or non-existent files fails with "E32: No file name"
+
 ## 1.23.0 - 2020-12-12
 
 ### Added
