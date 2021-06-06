@@ -178,7 +178,6 @@ def current_word_end(view, pt: int) -> int:
 # https://vimhelp.appspot.com/motion.txt.html#word
 # Used for motions in operations like daw and caw
 def _a_word(view, pt: int, inclusive: bool = True, count: int = 1) -> Region:
-    assert count > 0
     start = current_word_start(view, pt)
     end = pt
 
@@ -365,11 +364,24 @@ def _get_text_object_quote(view, s: Region, inclusive: bool, count: int, delims:
 
 
 def _get_text_object_word(view, s: Region, inclusive: bool, count: int) -> Region:
-    w = _a_word(view, s.b, inclusive=inclusive, count=count)
+    if s.size() == 1:
+        pt = get_insertion_point_at_b(s)
+    else:
+        if s.b < s.a:
+            pt = max(0, s.b - 1)
+        else:
+            pt = s.b
+
+    w = _a_word(view, pt, inclusive=inclusive, count=count)
     if s.size() <= 1:
         return w
 
-    return Region(s.a, w.b)
+    if s.b >= s.a:
+        return Region(s.a, w.b)
+    else:
+        return Region(s.a, w.a)
+
+    return s
 
 
 def _get_text_object_big_word(view, s: Region, inclusive: bool, count: int) -> Region:

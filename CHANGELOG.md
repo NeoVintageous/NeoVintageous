@@ -11,6 +11,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#748](https://github.com/NeoVintageous/NeoVintageous/issues/748): `viw`, `vaw` behaviour does not copy Vim behaviour
+* Fixed [#765](https://github.com/NeoVintageous/NeoVintageous/issues/765): `viw` wrong selection last character in `()`
 * Fixed [#770](https://github.com/NeoVintageous/NeoVintageous/issues/770): `:q` (quit) on empty panes or non-existent files fails with "E32: No file name"
 
 ## 1.23.0 - 2020-12-12
