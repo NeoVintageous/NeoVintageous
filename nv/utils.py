@@ -1121,6 +1121,11 @@ def fixup_eof(view, pt: int) -> int:
 # cursor after an operation, but changing it for all commands could cause some
 # regressions. TODO When enough commands are updated, this should be removed.
 def should_motion_apply_op_transformer(motion) -> bool:
+    if motion['motion'] == 'nv_vi_select_text_object':
+        if 'text_object' in motion['motion_args']:
+            if motion['motion_args']['text_object'] in '"\'/_t':
+                return False
+
     blacklist = (
         'nv_vi_bar',
         'nv_vi_dollar',

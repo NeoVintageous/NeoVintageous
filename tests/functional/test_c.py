@@ -148,6 +148,8 @@ class Test_c(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegister('-123')
         self.assertRegisterEmpty('0')
         self.assertRegisterEmpty('1')
+        self.eq('"1|23  "', 'ci"', 'i_"|"')
+        self.assertRegister('"123  ')
 
     def test_ci__slash__or__underscore(self):
         for t in ('/', '_'):
@@ -157,6 +159,7 @@ class Test_c(unittest.ResetRegisters, unittest.FunctionalTestCase):
             self.assertRegister('-123')
             self.assertRegisterEmpty('0')
             self.assertRegisterEmpty('1')
+            self.eq('{0}1|23  {0}'.format(t), 'ci' + t, 'i_{0}|{0}'.format(t))
 
     def test_ca__quote__or__slash__or__underscore(self):
         for t in ('\'', '"', '/', '_'):
@@ -205,7 +208,7 @@ class Test_c(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('<div>  |  <h1>fizz</h1></div>', 'cit', 'i_<div>|</div>')
         self.eq('<div>\n  |  <h1>fizz</h1>\n</div>', 'cit', 'i_<div>\n    <h1>|</h1>\n</div>')
         self.eq('<div>\n  |  <h1>fizz</h1>\n</div>', 'cit', 'i_<div>\n    <h1>|</h1>\n</div>')
-        self.eq('<div>\n|\n  <h1>fizz</h1>\n</div>', 'cit', 'i_<div>|\n</div>')
+        self.eq('<div>\n|\n  <h1>fizz</h1>\n</div>', 'cit', 'i_<div>|</div>')
 
     def test_cat(self):
         self.eq('<div><h1>fi|zz</h1></div>', 'cat', 'i_<div>|</div>')

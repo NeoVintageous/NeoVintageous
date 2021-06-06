@@ -187,6 +187,7 @@ class TestTextObjectSelection(unittest.FunctionalTestCase):
             self.eq('f|iz{0}z'.format(mark), 'v_i' + mark, 'f|i|z{0}z'.format(mark))
             self.eq('x{0}fi|zz{0}x'.format(mark), 'v_i' + mark, 'x{0}|fizz|{0}x'.format(mark))
             self.eq('x{0}fi|zz bu|zz{0}x'.format(mark), 'v_i' + mark, 'x{0}|fizz buzz|{0}x'.format(mark))
+            self.eq('x{0}fi|zz  {0}x'.format(mark), 'v_i' + mark, 'x{0}|fizz  |{0}x'.format(mark))
 
     def test_issue_570(self):
         self.visual('<div>\n\n<tag><subtag>hello| |world</subtag></tag>\n\n</div>')
