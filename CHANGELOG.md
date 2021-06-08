@@ -2,6 +2,23 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.24.0 - 2020-06-09
+
+### Added
+
+* Added [#767](https://github.com/NeoVintageous/NeoVintageous/issues/767): Support window splitting for latest version of Origami
+* Added [#755](https://github.com/NeoVintageous/NeoVintageous/issues/755): New ex command `:inoremap` (note only a few keys are currently mappable in insert mode)
+
+### Fixed
+
+* Fixed [#772](https://github.com/NeoVintageous/NeoVintageous/issues/772): Backwards sneak special characters
+* Fixed [#760](https://github.com/NeoVintageous/NeoVintageous/issues/760): `ci"` with space at the end of a string doesn't remove the space
+* Fixed [#771](https://github.com/NeoVintageous/NeoVintageous/issues/771): `cit` leaves newline
+* Fixed [#762](https://github.com/NeoVintageous/NeoVintageous/issues/762): `P` and `p` aren't supposed to paste lines starting from the current cursor position
+* Fixed [#748](https://github.com/NeoVintageous/NeoVintageous/issues/748): `viw`, `vaw` behaviour does not copy Vim behaviour
+* Fixed [#765](https://github.com/NeoVintageous/NeoVintageous/issues/765): `viw` wrong selection last character in `()`
+* Fixed [#770](https://github.com/NeoVintageous/NeoVintageous/issues/770): `:q` (quit) on empty panes or non-existent files fails with "E32: No file name"
+
 ## 1.23.0 - 2020-12-12
 
 ### Added

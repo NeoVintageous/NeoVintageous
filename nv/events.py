@@ -38,7 +38,7 @@ from NeoVintageous.nv.vim import mode_to_char
 __all__ = ['NeoVintageousEvents']
 
 
-def _check_query_context_value(value, operator, operand, match_all):
+def _check_query_context_value(value: bool, operator: int, operand: bool, match_all: bool) -> bool:
     if operator == OP_EQUAL:
         if operand is True:
             return value
@@ -53,7 +53,7 @@ def _check_query_context_value(value, operator, operand, match_all):
     return False
 
 
-def _is_command_mode(view, operator=OP_EQUAL, operand=True, match_all=False):
+def _is_command_mode(view, operator: int = OP_EQUAL, operand: bool = True, match_all: bool = False) -> bool:
     return _check_query_context_value(
         (view.settings().get('command_mode') and is_view(view)),
         operator,
@@ -62,7 +62,7 @@ def _is_command_mode(view, operator=OP_EQUAL, operand=True, match_all=False):
     )
 
 
-def _is_insert_mode(view, operator, operand, match_all):
+def _is_insert_mode(view, operator: int, operand: bool, match_all: bool) -> bool:
     # TODO This currently returns true for all non-normal modes e.g. Replace
     # mode. Fixing this will break things, for example <Esc> in replace mode
     # would break, a few things need to be reworked to fix this.
@@ -74,7 +74,16 @@ def _is_insert_mode(view, operator, operand, match_all):
     )
 
 
-def _is_alt_key_enabled(view, operator, operand, match_all):
+def _command_or_insert(view, operator: int, operand: bool, match_all: bool) -> bool:
+    return _check_query_context_value(
+        is_view(view),
+        operator,
+        operand,
+        match_all
+    )
+
+
+def _winaltkeys(view, operator: int, operand: str, match_all: bool) -> bool:
     # Some GUI versions allow the access to menu entries by using the ALT
     # key in combination with a character that appears underlined in the
     # menu.  This conflicts with the use of the ALT key for mappings and
@@ -95,16 +104,40 @@ def _is_alt_key_enabled(view, operator, operand, match_all):
     return False if winaltkeys == 'yes' else _is_command_mode(view)
 
 
+def _handle_key(view, operator: int, operand: str, match_all: bool) -> bool:
+    handle_keys = get_setting(view, 'handle_keys')
+    if handle_keys:
+        try:
+            # Check if the key (no mode prefix; all modes) should be handled.
+            return bool(handle_keys[operand])
+        except KeyError:
+            # Check if the key should be handled only for a specific mode.
+            # The format is "{mode}_{key}" e.g. "n_<C-w>", "v_<C-w>"
+            # meaning NORMAL, VISUAL respectively. No prefix implies all
+            # modes. See mode_to_char() for a list of valid mode prefixes.
+            cur_mode_char = mode_to_char(get_mode(view))
+            if cur_mode_char:
+                try:
+                    return bool(handle_keys['%s_%s' % (cur_mode_char, operand)])
+                except KeyError:
+                    pass
+
+    # By default all keys are handled.
+    return True
+
+
 _query_contexts = {
+    'nv_command_or_insert': _command_or_insert,
+    'nv_handle_key': _handle_key,
+    'nv_winaltkeys': _winaltkeys,
     'vi_command_mode_aware': _is_command_mode,
     'vi_insert_mode_aware': _is_insert_mode,
-    'nv.alt_key_enabled': _is_alt_key_enabled,
 }  # type: dict
 
 
 class NeoVintageousEvents(EventListener):
 
-    def on_query_context(self, view, key, operator, operand, match_all):
+    def on_query_context(self, view, key: str, operator: int, operand: bool, match_all: bool):
         # Called when determining to trigger a key binding with the given context key.
         #
         # If the plugin knows how to respond to the context, it should return
@@ -121,27 +154,6 @@ class NeoVintageousEvents(EventListener):
         # Returns:
         #   bool: If the context is known.
         #   None: If the context is unknown.
-        if key == 'nv_handle_key':
-            handle_keys = get_setting(view, 'handle_keys')
-            if handle_keys:
-                try:
-                    # Check if the key (no mode prefix; all modes) should be handled.
-                    return bool(handle_keys[operand])
-                except KeyError:
-                    # Check if the key should be handled only for a specific mode.
-                    # The format is "{mode}_{key}" e.g. "n_<C-w>", "v_<C-w>"
-                    # meaning NORMAL, VISUAL respectively. No prefix implies all
-                    # modes. See mode_to_char() for a list of valid mode prefixes.
-                    cur_mode_char = mode_to_char(get_mode(view))
-                    if cur_mode_char:
-                        try:
-                            return bool(handle_keys['%s_%s' % (cur_mode_char, operand)])
-                        except KeyError:
-                            pass
-
-            # By default all keys are handled.
-            return True
-
         try:
             return _query_contexts[key](view, operator, operand, match_all)
         except KeyError:

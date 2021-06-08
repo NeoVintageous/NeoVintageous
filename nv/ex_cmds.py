@@ -79,6 +79,7 @@ from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.utils import set_selection
+from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
 from NeoVintageous.nv.vim import SELECT
@@ -89,6 +90,7 @@ from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import status_message
 from NeoVintageous.nv.window import window_buffer_control
 from NeoVintageous.nv.window import window_control
+from NeoVintageous.nv.window import window_quit_view
 from NeoVintageous.nv.window import window_tab_control
 
 
@@ -558,6 +560,13 @@ def ex_history(window, name: str = 'all', **kwargs) -> None:
     output.show()
 
 
+def ex_inoremap(lhs: str = None, rhs: str = None, **kwargs) -> None:
+    if not (lhs and rhs):
+        return status_message('Listing key mappings is not implemented')
+
+    mappings_add(INSERT, lhs, rhs)
+
+
 def ex_let(name, value, **kwargs) -> None:
     variables.set(name, re.sub('^(?:"|\')(.*)(?:"|\')$', '\\1', value))
 
@@ -726,27 +735,8 @@ def ex_qall(window, forceit: bool = False, **kwargs) -> None:
     window.run_command('exit')
 
 
-# TODO [refactor] into window module
-def ex_quit(window, view, forceit: bool = False, **kwargs) -> None:
-    if forceit:
-        view.set_scratch(True)
-
-    if view.is_dirty() and not forceit:
-        status_message("E37: No write since last change")
-        return
-
-    if not view.file_name() and not forceit:
-        status_message("E32: No file name")
-        return
-
-    window.run_command('close')
-
-    if len(window.views()) == 0:
-        window.run_command('close')
-        return
-
-    if not window.views_in_group(window.active_group()):
-        ex_unvsplit(window=window, view=view, forceit=forceit, **kwargs)
+def ex_quit(**kwargs) -> None:
+    window_quit_view(**kwargs)
 
 
 @_init_cwd
@@ -801,6 +791,8 @@ def ex_registers(window, view, **kwargs) -> None:
 
 def ex_set(option: str, value, **kwargs) -> None:
     view = kwargs.get('view', None)
+    if not view:
+        return
 
     try:
         if option.endswith('?'):

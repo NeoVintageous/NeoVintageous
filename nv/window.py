@@ -17,7 +17,6 @@
 
 import os
 
-from NeoVintageous.nv.polyfill import view_to_str
 from NeoVintageous.nv.settings import get_cmdline_cwd
 from NeoVintageous.nv.utils import set_selection
 from NeoVintageous.nv.vim import status_message
@@ -200,45 +199,36 @@ def _close_all_other_views(window) -> None:
             window.run_command('close_pane', {'group': i})
 
 
-def _close_view(window, close_if_last: bool = True) -> None:
-    """Close current view.
+def _close_view(window, forceit: bool = False, close_if_last: bool = True, **kwargs) -> None:
+    """Close view.
 
-    If {close_if_last} then this command fails when there is only one
-    view on screen. Modified views are not removed, so changes cannot get
-    lost.
-
-    If it's not a file on disk and contains only whitespace then it is
-    closed.
+    When quitting the last view, unless close_if_last is false, exit Sublime.
+    When forceit is true the view is closed and the buffer contents are lost.
     """
     views_in_group = window.views_in_group(window.active_group())
     if len(views_in_group) == 0:
         window.run_command('destroy_pane', {'direction': 'self'})
         return
 
-    current_view = window.active_view()
-    if not current_view:
-        return
-
-    # If it's not a file on disk and contains only whitespace then close it
-    if not current_view.file_name() and view_to_str(current_view).strip() == '':
-        current_view.set_scratch(True)
-        current_view.close()
-        views_in_group = window.views_in_group(window.active_group())
-        if len(views_in_group) == 0:
-            window.run_command('destroy_pane', {'direction': 'self'})
-        return
-
     if not close_if_last and len(window.views()) < 2:
-        return status_message('cannot close last view')
+        return
 
-    if current_view.is_dirty():
-        dirty_buffer_message = 'No write since last change'
-        if current_view.file_name() is not None:
-            dirty_buffer_message += ' for buffer "%s"' % current_view.file_name()
+    view = window.active_view()
+    if not view:
+        return
 
-        return status_message(dirty_buffer_message)
+    if forceit:
+        view.set_scratch(True)
 
-    current_view.close()
+    if view.is_dirty():
+        buffer_name = view.file_name()
+        if buffer_name is None:
+            buffer_name = '[No Name]'
+
+        status_message('No write since last change for buffer "%s"' % buffer_name)
+        return
+
+    view.close()
 
     views_in_group = window.views_in_group(window.active_group())
     if len(views_in_group) == 0:
@@ -249,8 +239,8 @@ def _close_active_view(window) -> None:
     _close_view(window, close_if_last=False)
 
 
-def _quit_active_view(window) -> None:
-    _close_view(window)
+def window_quit_view(window, **kwargs) -> None:
+    _close_view(window, **kwargs)
     if len(window.views()) == 0:
         window.run_command('close')
 
@@ -529,11 +519,11 @@ def _split(window, file: str = None) -> None:
         window.run_command('create_pane', {'direction': 'down', 'give_focus': True})
         window.open_file(file)
     else:
-        window.run_command('create_pane_with_cloned_file', {'direction': 'down'})
+        window.run_command('clone_file_to_pane', {'direction': 'down'})
 
 
 def _split_vertically(window, count: int = None) -> None:
-    window.run_command('create_pane_with_cloned_file', {'direction': 'right'})
+    window.run_command('clone_file_to_pane', {'direction': 'right'})
 
 
 def _split_with_new_file(window, n: int = None) -> None:
@@ -662,7 +652,7 @@ def window_control(window, action: str, count: int = 1, **kwargs) -> None:
     elif action == '+':
         _increase_group_height(window, count)
     elif action == 'q':
-        _quit_active_view(window)
+        window_quit_view(window)
     elif action == 's':
         _split(window, **kwargs)
     elif action == 't':

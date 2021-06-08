@@ -1121,6 +1121,11 @@ def fixup_eof(view, pt: int) -> int:
 # cursor after an operation, but changing it for all commands could cause some
 # regressions. TODO When enough commands are updated, this should be removed.
 def should_motion_apply_op_transformer(motion) -> bool:
+    if motion['motion'] == 'nv_vi_select_text_object':
+        if 'text_object' in motion['motion_args']:
+            if motion['motion_args']['text_object'] in '"\'/_t':
+                return False
+
     blacklist = (
         'nv_vi_bar',
         'nv_vi_dollar',
@@ -1141,9 +1146,18 @@ def is_linewise_operation(mode: str, motion):
         return True
 
     if motion:
-        if 'motion_args' in motion and 'text_object' in motion['motion_args']:
-            if motion['motion_args']['text_object'] in '[]()b<>t{}B%`/?nN':
-                return 'maybe'
+        if 'motion' in motion:
+            motion_name = motion.get('motion', '')
+            motion_args = motion.get('motion_args', [])
+
+            if 'text_object' in motion_args:
+                if motion_args['text_object'] in '[]()b<>t{}B%`/?nN':
+                    return 'maybe'
+
+            # Motions with a count > 1 are linewise if lines > 1.
+            if motion_name in ('nv_vi_j', 'nv_vi_k'):
+                if 'count' in motion_args and motion_args['count'] > 1:
+                    return 'maybe'
 
     return False
 

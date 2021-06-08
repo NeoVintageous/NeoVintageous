@@ -74,6 +74,7 @@ class TestNumberOption(unittest.ViewTestCase):
 
     def test_number(self):
         option = NumberOption('fizz', 0)
+        option.set(self.view, 0)
         self.assertEqual(option.get(self.view), 0)
         option.set(self.view, 3)
         self.assertEqual(option.get(self.view), 3)

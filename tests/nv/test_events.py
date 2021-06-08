@@ -30,16 +30,19 @@ from NeoVintageous.nv.events import NeoVintageousEvents
 
 class TestCommandModeAware(unittest.ViewTestCase):
 
+    KEYS = ['vi_command_mode_aware', 'nv_command_or_insert']
+
     def setUp(self):
         super().setUp()
         self.events = NeoVintageousEvents()
 
     def test_is_command_mode_true(self):
         self.settings().set('command_mode', True)
-        self.assertEqual(True, self.events.on_query_context(self.view, 'vi_command_mode_aware', OP_EQUAL, True, True))
-        self.assertEqual(False, self.events.on_query_context(self.view, 'vi_command_mode_aware', OP_EQUAL, False, True))
-        self.assertEqual(False, self.events.on_query_context(self.view, 'vi_command_mode_aware', OP_NOT_EQUAL, True, True))  # noqa: E501
-        self.assertEqual(True, self.events.on_query_context(self.view, 'vi_command_mode_aware', OP_NOT_EQUAL, False, True))  # noqa: E501
+        for key in self.KEYS:
+            self.assertEqual(True, self.events.on_query_context(self.view, key, OP_EQUAL, True, True))
+            self.assertEqual(False, self.events.on_query_context(self.view, key, OP_EQUAL, False, True))
+            self.assertEqual(False, self.events.on_query_context(self.view, key, OP_NOT_EQUAL, True, True))  # noqa: E501
+            self.assertEqual(True, self.events.on_query_context(self.view, key, OP_NOT_EQUAL, False, True))  # noqa: E501
 
     def test_is_command_mode_false(self):
         self.settings().set('command_mode', False)
@@ -51,26 +54,32 @@ class TestCommandModeAware(unittest.ViewTestCase):
     def test_is_command_mode_true_for_cmdline_output(self):
         panel = CmdlineOutput(self.view.window())._output
         panel.settings().set('command_mode', True)
-        self.assertEqual(False, self.events.on_query_context(panel, 'vi_command_mode_aware', OP_EQUAL, True, True))
-        self.assertEqual(True, self.events.on_query_context(panel, 'vi_command_mode_aware', OP_EQUAL, False, True))
+        for key in self.KEYS:
+            self.assertEqual(False, self.events.on_query_context(panel, key, OP_EQUAL, True, True))
+            self.assertEqual(True, self.events.on_query_context(panel, key, OP_EQUAL, False, True))
 
     def test_is_command_mode_false_for_cmdline_output(self):
         panel = CmdlineOutput(self.view.window())._output
         panel.settings().set('command_mode', False)
-        self.assertEqual(True, self.events.on_query_context(panel, 'vi_command_mode_aware', OP_EQUAL, False, True))
-        self.assertEqual(False, self.events.on_query_context(panel, 'vi_command_mode_aware', OP_EQUAL, True, True))
+        for key in self.KEYS:
+            self.assertEqual(True, self.events.on_query_context(panel, key, OP_EQUAL, False, True))
+            self.assertEqual(False, self.events.on_query_context(panel, key, OP_EQUAL, True, True))
 
     @unittest.mock.patch('NeoVintageous.nv.events.is_view')
     def test_is_command_mode_should_return_early_if_not_in_command_mode(self, is_view):
         self.settings().set('command_mode', True)
-        self.events.on_query_context(self.view, 'vi_command_mode_aware', OP_EQUAL, True, True)
-        self.assertEqual(is_view.call_count, 1)
+        for key in self.KEYS:
+            self.events.on_query_context(self.view, key, OP_EQUAL, True, True)
+        self.assertEqual(is_view.call_count, 2)
         self.settings().set('command_mode', False)
-        self.events.on_query_context(self.view, 'vi_command_mode_aware', OP_EQUAL, True, True)
-        self.assertEqual(is_view.call_count, 1)
+        for key in self.KEYS:
+            self.events.on_query_context(self.view, key, OP_EQUAL, True, True)
+        self.assertEqual(is_view.call_count, 3)
 
 
 class TestInsertModeAware(unittest.ViewTestCase):
+
+    KEYS = ['vi_insert_mode_aware', 'nv_command_or_insert']
 
     def setUp(self):
         super().setUp()
@@ -78,10 +87,12 @@ class TestInsertModeAware(unittest.ViewTestCase):
 
     def test_is_insert_mode_true(self):
         self.settings().set('command_mode', False)
-        self.assertEqual(True, self.events.on_query_context(self.view, 'vi_insert_mode_aware', OP_EQUAL, True, True))
-        self.assertEqual(False, self.events.on_query_context(self.view, 'vi_insert_mode_aware', OP_EQUAL, False, True))
-        self.assertEqual(False, self.events.on_query_context(self.view, 'vi_insert_mode_aware', OP_NOT_EQUAL, True, True))  # noqa: E501
-        self.assertEqual(True, self.events.on_query_context(self.view, 'vi_insert_mode_aware', OP_NOT_EQUAL, False, True))  # noqa: E501
+
+        for key in self.KEYS:
+            self.assertEqual(True, self.events.on_query_context(self.view, key, OP_EQUAL, True, True))
+            self.assertEqual(False, self.events.on_query_context(self.view, key, OP_EQUAL, False, True))
+            self.assertEqual(False, self.events.on_query_context(self.view, key, OP_NOT_EQUAL, True, True))  # noqa: E501
+            self.assertEqual(True, self.events.on_query_context(self.view, key, OP_NOT_EQUAL, False, True))  # noqa: E501
 
     def test_is_insert_mode_false(self):
         self.settings().set('command_mode', True)
@@ -93,34 +104,61 @@ class TestInsertModeAware(unittest.ViewTestCase):
     def test_is_insert_mode_true_for_cmdline_output(self):
         panel = CmdlineOutput(self.view.window())._output
         panel.settings().set('command_mode', False)
-        self.assertEqual(True, self.events.on_query_context(panel, 'vi_insert_mode_aware', OP_EQUAL, False, True))
-        self.assertEqual(False, self.events.on_query_context(panel, 'vi_insert_mode_aware', OP_EQUAL, True, True))
+        for key in self.KEYS:
+            self.assertEqual(True, self.events.on_query_context(panel, key, OP_EQUAL, False, True))
+            self.assertEqual(False, self.events.on_query_context(panel, key, OP_EQUAL, True, True))
 
     def test_is_insert_mode_false_for_cmdline_output(self):
         panel = CmdlineOutput(self.view.window())._output
         panel.settings().set('command_mode', True)
-        self.assertEqual(False, self.events.on_query_context(panel, 'vi_insert_mode_aware', OP_EQUAL, True, True))
-        self.assertEqual(True, self.events.on_query_context(panel, 'vi_insert_mode_aware', OP_EQUAL, False, True))
+        for key in self.KEYS:
+            self.assertEqual(False, self.events.on_query_context(panel, key, OP_EQUAL, True, True))
+            self.assertEqual(True, self.events.on_query_context(panel, key, OP_EQUAL, False, True))
 
     def test_is_insert_mode_false_by_default(self):
-        self.assertEqual(False, self.events.on_query_context(self.view, 'vi_insert_mode_aware', OP_REGEX_MATCH, True, True))  # noqa: E501
-        self.assertEqual(False, self.events.on_query_context(self.view, 'vi_insert_mode_aware', OP_REGEX_MATCH, False, True))  # noqa: E501
+        for key in self.KEYS:
+            self.assertEqual(False, self.events.on_query_context(self.view, key, OP_REGEX_MATCH, True, True))  # noqa: E501
+            self.assertEqual(False, self.events.on_query_context(self.view, key, OP_REGEX_MATCH, False, True))  # noqa: E501
 
     @unittest.mock.patch('NeoVintageous.nv.events.is_view')
     def test_is_insert_mode_should_return_early_if_not_command_mode(self, is_view):
         self.settings().set('command_mode', False)
-        self.events.on_query_context(self.view, 'vi_insert_mode_aware', OP_EQUAL, True, False)
-        self.assertEqual(is_view.call_count, 1)
+        for key in self.KEYS:
+            self.events.on_query_context(self.view, key, OP_EQUAL, True, False)
+        self.assertEqual(is_view.call_count, 2)
         self.settings().set('command_mode', True)
-        self.events.on_query_context(self.view, 'vi_insert_mode_aware', OP_EQUAL, True, False)
-        self.assertEqual(is_view.call_count, 1)
+        for key in self.KEYS:
+            self.events.on_query_context(self.view, key, OP_EQUAL, True, False)
+        self.assertEqual(is_view.call_count, 3)
 
     def test_query_contexts_can_be_disabled_by_external_plugins(self):
         self.settings().set('command_mode', True)
         self.settings().set('is_widget', False)
         self.settings().set('__vi_external_disable', True)
-        self.assertEqual(False, self.events.on_query_context(self.view, 'vi_command_mode_aware', OP_EQUAL, True, True))
-        self.assertEqual(True, self.events.on_query_context(self.view, 'vi_command_mode_aware', OP_EQUAL, False, True))
+        for key in self.KEYS:
+            self.assertEqual(False, self.events.on_query_context(self.view, key, OP_EQUAL, True, True))
+            self.assertEqual(True, self.events.on_query_context(self.view, key, OP_EQUAL, False, True))
+
+
+class TestCommandOrInsert(unittest.ViewTestCase):
+
+    def setUp(self):
+        super().setUp()
+        self.events = NeoVintageousEvents()
+
+    def test_command_mode(self):
+        self.normal('fi|zz')
+        self.assertEqual(True, self.events.on_query_context(self.view, 'nv_command_or_insert', OP_EQUAL, True, False))
+        self.visual('f|iz|z')
+        self.assertEqual(True, self.events.on_query_context(self.view, 'nv_command_or_insert', OP_EQUAL, True, False))
+        self.vline('|fizz\n|x')
+        self.assertEqual(True, self.events.on_query_context(self.view, 'nv_command_or_insert', OP_EQUAL, True, False))
+        self.vblock('f|iz|z\nx')
+        self.assertEqual(True, self.events.on_query_context(self.view, 'nv_command_or_insert', OP_EQUAL, True, False))
+
+    def test_insert_mode(self):
+        self.insert('fi|zz')
+        self.assertEqual(True, self.events.on_query_context(self.view, 'nv_command_or_insert', OP_EQUAL, True, False))
 
 
 class TestOnQueryContextDisabledOrIgnored(unittest.ViewTestCase):
@@ -225,40 +263,40 @@ class TestAltKeyEnabled(unittest.ViewTestCase):
         self.settings().set('command_mode', True)
 
         self.view.window().is_menu_visible.return_value = False
-        self.assertEqual(False, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'f', True))
-        self.assertEqual(False, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'x', True))
+        self.assertEqual(False, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'f', True))
+        self.assertEqual(False, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'x', True))
 
         self.view.window().is_menu_visible.return_value = True
-        self.assertEqual(False, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'f', True))
-        self.assertEqual(False, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'x', True))
+        self.assertEqual(False, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'f', True))
+        self.assertEqual(False, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'x', True))
 
     def test_winaltkeys_no(self):
         self.set_option('winaltkeys', 'no', setting=False)
         self.settings().set('command_mode', True)
 
         self.view.window().is_menu_visible.return_value = False
-        self.assertEqual(True, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'f', True))
-        self.assertEqual(True, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'x', True))
+        self.assertEqual(True, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'f', True))
+        self.assertEqual(True, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'x', True))
 
         self.view.window().is_menu_visible.return_value = True
-        self.assertEqual(True, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'f', True))
-        self.assertEqual(True, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'x', True))
+        self.assertEqual(True, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'f', True))
+        self.assertEqual(True, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'x', True))
 
     def test_winaltkeys_menu(self):
         self.set_option('winaltkeys', 'menu', setting=False)
         self.settings().set('command_mode', True)
 
         self.view.window().is_menu_visible.return_value = False
-        self.assertEqual(True, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'f', True))
-        self.assertEqual(True, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'x', True))
+        self.assertEqual(True, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'f', True))
+        self.assertEqual(True, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'x', True))
 
         self.view.window().is_menu_visible.return_value = True
-        self.assertEqual(False, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'f', True))
-        self.assertEqual(True, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'x', True))
+        self.assertEqual(False, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'f', True))
+        self.assertEqual(True, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'x', True))
 
         self.settings().set('command_mode', False)
-        self.assertEqual(False, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'f', True))
-        self.assertEqual(False, self.events.on_query_context(self.view, 'nv.alt_key_enabled', OP_EQUAL, 'x', True))
+        self.assertEqual(False, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'f', True))
+        self.assertEqual(False, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'x', True))
 
 
 class TestOnLoadDoModeline(unittest.ViewTestCase):

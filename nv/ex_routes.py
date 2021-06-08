@@ -265,6 +265,10 @@ def _ex_route_help(state) -> TokenCommand:
     return command
 
 
+def _ex_route_inoremap(state) -> TokenCommand:
+    return _create_map_route(state, 'inoremap')
+
+
 def _ex_route_history(state) -> TokenCommand:
     command = _create_route(state, 'history')
     _resolve(state, command, r'\s*(?P<name>.+)')
@@ -730,6 +734,7 @@ ex_routes[r'f(?:ile)?'] = _ex_route_file
 ex_routes[r'g(?:lobal)?'] = _ex_route_global
 ex_routes[r'his(?:tory)?'] = _ex_route_history
 ex_routes[r'h(?:elp)?'] = _ex_route_help
+ex_routes[r'ino(?:remap)?'] = _ex_route_inoremap
 ex_routes[r'let\s'] = _ex_route_let
 ex_routes[r'm(?:ove)?(?=[^a]|$)'] = _ex_route_move
 ex_routes[r'new'] = _ex_route_new

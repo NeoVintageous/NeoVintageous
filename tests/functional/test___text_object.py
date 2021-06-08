@@ -26,12 +26,11 @@ class TestTextObjectSelection(unittest.FunctionalTestCase):
         self.eq('x  |  f|izz    xx', 'v_aw', 'x  |  fizz    |xx')
         self.eq('x    fi|zz    xx    yy    zz', 'v_3aw', 'x    |fizz    xx    yy    |zz')
         self.eq(' f|iz    b', 'v_aw', ' |fiz    |b')
+        self.eq('fi|z| = x', 'v_aw', '|fiz |= x')
 
-    @unittest.expectedFailure
     def test_vaw_issue_748_01(self):
         self.eq(' fi|z    b', 'v_aw', ' |fiz    |b')
 
-    @unittest.expectedFailure
     def test_vaw_issue_748_02(self):
         self.eq('fi|z\nbuz x', 'v_aw', '|fiz|\nbuz x')
 
@@ -49,28 +48,15 @@ class TestTextObjectSelection(unittest.FunctionalTestCase):
         self.eq(' |fiz| b', 'v_iw', ' |fiz |b')
         self.eq(' |fiz|    b', 'v_iw', ' |fiz    |b')
         self.eq(' |fiz|...b', 'v_iw', ' |fiz...|b')
+        self.eq('fi|z| = x', 'v_iw', '|fiz| = x')
+        self.eq('r_fi|z| = x', 'v_iw', '|fiz| = x')
 
-    @unittest.expectedFailure
-    def test_viw_issue_748_01(self):
-        self.eq('a fi|z b', 'v_iw', 'a |fiz| b')
-
-    @unittest.expectedFailure
-    def test_viw_issue_748_02(self):
-        self.eq('fi|z\nbuz x', 'v_iw', '|fiz|\nbuz x')
-
-    @unittest.expectedFailure
-    def test_viw_issue_748_03(self):
-        self.eq('|fiz|\nbuz x', 'v_iw', '|fiz\nbuz| x')
-
-    @unittest.expectedFailure
     def test_viw_issue_748_04(self):
         self.eq('r_fiz...b|uz|z', 'v_iw', 'r_fiz...|buz|z')
 
-    @unittest.expectedFailure
     def test_viw_issue_748_05(self):
         self.eq('r_fiz...|buz|z', 'v_iw', 'r_fiz|...buz|z')
 
-    @unittest.expectedFailure
     def test_viw_issue_748_06(self):
         self.eq('r_fiz   |buz|z', 'v_iw', 'r_fiz|   buz|z')
 
@@ -201,6 +187,7 @@ class TestTextObjectSelection(unittest.FunctionalTestCase):
             self.eq('f|iz{0}z'.format(mark), 'v_i' + mark, 'f|i|z{0}z'.format(mark))
             self.eq('x{0}fi|zz{0}x'.format(mark), 'v_i' + mark, 'x{0}|fizz|{0}x'.format(mark))
             self.eq('x{0}fi|zz bu|zz{0}x'.format(mark), 'v_i' + mark, 'x{0}|fizz buzz|{0}x'.format(mark))
+            self.eq('x{0}fi|zz  {0}x'.format(mark), 'v_i' + mark, 'x{0}|fizz  |{0}x'.format(mark))
 
     def test_issue_570(self):
         self.visual('<div>\n\n<tag><subtag>hello| |world</subtag></tag>\n\n</div>')
