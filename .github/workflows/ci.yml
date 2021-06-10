@@ -10,6 +10,7 @@ jobs:
   linux:
     runs-on: ubuntu-latest
     container: sublimetext/unittesting
+    options: --cap-add=NET_ADMIN
     steps:
       - uses: actions/checkout@v1
       - run: export DISPLAY=":99.0"
