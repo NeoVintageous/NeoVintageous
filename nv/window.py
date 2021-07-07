@@ -18,7 +18,7 @@
 import os
 
 from NeoVintageous.nv.settings import get_cmdline_cwd
-from NeoVintageous.nv.utils import is_help_view
+from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.utils import set_selection
 from NeoVintageous.nv.vim import status_message
 
@@ -241,9 +241,13 @@ def _close_active_view(window) -> None:
 
 
 def window_quit_view(window, **kwargs) -> None:
+    # Need to get the setting before quiting the the view because if closing the
+    # last view there may not be a view to get the setting from.
+    exit_when_quiting_last_window = get_setting(window.active_view(), 'exit_when_quiting_last_window')
+
     _close_view(window, **kwargs)
-    # When quitting the last window (not counting a help window), exit ST.
-    if len(window.views()) == 0 and not is_help_view(window.active_view()):
+
+    if len(window.views()) == 0 and exit_when_quiting_last_window:
         window.run_command('close')
 
 
