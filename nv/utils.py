@@ -1223,3 +1223,7 @@ def restore_visual_repeat_data(view, mode: str, data: tuple) -> None:
         end = view.full_line(end).b
         view.sel().add(Region(begin, end))
         set_mode(view, VISUAL_LINE)
+
+
+def is_help_view(view) -> bool:
+    return view and view.is_read_only() and view.is_scratch() and '[vim help]' in view.name()

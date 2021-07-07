@@ -18,6 +18,7 @@
 import os
 
 from NeoVintageous.nv.settings import get_cmdline_cwd
+from NeoVintageous.nv.utils import is_help_view
 from NeoVintageous.nv.utils import set_selection
 from NeoVintageous.nv.vim import status_message
 
@@ -241,7 +242,8 @@ def _close_active_view(window) -> None:
 
 def window_quit_view(window, **kwargs) -> None:
     _close_view(window, **kwargs)
-    if len(window.views()) == 0:
+    # When quitting the last window (not counting a help window), exit ST.
+    if len(window.views()) == 0 and not is_help_view(window.active_view()):
         window.run_command('close')
 
 
