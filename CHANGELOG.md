@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.25.0 - Unreleased
+
+* Added [#780](https://github.com/NeoVintageous/NeoVintageous/issues/780): Navigating in the command palette not working in (ST4)
+
 ## 1.24.0 - 2020-06-09
 
 ### Added
