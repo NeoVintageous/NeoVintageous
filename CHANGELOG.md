@@ -2,7 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.24.0 - 2021-06-09
+## 1.24.1 - 2020-07-07
+
+* Fixed [#782](https://github.com/NeoVintageous/NeoVintageous/issues/782): Toggle-able option to keep sublime open when quitting out of last file #782
+* Fixed [#780](https://github.com/NeoVintageous/NeoVintageous/issues/780): Navigating in the command palette not working in (ST4)
+
+## 1.24.0 - 2020-06-09
 
 ### Added
 

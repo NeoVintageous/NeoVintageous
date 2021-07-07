@@ -70,6 +70,9 @@
     // Plugin: A port of https://github.com/tpope/vim-unimpaired.
     "vintageous_enable_unimpaired": true,
 
+    // When quitting the last window (not counting a help window), exit ST.
+    "vintageous_exit_when_quiting_last_window": true,
+
     // Delegate configured keys to be handled by Sublime Text. 
     //
     // For example to use ctrl+f for find (native ST behaviour):

@@ -10,9 +10,15 @@
     {"keys": ["p"], "command": "move", "args": {"by": "characters", "forward": false}, "context": [{"key": "control", "operand": "sidebar_tree"}]},
     {"keys": ["q"], "command": "neovintageous", "args": {"action": "toggle_side_bar"}, "context": [{"key": "control", "operand": "sidebar_tree"}]},
 
-    // Overlay.
+    // Overlay support for Sublime Text 3.
     { "keys": ["ctrl+j"], "command": "move", "args": {"by": "lines", "forward": true}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     { "keys": ["ctrl+k"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+
+    // Overlay.
+    { "keys": ["ctrl+j"], "command": "move", "args": {"by": "lines", "forward": true}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control command_palette"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    { "keys": ["ctrl+k"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control command_palette"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    { "keys": ["ctrl+j"], "command": "move", "args": {"by": "lines", "forward": true}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control goto_file"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    { "keys": ["ctrl+k"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control goto_file"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     { "keys": ["ctrl+n"], "command": "move", "args": {"by": "lines", "forward": true}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     { "keys": ["ctrl+p"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
 

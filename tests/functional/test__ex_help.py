@@ -18,22 +18,20 @@
 from sublime import CLASS_WORD_END
 from sublime import CLASS_WORD_START
 
+from NeoVintageous.nv.utils import is_help_view
 from NeoVintageous.tests import unittest
 
 
 class Test_ex_help(unittest.FunctionalTestCase):
 
-    def is_help_view(self, view):
-        return view.is_read_only() and view.is_scratch() and '[vim help]' in view.name()
-
     def get_active_help_view(self):
         av = self.view.window().active_view()
-        if self.is_help_view(av):
+        if is_help_view(av):
             return av
 
     def close_active_help_views(self):
         for view in self.view.window().views():
-            if self.is_help_view(view):
+            if is_help_view(view):
                 view.close()
 
     def tearDown(self):
