@@ -397,7 +397,7 @@ def ex_global(window, view, pattern: str, line_range: RangeNode, cmd='print', **
     else:
         region = line_range.resolve(view)
 
-    matches = view_find_all_in_range(view, pattern, region.a, region.b - 1)
+    matches = view_find_all_in_range(view, pattern, region.a, region.b)
     if not matches:
         return status_message('Pattern not found: %s', pattern)
 
