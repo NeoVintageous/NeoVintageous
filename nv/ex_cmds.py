@@ -404,6 +404,18 @@ def ex_global(window, view, pattern: str, line_range: RangeNode, cmd='print', **
     matches = [view.full_line(r.begin()) for r in matches]
     matches = [[r.a, r.b] for r in matches]
 
+    # Handle `:g!`/`:global!`
+    # The `!` is translated into `kwargs['forceit'] == True` and means we should
+    # pick all lines _not_ matching the pattern.
+    if kwargs.get('forceit', False):
+        inv_pos = region.a
+        new_matches = []
+        for a, b in matches:
+            new_matches.append([inv_pos, a])
+            inv_pos = b
+        new_matches.append([inv_pos, region.b])
+        matches = new_matches
+
     cmd.params['global_lines'] = matches
 
     do_ex_command(window, cmd.target, cmd.params)
