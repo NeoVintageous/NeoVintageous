@@ -7,30 +7,63 @@ env:
 
 jobs:
   linux:
+    name: Linux ST${{ matrix.version }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: true
       matrix:
-        version: [3]
+        version: [3, 4]
     container:
       image: sublimetext/unittesting
       options: --cap-add=NET_ADMIN
     env:
       SUBLIME_TEXT_VERSION: ${{ matrix.version }}
+      NO_AT_BRIDGE: 1
     steps:
       - uses: actions/checkout@v1
       - run: export DISPLAY=":99.0"
       - run: sh -e /etc/init.d/xvfb start
       - run: curl -OL https://raw.githubusercontent.com/SublimeText/UnitTesting/master/sbin/github.sh
+      - name: Install dependencies
+        if: ${{ matrix.version == 3 }}
+        run: |
+          apt-get update
+          apt-get install python3-pip -y
+          pip3 install flake8
+          pip3 install flake8-docstrings
+          pip3 install pydocstyle
+          pip3 install coverage==4.5.4
+          pip3 install codecov
+          pip3 install python-coveralls
+      - name: Coding guidelines check
+        if: ${{ matrix.version == 3 }}
+        run: |
+          flake8 -v
       - name: Test
+        if: ${{ matrix.version == 3 }}
         run: |
           PATH="$HOME/.local/bin:$PATH"
           sh github.sh bootstrap
-          sh github.sh run_tests --coverage
+          if ${{ matrix.version == 3 }}; then
+            sh github.sh run_tests --coverage
+          else
+            sh github.sh run_tests
+          fi
           sh github.sh run_syntax_compatibility
           sh github.sh run_syntax_tests
+      - name: Code coverage report - coveralls`
+        if: ${{ matrix.version == 3 }}
+        env:
+          COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}
+        run: |
+          coveralls
+      - name: Code coverage report - codecov
+        if: ${{ matrix.version == 3 }}
+        run: |
+          codecov
 
   macos:
+    name: MacOS ST${{ matrix.version }}
     runs-on: macos-latest
     strategy:
       fail-fast: true
@@ -45,19 +78,24 @@ jobs:
         run: |
           export PATH="$HOME/.local/bin:$PATH"
           sh github.sh bootstrap
-          sh github.sh run_tests --coverage
+          sh github.sh run_tests
           sh github.sh run_syntax_compatibility
           sh github.sh run_syntax_tests
 
-  # *sigh* github-actions  runs-on windows is broken
   # windows:
   #   runs-on: windows-latest
+  #   strategy:
+  #     fail-fast: true
+  #     matrix:
+  #       version: [3]
+  #   env:
+  #     SUBLIME_TEXT_VERSION: ${{ matrix.version }}
   #   steps:
   #     - uses: actions/checkout@v1
   #     - run: (new-object net.webclient).DownloadFile("https://raw.githubusercontent.com/SublimeText/UnitTesting/master/sbin/github.ps1","github.ps1")
   #     - name: Test
   #       run: |
   #         ./github.ps1 "bootstrap" -verbose
-  #         ./github.ps1 "run_tests" -coverage -verbose
+  #         ./github.ps1 "run_tests" -verbose
   #         ./github.ps1 "run_syntax_compatibility"
   #         ./github.ps1 "run_syntax_tests"
