@@ -34,3 +34,7 @@ class Test_ex_global(unittest.FunctionalTestCase):
         self.eq('|fizz\n\nbuzz\nfizz\n\n\n\n\n\nbuzz\n', ':%global/^$/d', 'fizz\nbuzz\nfizz\n|buzz\n')
         self.eq('|1\n2\n3\n4\n5\n6\n7\n8\n9\n0', ':3,6g/^/d', '1\n2\n|7\n8\n9\n0')
         self.eq('|1\nx2\n3\n4\nx5\n6\nx7\nx8\n9\n0', ':3,7g/^x/d', '1\nx2\n3\n4\n6\n|x8\n9\n0')
+
+    def test_global_not_match_delete(self):
+        self.eq('|fizz\nxyz\nbuzz\n', ':global!/^x/d', 'xyz\n|')
+        self.eq('|fizz\nxyz\nbuzz\nfizz\nxyz\nbuzz\n', ':global!/^x/d', 'xyz\nxyz\n|')
