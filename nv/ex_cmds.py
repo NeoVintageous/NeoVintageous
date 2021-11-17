@@ -706,6 +706,7 @@ def ex_print(window, view, line_range: RangeNode, flags: list = None, global_lin
 
     display = window.new_file()
     display.set_scratch(True)
+    display.settings().set('nv_ex_print_output', True)
 
     if 'l' in flags:
         display.settings().set('draw_white_space', 'all')
