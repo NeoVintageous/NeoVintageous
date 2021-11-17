@@ -21,6 +21,10 @@ from NeoVintageous.tests import unittest
 @unittest.mock.patch.dict('NeoVintageous.nv.session._session', {})
 class Test_ex_global(unittest.FunctionalTestCase):
 
+    def tearDown(self) -> None:
+        self.closeExPrintOutputViews()
+        super().tearDown()
+
     def test_global_delete(self):
         self.eq('|fizz\nxyz\nbuzz\n', ':global/^x/d', 'fizz\n|buzz\n')
         self.eq('|fizz\nxyz\nbuzz\n', ':global/^x/delete', 'fizz\n|buzz\n')
@@ -29,10 +33,8 @@ class Test_ex_global(unittest.FunctionalTestCase):
         self.eq('|fizz\nxyz\nbuzz\nfizz\nxyz\nbuzz\n', ':global/^x/d', 'fizz\nbuzz\nfizz\n|buzz\n')
         self.eq('|fizz\nxyz\nbuzz\n', ':global/^./d', '|')
         self.eq('|fizz\nxyz\nbuzz\n', ':global/^/d', '|')
-        self.eq('|fizz\n\nbuzz\n', ':global/^$/d', 'fizz\nbuz|z\n')
-        self.eq('|fizz\n\nbuzz\nfizz\n\n\n\n\n\nbuzz\n', ':global/^$/d', 'fizz\nbuzz\nfizz\n|buzz\n')
-        self.eq('|fizz\n\nbuzz\nfizz\n\n\n\n\n\nbuzz\n', ':%global/^$/d', 'fizz\nbuzz\nfizz\n|buzz\n')
-        self.eq('|1\n2\n3\n4\n5\n6\n7\n8\n9\n0', ':3,6g/^/d', '1\n2\n|7\n8\n9\n0')
+        self.eq('|fizz\n\nbuzz\nfizz\n\n\n\n\n\nbuzz\n', ':global/^$/d', 'fizz\nbuzz\nfizz\nbuz|z\n')
+        self.eq('|fizz\n\nbuzz\nfizz\n\n\n\n\n\nbuzz\n', ':%global/^$/d', 'fizz\nbuzz\nfizz\nbuz|z\n')
         self.eq('|1\nx2\n3\n4\nx5\n6\nx7\nx8\n9\n0', ':3,7g/^x/d', '1\nx2\n3\n4\n6\n|x8\n9\n0')
 
     def test_global_not_match_delete(self):
@@ -67,5 +69,25 @@ class Test_ex_global(unittest.FunctionalTestCase):
         self.feed(':global/^/nohlsearch')
         self.assertNormal('|fizz\nxyz\nbuzz\n')
         self.assertStatusMessage('Command not supported: nohlsearch')
-        self.eq('|1\n2\n3', ':global/\d/p', '1\n2\n3')
-        self.eq('|a\n1\n2b\n3\na', ':global/\d/p', '1\n2\n3\n')
+
+    def test_issue_78_with_range(self):
+        self.eq('|1\n2\n3\n4\n5\n6\n7\n8\n9\n0', ':3,6g/^/d', '1\n2\n|8\n9\n0')
+
+    def test_issue_78_delete(self):
+        self.eq('|fizz\n\nbuzz\n', ':global/^$/d', 'fizz\nbuz|z\n')
+
+    def test_issue_78_print_with_newline(self):
+        self.eq('|1\n2\n3\n', ':g/\\d/p', '|1\n2\n3\n')
+        self.assertExPrintOutput('1\n2\n3\n')
+
+    def test_issue_78_print_without_newline(self):
+        self.eq('|1\n2\n3', ':g/\\d/p', '|1\n2\n3')
+        self.assertExPrintOutput('1\n2\n3')
+
+    def test_issue_78_print_extract(self):
+        self.eq('|fizz\n123\nbuzz\n', ':g/^123/p', '|fizz\n123\nbuzz\n')
+        self.assertExPrintOutput('123\n')
+
+    def test_issue_78_print(self):
+        self.eq('|a\n1\n2b\n3\na', ':global/\\d/p', '|a\n1\n2b\n3\na')
+        self.assertExPrintOutput('1\n2b\n3\n')

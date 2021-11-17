@@ -415,6 +415,19 @@ class ViewTestCase(unittest.TestCase):
         self.view.window().focus_group(self.view.window().active_group())
         self.assertEqual(self.commandLineOutput(), expected + "\nPress ENTER to continue", msg)
 
+    def closeExPrintOutputViews(self) -> None:
+        for v in self.view.window().views():
+            if v.is_scratch() and v.settings().get('nv_ex_print_output'):
+                v.close()
+
+    def exPrintOutput(self) -> str:
+        for v in self.view.window().views():
+            if v.is_scratch() and v.settings().get('nv_ex_print_output'):
+                return _view_to_str(v)
+
+    def assertExPrintOutput(self, expected, msg: str = None) -> None:
+        self.assertEqual(self.exPrintOutput(), expected, msg)
+
     def assertContentRegex(self, expected_regex: str, msg: str = None) -> None:
         self.assertRegex(self.content(), expected_regex, msg=msg)
 
