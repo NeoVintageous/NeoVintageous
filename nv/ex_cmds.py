@@ -193,6 +193,14 @@ def ex_buffers(window, **kwargs) -> None:
     output.show()
 
 
+def _expand_to_realpath(path: str) -> str:
+    expanded_user = os.path.expanduser(path)
+    expanded_vars = os.path.expandvars(expanded_user)
+
+    return os.path.realpath(expanded_vars)
+
+
+@_init_cwd
 def ex_cd(view, path=None, **kwargs) -> None:
     if not path:
         path = os.path.expanduser('~')
@@ -201,7 +209,7 @@ def ex_cd(view, path=None, **kwargs) -> None:
         if fname:
             path = os.path.dirname(fname)
     else:
-        path = os.path.realpath(os.path.expandvars(os.path.expanduser(path)))
+        path = _expand_to_realpath(path)
 
     if not os.path.isdir(path):
         return status_message("E344: Can't find directory \"%s\" in cdpath" % path)

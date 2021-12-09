@@ -4,7 +4,13 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## Unreleased
 
+### Added
+
 * Added [#789](https://github.com/NeoVintageous/NeoVintageous/issues/789): Support inverse global-command `:g!/pattern/cmd`
+
+### Fixed
+
+* Fixed [#797](https://github.com/NeoVintageous/NeoVintageous/issues/797): `:cd` not working as expected
 
 ## 1.24.1 - 2021-07-07
 
