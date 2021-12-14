@@ -19,6 +19,7 @@ jobs:
     env:
       SUBLIME_TEXT_VERSION: ${{ matrix.version }}
       NO_AT_BRIDGE: 1
+      COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
     steps:
       - uses: actions/checkout@v1
       - run: export DISPLAY=":99.0"
@@ -40,7 +41,6 @@ jobs:
         run: |
           flake8 -v
       - name: Test
-        if: ${{ matrix.version == 3 }}
         run: |
           PATH="$HOME/.local/bin:$PATH"
           sh github.sh bootstrap
@@ -51,12 +51,12 @@ jobs:
           fi
           sh github.sh run_syntax_compatibility
           sh github.sh run_syntax_tests
-      # - name: Code coverage report - coveralls`
-      #   if: ${{ matrix.version == 3 }}
-      #   env:
-      #     COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}
-      #   run: |
-      #     coveralls
+      - name: Code coverage report - coveralls`
+        if: ${{ matrix.version == 3 && env.COVERALLS_REPO_TOKEN }}
+        env:
+          COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}
+        run: |
+          coveralls
       - name: Code coverage report - codecov
         if: ${{ matrix.version == 3 }}
         run: |
