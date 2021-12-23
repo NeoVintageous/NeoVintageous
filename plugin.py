@@ -129,7 +129,6 @@ def _init_backwards_compat_patches():
                     os.rename(old_file, new_file)
 
             sublime.save_settings('Preferences.sublime-settings')
-
     except Exception:  # pragma: no cover
         traceback.print_exc()
 

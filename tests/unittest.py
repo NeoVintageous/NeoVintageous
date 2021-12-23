@@ -1174,7 +1174,7 @@ def mock_status_message():
 
     """
     def wrapper(f):
-        @mock.patch('NeoVintageous.nv.vim._status_message')
+        @mock.patch('NeoVintageous.nv.polyfill._status_message')
         def wrapped(self, *args, **kwargs):
             self.status_message = args[-1]
             self.assert_status_message_count = 0

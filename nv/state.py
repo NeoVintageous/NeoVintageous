@@ -22,6 +22,7 @@ from sublime import active_window
 from NeoVintageous.nv import macros
 from NeoVintageous.nv import plugin
 from NeoVintageous.nv.macros import add_macro_step
+from NeoVintageous.nv.polyfill import run_window_command
 from NeoVintageous.nv.session import get_session_view_value
 from NeoVintageous.nv.session import set_session_view_value
 from NeoVintageous.nv.settings import get_glue_until_normal_mode
@@ -64,7 +65,6 @@ from NeoVintageous.nv.vim import mode_to_name
 from NeoVintageous.nv.vim import reset_status_line
 from NeoVintageous.nv.vim import run_action
 from NeoVintageous.nv.vim import run_motion
-from NeoVintageous.nv.vim import run_window_command
 
 
 _log = logging.getLogger(__name__)

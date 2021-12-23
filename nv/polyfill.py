@@ -19,8 +19,21 @@ from contextlib import contextmanager
 import re
 
 from sublime import Region
+from sublime import active_window as _active_window
 from sublime import load_settings
 from sublime import save_settings
+from sublime import status_message as _status_message
+
+
+def status_message(msg: str, *args: str) -> None:
+    _status_message(_format_message(msg, *args))
+
+
+def _format_message(msg: str, *args) -> str:
+    if args:
+        msg = msg % args
+
+    return msg
 
 
 # There's no Sublime API to set a window status.
@@ -35,6 +48,13 @@ def set_window_status(window, key: str, value) -> None:
 def erase_window_status(window, key: str) -> None:
     for view in window.views():
         view.erase_status(key)
+
+
+def run_window_command(cmd: str, args: dict = None, window=None) -> None:
+    if not window:
+        window = _active_window()
+
+    window.run_command(cmd, args)
 
 
 # A future compatable regular expression special character escaper. In Python
