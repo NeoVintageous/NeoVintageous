@@ -97,6 +97,11 @@ class TestNumberViewOption(unittest.ViewTestCase):
         self.assertEqual(option.get(self.view), 5)
         self.assertEqual(self.view.settings().get('buzz'), 5)
 
+    def test_allows_default(self):
+        option = NumberViewOption('buzz', 42)
+        self.assertEqual(self.view.settings().get('buzz'), None)
+        self.assertEqual(option.get(self.view), 42)
+
 
 class TestBooleanViewOption(unittest.ViewTestCase):
 
