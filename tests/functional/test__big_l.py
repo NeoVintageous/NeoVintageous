@@ -20,6 +20,10 @@ from NeoVintageous.tests import unittest
 
 class Test_L(unittest.FunctionalTestCase):
 
+    def setUp(self):
+        super().setUp()
+        self.set_option('scrolloff', 0)
+
     @unittest.mock_ui()
     def test_n(self):
         self.eq('|1\n2\n3', 'n_L', '1\n2\n|3')
