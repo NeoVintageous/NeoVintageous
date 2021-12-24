@@ -484,9 +484,10 @@ def fix_eol_cursor(view, mode: str) -> None:
 
 
 def highlow_visible_rows(view) -> tuple:
+    context_lines = get_option(view, 'scrolloff')
     visible_region = view.visible_region()
-    highest_visible_row = view.rowcol(visible_region.a)[0]
-    lowest_visible_row = view.rowcol(visible_region.b - 1)[0]
+    highest_visible_row = view.rowcol(visible_region.a)[0] + context_lines
+    lowest_visible_row = view.rowcol(visible_region.b - 1)[0] - context_lines
 
     # To avoid scrolling when we move to the highest visible row, we need to
     # check if the row is fully visible or only partially visible. If the row is
@@ -500,16 +501,15 @@ def highlow_visible_rows(view) -> tuple:
     # clear why Sublime needs to add it, but it always adds it.
 
     highest_position = (highest_visible_row * line_height) + 1.0
-    if highest_position < view_position[1]:
+    if highest_position < (view_position[1] + (context_lines * line_height)):
         highest_visible_row += 1
 
+    # NOTE: This row adjustment does not work when line wrapping is on
     lowest_position = ((lowest_visible_row + 1) * line_height) + 1.0
-    if lowest_position > (view_position[1] + viewport_extent[1]):
+    if lowest_position > (view_position[1] + viewport_extent[1] - (context_lines * line_height)):
         lowest_visible_row -= 1
 
-    context_lines = view.settings().get('scroll_context_lines')
-
-    return (highest_visible_row + context_lines, lowest_visible_row - context_lines)
+    return (highest_visible_row, lowest_visible_row)
 
 
 def highest_visible_pt(view) -> int:
