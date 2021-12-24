@@ -51,12 +51,12 @@ jobs:
           fi
           sh github.sh run_syntax_compatibility
           sh github.sh run_syntax_tests
-      - name: Code coverage report - coveralls`
-        if: ${{ matrix.version == 3 && github.event_name != 'pull_request' }}
-        env:
-          COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}
-        run: |
-          coveralls
+      # - name: Code coverage report - coveralls`
+      #   if: ${{ matrix.version == 3 }}
+      #   env:
+      #     COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}
+      #   run: |
+      #     coveralls
       - name: Code coverage report - codecov
         if: ${{ matrix.version == 3 }}
         run: |
