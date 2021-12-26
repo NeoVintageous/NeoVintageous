@@ -147,10 +147,9 @@ def clean_views() -> None:
 
 def clean_view(view) -> None:
 
-    # Resets cursor and mode. In the case of errors loading the plugin this can
-    # help prevent the normal functioning of editor becoming unusable e.g. the
-    # cursor getting stuck in a block shape or the mode getting stuck in normal
-    # or visual mode.
+    # Reset mode, caret, state, etc. In the case of plugin errors this clean
+    # routine prevents the normal functioning of editor becoming unusable e.g.
+    # the cursor getting stuck in a block shape or the mode getting stuck.
 
     try:
         settings = view.settings()

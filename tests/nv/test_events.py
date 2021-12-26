@@ -354,7 +354,7 @@ class TestOnActivated(unittest.ViewTestCase):
             self.events.on_activated(self.view)
             self.assertVblock('|1|\n|2|\n')
 
-    def test_wwhen_reset_mode_when_switching_tabs_is_false_the_mode_is_not_reset(self):
+    def test_reset_mode_when_switching_tabs_is_false(self):
         self.normal('fi|zz')
         self.set_setting('reset_mode_when_switching_tabs', False)
         self.events.on_activated(self.view)

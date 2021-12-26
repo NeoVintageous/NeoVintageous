@@ -305,9 +305,6 @@ def evaluate_state(view) -> None:
         run_motion(view, motion_cmd)
 
     if action:
-
-        # Evaluate action. Run it.
-
         action_cmd = action.translate(view)
 
         _log.debug('action: %s', action_cmd)
@@ -352,13 +349,11 @@ def evaluate_state(view) -> None:
 
 
 def init_state(view) -> None:
-    # Initialise view state e.g. runs every time a view is activated.
 
-    # Don't initialise view if it's a console, widget, panel, non-view, or any
-    # view where Vim behaviours should be disabled or are not applicable.
+    # If the view not a regular vim capable view (e.g. console, widget, panel),
+    # skip the state initialisation and perform a clean routine on the view.
+    # TODO is a clean routine really necessary on non-vim capable views?
     if not is_view(view):
-        # Some initialised state may cause unexpected behaviours.
-        # TODO Is cleaning the view necessary?
         clean_view(view)
         return
 

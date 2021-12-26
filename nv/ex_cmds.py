@@ -1059,16 +1059,11 @@ def ex_tabprevious(window, **kwargs) -> None:
 
 
 def ex_unmap(lhs: str, **kwargs) -> None:
-    no_such_mapping = True
     for mode in (NORMAL, OPERATOR_PENDING, VISUAL, VISUAL_LINE, VISUAL_BLOCK):
         try:
             mappings_remove(mode, lhs)
-            no_such_mapping = False
         except KeyError:
-            pass
-
-    if no_such_mapping:
-        status_message('E31: No such mapping')
+            status_message('E31: No such mapping')
 
 
 # TODO [review] Either remove or refactor into window module. Preferably remove, because there should be standard commands that can achieve the same thing.  # noqa: E501
@@ -1159,16 +1154,11 @@ def ex_vsplit(window, view, file: str = None, **kwargs) -> None:
 
 
 def ex_vunmap(lhs: str, **kwargs) -> None:
-    no_such_mapping = True
     for mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
         try:
             mappings_remove(mode, lhs)
-            no_such_mapping = False
         except KeyError:
-            pass
-
-    if no_such_mapping:
-        status_message('E31: No such mapping')
+            status_message('E31: No such mapping')
 
 
 def ex_wall(window, **kwargs) -> None:
