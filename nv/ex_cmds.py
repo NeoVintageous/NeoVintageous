@@ -1236,7 +1236,7 @@ def ex_write(window, view, file_name: str = None, line_range: RangeNode = None, 
             view.retarget(file_path)
             save(window)
         except IOError:
-            status_message("E212: Can't open file for writing: {}".format(file_name))
+            ui_bell("E212: Can't open file for writing: {}".format(file_name))
             return
 
     if kwargs.get('++') or kwargs.get('cmd'):
