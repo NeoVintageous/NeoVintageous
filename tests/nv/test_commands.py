@@ -39,6 +39,18 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
         super().tearDown()
         self.resetMacros()
 
+    def test_malformed_visual_selections_are_auto_fixed(self):
+        self.visual('fi|zz| buzz')
+        self.setNormalMode()
+        self.feedkey('w')
+        self.assertVisual('fi|zz b|uzz')
+
+    def test_malformed_multiple_visual_selections_are_auto_fixed(self):
+        self.visual('fi|zz| buzz fi|zz| buzz')
+        self.setNormalMode()
+        self.feedkey('w')
+        self.assertVisual('fi|zz b|uzz fi|zz b|uzz')
+
     def test_esc(self):
         self.visual('f|izz b|uzz')
         self.feedkey('<esc>')

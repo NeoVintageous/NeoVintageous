@@ -372,6 +372,18 @@ class TestOnActivated(unittest.ViewTestCase):
         self.events.on_activated(self.view)
         self.assertNormal('fi|zz bu|zz')
 
+    def test_fix_malformed_normal_mode_is_fixed_by_resetting_it(self):
+        self.normal('fi|zz')
+        self.view.sel().clear()
+        self.events.on_activated(self.view)
+        self.assertNormal('|fizz')
+
+    def test_fix_malformed_visual_mode_is_fixed_by_resetting_it(self):
+        self.visual('fi|zz| buzz')
+        self.view.sel().clear()
+        self.events.on_activated(self.view)
+        self.assertVisual('|fizz buzz')
+
 
 class TestOnPostSave(unittest.ViewTestCase):
 
