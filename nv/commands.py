@@ -494,20 +494,6 @@ class nv_run_cmds(TextCommand):
             self.view.run_command(cmd, args)
 
 
-def _fix_malformed_selection(view, mode: str) -> str:
-    # If multiple cursor selection has been made by the mouse or a built-in ST
-    # command the mode may be incorrectly set to Normal mode.
-    # See https://github.com/NeoVintageous/NeoVintageous/issues/742
-    if mode == NORMAL and len(view.sel()) > 1:
-        mode = VISUAL
-        set_mode(view, mode)
-
-    # TODO Extract fix malformed selections specific logic from init_state()
-    init_state(view)
-
-    return mode
-
-
 class nv_feed_key(WindowCommand):
 
     def run(self, key, repeat_count=None, do_eval=True, check_user_mappings=True):
@@ -539,10 +525,7 @@ class nv_feed_key(WindowCommand):
 
         _log.debug('mode: %s', mode)
 
-        # Try to fix possibly malformed selections: if the user has made a
-        # selection with the mouse or a built-in ST command (non-vim), the
-        # selection may be in an incorrect mode or inconsistent state.
-        if mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, SELECT) and self.view.has_non_empty_selection_region():
+        if _is_selection_malformed(self.view, mode):
             mode = _fix_malformed_selection(self.view, mode)
 
         if key.lower() == '<esc>':
@@ -781,6 +764,24 @@ class nv_feed_key(WindowCommand):
             return True
 
         return False
+
+
+def _is_selection_malformed(view, mode) -> bool:
+    return mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, SELECT) and view.has_non_empty_selection_region()
+
+
+def _fix_malformed_selection(view, mode: str) -> str:
+    # If a selection was made via the mouse or a built-in ST command the
+    # selection may be in an inconsistent state e.g. incorrect mode.
+    # https://github.com/NeoVintageous/NeoVintageous/issues/742
+    if mode == NORMAL and len(view.sel()) > 1:
+        mode = VISUAL
+        set_mode(view, mode)
+
+    # TODO Extract fix malformed selections specific logic from init_state()
+    init_state(view)
+
+    return mode
 
 
 class nv_process_notation(WindowCommand):
