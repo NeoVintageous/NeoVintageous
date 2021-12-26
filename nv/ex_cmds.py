@@ -1191,67 +1191,20 @@ def ex_wqall(**kwargs) -> None:
 
 @_init_cwd
 def ex_write(window, view, file_name: str = None, line_range: RangeNode = None, forceit: bool = False, **kwargs) -> None:  # noqa: E501
-    def _get_buffer(view, line_range: RangeNode = None) -> str:
-        if line_range is None or line_range.is_empty:
-            region = view_to_region(view)
-        else:
-            region = line_range.resolve(view)
-
-        return view.substr(region)
-
-    def _append_to_file(view, file_name: str, forceit: bool, line_range: RangeNode = None) -> None:
-        if not forceit and not os.path.exists(file_name):
-            return status_message("E212: Can't open file for writing: %s", file_name)
-
-        try:
-            with open(file_name, 'at') as f:
-                f.write(_get_buffer(view, line_range))
-
-            status_message('Appended to %s' % os.path.abspath(file_name))
-            return
-        except IOError as e:
-            status_message('could not write file %s', str(e))
-            return
-
-    def _append(view, line_range: RangeNode = None) -> None:
-        view.run_command('append', {'characters': _get_buffer(view, line_range)})
-        save(view)
-        enter_normal_mode(window, get_mode(view))
-
-    def _write_to_file(window, view, file_name: str, forceit: bool, line_range: RangeNode = None) -> None:
-        if not forceit:
-            if os.path.exists(file_name):
-                ui_bell("E13: File exists (add ! to override)")
-                return
-
-            if is_file_read_only(file_name):
-                ui_bell("E45: 'readonly' option is set (add ! to override)")
-                return
-
-        try:
-            file_path = os.path.abspath(os.path.expandvars(os.path.expanduser(file_name)))
-            with open(file_path, 'wt') as f:
-                f.write(_get_buffer(view, line_range))
-
-            view.retarget(file_path)
-            save(window)
-        except IOError:
-            ui_bell("E212: Can't open file for writing: {}".format(file_name))
-            return
-
     if kwargs.get('++') or kwargs.get('cmd'):
-        return status_message('argument not implemented')
+        status_message('argument not implemented')
+        return
 
     if kwargs.get('>>'):
         if file_name:
-            return _append_to_file(view, file_name, forceit, line_range)
-
-        return _append(view, line_range)
-
-    if file_name:
-        return _write_to_file(window, view, file_name, forceit, line_range)
-
-    _do_write(view)
+            _do_write_append_file(view, file_name, forceit, line_range)
+        else:
+            _do_write_append(window, view, line_range)
+    else:
+        if file_name:
+            _do_write_file(window, view, file_name, forceit, line_range)
+        else:
+            _do_write(view)
 
 
 def _do_write(view) -> None:
@@ -1267,6 +1220,56 @@ def _do_write(view) -> None:
         return
 
     save(view)
+
+
+def _do_write_file(window, view, file_name: str, forceit: bool, line_range: RangeNode = None) -> None:
+    if not forceit:
+        if os.path.exists(file_name):
+            ui_bell("E13: File exists (add ! to override)")
+            return
+
+        if is_file_read_only(file_name):
+            ui_bell("E45: 'readonly' option is set (add ! to override)")
+            return
+
+    try:
+        file_path = os.path.abspath(os.path.expandvars(os.path.expanduser(file_name)))
+        with open(file_path, 'wt') as f:
+            f.write(_get_write_buffer(view, line_range))
+
+        view.retarget(file_path)
+        save(window)
+    except IOError:
+        ui_bell("E212: Can't open file for writing: {}".format(file_name))
+
+
+def _get_write_buffer(view, line_range: RangeNode = None) -> str:
+    if line_range is None or line_range.is_empty:
+        region = view_to_region(view)
+    else:
+        region = line_range.resolve(view)
+
+    return view.substr(region)
+
+
+def _do_write_append_file(view, file_name: str, forceit: bool, line_range: RangeNode = None) -> None:
+    if not forceit and not os.path.exists(file_name):
+        status_message("E212: Can't open file for writing: %s", file_name)
+        return
+
+    try:
+        with open(file_name, 'at') as f:
+            f.write(_get_write_buffer(view, line_range))
+
+        status_message('Appended to %s' % os.path.abspath(file_name))
+    except IOError as e:
+        status_message('could not write file %s', str(e))
+
+
+def _do_write_append(window, view, line_range: RangeNode = None) -> None:
+    view.run_command('append', {'characters': _get_write_buffer(view, line_range)})
+    save(view)
+    enter_normal_mode(window, get_mode(view))
 
 
 def ex_yank(view, register: str, line_range: RangeNode, **kwargs) -> None:
