@@ -348,6 +348,10 @@ def evaluate_state(view) -> None:
     reset_command_data(view)
 
 
+def _should_reset_mode(view, current_mode: str) -> bool:
+    return current_mode != UNKNOWN and not get_setting(view, 'reset_mode_when_switching_tabs')
+
+
 def init_state(view) -> None:
 
     # If the view not a regular vim capable view (e.g. console, widget, panel),
@@ -366,8 +370,7 @@ def init_state(view) -> None:
 
     mode = get_mode(view)
 
-    # Does user want to reset mode (to normal mode) when initialising state?
-    if mode not in (NORMAL, UNKNOWN) and not get_setting(view, 'reset_mode_when_switching_tabs'):
+    if _should_reset_mode(view, mode):
         return
 
     # Fix malformed selection: if we have no selections, add one.
