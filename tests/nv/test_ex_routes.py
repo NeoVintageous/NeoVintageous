@@ -280,6 +280,7 @@ class TestRoutes(unittest.TestCase):
         self.assertRoute('_ex_route_pwd', ['pwd', 'pw'])
         self.assertRoute('_ex_route_qall', ['qall', 'qa'])
         self.assertRoute('_ex_route_quit', ['quit', 'q'])
+        self.assertRoute('_ex_route_qall', ['quitall', 'quita'])
         self.assertRoute('_ex_route_read', ['read', 'r'])
         self.assertRoute('_ex_route_registers', ['registers', 'reg'])
         self.assertRoute('_ex_route_set', ['set', 'se'])
