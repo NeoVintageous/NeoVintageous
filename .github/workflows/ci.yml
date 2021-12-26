@@ -26,7 +26,7 @@ jobs:
       - run: sh -e /etc/init.d/xvfb start
       - run: curl -OL https://raw.githubusercontent.com/SublimeText/UnitTesting/master/sbin/github.sh
       - name: Install dependencies
-        if: ${{ matrix.version == 3 }}
+        if: ${{ matrix.version == 4 }}
         run: |
           apt-get update
           apt-get install python3-pip -y
@@ -37,14 +37,14 @@ jobs:
           pip3 install codecov
           pip3 install python-coveralls
       - name: Coding guidelines check
-        if: ${{ matrix.version == 3 }}
+        if: ${{ matrix.version == 4 }}
         run: |
           flake8 -v
       - name: Test
         run: |
           PATH="$HOME/.local/bin:$PATH"
           sh github.sh bootstrap
-          if ${{ matrix.version == 3 }}; then
+          if ${{ matrix.version == 4 }}; then
             sh github.sh run_tests --coverage
           else
             sh github.sh run_tests
@@ -52,13 +52,13 @@ jobs:
           sh github.sh run_syntax_compatibility
           sh github.sh run_syntax_tests
       - name: Code coverage report - coveralls`
-        if: ${{ matrix.version == 3 && env.COVERALLS_REPO_TOKEN }}
+        if: ${{ matrix.version == 4 && env.COVERALLS_REPO_TOKEN }}
         env:
           COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}
         run: |
           coveralls
       - name: Code coverage report - codecov
-        if: ${{ matrix.version == 3 }}
+        if: ${{ matrix.version == 4 }}
         run: |
           codecov
 
