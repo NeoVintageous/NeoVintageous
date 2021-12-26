@@ -48,6 +48,8 @@ from NeoVintageous.nv.mappings import mappings_remove
 from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.options import set_option
 from NeoVintageous.nv.options import toggle_option
+from NeoVintageous.nv.polyfill import save
+from NeoVintageous.nv.polyfill import save_all
 from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
 from NeoVintageous.nv.polyfill import view_find
@@ -355,7 +357,7 @@ def ex_edit(window, view, file_name: str = None, forceit: bool = False, **kwargs
 # TODO [refactor] into window module
 def ex_exit(window, view, **kwargs) -> None:
     if view.is_dirty():
-        window.run_command('save')
+        save(window)
 
     window.run_command('close')
 
@@ -1193,7 +1195,7 @@ def ex_wall(window, forceit: bool = False, **kwargs) -> None:
             continue
 
         if v.is_dirty():
-            v.run_command('save')
+            save(v)
 
 
 # TODO [refactor] into window module
@@ -1208,7 +1210,7 @@ def ex_wq(window, view, forceit: bool = False, **kwargs) -> None:
     if not view.file_name():
         return status_message("can't save a file without name")
 
-    window.run_command('save')
+    save(window)
 
     ex_quit(window=window, view=view, forceit=forceit, **kwargs)
 
@@ -1222,7 +1224,7 @@ def ex_wqall(window, **kwargs) -> None:
         ui_bell("E45: 'readonly' option is set (add ! to override)")
         return
 
-    window.run_command('save_all')
+    save_all(window)
 
     # TODO Remove assert statements
     assert not any(view.is_dirty() for view in window.views())
@@ -1258,8 +1260,7 @@ def ex_write(window, view, file_name: str, line_range: RangeNode, forceit: bool 
 
     def _append(view, line_range: RangeNode) -> None:
         view.run_command('append', {'characters': _get_buffer(view, line_range)})
-        view.run_command('save')
-
+        save(view)
         enter_normal_mode(window, get_mode(view))
 
     def _write_to_file(window, view, file_name: str, forceit: bool, line_range: RangeNode) -> None:
@@ -1278,7 +1279,7 @@ def ex_write(window, view, file_name: str, line_range: RangeNode, forceit: bool 
                 f.write(_get_buffer(view, line_range))
 
             view.retarget(file_path)
-            window.run_command('save')
+            save(window)
         except IOError:
             status_message("E212: Can't open file for writing: {}".format(file_name))
             return
@@ -1302,7 +1303,7 @@ def ex_write(window, view, file_name: str, line_range: RangeNode, forceit: bool 
         ui_bell("E45: 'readonly' option is set (add ! to override)")
         return
 
-    window.run_command('save')
+    save(window)
 
 
 def ex_yank(view, register: str, line_range: RangeNode, **kwargs) -> None:

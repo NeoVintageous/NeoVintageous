@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.25.1 - Unreleased
+
+* Fixed [#790](https://github.com/NeoVintageous/NeoVintageous/issues/790): Asynchronous file saving with `:w`, `:wq`
+
 ## 1.25.0 - 2021-12-14
 
 ### Added

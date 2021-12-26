@@ -57,6 +57,14 @@ def run_window_command(cmd: str, args: dict = None, window=None) -> None:
     window.run_command(cmd, args)
 
 
+def save(window_or_view) -> None:
+    window_or_view.run_command('save', {'async': True})
+
+
+def save_all(window_or_view) -> None:
+    window_or_view.run_command('save_all')
+
+
 # A future compatable regular expression special character escaper. In Python
 # 3.7 only characters that have special meaning in regex patterns are escaped.
 def re_escape(pattern: str):

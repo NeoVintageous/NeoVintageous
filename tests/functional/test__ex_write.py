@@ -31,7 +31,11 @@ class Test_ex_write(unittest.FunctionalTestCase):
 
     @unittest.mock_hide_panel()
     @unittest.mock_status_message()
-    def test_write(self):
+    @unittest.mock.patch('NeoVintageous.nv.ex_cmds.save')
+    def test_write(self, save):
+        # The file writing tests won't work when saving async.
+        save.side_effect = lambda obj: obj.run_command('save', {'async': False})
+
         with tempfile.TemporaryDirectory() as tmpdirname:
             file_name = os.path.join(tmpdirname, 'new.txt')
             file_name_alt = os.path.join(tmpdirname, 'new_alt.txt')
