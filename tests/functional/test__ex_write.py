@@ -18,6 +18,8 @@
 import os
 import tempfile
 
+from sublime import platform
+
 from NeoVintageous.tests import unittest
 
 
@@ -113,6 +115,7 @@ class Test_ex_write(unittest.FunctionalTestCase):
             self.view.set_read_only(False)
 
     @mock_write()
+    @unittest.skipIf(platform() == 'windows', 'Test does not work on Windows')
     def test_write_file_exists(self):
         with tempfile.NamedTemporaryFile(suffix='txt') as tmpfile:
             self.normal('fizz\n')
@@ -123,6 +126,7 @@ class Test_ex_write(unittest.FunctionalTestCase):
             self.assertIsNone(self.view.file_name())
 
     @mock_write()
+    @unittest.skipIf(platform() == 'windows', 'Test does not work on Windows')
     def test_write_force_even_if_file_exists(self):
         with tempfile.NamedTemporaryFile(suffix='txt') as tmpfile:
             self.normal('fizz\n')
