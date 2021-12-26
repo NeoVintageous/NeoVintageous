@@ -349,7 +349,7 @@ def evaluate_state(view) -> None:
 
 
 def _should_reset_mode(view, current_mode: str) -> bool:
-    return current_mode != UNKNOWN and not get_setting(view, 'reset_mode_when_switching_tabs')
+    return current_mode == UNKNOWN or get_setting(view, 'reset_mode_when_switching_tabs')
 
 
 def init_state(view) -> None:
@@ -370,7 +370,7 @@ def init_state(view) -> None:
 
     mode = get_mode(view)
 
-    if _should_reset_mode(view, mode):
+    if not _should_reset_mode(view, mode):
         return
 
     # Fix malformed selection: if we have no selections, add one.
