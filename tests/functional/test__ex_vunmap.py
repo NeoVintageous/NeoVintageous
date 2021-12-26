@@ -24,7 +24,7 @@ class Test_ex_vunmap(unittest.FunctionalTestCase):
     @unittest.mock_status_message()
     def test_no_such_mapping(self):
         self.feed(':vunmap x')
-        self.assertStatusMessage('E31: No such mapping')
+        self.assertStatusMessage('E31: No such mapping', 3)
 
     @unittest.mock_mappings(
         (unittest.VISUAL, 'x', 'y'),
@@ -41,4 +41,4 @@ class Test_ex_vunmap(unittest.FunctionalTestCase):
     def test_no_status_message_when_at_least_one_mode_mapping_is_found(self):
         self.feed(':vunmap x')
         self.assertNotMapping('x')
-        self.assertNoStatusMessage()
+        self.assertStatusMessage('E31: No such mapping', 2)

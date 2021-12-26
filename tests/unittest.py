@@ -1179,10 +1179,10 @@ def mock_status_message():
             self.status_message = args[-1]
             self.assert_status_message_count = 0
 
-            def _assertStatusMessage(msg: str) -> None:
+            def _assertStatusMessage(msg: str, count: int = 1) -> None:
                 self.status_message.assert_called_with(msg)
 
-                self.assert_status_message_count += 1
+                self.assert_status_message_count += count
                 self.assertEqual(
                     self.status_message.call_count,
                     self.assert_status_message_count,

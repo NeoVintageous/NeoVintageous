@@ -24,7 +24,7 @@ class Test_ex_unmap(unittest.FunctionalTestCase):
     @unittest.mock_status_message()
     def test_no_such_mapping(self):
         self.feed(':unmap x')
-        self.assertStatusMessage('E31: No such mapping')
+        self.assertStatusMessage('E31: No such mapping', 5)
 
     @unittest.mock_mappings(
         (unittest.NORMAL, 'x', 'y'),
@@ -43,4 +43,4 @@ class Test_ex_unmap(unittest.FunctionalTestCase):
     def test_no_status_message_when_at_least_one_mode_mapping_is_found(self):
         self.feed(':unmap x')
         self.assertNotMapping('x')
-        self.assertNoStatusMessage()
+        self.assertStatusMessage('E31: No such mapping', 4)
