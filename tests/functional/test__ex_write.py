@@ -21,6 +21,22 @@ import tempfile
 from NeoVintageous.tests import unittest
 
 
+def mock_async_save():
+    """Mock saving view via ex command.
+
+    Async saving makes testing flaky.
+    """
+    def wrapper(f):
+        @unittest.mock.patch('NeoVintageous.nv.ex_cmds.save')
+        def wrapped(self, *args, **kwargs):
+            save = args[-1]
+            save.side_effect = lambda obj: obj.run_command('save', {'async': False})
+
+            return f(self, *args[:-1], **kwargs)
+        return wrapped
+    return wrapper
+
+
 class Test_ex_write(unittest.FunctionalTestCase):
 
     @unittest.mock_status_message()
@@ -31,11 +47,8 @@ class Test_ex_write(unittest.FunctionalTestCase):
 
     @unittest.mock_hide_panel()
     @unittest.mock_status_message()
-    @unittest.mock.patch('NeoVintageous.nv.ex_cmds.save')
-    def test_write(self, save):
-        # The file writing tests won't work when saving async.
-        save.side_effect = lambda obj: obj.run_command('save', {'async': False})
-
+    @mock_async_save()
+    def test_write(self):
         with tempfile.TemporaryDirectory() as tmpdirname:
             file_name = os.path.join(tmpdirname, 'new.txt')
             file_name_alt = os.path.join(tmpdirname, 'new_alt.txt')
@@ -95,6 +108,9 @@ class Test_ex_write(unittest.FunctionalTestCase):
             with open(file_name_alt, 'r') as f:
                 self.assertEqual('1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n3\n4\n5\n6\n', f.read())
 
-            # # Test trying to write to a file that already exists.
-            # self.feed(':write ' + file_name)
-            # self.assertStatusMessage('E13: File exists (add ! to override)', count=5)
+            # Test readonly emits status message
+            self.view.run_command('insert', {'characters': 'x'})
+            self.view.set_read_only(True)
+            self.feed(':write')
+            self.assertStatusMessage("E45: 'readonly' option is set (add ! to override)")
+            self.view.set_read_only(False)

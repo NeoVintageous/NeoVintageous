@@ -601,7 +601,7 @@ def _ex_route_wq(state) -> TokenCommand:
 
 
 def _ex_route_wqall(state) -> TokenCommand:
-    return _create_route(state, 'wqall', addressable=True)
+    return _create_route(state, 'wqall', forcable=True, addressable=True)
 
 
 def _ex_route_write(state) -> TokenCommand:
@@ -748,6 +748,7 @@ ex_routes[r'ou(nmap)?'] = _ex_route_ounmap
 ex_routes[r'pw(?:d)?'] = _ex_route_pwd
 ex_routes[r'p(?:rint)?'] = _ex_route_print
 ex_routes[r'qa(?:ll)?'] = _ex_route_qall
+ex_routes[r'quita(?:ll)?'] = _ex_route_qall
 ex_routes[r'q(?!a)(?:uit)?'] = _ex_route_quit
 ex_routes[r'reg(?:isters)?'] = _ex_route_registers
 ex_routes[r'r(?!eg)(?:ead)?'] = _ex_route_read
