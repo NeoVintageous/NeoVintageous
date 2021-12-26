@@ -16,7 +16,9 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 from contextlib import contextmanager
+import os
 import re
+import stat
 
 from sublime import Region
 from sublime import active_window as _active_window
@@ -61,8 +63,18 @@ def save(window_or_view) -> None:
     window_or_view.run_command('save', {'async': True})
 
 
-def save_all(window_or_view) -> None:
-    window_or_view.run_command('save_all')
+def is_view_read_only(view) -> bool:
+    return view.is_read_only() or is_file_read_only(view.file_name())
+
+
+def is_file_read_only(file_name: str) -> bool:
+    if file_name:
+        try:
+            return (stat.S_IMODE(os.stat(file_name).st_mode) & stat.S_IWUSR != stat.S_IWUSR)
+        except FileNotFoundError:
+            return False
+
+    return False
 
 
 # A future compatable regular expression special character escaper. In Python
