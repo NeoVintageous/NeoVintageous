@@ -345,32 +345,26 @@ def _do_ds(view, edit, mode: str, target: str) -> None:
             if len(target) != 1:
                 return s
 
-            # The *target* letters w, W, s, and p correspond to a |word|, a
-            # |WORD|, a |sentence|, and a |paragraph| respectively.  These are
-            # special in that they have nothing to delete, and used with |ds| they
-            # are a no-op. With |cs|, one could consider them a slight shortcut for
-            # ysi (cswb == ysiwb, more or less).
-
-            noop = 'wWsp'
-            if target in noop:
+            # The target letters w, W, s, and p correspond to a word, a WORD, a
+            # sentence, and a paragraph respectively. These are special in that
+            # they have nothing to delete, and used with ds they are a no-op.
+            noop_targets = 'wWsp'
+            if target in noop_targets:
                 return s
 
             valid_targets = '\'"`b()B{}r[]a<>t.,-_;:@#~*\\/|'
             if target not in valid_targets:
                 return s
 
-            # All marks, except punctuation marks, are only searched for on the
-            # current line.
+            # Only search the current line for all marks except punctuation.
             search_current_line_only = True if target not in 'b()B{}r[]a<>' else False
 
-            # If opening punctuation mark is used, contained whitespace is also trimmed.
+            # Trim contained whitespace for opening punctuation mark targets.
             trim_contained_whitespace = True if target in '({[<' else False
 
-            # Expand targets into begin and end variables because punctuation marks
-            # and their aliases represent themselves and their counterparts e.g. (),
-            # []. Target is the same for begin and end for all other valid marks
-            # e.g. ', ", `, -, _, etc.
-
+            # Expand target punctuation marks. Some punctuation marks and their
+            # aliases have different counterparts e.g. (), []. Some marks are
+            # their counterparts are the same e.g. ', ", `, -, _, etc.
             t_char_begin, t_char_end = _get_punctuation_marks(target)
 
             s_rowcol_begin = view.rowcol(s.begin())
@@ -413,26 +407,12 @@ def _do_ds(view, edit, mode: str, target: str) -> None:
                     if t_region_end_ws.size() > 1:
                         t_region_end = Region(t_region_end_ws.begin() + 1, t_region_end.end())
 
-            # Note: Be careful using boolean evaluation on a Region because an empty
-            # Region evaluates to False. It evaluates to False because Region
-            # invokes `__len__()` which will be zero if the Region is empty e.g.
-            # `Region(3).size()` is `0`, whereas `Region(3, 4).size()` is `1`.
-            # `sublime.View.find(sub)` returns `Region(-1)` if *sub* not found. This
-            # is similar to how the python `str.find(sub)` function works i.e. it
-            # returns `-1` if *sub* not found, because *sub* could be found at
-            # position `0`. To check if a Region was found use `Region(3) >= 0`. To
-            # check if a Region is non empty you can use boolean evaluation i.e. `if
-            # Region(3): ...`. In the following case boolean evaluation is
-            # intentional.
-
             if not (t_region_end and t_region_begin):
                 return s
 
-            # It's important that the end is replaced first. If we replaced the
-            # begin region first then the end replacement would be off-by-one
-            # because the begin is reducing the size of the internal buffer by one
-            # i.e. it's deleting a character.
-
+            # It's important that the regions are replaced in reverse because
+            # otherwise the buffer size would be reduced by the number of
+            # characters replaced and would result in an off-by-one bug.
             view.replace(edit, t_region_end, '')
             view.replace(edit, t_region_begin, '')
 
