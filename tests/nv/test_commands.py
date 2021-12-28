@@ -22,7 +22,7 @@ from NeoVintageous.nv.settings import set_reset_during_init
 
 @unittest.mock.patch.dict('NeoVintageous.nv.session._session', {})
 @unittest.mock.patch('NeoVintageous.nv.session.save_session', unittest.mock.Mock())
-class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
+class TestFeedKey(unittest.ResetRegisters, unittest.ResetCommandLineOutput, unittest.FunctionalTestCase):
 
     def feedkey(self, key):
         self.view.window().run_command('nv_feed_key', {'key': key})
@@ -514,14 +514,14 @@ class TestFeedKey(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertNormal('1\nfizz\n3\n4|fizz\n\n5\n6')
         set_reset_during_init(self.view, True)
 
-    @unittest.mock.patch('NeoVintageous.nv.utils.run_window_command')
-    def test_slash_search_opens_input_panel(self, run_command):
+    @unittest.mock_run_commands('nv_vi_slash')
+    def test_slash_search_opens_input_panel(self):
         self.normal('|fizz')
         self.feedkey('/')
-        run_command.assert_called_once_with('nv_vi_slash')
+        self.assertRunCommand('nv_vi_slash')
 
-    @unittest.mock.patch('NeoVintageous.nv.utils.run_window_command')
-    def test_question_search_opens_input_panel(self, run_command):
+    @unittest.mock_run_commands('nv_vi_question_mark')
+    def test_question_search_opens_input_panel(self):
         self.normal('|fizz')
         self.feedkey('?')
-        run_command.assert_called_once_with('nv_vi_question_mark')
+        self.assertRunCommand('nv_vi_question_mark')
