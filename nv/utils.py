@@ -39,7 +39,6 @@ from sublime import Region
 from sublime import View
 
 from NeoVintageous.nv.options import get_option
-from NeoVintageous.nv.polyfill import run_window_command
 from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
 from NeoVintageous.nv.settings import get_visual_block_direction
