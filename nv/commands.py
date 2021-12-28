@@ -964,7 +964,7 @@ class nv_cmdline(WindowCommand):
             initial_text = ""
 
         self._cmdline = Cmdline(
-            self.window,
+            view,
             Cmdline.EX,
             self.on_done,
             self.on_change,
@@ -3223,7 +3223,7 @@ class nv_vi_slash(TextCommand):
         set_reset_during_init(self.view, False)
 
         self._cmdline = Cmdline(
-            self.view.window(),
+            self.view,
             Cmdline.SEARCH_FORWARD,
             self.on_done,
             self.on_change,
@@ -4355,7 +4355,7 @@ class nv_vi_question_mark(TextCommand):
         set_reset_during_init(self.view, False)
 
         self._cmdline = Cmdline(
-            self.view.window(),
+            self.view,
             Cmdline.SEARCH_BACKWARD,
             self.on_done,
             self.on_change,

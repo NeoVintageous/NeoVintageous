@@ -25,15 +25,15 @@ class TestCmdline(unittest.ViewTestCase):
     def setUp(self):
         super().setUp()
         self.window = unittest.mock.Mock()
-        self.window.active_view.return_value = self.view
         self.window.show_input_panel.return_value = self.view
+        self.view.window = lambda: self.window
         self.on_done = unittest.mock.Mock()
         self.on_change = unittest.mock.Mock()
         self.on_cancel = unittest.mock.Mock()
 
     def createCmdline(self, type=Cmdline.EX):
         return Cmdline(
-            self.window,
+            self.view,
             type,
             self.on_done,
             self.on_change,
