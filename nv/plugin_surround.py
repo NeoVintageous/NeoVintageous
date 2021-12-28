@@ -24,6 +24,7 @@ from sublime import Region
 from sublime_plugin import TextCommand
 
 from NeoVintageous.nv.plugin import register
+from NeoVintageous.nv.polyfill import view_find
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.utils import translate_char
@@ -267,16 +268,24 @@ def _rsynced_regions_transformer(view, f) -> None:
         view_sel.add(new_sel)
 
 
-def _find(view, sub: str, start: int, flags: int = 0):
-    return view.find(sub, start, flags)
+def _view_rfind(view, sub: str, start: int, end: int, flags: int = 0):
+    match = reverse_search(view, sub, start, end, flags)
+    if match is None or match.b == -1:
+        return None
+
+    return match
 
 
-def _rfind(view, sub: str, start: int, end: int, flags: int = 0):
-    res = reverse_search(view, sub, start, end, flags)
-    if res is None:
-        return Region(-1)
+def _trim_regions(view, start: Region, end: Region) -> tuple:
+    start_ws = view_find(view, '\\s*.', start_pt=start.end())
+    if start_ws and start_ws.size() > 1:
+        start = Region(start.begin(), start_ws.end() - 1)
 
-    return res
+    end_ws = _view_rfind(view, '.\\s*', start=start.end(), end=end.begin())
+    if end_ws and end_ws.size() > 1:
+        end = Region(end_ws.begin() + 1, end.end())
+
+    return (start, end)
 
 
 def _do_cs(view, edit, mode: str, target: str, replacement: str) -> None:
@@ -366,7 +375,6 @@ def _do_ds(view, edit, mode: str, target: str) -> None:
 
     def _f(view, s):
         if mode == INTERNAL_NORMAL:
-
             # A t is a pair of HTML or XML tags.
             if target == 't':
                 # TODO test dst works when cursor position is inside tag begin <a|bc>x</abc> -> dst -> |x
@@ -382,16 +390,9 @@ def _do_ds(view, edit, mode: str, target: str) -> None:
                 region_end = Region(text_object.end(), text_object.end() - 1)
 
                 if should_trim_contained_whitespace:
-                    t_region_begin_ws = _find(view, '\\s*.', start=region_begin.end())
-                    t_region_end_ws = _rfind(view, '.\\s*', start=region_begin.end(), end=region_end.begin())
+                    region_begin, region_end = _trim_regions(view, region_begin, region_end)
 
-                    if t_region_begin_ws.size() > 1:
-                        region_begin = Region(region_begin.begin(), t_region_begin_ws.end() - 1)
-
-                    if t_region_end_ws.size() > 1:
-                        region_end = Region(t_region_end_ws.begin() + 1, region_end.end())
-
-            if not (region_end and region_begin):
+            if not (region_begin and region_end):
                 return s
 
             # It's important that the regions are replaced in reverse because
