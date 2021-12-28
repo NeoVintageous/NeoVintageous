@@ -374,14 +374,7 @@ def _do_ds(view, edit, mode: str, target: str) -> None:
                 region_end = view.find('<\\/.*?>', s.b)
                 region_begin = reverse_search(view, '<.*?>', start=0, end=s.b)
             else:
-                # TODO There is an off-by-one bug in the get_text_object_region()
-                # e.g. https://github.com/NeoVintageous/NeoVintageous/issues/740
-                if (view.substr(s.begin()) == target_open) and (target_open != target_close):
-                    start = Region(s.begin() + 1)
-                else:
-                    start = Region(s.begin())
-
-                text_object = get_text_object_region(view, start, target_open, inclusive=True, count=1)
+                text_object = get_text_object_region(view, s, target_open, inclusive=True, count=1)
                 if not text_object:
                     return s
 

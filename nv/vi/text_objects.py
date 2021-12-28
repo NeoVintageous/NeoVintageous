@@ -326,7 +326,7 @@ def _get_text_object_paragraph(view, s: Region, inclusive: bool, count: int) -> 
 
 
 def _get_text_object_bracket(view, s: Region, inclusive: bool, count: int, delims: tuple) -> Region:
-    opening = find_prev_lone_bracket(view, max(0, s.begin() - 1), delims)
+    opening = find_prev_lone_bracket(view, max(0, s.begin()), delims)
     closing = find_next_lone_bracket(view, s.end(), delims)
 
     if not (opening and closing):

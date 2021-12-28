@@ -219,3 +219,7 @@ class Test_c(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_issue_654(self):
         self.eq('<header>\n |   <h1>fizz</h1>\n<header>', 'cit', 'i_<header>\n    <h1>|</h1>\n<header>')
+
+    def test_issue_740(self):
+        self.eq('fizz |(inner) buzz', 'ci(', 'i_fizz (|) buzz')
+        self.eq('fizz |(inner) buzz', 'ca(', 'i_fizz | buzz')

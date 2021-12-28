@@ -11,6 +11,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#740](https://github.com/NeoVintageous/NeoVintageous/issues/740): Change inside parentheses not working as expected?
+* Fixed [#739](https://github.com/NeoVintageous/NeoVintageous/issues/739): Wrong behaviour for nested motions
 * Fixed [#744](https://github.com/NeoVintageous/NeoVintageous/issues/744): delete-surround not deleting the right pair
 * Fixed [#644](https://github.com/NeoVintageous/NeoVintageous/issues/644): Surround plugin deletes non-matching parentheses
 * Fixed [#745](https://github.com/NeoVintageous/NeoVintageous/issues/745): `ds` sometimes doesn't work when the cursor is on first target
