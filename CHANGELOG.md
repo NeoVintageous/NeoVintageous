@@ -4,6 +4,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.25.1 - Unreleased
 
+* Fixed [#745](https://github.com/NeoVintageous/NeoVintageous/issues/745): `ds` sometimes doesn't work when the cursor is on first target
 * Fixed [#791](https://github.com/NeoVintageous/NeoVintageous/issues/791): Reset mode setting is ignored when mode is already normal
 * Fixed [#790](https://github.com/NeoVintageous/NeoVintageous/issues/790): Various file saving edge-case issues
 * Fixed [#790](https://github.com/NeoVintageous/NeoVintageous/issues/790): Asynchronous file saving with `:w`, `:wq`

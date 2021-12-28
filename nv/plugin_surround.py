@@ -378,12 +378,22 @@ def _do_ds(view, edit, mode: str, target: str) -> None:
                 t_region_begin = reverse_search(view, '<.*?>', start=0, end=s.b)
             else:
                 current = view.substr(s.begin())
-                # TODO test ds{char} works when cursor position is on target begin |"x" -> ds" -> |x
-                # TODO test ds{char} works when cursor position is on target end   "x|" -> ds" -> |x
+
+                start = 0
+                if search_current_line_only:
+                    line = view.line(s.begin())
+                    start = line.begin()
+
                 if current == t_char_begin:
-                    t_region_begin = Region(s.begin(), s.begin() + 1)
+                    if t_char_begin == t_char_end:
+                        t_region_begin = _rfind(view, t_char_begin, start=start, end=s.begin(), flags=LITERAL)
+                        if not t_region_begin:
+                            t_region_begin = Region(s.begin(), s.begin() + 1)
+                    else:
+                        t_region_begin = Region(s.begin(), s.begin() + 1)
+
                 else:
-                    t_region_begin = _rfind(view, t_char_begin, start=0, end=s.begin(), flags=LITERAL)
+                    t_region_begin = _rfind(view, t_char_begin, start=start, end=s.begin(), flags=LITERAL)
 
                 t_region_begin_rowcol = view.rowcol(t_region_begin.begin())
 

@@ -222,12 +222,20 @@ class TestSurround_ds(unittest.FunctionalTestCase):
             self.eq(text, 'dst', expected)
 
 
-class TestIssue282(unittest.FunctionalTestCase):
+class TestIssues(unittest.FunctionalTestCase):
 
     def test_issue_282(self):
         self.eq('|"Hello world!"', 'ds"', '|Hello world!')
         self.eq('"|Hello world!"', 'ds"', '|Hello world!')
-        self.eq('"Hello |"world!"', 'ds"', '"Hello |world!')
+        self.eq('"Hello |"world!"', 'ds"', '|Hello world!"')
         self.eq('"Hello "|world!"', 'ds"', '"Hello |world!')
         self.eq('"Hello\n|"world!"', 'ds"', '"Hello\n|world!')
         self.eq('"Hello\n"|world!"', 'ds"', '"Hello\n|world!')
+
+    def test_issue_745(self):
+        self.eq('hello |"fizz" world', 'ds"', 'hello |fizz world')
+        self.eq('hello "fi|zz" world', 'ds"', 'hello |fizz world')
+        self.eq('hello "fizz|" world', 'ds"', 'hello |fizz world')
+        self.eq('he"ll\no |"fizz" world', 'ds"', 'he"ll\no |fizz world')
+        self.eq('he(llo |(fizz) wo)rld', 'ds)', 'he(llo |fizz wo)rld')
+        self.eq('he(llo (fizz|) wo)rld', 'ds)', 'he(llo |fizz wo)rld')
