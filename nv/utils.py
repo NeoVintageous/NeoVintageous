@@ -1007,8 +1007,8 @@ class InputParser():
     def is_interactive(self) -> bool:
         return self.is_panel() and bool(self._command)
 
-    def run_command(self) -> None:
-        run_window_command(self._command)
+    def run_command(self, window) -> None:
+        window.run_command(self._command)
 
     def run_interactive_command(self, window, value) -> None:
         window.run_command(self._command, {self._param: value})

@@ -728,7 +728,7 @@ class nv_feed_key(WindowCommand):
 
         if is_interactive(self.view):
             if command.accept_input and command.input_parser and command.input_parser.is_panel():
-                command.input_parser.run_command()
+                command.input_parser.run_command(self.view.window())
 
         if get_mode(self.view) == OPERATOR_PENDING:
             set_partial_sequence(self.view, '')
