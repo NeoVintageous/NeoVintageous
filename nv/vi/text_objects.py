@@ -76,8 +76,22 @@ PAIRS = {
     '"': (('"', '"'), QUOTE),
     "'": (("'", "'"), QUOTE),
     '`': (('`', '`'), QUOTE),
-    '/': (('/', '/'), QUOTE),  # {not in Vim}
-    '_': (('_', '_'), QUOTE),  # {not in Vim}
+    '#': (('#', '#'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    '$': (('$', '$'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    '&': (('&', '&'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    '*': (('*', '*'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    '+': (('+', '+'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    ',': ((',', ','), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    '-': (('-', '-'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    '.': (('.', '.'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    '/': (('/', '/'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    ':': ((':', ':'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    ';': ((';', ';'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    '=': (('=', '='), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    '_': (('_', '_'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    '|': (('|', '|'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    '~': (('~', '~'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    '\\': (('\\', '\\'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
     '(': (('\\(', '\\)'), BRACKET),
     ')': (('\\(', '\\)'), BRACKET),
     '[': (('\\[', '\\]'), BRACKET),
@@ -345,6 +359,7 @@ def _get_text_object_quote(view, s: Region, inclusive: bool, count: int, delims:
     line = view.line(s)
 
     delim_open = delims[0]
+    delim_open = re_escape(delim_open)
 
     # FIXME: Escape sequences like \" are probably syntax-dependant.
     prev_quote = reverse_search_by_pt(view, r'(?<!\\\\)' + delim_open, start=line.a, end=s.b)

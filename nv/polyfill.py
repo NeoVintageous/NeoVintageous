@@ -19,12 +19,17 @@ from contextlib import contextmanager
 import os
 import re
 import stat
+import sys
 
 from sublime import Region
 from sublime import active_window as _active_window
 from sublime import load_settings
 from sublime import save_settings
 from sublime import status_message as _status_message
+
+
+def is_py38() -> bool:
+    return sys.version_info >= (3, 8)
 
 
 def status_message(msg: str, *args: str) -> None:
@@ -79,10 +84,15 @@ def is_file_read_only(file_name: str) -> bool:
 
 # A future compatable regular expression special character escaper. In Python
 # 3.7 only characters that have special meaning in regex patterns are escaped.
-def re_escape(pattern: str):
-    return re.escape(pattern).replace(
-        '\\<', '<').replace(
-        '\\>', '>')
+if is_py38():
+    def re_escape(pattern: str):
+        return re.escape(pattern)
+else:
+    def re_escape(pattern: str):
+        return re.escape(pattern).replace(
+            '\\<', '<').replace(
+            '\\>', '>').replace(
+            '\\\'', '\'')
 
 
 # There's no Sublime API to show a corrections select list. The workaround is to

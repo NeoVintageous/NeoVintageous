@@ -1122,7 +1122,7 @@ def fixup_eof(view, pt: int) -> int:
 def should_motion_apply_op_transformer(motion) -> bool:
     if motion['motion'] == 'nv_vi_select_text_object':
         if 'text_object' in motion['motion_args']:
-            if motion['motion_args']['text_object'] in '"\'/_t':
+            if motion['motion_args']['text_object'] in '"\'/_t,.;:+-=~*#\\&$|':
                 return False
 
     blacklist = (

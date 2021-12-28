@@ -1555,17 +1555,29 @@ _SEQ2CMD = {
     '`p':           {'command': 'nv_feed_key'},  # noqa: E241
     '`x':           {'command': 'nv_feed_key'},  # noqa: E241
     'a"':           {'command': 'nv_feed_key'},  # noqa: E241
+    'a#':           {'command': 'nv_feed_key'},  # noqa: E241
+    'a$':           {'command': 'nv_feed_key'},  # noqa: E241
+    'a&':           {'command': 'nv_feed_key'},  # noqa: E241
     'a':            {'command': 'nv_feed_key'},  # noqa: E241
     'a(':           {'command': 'nv_feed_key'},  # noqa: E241
     'a)':           {'command': 'nv_feed_key'},  # noqa: E241
+    'a*':           {'command': 'nv_feed_key'},  # noqa: E241
+    'a+':           {'command': 'nv_feed_key'},  # noqa: E241
+    'a,':           {'command': 'nv_feed_key'},  # noqa: E241
+    'a-':           {'command': 'nv_feed_key'},  # noqa: E241
+    'a.':           {'command': 'nv_feed_key'},  # noqa: E241
     'a/':           {'command': 'nv_feed_key'},  # noqa: E241
+    'a:':           {'command': 'nv_feed_key'},  # noqa: E241
+    'a;':           {'command': 'nv_feed_key'},  # noqa: E241
     'a<':           {'command': 'nv_feed_key'},  # noqa: E241
+    'a=':           {'command': 'nv_feed_key'},  # noqa: E241
     'a>':           {'command': 'nv_feed_key'},  # noqa: E241
     'aB':           {'command': 'nv_feed_key'},  # noqa: E241
     'aI':           {'command': 'nv_feed_key'},  # noqa: E241
     'aW':           {'command': 'nv_feed_key'},  # noqa: E241
     'a[':           {'command': 'nv_feed_key'},  # noqa: E241
     'a\'':          {'command': 'nv_feed_key'},  # noqa: E241
+    'a\\':          {'command': 'nv_feed_key'},  # noqa: E241
     'a]':           {'command': 'nv_feed_key'},  # noqa: E241
     'a_':           {'command': 'nv_feed_key'},  # noqa: E241
     'a`':           {'command': 'nv_feed_key'},  # noqa: E241
@@ -1576,7 +1588,9 @@ _SEQ2CMD = {
     'at':           {'command': 'nv_feed_key'},  # noqa: E241
     'aw':           {'command': 'nv_feed_key'},  # noqa: E241
     'a{':           {'command': 'nv_feed_key'},  # noqa: E241
+    'a|':           {'command': 'nv_feed_key'},  # noqa: E241
     'a}':           {'command': 'nv_feed_key'},  # noqa: E241
+    'a~':           {'command': 'nv_feed_key'},  # noqa: E241
     'b':            {'command': 'nv_feed_key'},  # noqa: E241
     'c$':           {'command': 'nv_feed_key'},  # noqa: E241
     'c':            {'command': 'nv_feed_key'},  # noqa: E241
@@ -1586,15 +1600,27 @@ _SEQ2CMD = {
     'c^':           {'command': 'nv_feed_key'},  # noqa: E241
     'c_':           {'command': 'nv_feed_key'},  # noqa: E241
     'ca"':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ca#':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ca$':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ca&':          {'command': 'nv_feed_key'},  # noqa: E241
     'ca(':          {'command': 'nv_feed_key'},  # noqa: E241
     'ca)':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ca*':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ca+':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ca,':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ca-':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ca.':          {'command': 'nv_feed_key'},  # noqa: E241
     'ca/':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ca:':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ca;':          {'command': 'nv_feed_key'},  # noqa: E241
     'ca<':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ca=':          {'command': 'nv_feed_key'},  # noqa: E241
     'ca>':          {'command': 'nv_feed_key'},  # noqa: E241
     'caB':          {'command': 'nv_feed_key'},  # noqa: E241
     'caW':          {'command': 'nv_feed_key'},  # noqa: E241
     'ca[':          {'command': 'nv_feed_key'},  # noqa: E241
     'ca\'':         {'command': 'nv_feed_key'},  # noqa: E241
+    'ca\\':         {'command': 'nv_feed_key'},  # noqa: E241
     'ca]':          {'command': 'nv_feed_key'},  # noqa: E241
     'ca_':          {'command': 'nv_feed_key'},  # noqa: E241
     'ca`':          {'command': 'nv_feed_key'},  # noqa: E241
@@ -1604,7 +1630,9 @@ _SEQ2CMD = {
     'cat':          {'command': 'nv_feed_key'},  # noqa: E241
     'caw':          {'command': 'nv_feed_key'},  # noqa: E241
     'ca{':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ca|':          {'command': 'nv_feed_key'},  # noqa: E241
     'ca}':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ca~':          {'command': 'nv_feed_key'},  # noqa: E241
     'cb':           {'command': 'nv_feed_key'},  # noqa: E241
     'cc':           {'command': 'nv_feed_key'},  # noqa: E241
     'ce':           {'command': 'nv_feed_key'},  # noqa: E241
@@ -1615,15 +1643,27 @@ _SEQ2CMD = {
     'cgn':          {'command': 'nv_feed_key'},  # noqa: E241
     'ch':           {'command': 'nv_feed_key'},  # noqa: E241
     'ci"':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ci#':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ci$':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ci&':          {'command': 'nv_feed_key'},  # noqa: E241
     'ci(':          {'command': 'nv_feed_key'},  # noqa: E241
     'ci)':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ci*':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ci+':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ci,':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ci-':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ci.':          {'command': 'nv_feed_key'},  # noqa: E241
     'ci/':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ci:':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ci;':          {'command': 'nv_feed_key'},  # noqa: E241
     'ci<':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ci=':          {'command': 'nv_feed_key'},  # noqa: E241
     'ci>':          {'command': 'nv_feed_key'},  # noqa: E241
     'ciB':          {'command': 'nv_feed_key'},  # noqa: E241
     'ciW':          {'command': 'nv_feed_key'},  # noqa: E241
     'ci[':          {'command': 'nv_feed_key'},  # noqa: E241
     'ci\'':         {'command': 'nv_feed_key'},  # noqa: E241
+    'ci\\':         {'command': 'nv_feed_key'},  # noqa: E241
     'ci]':          {'command': 'nv_feed_key'},  # noqa: E241
     'ci_':          {'command': 'nv_feed_key'},  # noqa: E241
     'ci`':          {'command': 'nv_feed_key'},  # noqa: E241
@@ -1633,7 +1673,9 @@ _SEQ2CMD = {
     'cit':          {'command': 'nv_feed_key'},  # noqa: E241
     'ciw':          {'command': 'nv_feed_key'},  # noqa: E241
     'ci{':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ci|':          {'command': 'nv_feed_key'},  # noqa: E241
     'ci}':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ci~':          {'command': 'nv_feed_key'},  # noqa: E241
     'cl':           {'command': 'nv_feed_key'},  # noqa: E241
     'cr ':          {'command': 'nv_feed_key'},  # noqa: E241
     'cr-':          {'command': 'nv_feed_key'},  # noqa: E241
@@ -1746,15 +1788,27 @@ _SEQ2CMD = {
     'd`a':          {'command': 'nv_feed_key'},  # noqa: E241
     'd`x':          {'command': 'nv_feed_key'},  # noqa: E241
     'da"':          {'command': 'nv_feed_key'},  # noqa: E241
+    'da#':          {'command': 'nv_feed_key'},  # noqa: E241
+    'da$':          {'command': 'nv_feed_key'},  # noqa: E241
+    'da&':          {'command': 'nv_feed_key'},  # noqa: E241
     'da(':          {'command': 'nv_feed_key'},  # noqa: E241
     'da)':          {'command': 'nv_feed_key'},  # noqa: E241
+    'da*':          {'command': 'nv_feed_key'},  # noqa: E241
+    'da+':          {'command': 'nv_feed_key'},  # noqa: E241
+    'da,':          {'command': 'nv_feed_key'},  # noqa: E241
+    'da-':          {'command': 'nv_feed_key'},  # noqa: E241
+    'da.':          {'command': 'nv_feed_key'},  # noqa: E241
     'da/':          {'command': 'nv_feed_key'},  # noqa: E241
+    'da:':          {'command': 'nv_feed_key'},  # noqa: E241
+    'da;':          {'command': 'nv_feed_key'},  # noqa: E241
     'da<':          {'command': 'nv_feed_key'},  # noqa: E241
+    'da=':          {'command': 'nv_feed_key'},  # noqa: E241
     'da>':          {'command': 'nv_feed_key'},  # noqa: E241
     'daB':          {'command': 'nv_feed_key'},  # noqa: E241
     'daW':          {'command': 'nv_feed_key'},  # noqa: E241
     'da[':          {'command': 'nv_feed_key'},  # noqa: E241
     'da\'':         {'command': 'nv_feed_key'},  # noqa: E241
+    'da\\':         {'command': 'nv_feed_key'},  # noqa: E241
     'da]':          {'command': 'nv_feed_key'},  # noqa: E241
     'da_':          {'command': 'nv_feed_key'},  # noqa: E241
     'da`':          {'command': 'nv_feed_key'},  # noqa: E241
@@ -1764,7 +1818,9 @@ _SEQ2CMD = {
     'dat':          {'command': 'nv_feed_key'},  # noqa: E241
     'daw':          {'command': 'nv_feed_key'},  # noqa: E241
     'da{':          {'command': 'nv_feed_key'},  # noqa: E241
+    'da|':          {'command': 'nv_feed_key'},  # noqa: E241
     'da}':          {'command': 'nv_feed_key'},  # noqa: E241
+    'da~':          {'command': 'nv_feed_key'},  # noqa: E241
     'dd':           {'command': 'nv_feed_key'},  # noqa: E241
     'de':           {'command': 'nv_feed_key'},  # noqa: E241
     'df=':          {'command': 'nv_feed_key'},  # noqa: E241
@@ -1776,14 +1832,26 @@ _SEQ2CMD = {
     'dgg':          {'command': 'nv_feed_key'},  # noqa: E241
     'dh':           {'command': 'nv_feed_key'},  # noqa: E241
     'di"':          {'command': 'nv_feed_key'},  # noqa: E241
+    'di#':          {'command': 'nv_feed_key'},  # noqa: E241
+    'di$':          {'command': 'nv_feed_key'},  # noqa: E241
+    'di&':          {'command': 'nv_feed_key'},  # noqa: E241
     'di(':          {'command': 'nv_feed_key'},  # noqa: E241
     'di)':          {'command': 'nv_feed_key'},  # noqa: E241
+    'di*':          {'command': 'nv_feed_key'},  # noqa: E241
+    'di+':          {'command': 'nv_feed_key'},  # noqa: E241
+    'di,':          {'command': 'nv_feed_key'},  # noqa: E241
+    'di-':          {'command': 'nv_feed_key'},  # noqa: E241
+    'di.':          {'command': 'nv_feed_key'},  # noqa: E241
     'di/':          {'command': 'nv_feed_key'},  # noqa: E241
+    'di:':          {'command': 'nv_feed_key'},  # noqa: E241
+    'di;':          {'command': 'nv_feed_key'},  # noqa: E241
+    'di=':          {'command': 'nv_feed_key'},  # noqa: E241
     'di>':          {'command': 'nv_feed_key'},  # noqa: E241
     'diB':          {'command': 'nv_feed_key'},  # noqa: E241
     'diW':          {'command': 'nv_feed_key'},  # noqa: E241
     'di[':          {'command': 'nv_feed_key'},  # noqa: E241
     'di\'':         {'command': 'nv_feed_key'},  # noqa: E241
+    'di\\':         {'command': 'nv_feed_key'},  # noqa: E241
     'di]':          {'command': 'nv_feed_key'},  # noqa: E241
     'di_':          {'command': 'nv_feed_key'},  # noqa: E241
     'di`':          {'command': 'nv_feed_key'},  # noqa: E241
@@ -1793,7 +1861,9 @@ _SEQ2CMD = {
     'dit':          {'command': 'nv_feed_key'},  # noqa: E241
     'diw':          {'command': 'nv_feed_key'},  # noqa: E241
     'di{':          {'command': 'nv_feed_key'},  # noqa: E241
+    'di|':          {'command': 'nv_feed_key'},  # noqa: E241
     'di}':          {'command': 'nv_feed_key'},  # noqa: E241
+    'di~':          {'command': 'nv_feed_key'},  # noqa: E241
     'dj':           {'command': 'nv_feed_key'},  # noqa: E241
     'dk':           {'command': 'nv_feed_key'},  # noqa: E241
     'dl':           {'command': 'nv_feed_key'},  # noqa: E241
@@ -1888,17 +1958,29 @@ _SEQ2CMD = {
     'g~~':          {'command': 'nv_feed_key'},  # noqa: E241
     'h':            {'command': 'nv_feed_key'},  # noqa: E241
     'i"':           {'command': 'nv_feed_key'},  # noqa: E241
+    'i#':           {'command': 'nv_feed_key'},  # noqa: E241
+    'i$':           {'command': 'nv_feed_key'},  # noqa: E241
+    'i&':           {'command': 'nv_feed_key'},  # noqa: E241
     'i':            {'command': 'nv_feed_key'},  # noqa: E241
     'i(':           {'command': 'nv_feed_key'},  # noqa: E241
     'i)':           {'command': 'nv_feed_key'},  # noqa: E241
+    'i*':           {'command': 'nv_feed_key'},  # noqa: E241
+    'i+':           {'command': 'nv_feed_key'},  # noqa: E241
+    'i,':           {'command': 'nv_feed_key'},  # noqa: E241
+    'i-':           {'command': 'nv_feed_key'},  # noqa: E241
+    'i.':           {'command': 'nv_feed_key'},  # noqa: E241
     'i/':           {'command': 'nv_feed_key'},  # noqa: E241
+    'i:':           {'command': 'nv_feed_key'},  # noqa: E241
+    'i;':           {'command': 'nv_feed_key'},  # noqa: E241
     'i<':           {'command': 'nv_feed_key'},  # noqa: E241
+    'i=':           {'command': 'nv_feed_key'},  # noqa: E241
     'i>':           {'command': 'nv_feed_key'},  # noqa: E241
     'iB':           {'command': 'nv_feed_key'},  # noqa: E241
     'iI':           {'command': 'nv_feed_key'},  # noqa: E241
     'iW':           {'command': 'nv_feed_key'},  # noqa: E241
     'i[':           {'command': 'nv_feed_key'},  # noqa: E241
     'i\'':          {'command': 'nv_feed_key'},  # noqa: E241
+    'i\\':          {'command': 'nv_feed_key'},  # noqa: E241
     'i]':           {'command': 'nv_feed_key'},  # noqa: E241
     'i_':           {'command': 'nv_feed_key'},  # noqa: E241
     'i`':           {'command': 'nv_feed_key'},  # noqa: E241
@@ -1909,7 +1991,9 @@ _SEQ2CMD = {
     'it':           {'command': 'nv_feed_key'},  # noqa: E241
     'iw':           {'command': 'nv_feed_key'},  # noqa: E241
     'i{':           {'command': 'nv_feed_key'},  # noqa: E241
+    'i|':           {'command': 'nv_feed_key'},  # noqa: E241
     'i}':           {'command': 'nv_feed_key'},  # noqa: E241
+    'i~':           {'command': 'nv_feed_key'},  # noqa: E241
     'j':            {'command': 'nv_feed_key'},  # noqa: E241
     'k':            {'command': 'nv_feed_key'},  # noqa: E241
     'l':            {'command': 'nv_feed_key'},  # noqa: E241
@@ -1967,15 +2051,29 @@ _SEQ2CMD = {
     'y$':           {'command': 'nv_feed_key'},  # noqa: E241
     'y':            {'command': 'nv_feed_key'},  # noqa: E241
     'ya"':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ya#':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ya$':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ya&':          {'command': 'nv_feed_key'},  # noqa: E241
     'ya(':          {'command': 'nv_feed_key'},  # noqa: E241
     'ya)':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ya*':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ya+':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ya,':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ya-':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ya.':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ya/':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ya:':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ya;':          {'command': 'nv_feed_key'},  # noqa: E241
     'ya<':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ya=':          {'command': 'nv_feed_key'},  # noqa: E241
     'ya>':          {'command': 'nv_feed_key'},  # noqa: E241
     'yaB':          {'command': 'nv_feed_key'},  # noqa: E241
     'yaW':          {'command': 'nv_feed_key'},  # noqa: E241
     'ya[':          {'command': 'nv_feed_key'},  # noqa: E241
     'ya\'':         {'command': 'nv_feed_key'},  # noqa: E241
+    'ya\\':         {'command': 'nv_feed_key'},  # noqa: E241
     'ya]':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ya_':          {'command': 'nv_feed_key'},  # noqa: E241
     'ya`':          {'command': 'nv_feed_key'},  # noqa: E241
     'yab':          {'command': 'nv_feed_key'},  # noqa: E241
     'yap':          {'command': 'nv_feed_key'},  # noqa: E241
@@ -1983,17 +2081,33 @@ _SEQ2CMD = {
     'yat':          {'command': 'nv_feed_key'},  # noqa: E241
     'yaw':          {'command': 'nv_feed_key'},  # noqa: E241
     'ya{':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ya|':          {'command': 'nv_feed_key'},  # noqa: E241
     'ya}':          {'command': 'nv_feed_key'},  # noqa: E241
+    'ya~':          {'command': 'nv_feed_key'},  # noqa: E241
     'yi"':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yi#':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yi$':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yi&':          {'command': 'nv_feed_key'},  # noqa: E241
     'yi(':          {'command': 'nv_feed_key'},  # noqa: E241
     'yi)':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yi*':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yi+':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yi,':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yi-':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yi.':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yi/':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yi:':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yi;':          {'command': 'nv_feed_key'},  # noqa: E241
     'yi<':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yi=':          {'command': 'nv_feed_key'},  # noqa: E241
     'yi>':          {'command': 'nv_feed_key'},  # noqa: E241
     'yiB':          {'command': 'nv_feed_key'},  # noqa: E241
     'yiW':          {'command': 'nv_feed_key'},  # noqa: E241
     'yi[':          {'command': 'nv_feed_key'},  # noqa: E241
     'yi\'':         {'command': 'nv_feed_key'},  # noqa: E241
+    'yi\\':         {'command': 'nv_feed_key'},  # noqa: E241
     'yi]':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yi_':          {'command': 'nv_feed_key'},  # noqa: E241
     'yi`':          {'command': 'nv_feed_key'},  # noqa: E241
     'yib':          {'command': 'nv_feed_key'},  # noqa: E241
     'yip':          {'command': 'nv_feed_key'},  # noqa: E241
@@ -2001,7 +2115,9 @@ _SEQ2CMD = {
     'yit':          {'command': 'nv_feed_key'},  # noqa: E241
     'yiw':          {'command': 'nv_feed_key'},  # noqa: E241
     'yi{':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yi|':          {'command': 'nv_feed_key'},  # noqa: E241
     'yi}':          {'command': 'nv_feed_key'},  # noqa: E241
+    'yi~':          {'command': 'nv_feed_key'},  # noqa: E241
     'yj':           {'command': 'nv_feed_key'},  # noqa: E241
     'yk':           {'command': 'nv_feed_key'},  # noqa: E241
     'yoa':          {'command': 'nv_feed_key'},  # noqa: E241

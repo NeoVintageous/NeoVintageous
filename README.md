@@ -13,7 +13,7 @@ NeoVintageous is a project that seeks to continue the development of the discont
 * Strong defaults
 * Drop-in replacement for Vintageous
 * Integrates with [GitGutter](https://github.com/jisaacks/GitGutter), [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter3) and [Origami](https://github.com/SublimeText/Origami)
-* Plugins out-of-the-box: [Abolish](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt), [Commentary](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt), [Highlighted Yank](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt), [Surround](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt), [Unimpaired](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) and [Indent Object](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt).
+* Plugins out-of-the-box: Abolish, Commentary, Highlighted Yank, Indent Object Surround, Targets, and Unimpaired
 
 ## Installation
 
@@ -58,6 +58,7 @@ Indent Object | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob
 Multiple Cursors | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors)
 Surround | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-surround](https://github.com/tpope/vim-surround)
 Sneak | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-sneak](https://github.com/justinmk/vim-sneak)
+Targets | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-targets](https://github.com/wellle/targets.vim)
 Unimpaired | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-unimpaired](https://github.com/tpope/vim-unimpaired)
 
 ## Contributing

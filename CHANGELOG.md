@@ -2,7 +2,14 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.25.1 - Unreleased
+## 1.26.0 - Unreleased
+
+### Added
+
+* Added [#781](https://github.com/NeoVintageous/NeoVintageous/issues/781): New text objects `i,`, `i.`, `i;`, `i:`, `i+`, `i-`, `i=`, `i~`, `i_`, `i*`, `i#`, `i/`, `i|`, `i\`, `i&`, `i$` (port of https://github.com/wellle/targets.vim)
+* Added [#781](https://github.com/NeoVintageous/NeoVintageous/issues/781): New text objects `a,`, `a.`, `a;`, `a:`, `a+`, `a-`, `a=`, `a~`, `a_`, `a*`, `a#`, `a/`, `a|`, `a\`, `a&`, `a$` (port of https://github.com/wellle/targets.vim)
+
+### Fixed
 
 * Fixed [#745](https://github.com/NeoVintageous/NeoVintageous/issues/745): `ds` sometimes doesn't work when the cursor is on first target
 * Fixed [#791](https://github.com/NeoVintageous/NeoVintageous/issues/791): Reset mode setting is ignored when mode is already normal
