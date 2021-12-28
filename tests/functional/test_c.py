@@ -223,3 +223,8 @@ class Test_c(unittest.ResetRegisters, unittest.FunctionalTestCase):
     def test_issue_740(self):
         self.eq('fizz |(inner) buzz', 'ci(', 'i_fizz (|) buzz')
         self.eq('fizz |(inner) buzz', 'ca(', 'i_fizz | buzz')
+
+    def test_issue_734_empty_tag(self):
+        self.eq('<div>|</div>', 'cit', 'i_<div>|</div>')
+        self.eq('x<div>|</div>x', 'cit', 'i_x<div>|</div>x')
+        self.eq('<fi|zz></fizz>', 'cit', 'i_<fizz>|</fizz>')
