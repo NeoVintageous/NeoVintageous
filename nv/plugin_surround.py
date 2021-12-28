@@ -30,6 +30,7 @@ from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.search import reverse_search
+from NeoVintageous.nv.vi.text_objects import get_text_object_region
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
@@ -352,12 +353,10 @@ def _do_ds(view, edit, mode: str, target: str) -> None:
             if target in noop_targets:
                 return s
 
-            valid_targets = '\'"`b()B{}r[]a<>t.,-_;:@#~*\\/|'
+            # Includes targets for plugin https://github.com/wellle/targets.vim
+            valid_targets = '\'"`b()B{}r[]a<>t.,-_;:@#~*\\/|+=&$'
             if target not in valid_targets:
                 return s
-
-            # Only search the current line for all marks except punctuation.
-            search_current_line_only = True if target not in 'b()B{}r[]a<>' else False
 
             # Trim contained whitespace for opening punctuation mark targets.
             trim_contained_whitespace = True if target in '({[<' else False
@@ -367,9 +366,6 @@ def _do_ds(view, edit, mode: str, target: str) -> None:
             # their counterparts are the same e.g. ', ", `, -, _, etc.
             t_char_begin, t_char_end = _get_punctuation_marks(target)
 
-            s_rowcol_begin = view.rowcol(s.begin())
-            s_rowcol_end = view.rowcol(s.end())
-
             # A t is a pair of HTML or XML tags.
             if target == 't':
                 # TODO test dst works when cursor position is inside tag begin <a|bc>x</abc> -> dst -> |x
@@ -377,45 +373,40 @@ def _do_ds(view, edit, mode: str, target: str) -> None:
                 t_region_end = view.find('<\\/.*?>', s.b)
                 t_region_begin = reverse_search(view, '<.*?>', start=0, end=s.b)
             else:
-                current = view.substr(s.begin())
 
-                start = 0
-                if search_current_line_only:
-                    line = view.line(s.begin())
-                    start = line.begin()
+                char_under_cursor = view.substr(s.begin())
 
-                if current == t_char_begin:
-                    if t_char_begin == t_char_end:
-                        t_region_begin = _rfind(view, t_char_begin, start=start, end=s.begin(), flags=LITERAL)
-                        if not t_region_begin:
-                            t_region_begin = Region(s.begin(), s.begin() + 1)
-                    else:
-                        t_region_begin = Region(s.begin(), s.begin() + 1)
+                t_region_begin = None
+                t_region_end = None
 
+                # TODO There is an off-by-one bug in the get_text_object_region()
+                # e.g. https://github.com/NeoVintageous/NeoVintageous/issues/740
+                if (char_under_cursor == t_char_begin) and (t_char_begin != t_char_end):
+                    start = Region(s.begin() + 1)
                 else:
-                    t_region_begin = _rfind(view, t_char_begin, start=start, end=s.begin(), flags=LITERAL)
+                    start = Region(s.begin())
 
-                t_region_begin_rowcol = view.rowcol(t_region_begin.begin())
+                text_object = get_text_object_region(
+                    view,
+                    start,
+                    t_char_begin,
+                    inclusive=True,
+                    count=1
+                )
 
-                t_region_end = _find(view, t_char_end, start=t_region_begin.end(), flags=LITERAL)
-                t_region_end_rowcol = view.rowcol(t_region_end.end())
+                if text_object:
+                    t_region_begin = Region(text_object.begin(), text_object.begin() + 1)
+                    t_region_end = Region(text_object.end(), text_object.end() - 1)
 
-                if search_current_line_only:
-                    if t_region_begin_rowcol[0] != s_rowcol_begin[0]:
-                        return s
+                    if trim_contained_whitespace:
+                        t_region_begin_ws = _find(view, '\\s*.', start=t_region_begin.end())
+                        t_region_end_ws = _rfind(view, '.\\s*', start=t_region_begin.end(), end=t_region_end.begin())
 
-                    if t_region_end_rowcol[0] != s_rowcol_end[0]:
-                        return s
+                        if t_region_begin_ws.size() > 1:
+                            t_region_begin = Region(t_region_begin.begin(), t_region_begin_ws.end() - 1)
 
-                if trim_contained_whitespace:
-                    t_region_begin_ws = _find(view, '\\s*.', start=t_region_begin.end())
-                    t_region_end_ws = _rfind(view, '.\\s*', start=t_region_begin.end(), end=t_region_end.begin())
-
-                    if t_region_begin_ws.size() > 1:
-                        t_region_begin = Region(t_region_begin.begin(), t_region_begin_ws.end() - 1)
-
-                    if t_region_end_ws.size() > 1:
-                        t_region_end = Region(t_region_end_ws.begin() + 1, t_region_end.end())
+                        if t_region_end_ws.size() > 1:
+                            t_region_end = Region(t_region_end_ws.begin() + 1, t_region_end.end())
 
             if not (t_region_end and t_region_begin):
                 return s

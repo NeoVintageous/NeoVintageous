@@ -92,7 +92,8 @@ else:
         return re.escape(pattern).replace(
             '\\<', '<').replace(
             '\\>', '>').replace(
-            '\\\'', '\'')
+            '\\\'', '\'').replace(
+            '\\`', '`')
 
 
 # There's no Sublime API to show a corrections select list. The workaround is to

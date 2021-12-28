@@ -11,6 +11,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#744](https://github.com/NeoVintageous/NeoVintageous/issues/744): delete-surround not deleting the right pair
+* Fixed [#644](https://github.com/NeoVintageous/NeoVintageous/issues/644): Surround plugin deletes non-matching parentheses
 * Fixed [#745](https://github.com/NeoVintageous/NeoVintageous/issues/745): `ds` sometimes doesn't work when the cursor is on first target
 * Fixed [#791](https://github.com/NeoVintageous/NeoVintageous/issues/791): Reset mode setting is ignored when mode is already normal
 * Fixed [#790](https://github.com/NeoVintageous/NeoVintageous/issues/790): Various file saving edge-case issues
