@@ -341,83 +341,73 @@ def _do_cs(view, edit, mode: str, target: str, replacement: str) -> None:
 
 
 def _do_ds(view, edit, mode: str, target: str) -> None:
+    if len(target) != 1:
+        return
+
+    # The target letters w, W, s, and p correspond to a word, a WORD, a
+    # sentence, and a paragraph respectively. These are special in that they
+    # have nothing to delete, and used with ds they are a no-op.
+    noop_targets = 'wWsp'
+    if target in noop_targets:
+        return
+
+    # Includes targets for plugin https://github.com/wellle/targets.vim
+    valid_targets = '\'"`b()B{}r[]a<>t.,-_;:@#~*\\/|+=&$'
+    if target not in valid_targets:
+        return
+
+    # Trim contained whitespace for opening punctuation mark targets.
+    should_trim_contained_whitespace = True if target in '({[<' else False
+
+    # Expand target punctuation marks. Some punctuation marks and their aliases
+    # have different counterparts e.g. (), []. Some marks are their
+    # counterparts are the same e.g. ', ", `, -, _, etc.
+    target_open, target_close = _get_punctuation_marks(target)
+
     def _f(view, s):
         if mode == INTERNAL_NORMAL:
-            if len(target) != 1:
-                return s
-
-            # The target letters w, W, s, and p correspond to a word, a WORD, a
-            # sentence, and a paragraph respectively. These are special in that
-            # they have nothing to delete, and used with ds they are a no-op.
-            noop_targets = 'wWsp'
-            if target in noop_targets:
-                return s
-
-            # Includes targets for plugin https://github.com/wellle/targets.vim
-            valid_targets = '\'"`b()B{}r[]a<>t.,-_;:@#~*\\/|+=&$'
-            if target not in valid_targets:
-                return s
-
-            # Trim contained whitespace for opening punctuation mark targets.
-            trim_contained_whitespace = True if target in '({[<' else False
-
-            # Expand target punctuation marks. Some punctuation marks and their
-            # aliases have different counterparts e.g. (), []. Some marks are
-            # their counterparts are the same e.g. ', ", `, -, _, etc.
-            t_char_begin, t_char_end = _get_punctuation_marks(target)
 
             # A t is a pair of HTML or XML tags.
             if target == 't':
                 # TODO test dst works when cursor position is inside tag begin <a|bc>x</abc> -> dst -> |x
                 # TODO test dst works when cursor position is inside tag end   <abc>x</a|bc> -> dst -> |x
-                t_region_end = view.find('<\\/.*?>', s.b)
-                t_region_begin = reverse_search(view, '<.*?>', start=0, end=s.b)
+                region_end = view.find('<\\/.*?>', s.b)
+                region_begin = reverse_search(view, '<.*?>', start=0, end=s.b)
             else:
-
-                char_under_cursor = view.substr(s.begin())
-
-                t_region_begin = None
-                t_region_end = None
-
                 # TODO There is an off-by-one bug in the get_text_object_region()
                 # e.g. https://github.com/NeoVintageous/NeoVintageous/issues/740
-                if (char_under_cursor == t_char_begin) and (t_char_begin != t_char_end):
+                if (view.substr(s.begin()) == target_open) and (target_open != target_close):
                     start = Region(s.begin() + 1)
                 else:
                     start = Region(s.begin())
 
-                text_object = get_text_object_region(
-                    view,
-                    start,
-                    t_char_begin,
-                    inclusive=True,
-                    count=1
-                )
+                text_object = get_text_object_region(view, start, target_open, inclusive=True, count=1)
+                if not text_object:
+                    return s
 
-                if text_object:
-                    t_region_begin = Region(text_object.begin(), text_object.begin() + 1)
-                    t_region_end = Region(text_object.end(), text_object.end() - 1)
+                region_begin = Region(text_object.begin(), text_object.begin() + 1)
+                region_end = Region(text_object.end(), text_object.end() - 1)
 
-                    if trim_contained_whitespace:
-                        t_region_begin_ws = _find(view, '\\s*.', start=t_region_begin.end())
-                        t_region_end_ws = _rfind(view, '.\\s*', start=t_region_begin.end(), end=t_region_end.begin())
+                if should_trim_contained_whitespace:
+                    t_region_begin_ws = _find(view, '\\s*.', start=region_begin.end())
+                    t_region_end_ws = _rfind(view, '.\\s*', start=region_begin.end(), end=region_end.begin())
 
-                        if t_region_begin_ws.size() > 1:
-                            t_region_begin = Region(t_region_begin.begin(), t_region_begin_ws.end() - 1)
+                    if t_region_begin_ws.size() > 1:
+                        region_begin = Region(region_begin.begin(), t_region_begin_ws.end() - 1)
 
-                        if t_region_end_ws.size() > 1:
-                            t_region_end = Region(t_region_end_ws.begin() + 1, t_region_end.end())
+                    if t_region_end_ws.size() > 1:
+                        region_end = Region(t_region_end_ws.begin() + 1, region_end.end())
 
-            if not (t_region_end and t_region_begin):
+            if not (region_end and region_begin):
                 return s
 
             # It's important that the regions are replaced in reverse because
             # otherwise the buffer size would be reduced by the number of
             # characters replaced and would result in an off-by-one bug.
-            view.replace(edit, t_region_end, '')
-            view.replace(edit, t_region_begin, '')
+            view.replace(edit, region_end, '')
+            view.replace(edit, region_begin, '')
 
-            return Region(t_region_begin.begin())
+            return Region(region_begin.begin())
 
         return s
 
