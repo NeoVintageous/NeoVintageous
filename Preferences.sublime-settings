@@ -1,45 +1,58 @@
 {
-    // A port of https://github.com/machakann/vim-highlightedyank.
-    // See http://vimcasts.org/episodes/neovim-eyecandy/#shownotes.
-    "highlightedyank": true,
-
-    // Assign number of time in milliseconds.
-    "highlightedyank_duration": 1000,
-
-    // Valid values are: fill, outline, underline, squiggly_underline,
-    // stippled_underline.
-    "highlightedyank_style": "fill",
-
     // Current search style.
-    // Valid values are: fill, outline, underline, squiggly_underline,
-    // stippled_underline.
+    //
+    // Valid values are:
+    //     fill
+    //     outline
+    //     underline
+    //     squiggly_underline
+    //     stippled_underline
     "neovintageous_search_cur_style": "fill",
 
-    // Incremental search style.
-    // Valid values are: fill, outline, underline, squiggly_underline,
-    // stippled_underline.
+    //  Incremental search style.
+    //
+    //  Valid values are:
+    //      fill
+    //      outline
+    //      underline
+    //      squiggly_underline
+    //      stippled_underline
     "neovintageous_search_inc_style": "fill",
 
-    // Search occurences style.
-    // Valid values are: fill, outline, underline, squiggly_underline,
-    // stippled_underline.
+    //  Search occurences style.
+    //
+    //  Valid values are:
+    //      fill
+    //      outline
+    //      underline
+    //      squiggly_underline
+    //      stippled_underline
     "neovintageous_search_occ_style": "fill",
 
-    // Visual bell style.
-    // Valid values are: blink, view, or views.
+    //  Visual bell style.
+    //
+    //  Valid values are:
+    //       blink
+    //       view
+    //       views
     "vintageous_bell": "blink",
 
-    // Visual bell color-scheme.
-    // Valid values are: "dark", "light".
-    // Or a color scheme resource path: Packages/Name/name.hidden-color-scheme
+    //  Visual bell color-scheme.
+    //
+    //  Valid values are:
+    //       dark
+    //       light
+    //  Or a color scheme resource path:
+    //       Packages/Name/name.hidden-color-scheme
     "vintageous_bell_color_scheme": "dark",
 
-    // If you do not type anything on a new line e.g. pressing <Esc> after "o"
-    // or "O", the indent is deleted again. To preserve the leading whitespace
-    // on after pressing <esc> set this setting to false.
+    //  If you do not type anything on a new line e.g. pressing <Esc> after "o"
+    //  or "O", the indent is deleted again. To preserve the leading whitespace
+    //  on after pressing <esc> set this setting to false.
     "vintageous_clear_auto_indent_on_esc": true,
 
     // Default mode to use when activating or switching views.
+    //
     // Valid values are: "insert"
     //
     // mode   | description
@@ -49,47 +62,69 @@
     //          mode selections are retained when the window loses focus.
     "vintageous_default_mode": "",
 
-    // Plugin: A port of https://github.com/tpope/vim-abolish.
+    // Plugin
+    //
+    // A port of https://github.com/tpope/vim-abolish.
     "vintageous_enable_abolish": true,
 
-    // Plugin: A port of https://github.com/tpope/vim-commentary.
+    // Plugin
+    //
+    // A port of https://github.com/tpope/vim-commentary.
     "vintageous_enable_commentary": true,
 
-    // Plugin: A port of https://github.com/terryma/vim-multiple-cursors.
+    // Plugin
+    //
+    // A port of https://github.com/terryma/vim-multiple-cursors.
     "vintageous_enable_multiple_cursors": true,
 
-    // Plugin: A port of https://github.com/justinmk/vim-sneak.
+    // Plugin
+    //
+    // A port of https://github.com/justinmk/vim-sneak.
     "vintageous_enable_sneak": false,
 
-    // Plugin: Sublime Text tweaks.
+    // Plugin
+    //
+    // Sublime Text tweaks.
     "vintageous_enable_sublime": true,
 
-    // Plugin: A port of https://github.com/tpope/vim-surround.
+    // Plugin
+    //
+    // A port of https://github.com/tpope/vim-surround.
     "vintageous_enable_surround": true,
 
-    // Plugin: A port of https://github.com/tpope/vim-unimpaired.
+    // Plugin
+    //
+    // A port of https://github.com/tpope/vim-unimpaired.
     "vintageous_enable_unimpaired": true,
 
-    // When quitting the last window (not counting a help window), exit ST.
+    // Plugin
+    //
+    // A port of https://github.com/machakann/vim-highlightedyank.
+    "highlightedyank": true,
+
+    // Assign number of time in milliseconds.
+    "highlightedyank_duration": 1000,
+
+    // Valid values are:
+    //     fill
+    //     outline
+    //     underline
+    //     squiggly_underline
+    //     stippled_underline
+    "highlightedyank_style": "fill",
+
+    // When quitting the last window exit ST.
     "vintageous_exit_when_quiting_last_window": true,
 
-    // Delegate configured keys to be handled by Sublime Text. 
+    // Delegate configured keys to be handled by Sublime Text.
     //
-    // For example to use ctrl+f for find (native ST behaviour):
+    // For example to use native Sublime Text behaviour for ctrl+f:
     //
     //     "vintageous_handle_keys": {
     //         "<C-f>": false
     //     }
     //
-    // Keys can be delegated by mode too e.g. i_<C-w>, v_<C-w>. The following
-    // will only delegate <C-w> back to ST when in insert or visual mode:
-    //
-    //     "vintageous_handle_keys": {
-    //         "i_<C-w>": false
-    //         "v_<C-w>": false
-    //     }
-    //
-    // The valid mode prefixes are:
+    // Keys can be handled for specific modes by using a prefix:
     //
     //     n_ - Normal
     //     i_ - Insert
@@ -98,17 +133,21 @@
     //     b_ - Visual block
     //     s_ - Select
     //
-    // No prefix implies all modes.
+    // For example to only delegate <C-w> in insert and visual modes:
     //
-    // Any keybinding defined in the default keymap file that has
-    // a "nv_handle_key" context constraint can be configured to delegate
-    // back to ST.
-    // See https://github.com/NeoVintageous/NeoVintageous/blob/master/Default.sublime-keymap
+    //     "vintageous_handle_keys": {
+    //         "i_<C-w>": false
+    //         "v_<C-w>": false
+    //     }
     "vintageous_handle_keys": {},
 
-    // If set to false then pressing a quit key (<Esc> or J) in multiple cursor
-    // mode, will not quit and delete all existing cursors. Useful if you want
-    // to go back to Normal mode and still operate on all the cursors.
+    // Exit visual multi cursor visual on quit key.
+    //
+    // When false then pressing a quit key (e.g. <Esc> or J) in multiple cursor
+    // visual mode the visual mode exits to normal mode but keeps the cursors.
+    //
+    // When true then pressing a quit key (e.g. <Esc> or J) in multiple cursor
+    // visual mode the visual mode exits all multiple cursors.
     "vintageous_multi_cursor_exit_from_visual_mode": false,
 
     // Reset to normal mode when a tab is activated.
@@ -122,6 +161,7 @@
     "vintageous_sneak_use_ic_scs": 0,
 
     // Name of program to use when starting a ":shell".
+    //
     // Example: gnome-terminal
     "vintageous_terminal": null,
 
