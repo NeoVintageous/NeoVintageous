@@ -269,6 +269,9 @@ def _rsynced_regions_transformer(view, f) -> None:
 
 
 def _do_cs(view, edit, mode: str, target: str, replacement: str) -> None:
+    if not target and replacement:
+        return
+
     if len(target) != 1:
         return
 
@@ -309,11 +312,13 @@ def _do_cs(view, edit, mode: str, target: str, replacement: str) -> None:
 
         return s
 
-    if target and replacement:
-        _rsynced_regions_transformer(view, _f)
+    _rsynced_regions_transformer(view, _f)
 
 
 def _do_ds(view, edit, mode: str, target: str) -> None:
+    if not target:
+        return
+
     if len(target) != 1:
         return
 
@@ -361,8 +366,7 @@ def _do_ds(view, edit, mode: str, target: str) -> None:
 
         return s
 
-    if target:
-        _rsynced_regions_transformer(view, _f)
+    _rsynced_regions_transformer(view, _f)
 
 
 def _get_regions_for_target(view, s: Region, target: str) -> tuple:
