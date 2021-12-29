@@ -125,6 +125,26 @@ class Test_P(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('xx|xx\nx\n\nxxxx', 'P', 'xx|fizxx\nx buz\n  foo\nxxbarxx')
         self.eq('xx|xx\n\nxxx\nxxxx', 'P', 'xx|fizxx\n  buz\nxxfoox\nxxbarxx')
 
+    def test_n_multi_cursor_1_paste_with_many_selections(self):
+        self.register('"', ['fi'])
+        self.eq('fizz |zz |zz |zz', 'P', 'fizz f|izz f|izz f|izz')
+
+    def test_n_multi_cursor_many_paste_with_less_selections_when_paste_content_is_all_the_same(self):
+        self.register('"', ['fi', 'fi', 'fi', 'fi', 'fi'])
+        self.eq('fizz |zz |zz', 'P', 'fizz f|izz f|izz')
+
+    def test_n_multi_cursor_many_paste_with_more_selections_when_paste_content_is_all_the_same(self):
+        self.register('"', ['fi', 'fi'])
+        self.eq('fizz |zz |zz |zz |zz |zz', 'P', 'fizz f|izz f|izz f|izz f|izz f|izz')
+
+    def test_n_multi_cursor_many_paste_with_less_selections_when_paste_content_is_not_the_same(self):
+        self.register('"', ['fi', 'bu', 'fi', 'bu', 'fi', 'bu', 'fi'])
+        self.eq('fizz |zz |zz |zz', 'P', 'fizz f|izz b|uzz f|izz')
+
+    def test_n_multi_cursor_many_paste_with_more_selections_when_paste_content_is_not_the_same_is_noop(self):
+        self.register('"', ['fi', 'bu', 'fi'])
+        self.eq('fizz |zz |zz |zz |zz |zz |zz', 'P', 'fizz |zz |zz |zz |zz |zz |zz')
+
     def test_v(self):
         self.register('"abc')
         self.eq('x|456|y', 'v_P', 'n_xab|cy')

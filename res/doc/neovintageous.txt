@@ -59,7 +59,7 @@ NeoVintageous: Toggle SUPER keys    Turn SUPER key bindings on and off.
 
 MULTIPLE CURSORS                                         *nv-multiple-cursors*
 
-normal mode / visual mode
+normal mode and visual mode
 
     start:      <C-n> or gh     Start multiple cursor.
         next:   <C-n> or j      Add next match.

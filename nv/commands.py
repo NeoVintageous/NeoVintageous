@@ -2275,12 +2275,12 @@ class nv_vi_paste(TextCommand):
 
         _log.debug('paste %s count=%s register=%s before=%s indent=%s end=%s linewise=%s content >>>%s<<<', mode, count, register, before_cursor, adjust_indent, adjust_cursor, linewise, contents)  # noqa: E501
 
-        sels = list(self.view.sel())
+        contents = _resolve_paste_items_with_view_sel(self.view, contents)
+        if not contents:
+            ui_bell()
+            return
 
-        # When the number of selections is more than one but not equal to the
-        # number of contents then the operation is a NOOP and a bell is rung.
-        if len(sels) > 1 and len(contents) != len(sels):
-            return ui_bell()
+        sels = list(self.view.sel())
 
         # Some paste operations need to reposition the cursor to a specific
         # point after the paste operation has been completed successfully.
@@ -2452,6 +2452,33 @@ class nv_vi_paste(TextCommand):
             resolve_to_specific_pt += 1
 
         return sels, contents, before_cursor, resolve_to_specific_pt
+
+
+def _resolve_paste_items_with_view_sel(view, contents: list) -> list:
+    sels_count = len(view.sel())
+    contents_len = len(contents)
+
+    if sels_count == contents_len:
+        return contents
+
+    if sels_count > 1:
+        # If the number of items in the paste register exceeds the number of
+        # selections then slice the paste items up to the number of sels.
+        if contents_len > sels_count:
+            return contents[:sels_count]
+
+        # If the paste items are all the same then fill the paste items up the
+        # number of selections.
+        if len(set(contents)) == 1:
+            for x in range(sels_count - contents_len):
+                contents.append(contents[0])
+
+            return contents[:sels_count]
+
+        # The cpaste contents is not compatible with the number of selections.
+        return []
+
+    return contents
 
 
 class nv_vi_ga(WindowCommand):

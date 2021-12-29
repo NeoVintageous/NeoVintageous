@@ -6,15 +6,17 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#786](https://github.com/NeoVintageous/NeoVintageous/issues/786): Paste is now more flexible for multi cursors
 * Added [#781](https://github.com/NeoVintageous/NeoVintageous/issues/781): New text objects `i,`, `i.`, `i;`, `i:`, `i+`, `i-`, `i=`, `i~`, `i_`, `i*`, `i#`, `i/`, `i|`, `i\`, `i&`, `i$` (port of https://github.com/wellle/targets.vim)
 * Added [#781](https://github.com/NeoVintageous/NeoVintageous/issues/781): New text objects `a,`, `a.`, `a;`, `a:`, `a+`, `a-`, `a=`, `a~`, `a_`, `a*`, `a#`, `a/`, `a|`, `a\`, `a&`, `a$` (port of https://github.com/wellle/targets.vim)
 
 ### Fixed
 
+* Fixed [#786](https://github.com/NeoVintageous/NeoVintageous/issues/786): Pasting with p or P does not work when multiple cursors are enabled
 * Fixed [#734](https://github.com/NeoVintageous/NeoVintageous/issues/734): Change In Tag deletes empty HTML tag instead of placing caret inside it
 * Fixed [#740](https://github.com/NeoVintageous/NeoVintageous/issues/740): Change inside parentheses not working as expected?
 * Fixed [#739](https://github.com/NeoVintageous/NeoVintageous/issues/739): Wrong behaviour for nested motions
-* Fixed [#744](https://github.com/NeoVintageous/NeoVintageous/issues/744): delete-surround not deleting the right pair
+* Fixed [#744](https://github.com/NeoVintageous/NeoVintageous/issues/744): Delete-surround not deleting the right pair
 * Fixed [#644](https://github.com/NeoVintageous/NeoVintageous/issues/644): Surround plugin deletes non-matching parentheses
 * Fixed [#745](https://github.com/NeoVintageous/NeoVintageous/issues/745): `ds` sometimes doesn't work when the cursor is on first target
 * Fixed [#791](https://github.com/NeoVintageous/NeoVintageous/issues/791): Reset mode setting is ignored when mode is already normal
