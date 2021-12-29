@@ -299,33 +299,35 @@ def _do_cs(view, edit, mode: str, target: str, replacement: str) -> None:
     elif len(replacement) != 1:
         return
 
+    # Expand target punctuation marks. Some punctuation marks and their aliases
+    # have different counterparts e.g. (), []. Some marks are their
+    # counterparts are the same e.g. ', ", `, -, _, etc.
+    target_open, target_close = _get_punctuation_marks(target)
+
+    # Expand target replacements.
+    replacement_open, replacement_close = _get_punctuation_mark_replacements(replacement)
+
     def _f(view, s):
         if mode == INTERNAL_NORMAL:
-            old = target
-            new = replacement
-            open_, close_ = _get_punctuation_marks(old)
-            new_open, new_close = _get_punctuation_mark_replacements(new)
-
-            if open_ == 't':
-                open_, close_ = ('<[^>\\/]+>', '<\\/[^>]+>')
-                next_ = view.find(close_, s.b)
-                if next_:
-                    prev_ = reverse_search(view, open_, end=next_.begin(), start=0)
-                else:
-                    prev_ = None
+            if target == 't':
+                target_tag_open, target_tag_close = ('<[^>\\/]+>', '<\\/[^>]+>')
+                region_begin = None
+                region_end = view.find(target_tag_close, s.b)
+                if region_end:
+                    region_begin = reverse_search(view, target_tag_open, end=region_end.begin(), start=0)
             else:
-                prev_, next_ = _get_regions_for_target(view, s, open_)
+                region_begin, region_end = _get_regions_for_target(view, s, target_open)
 
-            if not (next_ and prev_):
+            if not (region_end and region_begin):
                 return s
 
             # It's important that the regions are replaced in reverse because
             # otherwise the buffer size would be reduced by the number of
             # characters replaced and would result in an off-by-n bugs.
-            view.replace(edit, next_, new_close)
-            view.replace(edit, prev_, new_open)
+            view.replace(edit, region_end, replacement_close)
+            view.replace(edit, region_begin, replacement_open)
 
-            return Region(prev_.begin())
+            return Region(region_begin.begin())
 
         return s
 
