@@ -99,16 +99,9 @@ class TestSurround_cs(unittest.FunctionalTestCase):
         self.eq('x"ab"x"cd|"x"ef"', 'cs"\'', 'x"ab"x|\'cd\'x"ef"')
         self.eq('x"ab"x"cd"x|"ef"', 'cs"\'', 'x"ab"x"cd|\'x\'ef"')
 
-    @unittest.expectedFailure
     def test_should_work_in_all_cursor_positions_bug_01(self):
         self.eq('x|(abc)y', 'cs("', 'x|"abc"y')
-
-    @unittest.expectedFailure
-    def test_should_work_in_all_cursor_positions_bug_02(self):
         self.eq('x|(abc)y', 'cs)"', 'x|"abc"y')
-
-    @unittest.expectedFailure
-    def test_should_work_in_all_cursor_positions_bug_03(self):
         self.eq('x|(abc)y', 'csb"', 'x|"abc"y')
 
     def test_should_work_within_line_for_quote_marks(self):
@@ -119,9 +112,6 @@ class TestSurround_cs(unittest.FunctionalTestCase):
 
     def test_multiple_cursors(self):
         self.eq('x"a|c"\n"d|c"y', 'cs"]', 'x|[ac]\n|[dc]y')
-
-    def test_issue_305_multiple_selection_leaves_cursors_in_the_wrong_place(self):
-        self.eq("eats 'fi|sh'\neats 'fi|sh'\neats 'fi|sh'", "cs'(", "eats |( fish )\neats |( fish )\neats |( fish )")
 
     def test_tags(self):
         self.eq('|<li>ab</li>', 'cst"', '|"ab"')
@@ -151,3 +141,6 @@ class TestSurround_cs(unittest.FunctionalTestCase):
         self.normal('"x|xx"')
         self.feed('cs"\'')
         self.assertNormal("|'xxx'")
+
+    def test_issue_305_multiple_selection_leaves_cursors_in_the_wrong_place(self):
+        self.eq("eats 'fi|sh'\neats 'fi|sh'\neats 'fi|sh'", "cs'(", "eats |( fish )\neats |( fish )\neats |( fish )")

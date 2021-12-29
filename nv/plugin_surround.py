@@ -19,7 +19,6 @@
 
 import re
 
-from sublime import LITERAL
 from sublime import Region
 from sublime_plugin import TextCommand
 
@@ -289,7 +288,6 @@ def _trim_regions(view, start: Region, end: Region) -> tuple:
 
 
 def _do_cs(view, edit, mode: str, target: str, replacement: str) -> None:
-    # Targets are always one character.
     if len(target) != 1:
         return
 
@@ -316,28 +314,14 @@ def _do_cs(view, edit, mode: str, target: str, replacement: str) -> None:
                 else:
                     prev_ = None
             else:
-                if open_ == close_:
-                    line = view.line(s.b)
-                    prev_ = None
-                    next_ = view.find(close_, s.b, flags=LITERAL)
-                    if next_:
-                        if next_.a > line.b:
-                            next_ = None
-                        else:
-                            prev_ = reverse_search(view, open_, end=s.b, start=0, flags=LITERAL)
-                            if not prev_ or (prev_ and prev_.a < line.a):
-                                prev_ = next_
-                                next_ = view.find(close_, s.b + 1, flags=LITERAL)
-                else:
-                    next_ = view.find(close_, s.b, flags=LITERAL)
-                    if next_:
-                        prev_ = reverse_search(view, open_, end=s.b, start=0, flags=LITERAL)
-                    else:
-                        next_ = None
+                prev_, next_ = _get_regions_for_target(view, s, open_)
 
             if not (next_ and prev_):
                 return s
 
+            # It's important that the regions are replaced in reverse because
+            # otherwise the buffer size would be reduced by the number of
+            # characters replaced and would result in an off-by-n bugs.
             view.replace(edit, next_, new_close)
             view.replace(edit, prev_, new_open)
 
@@ -382,14 +366,8 @@ def _do_ds(view, edit, mode: str, target: str) -> None:
                 region_end = view.find('<\\/.*?>', s.b)
                 region_begin = reverse_search(view, '<.*?>', start=0, end=s.b)
             else:
-                text_object = get_text_object_region(view, s, target_open, inclusive=True, count=1)
-                if not text_object:
-                    return s
-
-                region_begin = Region(text_object.begin(), text_object.begin() + 1)
-                region_end = Region(text_object.end(), text_object.end() - 1)
-
-                if should_trim_contained_whitespace:
+                region_begin, region_end = _get_regions_for_target(view, s, target_open)
+                if should_trim_contained_whitespace and (region_begin and region_end):
                     region_begin, region_end = _trim_regions(view, region_begin, region_end)
 
             if not (region_begin and region_end):
@@ -407,6 +385,17 @@ def _do_ds(view, edit, mode: str, target: str) -> None:
 
     if target:
         _rsynced_regions_transformer(view, _f)
+
+
+def _get_regions_for_target(view, s: Region, target: str) -> tuple:
+    text_object = get_text_object_region(view, s, target, inclusive=True)
+    if not text_object:
+        return (None, None)
+
+    begin = Region(text_object.begin(), text_object.begin() + 1)
+    end = Region(text_object.end(), text_object.end() - 1)
+
+    return (begin, end)
 
 
 def _do_ys(view, edit, mode: str = None, motion=None, replacement: str = '"', count: int = 1) -> None:
