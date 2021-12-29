@@ -1406,7 +1406,7 @@ def do_ex_command(window, name: str, args=None) -> None:
 
 def _parse_user_cmdline(line):
     re_cmd = '[A-Z][a-zA-Z_]*'
-    re_arg_name = '[a-zA-Z_]+'
+    re_arg_name = '[a-zA-Z_][a-zA-Z0-9_]*'
     re_arg_value = '[a-zA-Z0-9\\:\\.,\n\t#@_-]+'
 
     match = re.match('^\\:(?P<cmd>' + re_cmd + ')(?P<args>(?:\\s' + re_arg_name + '=' + re_arg_value + ')+)?$', line)

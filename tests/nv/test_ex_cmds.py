@@ -682,3 +682,9 @@ class Test_parse_user_cmdline(unittest.TestCase):
         self.assert_parsed(':Name foo=', None)
         self.assert_parsed(':Name foo=<', None)
         self.assert_parsed(':Name$', None)
+
+    def test_allow_alnum_arg_names(self):
+        self.assert_parsed(':FizzBuzz a1=true test123=true', {
+            'cmd': 'fizz_buzz',
+            'args': {'a1': True, 'test123': True}
+        })
