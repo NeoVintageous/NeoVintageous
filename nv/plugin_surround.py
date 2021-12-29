@@ -220,33 +220,34 @@ _PUNCTUTION_MARK_ALIASES = {
 }
 
 
-def _resolve_punctuation_aliases(target: str) -> str:
-    return _PUNCTUTION_MARK_ALIASES.get(target, target)
-
-
-# Eight punctuation marks, (, ), {, }, [, ], <, and >, represent themselves and
-# their counterparts. The targets b, B, r, and a are aliases for ), }, ], and >
-# (the first two mirror Vim; the second two are completely arbitrary and subject
-# to change).
-def _get_punctuation_marks(target: str) -> tuple:
-    target = _resolve_punctuation_aliases(target)
+# Expand target punctuation marks. Eight punctuation marks, (, ), {, }, [, ], <,
+# and >, represent themselves and their counterparts. The targets b, B, r, and
+# a are aliases for ), }, ], and > (the first two mirror Vim; the second two
+# are completely arbitrary and subject to change). Some marks and their
+# counterparts are the same for example quote marks: ', ", `.
+def _expand_targets(target: str) -> tuple:
+    target = _resolve_target_aliases(target)
 
     return _PUNCTUATION_MARKS.get(target, (target, target))
+
+
+def _resolve_target_aliases(target: str) -> str:
+    return _PUNCTUTION_MARK_ALIASES.get(target, target)
 
 
 # If either ), }, ], or > is used, the text is wrapped in the appropriate pair
 # of characters. Similar behavior can be found with (, {, and [ (but not <),
 # which append an additional space to the inside. Like with the targets above,
 # b, B, r, and a are aliases for ), }, ], and >.
-def _get_punctuation_mark_replacements(target: str) -> tuple:
+def _expand_replacements(target: str) -> tuple:
     if target[0] in ('t', '<') and len(target) >= 3:
         # Attributes are stripped in the closing tag. The first character if
         # "t", which is an alias for "<", is replaced too.
         return ('<' + target[1:], '</' + target[1:].strip()[:-1].strip().split(' ', 1)[0] + '>')
 
-    target = _resolve_punctuation_aliases(target)
+    target = _resolve_target_aliases(target)
     append_addition_space = True if target in '({[' else False
-    begin, end = _get_punctuation_marks(target)
+    begin, end = _expand_targets(target)
     if append_addition_space:
         begin = begin + ' '
         end = ' ' + end
@@ -267,45 +268,22 @@ def _rsynced_regions_transformer(view, f) -> None:
         view_sel.add(new_sel)
 
 
-def _view_rfind(view, sub: str, start: int, end: int, flags: int = 0):
-    match = reverse_search(view, sub, start, end, flags)
-    if match is None or match.b == -1:
-        return None
-
-    return match
-
-
-def _trim_regions(view, start: Region, end: Region) -> tuple:
-    start_ws = view_find(view, '\\s*.', start_pt=start.end())
-    if start_ws and start_ws.size() > 1:
-        start = Region(start.begin(), start_ws.end() - 1)
-
-    end_ws = _view_rfind(view, '.\\s*', start=start.end(), end=end.begin())
-    if end_ws and end_ws.size() > 1:
-        end = Region(end_ws.begin() + 1, end.end())
-
-    return (start, end)
-
-
 def _do_cs(view, edit, mode: str, target: str, replacement: str) -> None:
     if len(target) != 1:
         return
 
-    # Replacements must be one character long, except for tags which must be at
-    # least three character long.
+    # Replacements must be 1 character long or at least 3 characters for tags.
     if len(replacement) >= 3:
         if replacement[0] not in ('t', '<') or not replacement.endswith('>'):
             return
     elif len(replacement) != 1:
         return
 
-    # Expand target punctuation marks. Some punctuation marks and their aliases
-    # have different counterparts e.g. (), []. Some marks are their
-    # counterparts are the same e.g. ', ", `, -, _, etc.
-    target_open, target_close = _get_punctuation_marks(target)
+    # Targets.
+    target_open, target_close = _expand_targets(target)
 
-    # Expand target replacements.
-    replacement_open, replacement_close = _get_punctuation_mark_replacements(replacement)
+    # Replacements
+    replacement_open, replacement_close = _expand_replacements(replacement)
 
     def _f(view, s):
         if mode == INTERNAL_NORMAL:
@@ -354,10 +332,8 @@ def _do_ds(view, edit, mode: str, target: str) -> None:
     # Trim contained whitespace for opening punctuation mark targets.
     should_trim_contained_whitespace = True if target in '({[<' else False
 
-    # Expand target punctuation marks. Some punctuation marks and their aliases
-    # have different counterparts e.g. (), []. Some marks are their
-    # counterparts are the same e.g. ', ", `, -, _, etc.
-    target_open, target_close = _get_punctuation_marks(target)
+    # Targets.
+    target_open, target_close = _expand_targets(target)
 
     def _f(view, s):
         if mode == INTERNAL_NORMAL:
@@ -400,9 +376,29 @@ def _get_regions_for_target(view, s: Region, target: str) -> tuple:
     return (begin, end)
 
 
+def _view_rfind(view, sub: str, start: int, end: int, flags: int = 0):
+    match = reverse_search(view, sub, start, end, flags)
+    if match is None or match.b == -1:
+        return None
+
+    return match
+
+
+def _trim_regions(view, start: Region, end: Region) -> tuple:
+    start_ws = view_find(view, '\\s*.', start_pt=start.end())
+    if start_ws and start_ws.size() > 1:
+        start = Region(start.begin(), start_ws.end() - 1)
+
+    end_ws = _view_rfind(view, '.\\s*', start=start.end(), end=end.begin())
+    if end_ws and end_ws.size() > 1:
+        end = Region(end_ws.begin() + 1, end.end())
+
+    return (start, end)
+
+
 def _do_ys(view, edit, mode: str = None, motion=None, replacement: str = '"', count: int = 1) -> None:
     def _surround(view, edit, s, replacement: str) -> None:
-        replacement_open, replacement_close = _get_punctuation_mark_replacements(replacement)
+        replacement_open, replacement_close = _expand_replacements(replacement)
         if replacement_open.startswith('<'):
             view.insert(edit, s.b, replacement_close)
             view.insert(edit, s.a, replacement_open)
