@@ -1404,10 +1404,9 @@ def do_ex_command(window, name: str, args=None) -> None:
     ex_cmd(window=window, line_range=RangeNode(), **args)
 
 
-def _parse_user_cmdline(line):
+def _parse_user_cmdline(line: str):
     commands = []
-    lines = re.split('\\<bar\\>', line, flags=re.IGNORECASE)
-    for line in lines:
+    for line in _split_cmdline_lines(line):
         command = _parse_user_cmdline_split(line)
         if command:
             commands.append(command)
@@ -1415,7 +1414,11 @@ def _parse_user_cmdline(line):
     return commands
 
 
-def _parse_user_cmdline_split(line):
+def _split_cmdline_lines(line: str) -> list:
+    return re.split('\\<bar\\>', line, flags=re.IGNORECASE)
+
+
+def _parse_user_cmdline_split(line: str):
     re_cmd = '[A-Z][a-zA-Z_]*'
     re_arg_name = '[a-zA-Z_][a-zA-Z0-9_]*'
     re_arg_value = '[a-zA-Z0-9\\:\\.,\n\t#@_-]+'
@@ -1489,7 +1492,6 @@ def do_ex_cmdline(window, line: str) -> None:
     # Is roughly equivalant to:
     #
     # >>> sublime.active_window().run('command_name', {'str': 'fizz', 'bool': True, 'int': 42})
-
     _log.debug('do ex cmdline >>>%s<<<', line)
 
     if len(line) < 2:
@@ -1564,7 +1566,9 @@ def do_ex_user_cmdline(window, line: str) -> None:
     _log.debug('do ex user cmdline >>>%s<<<', line)
 
     if line.lower().endswith('<cr>'):
-        do_ex_cmdline(window, line[:-4])
+        # Strips carriage return
+        for line in _split_cmdline_lines(line[:-4]):
+            do_ex_cmdline(window, line)
     else:
         if ':' == line:
             return window.run_command('nv_cmdline')
