@@ -597,7 +597,18 @@ class Test_do_ex_user_cmdline(unittest.ViewTestCase):
 class Test_parse_user_cmdline(unittest.TestCase):
 
     def assert_parsed(self, line, expected):
-        self.assertEqual(_parse_user_cmdline(line), expected)
+        parsed = _parse_user_cmdline(line)
+
+        # TODO cleanup tests; The _parse_user_cmdline now returns a list of
+        # commands and an empty list to represent none, previously this
+        # function returned none or a dict.
+        if parsed is not None:
+            if len(parsed) == 1:
+                parsed = parsed[0]
+            elif len(parsed) == 0:
+                parsed = None
+
+        self.assertEqual(parsed, expected)
 
     def test_command_is_underscored(self):
         self.assert_parsed(':Fizz', {'cmd': 'fizz', 'args': None})
@@ -688,3 +699,19 @@ class Test_parse_user_cmdline(unittest.TestCase):
             'cmd': 'fizz_buzz',
             'args': {'a1': True, 'test123': True}
         })
+
+    def test_multi_commands(self):
+        self.assert_parsed(':Fizz<bar>:Buzz', [
+            {'cmd': 'fizz', 'args': None},
+            {'cmd': 'buzz', 'args': None},
+        ])
+        self.assert_parsed(':Fizz a=true b=3<bar>:Buzz c=val', [
+            {'cmd': 'fizz', 'args': {'a': True, 'b': 3}},
+            {'cmd': 'buzz', 'args': {'c': 'val'}},
+        ])
+
+    def test_multi_command_case_insensitive_bar_char(self):
+        self.assert_parsed(':Fizz<BAR>:Buzz', [
+            {'cmd': 'fizz', 'args': None},
+            {'cmd': 'buzz', 'args': None},
+        ])

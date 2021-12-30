@@ -1405,6 +1405,17 @@ def do_ex_command(window, name: str, args=None) -> None:
 
 
 def _parse_user_cmdline(line):
+    commands = []
+    lines = re.split('\\<bar\\>', line, flags=re.IGNORECASE)
+    for line in lines:
+        command = _parse_user_cmdline_split(line)
+        if command:
+            commands.append(command)
+
+    return commands
+
+
+def _parse_user_cmdline_split(line):
     re_cmd = '[A-Z][a-zA-Z_]*'
     re_arg_name = '[a-zA-Z_][a-zA-Z0-9_]*'
     re_arg_value = '[a-zA-Z0-9\\:\\.,\n\t#@_-]+'
@@ -1489,13 +1500,16 @@ def do_ex_cmdline(window, line: str) -> None:
 
     if line[1].isupper():
         # Run user command. User commands begin with an uppercase letter.
-        user_command = _parse_user_cmdline(line)
-        if not user_command:
+        user_commands = _parse_user_cmdline(line)
+        if not user_commands:
             return status_message('invalid command')
 
-        _log.debug('execute user ex command: %s', user_command)
+        _log.debug('execute user ex command: %s', user_commands)
 
-        return window.run_command(user_command['cmd'], user_command['args'])
+        for command in user_commands:
+            window.run_command(command['cmd'], command['args'])
+
+        return
 
     try:
         cmdline = parse_command_line(line[1:])

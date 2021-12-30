@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#759](https://github.com/NeoVintageous/NeoVintageous/issues/759): Support for mapping multiple user commands
 * Added [#786](https://github.com/NeoVintageous/NeoVintageous/issues/786): Paste is now more flexible for multi cursors
 * Added [#781](https://github.com/NeoVintageous/NeoVintageous/issues/781): New text objects `i,`, `i.`, `i;`, `i:`, `i+`, `i-`, `i=`, `i~`, `i_`, `i*`, `i#`, `i/`, `i|`, `i\`, `i&`, `i$` (port of https://github.com/wellle/targets.vim)
 * Added [#781](https://github.com/NeoVintageous/NeoVintageous/issues/781): New text objects `a,`, `a.`, `a;`, `a:`, `a+`, `a-`, `a=`, `a~`, `a_`, `a*`, `a#`, `a/`, `a|`, `a\`, `a&`, `a$` (port of https://github.com/wellle/targets.vim)

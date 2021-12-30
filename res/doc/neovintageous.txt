@@ -148,6 +148,11 @@ Text and basic arguments in the form "key=value" are accepted, for example: >
     nnoremap <leader>i :GotoSymbolInProject<CR>
     nnoremap <leader>f :ShowOverlay overlay=goto text=@<CR>
 
+Support for chaining user commands is supported. The special <Bar> character
+can be used to separate commands from the next command: >
+
+    nnoremap <leader>m :Command1<Bar>:Command2<CR>
+
 Super-keys can be mapped by the `<D-...>` special keys (super-keys are
 disabled by default, see|nv-settings|for details on enabling them): >
 
