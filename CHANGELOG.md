@@ -6,8 +6,6 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
-https://github.com/NeoVintageous/NeoVintageous/issues/615
-
 * Added [#615](https://github.com/NeoVintageous/NeoVintageous/issues/615): Support for chaining ex commands with `<Bar>` (vertical bar)
 * Added [#759](https://github.com/NeoVintageous/NeoVintageous/issues/759): Support for mapping multiple ex commands
 * Added [#786](https://github.com/NeoVintageous/NeoVintageous/issues/786): Paste is now more flexible for multi cursors
