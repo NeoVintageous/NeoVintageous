@@ -14,6 +14,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#806](https://github.com/NeoVintageous/NeoVintageous/issues/806): Quote-Quote and Quote-Backtick commands don't work
 * Fixed [#786](https://github.com/NeoVintageous/NeoVintageous/issues/786): Pasting with p or P does not work when multiple cursors are enabled
 * Fixed [#734](https://github.com/NeoVintageous/NeoVintageous/issues/734): Change In Tag deletes empty HTML tag instead of placing caret inside it
 * Fixed [#740](https://github.com/NeoVintageous/NeoVintageous/issues/740): Change inside parentheses not working as expected?

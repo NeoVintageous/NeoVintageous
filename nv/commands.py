@@ -27,6 +27,7 @@ from sublime import ENCODED_POSITION
 from sublime import LITERAL
 from sublime import MONOSPACE_FONT
 from sublime import Region
+from sublime import version
 from sublime_plugin import TextCommand
 from sublime_plugin import WindowCommand
 
@@ -1834,6 +1835,10 @@ class nv_vi_m(TextCommand):
 class nv_vi_quote(TextCommand):
 
     def run(self, edit, mode=None, count=1, character=None):
+        if int(version()) >= 4082 and character == "'":
+            self.view.run_command('jump_back')
+            return
+
         def f(view, s):
             if mode == VISUAL:
                 resolve_visual_target(s, next_non_blank(view, view.line(target.b).a))
@@ -1869,6 +1874,10 @@ class nv_vi_quote(TextCommand):
 class nv_vi_backtick(TextCommand):
 
     def run(self, edit, mode=None, count=1, character=None):
+        if int(version()) >= 4082 and character == '`':
+            self.view.run_command('jump_back')
+            return
+
         def f(view, s):
             if mode == VISUAL:
                 resolve_visual_target(s, target.b)
