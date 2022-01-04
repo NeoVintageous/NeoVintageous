@@ -1,31 +1,28 @@
 ![NeoVintageous Logo](res/neovintageous.png)
 
-An advanced Vim emulation layer for Sublime Text.
+<p align="center">
+    <a href="https://github.com/NeoVintageous/NeoVintageous/actions/workflows/ci.yml"><img alt="Continuous Integration" src="https://github.com/NeoVintageous/NeoVintageous/actions/workflows/ci.yml/badge.svg?branch=master"></a>
+    <a href="https://ci.appveyor.com/project/gerardroche/neovintageous"><img alt="Build status" src="https://ci.appveyor.com/api/projects/status/g4pkv4ws1k2r1xna?svg=true"></a>
+    <a href="https://coveralls.io/github/NeoVintageous/NeoVintageous?branch=master"><img alt="Coveralls" src="https://img.shields.io/coveralls/NeoVintageous/NeoVintageous/master.svg?style=flat-square&amp;label=coveralls"></a>
+    <a href="https://codecov.io/gh/NeoVintageous/NeoVintageous/branch/master"><img alt="Codecov" src="https://img.shields.io/codecov/c/github/NeoVintageous/NeoVintageous/master?style=flat-square&amp;label=codecov"></a>
+    <a href="https://packagecontrol.io/packages/NeoVintageous"><img alt="Downloads" src="https://img.shields.io/packagecontrol/dt/NeoVintageous.svg?style=flat-square"></a>
+</p>
 
-[![Continuous Integration](https://github.com/NeoVintageous/NeoVintageous/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/NeoVintageous/NeoVintageous/actions/workflows/ci.yml) [![AppVeyor Build status](https://img.shields.io/appveyor/ci/gerardroche/neovintageous/master.svg?style=flat-square&label=appveyor)](https://ci.appveyor.com/project/gerardroche/neovintageous/branch/master) [![Coveralls Coverage Status](https://img.shields.io/coveralls/NeoVintageous/NeoVintageous/master.svg?style=flat-square&label=coveralls)](https://coveralls.io/github/NeoVintageous/NeoVintageous?branch=master) [![Codecov Coverage Status](https://img.shields.io/codecov/c/github/NeoVintageous/NeoVintageous/master?style=flat-square&label=codecov)](https://codecov.io/gh/NeoVintageous/NeoVintageous/branch/master)
+## About NeoVintageous
 
-[![Latest Version](https://img.shields.io/github/tag/NeoVintageous/NeoVintageous.svg?style=flat-square&label=version)](https://github.com/NeoVintageous/NeoVintageous/tags) [![GitHub stars](https://img.shields.io/github/stars/NeoVintageous/NeoVintageous.svg?style=flat-square)](https://github.com/NeoVintageous/NeoVintageous/stargazers) [![Minimum Sublime Version](https://img.shields.io/badge/sublime-%3E%3D%203.0-brightgreen.svg?style=flat-square)](https://sublimetext.com) [![Downloads](https://img.shields.io/packagecontrol/dt/NeoVintageous.svg?style=flat-square)](https://packagecontrol.io/packages/NeoVintageous)
+NeoVintageous is an advanced Vim emulation layer for Sublime Text.
 
-NeoVintageous is a project that seeks to continue the development of the discontinued Vintageous plugin.
-
-* Open source
 * Highly configurable
 * Strong defaults
+* Plugins out-of-the-box: **Abolish**, **Commentary**, **Highlighted Yank**, **Indent Object**, **Surround**, **Targets**, **Unimpaired**,
+* Integrations out-of-the-box: [GitGutter](https://github.com/jisaacks/GitGutter), [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter3) and [Origami](https://github.com/SublimeText/Origami)
 * Drop-in replacement for Vintageous
-* Integrates with [GitGutter](https://github.com/jisaacks/GitGutter), [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter3) and [Origami](https://github.com/SublimeText/Origami)
-* Plugins out-of-the-box: Abolish, Commentary, Highlighted Yank, Indent Object Surround, Targets, and Unimpaired
 
 ## Installation
 
 ### Package Control installation
 
 The preferred method of installation is [Package Control](https://packagecontrol.io/packages/NeoVintageous).
-
-To keep up to date with the latest beta releases add "NeoVintageous" to your Package Control settings, see [Package Control settings documentation](https://packagecontrol.io/docs/settings) for more information, for example:
-
-```json
-"install_prereleases": ["NeoVintageous"]
-```
 
 ### Manual installation
 
@@ -39,15 +36,13 @@ Windows | `git clone https://github.com/NeoVintageous/NeoVintageous.git %APPDATA
 
 ## Documentation
 
-**NeoVintageous** is an emulation of Vim, feature-parity is an ongoing effort, some features are not implemented or implemented fully, and differences are not fully documented. See [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) to learn about some of the differences.
+NeoVintageous is an emulation of Vim, feature-parity is an ongoing effort, some features are not implemented or implemented fully, and differences are not fully documented. See `:help nv` to learn about some of the differences.
 
-Vim's full documentation system is accessible via the `:help {subject}` command, and is an extensive cross-referenced and hyperlinked reference. It's kept up-to-date with the software and can answer almost any question about Vim's functionality. An up-to-date version of Vim help, with hyperlinks, can be found on [appspot](https://vimhelp.appspot.com).
+Vim's full documentation system is accessible via the `:help {subject}` command, and is an extensive cross-referenced and hyperlinked reference. It's kept up-to-date with the software and can answer almost any question about Vim's functionality. An up-to-date version of Vim help, with hyperlinks, can be found on [vimhelp.org](https://vimhelp.org).
 
 ## Plugins
 
-A number of popular vim plugins have been ported and are available out-of-the-box.
-
-Vim plugin feature-parity is an ongoing effort, some features are not implemented or implemented fully, and differences may not be fully documented. Please open issues to request missing features.
+A number of popular Vim plugins have been ported and are available out-of-the-box. Feature-parity is an ongoing effort and functional differences from Vim are not always documented. Please open issues to request missing features.
 
 Plugin | Documentation | Original Vim Plugin
 ------ | ------------- | -------------------
