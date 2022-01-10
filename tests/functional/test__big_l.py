@@ -32,6 +32,11 @@ class Test_L(unittest.FunctionalTestCase):
         self.eq('1\n2\n|3', 'n_L', '1\n2\n|3')
         self.eq('|1\n2\n    3', 'n_L', '1\n2\n    |3')
 
+    @unittest.mock_ui()
+    def test_n_with_scrolloff(self):
+        self.set_option('scrolloff', 2)
+        self.eq('1\n2\n3\n4\n|5\n6\n7\n8\n', 'n_L', '1\n2\n3\n4\n5\n|6\n7\n8\n')
+
     @unittest.mock_ui(visible_region=(0, 5))
     def test_n_L_should_be_within_visible_region(self):
         self.eq('|1\n2\n3\n4', 'n_L', '1\n2\n|3\n4')

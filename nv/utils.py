@@ -506,7 +506,9 @@ def highlow_visible_rows(view) -> tuple:
     if lowest_position > (view_position[1] + viewport_extent[1]):
         lowest_visible_row -= 1
 
-    return (highest_visible_row, lowest_visible_row)
+    context_lines = get_option(view, 'scrolloff')
+
+    return (highest_visible_row + context_lines, lowest_visible_row - context_lines)
 
 
 def highest_visible_pt(view) -> int:
