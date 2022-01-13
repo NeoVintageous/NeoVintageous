@@ -778,6 +778,11 @@ def _fix_malformed_selection(view, mode: str) -> str:
     if mode == NORMAL and len(view.sel()) > 1:
         mode = VISUAL
         set_mode(view, mode)
+    elif mode != VISUAL and view.has_non_empty_selection_region():
+        # Try to fixup a malformed visual state. For example, apparently this
+        # can happen when a search is performed via a search panel and "Find
+        # All" is pressed. In that case, multiple selections may need fixing.
+        view.window().run_command('nv_enter_visual_mode', {'mode': mode})
 
     # TODO Extract fix malformed selections specific logic from init_state()
     init_state(view)
