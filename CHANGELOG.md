@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.26.1 - Unreleased
+## 1.26.1 - 2021-02-21
 
 * Fixed [#807](https://github.com/NeoVintageous/NeoVintageous/issues/807): Delete register no longer working on selection made by other plugins
 
