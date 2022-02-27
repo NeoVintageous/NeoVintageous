@@ -208,7 +208,7 @@ class ViewTestCase(unittest.TestCase):
 
     def set_wrap_width(self, width: int) -> None:
         # Wrap width is different (off-by-one) in Sublime Text 4.
-        if int(_version()) >= 4000:
+        if int(_version()) >= 4000 and int(_version()) < 4129:
             width -= 1
 
         self.settings().set('wrap_width', width)
