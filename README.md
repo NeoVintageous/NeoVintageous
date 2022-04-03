@@ -19,13 +19,12 @@ NeoVintageous is an advanced Vim emulation layer for Sublime Text.
     * Commentary
     * Highlighted Yank
     * Indent Object
+    * Multiple cursors
     * Surround
+    * Sneak (disabled by default)
     * Targets
     * Unimpaired
-* Integrations
-    * [GitGutter](https://github.com/jisaacks/GitGutter)
-    * [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter3)
-    * [Origami](https://github.com/SublimeText/Origami)
+* Integrations: [GitGutter](https://github.com/jisaacks/GitGutter), [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter3), [Origami](https://github.com/SublimeText/Origami)
 * Drop-in replacement for Vintageous
 
 ## Installation
@@ -38,11 +37,17 @@ The preferred method of installation is [Package Control](https://packagecontrol
 
 Close Sublime Text, then download or clone this repository to a directory named **NeoVintageous** in the Sublime Text Packages directory for your platform:
 
-OS | Command
--- | -----
-Linux | `git clone https://github.com/NeoVintageous/NeoVintageous.git ~/.config/sublime-text-3/Packages/NeoVintageous`
-OSX | `git clone https://github.com/NeoVintageous/NeoVintageous.git ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/NeoVintageous`
-Windows | `git clone https://github.com/NeoVintageous/NeoVintageous.git %APPDATA%\Sublime/ Text/ 3/Packages/NeoVintageous`
+**Linux**
+
+`git clone https://github.com/NeoVintageous/NeoVintageous.git ~/.config/sublime-text-3/Packages/NeoVintageous`
+
+**OSX**
+
+`git clone https://github.com/NeoVintageous/NeoVintageous.git ~/Library/Application\ Support/Sublime\ Text\ 3/Packages/NeoVintageous`
+
+**Windows**
+
+`git clone https://github.com/NeoVintageous/NeoVintageous.git %APPDATA%\Sublime/ Text/ 3/Packages/NeoVintageous`
 
 ## Documentation
 
