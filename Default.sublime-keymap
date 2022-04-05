@@ -31,6 +31,7 @@
     // Escape mappings.
     { "keys": ["j", "j"], "command": "nv_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_i_escape_jj"}]},
     { "keys": ["j", "k"], "command": "nv_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_i_escape_jk"}]},
+    { "keys": ["k", "j"], "command": "nv_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_i_escape_kj"}]},
 
     // Command-line output.
     {"keys": ["enter"], "command": "show_panel", "args": {"panel": "output.Command-line", "toggle": true}, "context": [{"key": "setting.nv_cmdline_output"}]},

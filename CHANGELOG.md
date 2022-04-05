@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.26.2 - Unreleased
+
+* Fixed [#815](https://github.com/NeoVintageous/NeoVintageous/issues/815): Add `vintageous_i_escape_kj` setting for common escape mapping
+
 ## 1.26.1 - 2022-02-21
 
 * Fixed [#807](https://github.com/NeoVintageous/NeoVintageous/issues/807): Delete register no longer working on selection made by other plugins
