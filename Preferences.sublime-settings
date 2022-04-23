@@ -116,6 +116,9 @@
     // When quitting the last window exit ST.
     "vintageous_exit_when_quiting_last_window": true,
 
+    // When quitting the last window exit ST.
+    "vintageous_exit_app_when_quiting_last_window": true,
+
     // Delegate configured keys to be handled by Sublime Text.
     //
     // For example to use native Sublime Text behaviour for ctrl+f:

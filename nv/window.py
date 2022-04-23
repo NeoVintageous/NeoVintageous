@@ -22,6 +22,8 @@ from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.utils import set_selection
 from NeoVintageous.nv.vim import status_message
 
+import sublime
+
 
 _LAYOUT_SINGLE_CELL = {
     'cells': [[0, 0, 1, 1]],
@@ -244,9 +246,12 @@ def window_quit_view(window, **kwargs) -> None:
     # Need to get the setting before quiting the the view because if closing the
     # last view there may not be a view to get the setting from.
     exit_when_quiting_last_window = get_setting(window.active_view(), 'exit_when_quiting_last_window')
+    exit_app_when_quitting_last_window = get_setting(window.active_view(), 'exit_app_when_quiting_last_window')
 
     _close_view(window, **kwargs)
 
+    if len(sublime.windows()) == 1 and exit_app_when_quitting_last_window:
+        sublime.run_command('exit')
     if len(window.views()) == 0 and exit_when_quiting_last_window:
         window.run_command('close')
 
