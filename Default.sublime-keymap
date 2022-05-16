@@ -173,6 +173,7 @@
     {"keys": ["Ç"],         "command": "nv_feed_key", "args": {"key": "Ç"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["Ñ"],         "command": "nv_feed_key", "args": {"key": "Ñ"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["Ö"],         "command": "nv_feed_key", "args": {"key": "Ö"},        "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["Ü"],         "command": "nv_feed_key", "args": {"key": "Ü"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["ß"],         "command": "nv_feed_key", "args": {"key": "ß"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["ä"],         "command": "nv_feed_key", "args": {"key": "ä"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["ç"],         "command": "nv_feed_key", "args": {"key": "ç"},        "context": [{"key": "vi_command_mode_aware"}]},
