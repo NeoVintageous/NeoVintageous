@@ -17,6 +17,7 @@
 
 from sublime import CLASS_WORD_END
 from sublime import CLASS_WORD_START
+from sublime import platform
 
 from NeoVintageous.nv.utils import is_help_view
 from NeoVintageous.tests import unittest
@@ -57,6 +58,7 @@ class Test_ex_help(unittest.FunctionalTestCase):
         self.feed(':help foobar')
         self.assertStatusMessage('E149: Sorry, no help for foobar')
 
+    @unittest.skipIf(platform() == 'windows', 'Test does not work on Windows')
     def test_help(self):
         self.normal('fi|zz')
         self.feed(':help')
