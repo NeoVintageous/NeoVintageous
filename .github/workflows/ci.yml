@@ -2,100 +2,30 @@ name: Continuous Integration
 
 on: [push, pull_request]
 
-env:
-  PACKAGE: NeoVintageous
-
 jobs:
-  linux:
-    name: Linux ST${{ matrix.version }}
-    runs-on: ubuntu-latest
+  tests:
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
-        version: [3, 4]
-    container:
-      image: sublimetext/unittesting
-      options: --cap-add=NET_ADMIN
-    env:
-      SUBLIME_TEXT_VERSION: ${{ matrix.version }}
-      NO_AT_BRIDGE: 1
-      COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+        st-version: [3, 4]
+        os: ["ubuntu-latest", "macOS-latest", "windows-latest"]
+    runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v1
-      - run: export DISPLAY=":99.0"
-      - run: sh -e /etc/init.d/xvfb start
-      - run: curl -OL https://raw.githubusercontent.com/SublimeText/UnitTesting/master/sbin/github.sh
-      - name: Install dependencies
-        if: ${{ matrix.version == 4 }}
-        run: |
-          apt-get update
-          apt-get install python3-pip -y
-          pip3 install flake8
-          pip3 install flake8-docstrings
-          pip3 install pydocstyle
-          pip3 install coverage==4.5.4
-          pip3 install codecov
-          pip3 install python-coveralls
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup
+        uses: SublimeText/UnitTesting/actions/setup@v1
+        with:
+          sublime-text-version: ${{ matrix.st-version }}
+      - name: Tests
+        uses: SublimeText/UnitTesting/actions/run-tests@v1
+        with:
+          coverage: ${{ matrix.os == 'ubuntu-latest' && matrix.st-version == 3 }}
+          codecov-upload: ${{ matrix.os == 'ubuntu-latest' && matrix.st-version == 3 }}
+      - name: Syntax Tests
+        uses: SublimeText/UnitTesting/actions/run-syntax-tests@v1
       - name: Coding guidelines check
-        if: ${{ matrix.version == 4 }}
+        if: ${{ matrix.os == 'ubuntu-latest' && matrix.st-version == 4 }}
         run: |
+          pip3 install flake8 flake8-docstrings pydocstyle
           flake8 -v
-      - name: Test
-        run: |
-          PATH="$HOME/.local/bin:$PATH"
-          sh github.sh bootstrap
-          if ${{ matrix.version == 4 }}; then
-            sh github.sh run_tests --coverage
-          else
-            sh github.sh run_tests
-          fi
-          sh github.sh run_syntax_compatibility
-          sh github.sh run_syntax_tests
-      - name: Code coverage report - coveralls`
-        if: ${{ matrix.version == 4 && env.COVERALLS_REPO_TOKEN }}
-        env:
-          COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}
-        run: |
-          coveralls
-      - name: Code coverage report - codecov
-        if: ${{ matrix.version == 4 }}
-        run: |
-          codecov
-
-  macos:
-    name: MacOS ST${{ matrix.version }}
-    runs-on: macos-latest
-    strategy:
-      fail-fast: true
-      matrix:
-        version: [3]
-    env:
-      SUBLIME_TEXT_VERSION: ${{ matrix.version }}
-    steps:
-      - uses: actions/checkout@v1
-      - run: curl -OL https://raw.githubusercontent.com/SublimeText/UnitTesting/master/sbin/github.sh
-      - name: Test
-        run: |
-          export PATH="$HOME/.local/bin:$PATH"
-          sh github.sh bootstrap
-          sh github.sh run_tests
-          sh github.sh run_syntax_compatibility
-          sh github.sh run_syntax_tests
-
-  # windows:
-  #   runs-on: windows-latest
-  #   strategy:
-  #     fail-fast: true
-  #     matrix:
-  #       version: [3]
-  #   env:
-  #     SUBLIME_TEXT_VERSION: ${{ matrix.version }}
-  #   steps:
-  #     - uses: actions/checkout@v1
-  #     - run: (new-object net.webclient).DownloadFile("https://raw.githubusercontent.com/SublimeText/UnitTesting/master/sbin/github.ps1","github.ps1")
-  #     - name: Test
-  #       run: |
-  #         ./github.ps1 "bootstrap" -verbose
-  #         ./github.ps1 "run_tests" -verbose
-  #         ./github.ps1 "run_syntax_compatibility"
-  #         ./github.ps1 "run_syntax_tests"
