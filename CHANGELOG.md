@@ -2,9 +2,13 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.26.2 - 2022-05-16
+## 1.26.3 - 2022-06-20
 
 * Fixed [#827](https://github.com/NeoVintageous/NeoVintageous/issues/827): `Y` should work the same as `y` in visual line mode
+* Fixed [#821](https://github.com/NeoVintageous/NeoVintageous/issues/821): Add German `Ü`, `§`, and `°` keys
+
+## 1.26.2 - 2022-05-16
+
 * Fixed [#821](https://github.com/NeoVintageous/NeoVintageous/issues/821): Add German `ü` and `ß` keys
 * Fixed [#815](https://github.com/NeoVintageous/NeoVintageous/issues/815): Add `vintageous_i_escape_kj` setting for common escape mapping
 
