@@ -1677,7 +1677,7 @@ class nv_vi_yy(TextCommand):
                     s.b = min(view.size(), s.b + 1)
                 else:
                     s = view.full_line(s.b)
-            elif mode == VISUAL:
+            elif mode in (VISUAL, VISUAL_LINE):
                 startline = view.line(s.begin())
                 endline = view.line(s.end() - 1)
                 s.a = startline.a
@@ -1685,7 +1685,7 @@ class nv_vi_yy(TextCommand):
 
             return s
 
-        if mode not in (INTERNAL_NORMAL, VISUAL):
+        if mode not in (INTERNAL_NORMAL, VISUAL, VISUAL_LINE):
             enter_normal_mode(self.view, mode)
             ui_bell()
             return
