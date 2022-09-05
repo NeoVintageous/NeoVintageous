@@ -1004,7 +1004,7 @@ def find_next_item_match_pt(view, s: Region):
     else:
         target_pair = (targets[target_index - 1], targets[target_index])
 
-    accepted_selector = 'punctuation|text.plain'
+    accepted_selector = 'punctuation|text.plain|comment'
 
     if forward:
         counter = 0

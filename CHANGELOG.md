@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.27.0 - Unreleased
+
+* Fixed [#826](https://github.com/NeoVintageous/NeoVintageous/issues/826): Add jumps like `%` inside comments
+
 ## 1.26.3 - 2022-06-20
 
 * Fixed [#827](https://github.com/NeoVintageous/NeoVintageous/issues/827): `Y` should work the same as `y` in visual line mode
