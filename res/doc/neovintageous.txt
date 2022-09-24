@@ -877,6 +877,16 @@ command when holding it down, run this once at the terminal: >
 
 ------------------------------------------------------------------------------
 
+Key presses are laggy or slow                             *nv-keyboard-repeat*
+
+If key presses are slow or laggy first check the system configuration, for
+example on Ubuntu you can configure keyboard repeat interval and delay: >
+
+    gsettings set org.gnome.desktop.peripherals.keyboard repeat-interval 15
+    gsettings set org.gnome.desktop.peripherals.keyboard delay 180
+
+------------------------------------------------------------------------------
+
 Custom key bindings in insert mode                                 *nv-escape*
 
 If you need a custom insert mode key binding you can use the
