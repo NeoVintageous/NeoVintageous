@@ -17,7 +17,7 @@
 
 from NeoVintageous.tests import unittest
 
-from NeoVintageous.nv.commands import nv_feed_key
+from NeoVintageous.nv.feed_key import FeedKeyHandler
 from NeoVintageous.nv.settings import append_sequence
 from NeoVintageous.nv.settings import get_action_count
 from NeoVintageous.nv.settings import get_count
@@ -249,37 +249,36 @@ class TestStateSetCommand(unittest.ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        self.command = nv_feed_key(self.view.window())
-        self.command.view = self.view
+        self.handler = FeedKeyHandler(self.view, 'w', None, True, False)
 
     def test_raise_error_if_unknown_command_type(self):
         with self.assertRaisesRegex(ValueError, 'unexpected command type'):
-            self.command._handle_command('foobar', True)
+            self.handler._handle_command('foobar', True)
 
     def test_unexpected_type(self):
         class Foobar(ViCommandDefBase):
             pass
 
         with self.assertRaisesRegex(ValueError, 'unexpected command type'):
-            self.command._handle_command(Foobar(), True)
+            self.handler._handle_command(Foobar(), True)
 
     def test_raises_error_if_too_many_motions(self):
         set_motion(self.view, cmd_defs.ViMoveRightByChars())
         with self.assertRaisesRegex(ValueError, 'too many motions'):
-            self.command._handle_command(cmd_defs.ViMoveRightByChars(), True)
+            self.handler._handle_command(cmd_defs.ViMoveRightByChars(), True)
 
     def test_changes_mode_for_lone_motion(self):
         set_mode(self.view, unittest.OPERATOR_PENDING)
         motion = cmd_defs.ViMoveRightByChars()
-        self.command._handle_command(motion, True)
+        self.handler._handle_command(motion, True)
         self.assertEqual(get_mode(self.view), unittest.NORMAL)
 
     def test_raises_error_if_too_many_actions(self):
         set_motion(self.view, cmd_defs.ViDeleteLine())
         with self.assertRaisesRegex(ValueError, 'too many actions'):
-            self.command._handle_command(cmd_defs.ViDeleteLine(), True)
+            self.handler._handle_command(cmd_defs.ViDeleteLine(), True)
 
     def test_changes_mode_for_lone_action(self):
         operator = cmd_defs.ViDeleteByChars()
-        self.command._handle_command(operator, True)
+        self.handler._handle_command(operator, True)
         self.assertEqual(get_mode(self.view), unittest.OPERATOR_PENDING)

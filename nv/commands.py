@@ -39,7 +39,7 @@ from NeoVintageous.nv.ex.completions import reset_cmdline_completion_state
 from NeoVintageous.nv.ex_cmds import do_ex_cmd_edit_wrap
 from NeoVintageous.nv.ex_cmds import do_ex_cmdline
 from NeoVintageous.nv.ex_cmds import do_ex_command
-from NeoVintageous.nv.ex_cmds import do_ex_user_cmdline
+from NeoVintageous.nv.feed_key import FeedKeyHandler
 from NeoVintageous.nv.goto import goto_help
 from NeoVintageous.nv.goto import goto_line
 from NeoVintageous.nv.goto import goto_next_change
@@ -54,10 +54,6 @@ from NeoVintageous.nv.history import history_len
 from NeoVintageous.nv.history import history_update
 from NeoVintageous.nv.jumplist import jumplist_update
 from NeoVintageous.nv.macros import add_macro_step
-from NeoVintageous.nv.mappings import Mapping
-from NeoVintageous.nv.mappings import mappings_can_resolve
-from NeoVintageous.nv.mappings import mappings_is_incomplete
-from NeoVintageous.nv.mappings import mappings_resolve
 from NeoVintageous.nv.marks import get_mark
 from NeoVintageous.nv.marks import set_mark
 from NeoVintageous.nv.polyfill import spell_select
@@ -77,24 +73,17 @@ from NeoVintageous.nv.search import get_search_occurrences
 from NeoVintageous.nv.search import process_search_pattern
 from NeoVintageous.nv.search import process_word_search_pattern
 from NeoVintageous.nv.settings import append_sequence
-from NeoVintageous.nv.settings import get_action_count
 from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_glue_until_normal_mode
 from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_buffer_search_command
 from NeoVintageous.nv.settings import get_mode
-from NeoVintageous.nv.settings import get_motion_count
 from NeoVintageous.nv.settings import get_normal_insert_count
-from NeoVintageous.nv.settings import get_partial_sequence
-from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.settings import get_repeat_data
 from NeoVintageous.nv.settings import get_sequence
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import get_xpos
-from NeoVintageous.nv.settings import is_interactive
-from NeoVintageous.nv.settings import is_must_capture_register_name
 from NeoVintageous.nv.settings import is_processing_notation
-from NeoVintageous.nv.settings import set_action_count
 from NeoVintageous.nv.settings import set_glue_until_normal_mode
 from NeoVintageous.nv.settings import set_interactive
 from NeoVintageous.nv.settings import set_last_buffer_search
@@ -102,11 +91,7 @@ from NeoVintageous.nv.settings import set_last_buffer_search_command
 from NeoVintageous.nv.settings import set_last_char_search
 from NeoVintageous.nv.settings import set_last_char_search_command
 from NeoVintageous.nv.settings import set_mode
-from NeoVintageous.nv.settings import set_motion_count
-from NeoVintageous.nv.settings import set_must_capture_register_name
 from NeoVintageous.nv.settings import set_normal_insert_count
-from NeoVintageous.nv.settings import set_partial_sequence
-from NeoVintageous.nv.settings import set_register
 from NeoVintageous.nv.settings import set_repeat_data
 from NeoVintageous.nv.settings import set_reset_during_init
 from NeoVintageous.nv.settings import set_xpos
@@ -115,11 +100,9 @@ from NeoVintageous.nv.settings import toggle_super_keys
 from NeoVintageous.nv.state import evaluate_state
 from NeoVintageous.nv.state import get_action
 from NeoVintageous.nv.state import get_motion
-from NeoVintageous.nv.state import init_state
 from NeoVintageous.nv.state import is_runnable
 from NeoVintageous.nv.state import must_collect_input
 from NeoVintageous.nv.state import reset_command_data
-from NeoVintageous.nv.state import set_action
 from NeoVintageous.nv.state import set_motion
 from NeoVintageous.nv.state import update_status_line
 from NeoVintageous.nv.ui import ui_bell
@@ -183,15 +166,8 @@ from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.utils import unfold
 from NeoVintageous.nv.utils import unfold_all
 from NeoVintageous.nv.utils import update_xpos
-from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
-from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
-from NeoVintageous.nv.vi.cmd_base import ViMotionDef
-from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
-from NeoVintageous.nv.vi.cmd_defs import ViOpenNameSpace
-from NeoVintageous.nv.vi.cmd_defs import ViOpenRegister
 from NeoVintageous.nv.vi.cmd_defs import ViSearchBackwardImpl
 from NeoVintageous.nv.vi.cmd_defs import ViSearchForwardImpl
-from NeoVintageous.nv.vi.keys import to_bare_command_name
 from NeoVintageous.nv.vi.keys import tokenize_keys
 from NeoVintageous.nv.vi.search import find_in_range
 from NeoVintageous.nv.vi.search import find_wrapping
@@ -497,297 +473,25 @@ class nv_run_cmds(TextCommand):
 
 class nv_feed_key(WindowCommand):
 
+    # TODO refactor: rename repeat_count -> count
     def run(self, key, repeat_count=None, do_eval=True, check_user_mappings=True):
         start_time = time.time()
-        _log.info('key evt: %s count=%s eval=%s mappings=%s', key, repeat_count, do_eval, check_user_mappings)  # noqa: E501
 
         try:
-            self._feed_key(key, repeat_count, do_eval, check_user_mappings)
+            FeedKeyHandler(
+                self.window.active_view(),
+                key,
+                repeat_count,
+                do_eval,
+                check_user_mappings).handle()
         except Exception as e:
-            print('NeoVintageous: An error occurred during key press handle:')
-            _log.exception(str(e))
+            print('NeoVintageous: An error occurred:')
+            _log.exception(e)
             clean_views()
 
-        _log.info('key processed in %s secs', '{:.4f}'.format(time.time() - start_time))
-
-    def _feed_key(self, key, repeat_count=None, do_eval=True, check_user_mappings=True):
-        # Args:
-        #   key (str): Key pressed.
-        #   repeat_count (int): Count to be used when repeating through the '.' command.
-        #   do_eval (bool): Whether to evaluate the global state when it's in a
-        #       runnable state. Most of the time, the default value of `True` should
-        #       be used. Set to `False` when you want to manually control the global
-        #       state's evaluation. For example, this is what the nv_feed_key
-        #       command does.
-        #   check_user_mappings (bool):
-        self.view = self.window.active_view()
-
-        mode = get_mode(self.view)
-
-        _log.debug('mode: %s', mode)
-
-        if _is_selection_malformed(self.view, mode):
-            mode = _fix_malformed_selection(self.view, mode)
-
-        if key.lower() == '<esc>':
-            if mode == SELECT:
-                self.view.run_command('nv_vi_select_big_j', {'mode': mode})
-            else:
-                enter_normal_mode(self.window, mode)
-                reset_command_data(self.view)
-            return
-
-        append_sequence(self.view, key)
-        update_status_line(self.view)
-
-        if is_must_capture_register_name(self.view):
-            _log.debug('capturing register name...')
-            set_register(self.view, key)
-            set_partial_sequence(self.view, '')
-
-            return
-
-        motion = get_motion(self.view)
-        action = get_action(self.view)
-
-        if must_collect_input(self.view, motion, action):
-            _log.debug('collecting input!')
-
-            if motion and motion.accept_input:
-                motion.accept(key)
-                # Processed motion needs to reserialised and stored.
-                set_motion(self.view, motion)
-            else:
-                action.accept(key)
-                # Processed action needs to reserialised and stored.
-                set_action(self.view, action)
-
-            if is_runnable(self.view) and do_eval:
-                evaluate_state(self.view)
-                reset_command_data(self.view)
-
-            return
-
-        # If the user has defined any mappings that starts with a number
-        # (count), or " (register character), we need to skip the count handler
-        # and go straight to resolving the mapping, otherwise it won't resolve.
-        # See https://github.com/NeoVintageous/NeoVintageous/issues/434.
-        if not mappings_can_resolve(get_mode(self.view), get_partial_sequence(self.view) + key):
-            if repeat_count:
-                set_action_count(self.view, str(repeat_count))
-
-            if self._handle_count(key, repeat_count):
-                _log.debug('handled count')
-
-                return
-
-        set_partial_sequence(self.view, get_partial_sequence(self.view) + key)
-
-        if check_user_mappings and mappings_is_incomplete(get_mode(self.view), get_partial_sequence(self.view)):
-            _log.debug('found incomplete mapping')
-
-            return
-
-        command = mappings_resolve(self.view, check_user_mappings=check_user_mappings)
-
-        if isinstance(command, ViOpenNameSpace):
-            return
-
-        if isinstance(command, ViOpenRegister):
-            set_must_capture_register_name(self.view, True)
-            return
-
-        if isinstance(command, Mapping):
-            # TODO Review What happens if Mapping + do_eval=False
-            if do_eval:
-                _log.debug('evaluating user mapping...')
-
-                # TODO Review Why does rhs of mapping need to be resequenced in OPERATOR PENDING mode?
-                rhs = command.rhs
-                if get_mode(self.view) == OPERATOR_PENDING:
-                    rhs = get_sequence(self.view)[:-len(get_partial_sequence(self.view))] + command.rhs
-
-                # TODO Review Why does state need to be reset before running user mapping?
-                reg = get_register(self.view)
-                acount = get_action_count(self.view)
-                mcount = get_motion_count(self.view)
-                reset_command_data(self.view)
-                set_register(self.view, reg)
-                set_motion_count(self.view, mcount)
-                set_action_count(self.view, acount)
-
-                _log.info('user mapping %s -> %s', command.lhs, rhs)
-
-                if ':' in rhs:
-
-                    # This hacky piece of code (needs refactoring), is to
-                    # support mappings in the format of {seq}:{ex-cmd}<CR>{seq},
-                    # where leading and trailing sequences are optional.
-                    #
-                    # Examples:
-                    #
-                    #   :
-                    #   :w
-                    #   :sort<CR>
-                    #   vi]:sort u<CR>
-                    #   vi]:sort u<CR>vi]y<Esc>
-
-                    colon_pos = rhs.find(':')
-                    leading = rhs[:colon_pos]
-                    rhs = rhs[colon_pos:]
-
-                    cr_pos = rhs.lower().find('<cr>')
-                    if cr_pos >= 0:
-                        command = rhs[:cr_pos + 4]
-                        trailing = rhs[cr_pos + 4:]
-                    else:
-                        # Example :reg
-                        command = rhs
-                        trailing = ''
-
-                    _log.debug('parsed user mapping before="%s", cmd="%s", after="%s"', leading, command, trailing)
-
-                    if leading:
-                        self.window.run_command('nv_process_notation',
-                                                {'keys': leading, 'check_user_mappings': False})
-
-                    do_ex_user_cmdline(self.window, command)
-
-                    if trailing:
-                        self.window.run_command('nv_process_notation',
-                                                {'keys': trailing, 'check_user_mappings': False})
-
-                else:
-                    self.window.run_command('nv_process_notation', {'keys': rhs, 'check_user_mappings': False})
-
-            return
-
-        if isinstance(command, ViMissingCommandDef):
-
-            # TODO We shouldn't need to try resolve the command again. The
-            # resolver should handle commands correctly the first time. The
-            # reason this logic is still needed is because we might be looking
-            # at a command like 'dd', which currently doesn't resolve properly.
-            # The first 'd' is mapped for NORMAL mode, but 'dd' is not mapped in
-            # OPERATOR PENDING mode, so we get a missing command, and here we
-            # try to fix that (user mappings are excluded, since they've already
-            # been given a chance to evaluate).
-
-            if get_mode(self.view) == OPERATOR_PENDING:
-                command = mappings_resolve(self.view, sequence=to_bare_command_name(get_sequence(self.view)),
-                                           mode=NORMAL, check_user_mappings=False)
-            else:
-                command = mappings_resolve(self.view, sequence=to_bare_command_name(get_sequence(self.view)))
-
-            if self._handle_missing_command(command):
-                return
-
-        if (get_mode(self.view) == OPERATOR_PENDING and isinstance(command, ViOperatorDef)):
-
-            # TODO This should be unreachable code. The mapping resolver should
-            # handle anything that can still reach this point (the first time).
-            # We're expecting a motion, but we could still get an action. For
-            # example, dd, g~g~ or g~~ remove counts. It looks like it might
-            # only be the '>>' command that needs this code.
-
-            command = mappings_resolve(self.view, sequence=to_bare_command_name(get_sequence(self.view)), mode=NORMAL)
-            if self._handle_missing_command(command):
-                return
-
-            if not command.motion_required:
-                set_mode(self.view, NORMAL)
-
-        self._handle_command(command, do_eval)
-
-    def _handle_command(self, command: ViCommandDefBase, do_eval: bool) -> None:
-        # Raises:
-        #   ValueError: If too many motions.
-        #   ValueError: If too many actions.
-        #   ValueError: Unexpected command type.
-        _is_runnable = is_runnable(self.view)
-
-        if isinstance(command, ViMotionDef):
-            if _is_runnable:
-                raise ValueError('too many motions')
-
-            set_motion(self.view, command)
-
-            if get_mode(self.view) == OPERATOR_PENDING:
-                set_mode(self.view, NORMAL)
-
-        elif isinstance(command, ViOperatorDef):
-            if _is_runnable:
-                raise ValueError('too many actions')
-
-            set_action(self.view, command)
-
-            if command.motion_required and not is_visual_mode(get_mode(self.view)):
-                set_mode(self.view, OPERATOR_PENDING)
-
-        else:
-            raise ValueError('unexpected command type')
-
-        if is_interactive(self.view):
-            if command.accept_input and command.input_parser and command.input_parser.is_panel():
-                command.input_parser.run_command(self.view.window())
-
-        if get_mode(self.view) == OPERATOR_PENDING:
-            set_partial_sequence(self.view, '')
-
-        if do_eval:
-            evaluate_state(self.view)
-
-    def _handle_count(self, key: str, repeat_count: int) -> bool:
-        # NOTE motion/action counts need to be cast to strings because they need
-        # to be "joined" to the previous key press, not added. For example when
-        # you press the digit 1 followed by 2, it's a count of 12, not 3.
-
-        if not get_action(self.view) and key.isdigit():
-            if not repeat_count and (key != '0' or get_action_count(self.view)):
-                set_action_count(self.view, str(get_action_count(self.view)) + key)
-                return True
-
-        if (get_action(self.view) and (get_mode(self.view) == OPERATOR_PENDING) and key.isdigit()):
-            if not repeat_count and (key != '0' or get_motion_count(self.view)):
-                set_motion_count(self.view, str(get_motion_count(self.view)) + key)
-                return True
-
-        return False
-
-    def _handle_missing_command(self, command):
-        if isinstance(command, ViMissingCommandDef):
-            if get_mode(self.view) == OPERATOR_PENDING:
-                set_mode(self.view, NORMAL)
-
-            reset_command_data(self.view)
-            ui_bell()
-
-            return True
-
-        return False
-
-
-def _is_selection_malformed(view, mode) -> bool:
-    return mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, SELECT) and view.has_non_empty_selection_region()
-
-
-def _fix_malformed_selection(view, mode: str) -> str:
-    # If a selection was made via the mouse or a built-in ST command the
-    # selection may be in an inconsistent state e.g. incorrect mode.
-    # https://github.com/NeoVintageous/NeoVintageous/issues/742
-    if mode == NORMAL and len(view.sel()) > 1:
-        mode = VISUAL
-        set_mode(view, mode)
-    elif mode != VISUAL and view.has_non_empty_selection_region():
-        # Try to fixup a malformed visual state. For example, apparently this
-        # can happen when a search is performed via a search panel and "Find
-        # All" is pressed. In that case, multiple selections may need fixing.
-        view.window().run_command('nv_enter_visual_mode', {'mode': mode})
-
-    # TODO Extract fix malformed selections specific logic from init_state()
-    init_state(view)
-
-    return mode
+        _log.info(
+            'key completed in %s ms', '{:.2f}'
+            .format((time.time() - start_time) * 1000))
 
 
 class nv_process_notation(WindowCommand):
