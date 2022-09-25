@@ -46,6 +46,13 @@ __all__ = [
 ]
 
 
+def _should_tag_accept_input(inp: str) -> bool:
+    if inp.lower().startswith('<c-t>'):
+        return not re.match('<[Cc]-t>.*?[\n>]', inp)
+
+    return not inp[-1] in ('>', '\n')
+
+
 @register(seqs.YS, (NORMAL,))
 class Surroundys(ViOperatorDef):
     def __init__(self, *args, **kwargs):
@@ -58,10 +65,18 @@ class Surroundys(ViOperatorDef):
 
     @property
     def accept_input(self) -> bool:
-        single = len(self.inp) == 1 and self.inp != '<'
-        tag = re.match('<.*?>', self.inp)
+        if not self.inp:
+            return True
 
-        return not (single or tag)
+        # Function
+        if self.inp[0] in ('f', 'F') or self.inp.lower().startswith('<c-f>'):
+            return self.inp[-1] != '\n'
+
+        # Tag
+        if self.inp[0] in ('t', '<'):
+            return _should_tag_accept_input(self.inp)
+
+        return False
 
     def accept(self, key: str) -> bool:
         self.inp += translate_char(key)
@@ -158,21 +173,18 @@ class Surroundcs(ViOperatorDef):
 
     @property
     def accept_input(self) -> bool:
-        # Requires at least two characters (target and replacement).
+        if not self.inp:
+            return True
 
-        # A tag replacement is indicated by "<" ("t" is an alias for "<"). Tag
-        # replacements can accept more than one character. A tag name is
-        # terminated by ">".
+        # Requires at least two characters, a target and a replacement.
+        if len(self.inp) < 2:
+            return True
 
-        if len(self.inp) > 1 and self.inp[1] in ('t', '<'):
-            # Guard against runaway input collecting.
-            if len(self.inp) > 20:
-                return False
+        # Tag
+        if self.inp[1] in ('t', '<'):
+            return _should_tag_accept_input(self.inp[1:])
 
-            # Terminates input collecting for tag.
-            return not self.inp.endswith('>')
-
-        return len(self.inp) < 2
+        return False
 
     def accept(self, key: str) -> bool:
         self.inp += translate_char(key)
@@ -241,11 +253,33 @@ def _resolve_target_aliases(target: str) -> str:
 # which append an additional space to the inside. Like with the targets above,
 # b, B, r, and a are aliases for ), }, ], and >.
 def _expand_replacements(target: str) -> tuple:
+    # Function replacement
+    if target[0] == 'f':
+        return (target[1:].strip() + '(', ')')
+    if target[0] == 'F':
+        return (target[1:].strip() + '( ', ' )')
+    if target.lower().startswith('<c-f>'):
+        return ('(' + target[5:].strip() + ' ', ')')
+
+    # Tag replacement
     if target[0] in ('t', '<') and len(target) >= 3:
+        append = prefix = ''
+
+        if target.lower().startswith('<c-t>'):
+            target = '<' + target[5:]
+            append = prefix = '\n'
+
         # Attributes are stripped in the closing tag. The first character if
         # "t", which is an alias for "<", is replaced too.
-        return ('<' + target[1:], '</' + target[1:].strip()[:-1].strip().split(' ', 1)[0] + '>')
+        if target[-1] == '\n':
+            target = target[0:-1] + '>'
 
+        replacement_a = '<' + target[1:] + append
+        replacement_b = prefix + '</' + target[1:].strip()[:-1].strip().split(' ', 1)[0] + '>'
+
+        return (replacement_a, replacement_b)
+
+    # Pair replacement
     target = _resolve_target_aliases(target)
     append_addition_space = True if target in '({[' else False
     begin, end = _expand_targets(target)
@@ -278,7 +312,7 @@ def _do_cs(view, edit, mode: str, target: str, replacement: str) -> None:
 
     # Replacements must be 1 character long or at least 3 characters for tags.
     if len(replacement) >= 3:
-        if replacement[0] not in ('t', '<') or not replacement.endswith('>'):
+        if replacement[0] not in ('t', '<') or not replacement[-1] in ('>', '\n'):
             return
     elif len(replacement) != 1:
         return
@@ -303,11 +337,24 @@ def _do_cs(view, edit, mode: str, target: str, replacement: str) -> None:
             if not (region_end and region_begin):
                 return s
 
+            replacement_a = replacement_open
+
+            # You may specify attributes here and they will be stripped from the
+            # closing tag. If replacing a tag, its attributes are kept in the
+            # new tag. End your input with > to discard the those attributes.
+            if target == 't' and replacement[-1] == '\n':
+                match = re.match('<([^ >]+)(.*)>', view.substr(region_begin))
+                if match:
+                    if replacement_open[-1] == '\n':
+                        replacement_a = replacement_open[:-2] + match.group(2) + '>\n'
+                    else:
+                        replacement_a = replacement_open[:-1] + match.group(2) + '>'
+
             # It's important that the regions are replaced in reverse because
             # otherwise the buffer size would be reduced by the number of
             # characters replaced and would result in an off-by-n bugs.
             view.replace(edit, region_end, replacement_close)
-            view.replace(edit, region_begin, replacement_open)
+            view.replace(edit, region_begin, replacement_a)
 
             return Region(region_begin.begin())
 

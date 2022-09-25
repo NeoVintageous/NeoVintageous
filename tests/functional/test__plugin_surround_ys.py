@@ -46,10 +46,8 @@ class TestSurround_ys(unittest.FunctionalTestCase):
         self.eq('one |two three', 'ysiw}', 'one |{two} three')
         self.eq('one |two three', 'ysiwB', 'one |{two} three')
         self.eq('one |two three', 'ysiw<foo>', 'one |<foo>two</foo> three')
-
-    @unittest.expectedFailure
-    def test_ysiw_bug_01(self):
-        self.eq('one |two three', 'ysiwafoo>', 'one |<foo>two</foo> three')
+        self.eq('one |two three', 'ysiwa', 'one |<two> three')
+        self.eq('one |two three', 'ysiw>', 'one |<two> three')
 
     def test_yss(self):
         self.eq('abc', 'yss)', '|(abc)')
@@ -63,8 +61,16 @@ class TestSurround_ys(unittest.FunctionalTestCase):
         self.eq("eats fi|sh\neats fi|sh\neats fi|sh", "ysiw'", "eats |'fish'\neats |'fish'\neats |'fish'")
 
     def test_tags(self):
+        self.eq('"fi|zz"', 'ysiw<div>', '"|<div>fizz</div>"')
+        self.eq('"fi|zz"', 'ysiwtdiv>', '"|<div>fizz</div>"')
+        self.eq('"fi|zz"', 'ysiw<C-t>div>', '"|<div>\nfizz\n</div>"')
+        self.eq('"fi|zz"', 'ysiw<C-t>div<CR>', '"|<div>\nfizz\n</div>"')
+        self.eq('"fi|zz"', 'ysiw<div<CR>', '"|<div>fizz</div>"')
+        self.eq('"fi|zz"', 'ysiwtdiv<CR>', '"|<div>fizz</div>"')
         self.eq('"fi|zz"', 'ysiw<i x="y">', '"|<i x="y">fizz</i>"')
-
-    @unittest.expectedFailure
-    def test_tags_bug_01(self):
         self.eq('"fi|zz"', 'ysiwti x="y">', '"|<i x="y">fizz</i>"')
+
+    def test_ysiw_function(self):
+        self.eq('x |fizz x', 'ysiwfprint<CR>', 'x |print(fizz) x')
+        self.eq('x |fizz x', 'ysiwFprint<CR>', 'x |print( fizz ) x')
+        self.eq('x |fizz x', 'ysiw<C-f>print<CR>', 'x |(print fizz) x')

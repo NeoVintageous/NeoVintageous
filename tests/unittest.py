@@ -1732,9 +1732,13 @@ _SEQ2CMD = {
     'cs["':         {'command': 'nv_feed_key'},  # noqa: E241
     'cs\'"':        {'command': 'nv_feed_key'},  # noqa: E241
     'cs\'(':        {'command': 'nv_feed_key'},  # noqa: E241
+    'cs\'<C-t>div<CR>': {'command': 'nv_feed_key', 'args': {'keys': ['c', 's', '\'', '<C-t>', 'd', 'i', 'v', '<CR>']}},  # noqa: E241,E501
+    'cs\'<C-t>div>': {'command': 'nv_feed_key', 'args': {'keys': ['c', 's', '\'', '<C-t>', 'd', 'i', 'v', '>']}},  # noqa: E241,E501
+    'cs\'<div<CR>': {'command': 'nv_feed_key', 'args': {'keys': ['c', 's', '\'', '<', 'd', 'i', 'v', '<CR>']}},  # noqa: E241,E501
     'cs\'<div>':    {'command': 'nv_feed_key'},  # noqa: E241
     'cs\'<q>':      {'command': 'nv_feed_key'},  # noqa: E241
     'cs\'`':        {'command': 'nv_feed_key'},  # noqa: E241
+    'cs\'tdiv<CR>': {'command': 'nv_feed_key', 'args': {'keys': ['c', 's', '\'', 't', 'd', 'i', 'v', '<CR>']}},  # noqa: E241,E501
     'cs\'tdiv>':    {'command': 'nv_feed_key'},  # noqa: E241
     'cs\'tq>':      {'command': 'nv_feed_key'},  # noqa: E241
     'cs]"':         {'command': 'nv_feed_key'},  # noqa: E241
@@ -1747,7 +1751,11 @@ _SEQ2CMD = {
     'csb"':         {'command': 'nv_feed_key'},  # noqa: E241
     'csr"':         {'command': 'nv_feed_key'},  # noqa: E241
     'cst"':         {'command': 'nv_feed_key'},  # noqa: E241
+    'cst<C-t>div<CR>': {'command': 'nv_feed_key', 'args': {'keys': ['c', 's', 't', '<C-t>', 'd', 'i', 'v', '<CR>']}},  # noqa: E241,E501
+    'cst<a<CR>':    {'command': 'nv_feed_key', 'args': {'keys': ['c', 's', 't', '<', 'a', '<CR>']}},  # noqa: E241
     'cst<a>':       {'command': 'nv_feed_key'},  # noqa: E241
+    'cst<div<CR>':  {'command': 'nv_feed_key', 'args': {'keys': ['c', 's', 't', '<', 'd', 'i', 'v', '<CR>']}},  # noqa: E241,E501
+    'cst<div>':     {'command': 'nv_feed_key'},  # noqa: E241
     'cstta>':       {'command': 'nv_feed_key'},  # noqa: E241
     'cs{(':         {'command': 'nv_feed_key'},  # noqa: E241
     'cs{)':         {'command': 'nv_feed_key'},  # noqa: E241
@@ -2154,16 +2162,27 @@ _SEQ2CMD = {
     'ysiw(':        {'command': 'nv_feed_key'},  # noqa: E241
     'ysiw)':        {'command': 'nv_feed_key'},  # noqa: E241
     'ysiw2':        {'command': 'nv_feed_key'},  # noqa: E241
+    'ysiw<C-f>print<CR>': {'command': 'nv_feed_key', 'args': {"keys": ['y', 's', 'i', 'w', '<C-f>', 'p', 'r', 'i', 'n', 't', '<CR>']}},  # noqa: E231,E241,E501
+    'ysiw<C-t>div<CR>': {'command': 'nv_feed_key', 'args': {'keys': ['y', 's', 'i', 'w', '<C-t>', 'd', 'i', 'v', '<CR>']}},  # noqa: E231,E241,E501
+    'ysiw<C-t>div>': {'command': 'nv_feed_key', 'args': {'keys': ['y', 's', 'i', 'w', '<C-t>', 'd', 'i', 'v', '>']}},  # noqa: E231,E241,E501
+    'ysiw<div<CR>': {'command': 'nv_feed_key', 'args': {"keys": ['y', 's', 'i', 'w', '<', 'd', 'i', 'v', '<CR>']}},  # noqa: E231,E501
+    'ysiw<div>':    {'command': 'nv_feed_key'},  # noqa: E231,E241
     'ysiw<foo>':    {'command': 'nv_feed_key'},  # noqa: E241
     'ysiw<i x="y">':{'command': 'nv_feed_key'},  # noqa: E231,E241
+    'ysiw>':        {'command': 'nv_feed_key'},  # noqa: E241
     'ysiwB':        {'command': 'nv_feed_key'},  # noqa: E241
+    'ysiwFprint<CR>': {'command': 'nv_feed_key', 'args': {"keys": ['y', 's', 'i', 'w', 'F', 'p', 'r', 'i', 'n', 't', '<CR>']}},  # noqa: E231,E501
     'ysiw[':        {'command': 'nv_feed_key'},  # noqa: E241
     'ysiw\'':       {'command': 'nv_feed_key'},  # noqa: E241
     'ysiw]':        {'command': 'nv_feed_key'},  # noqa: E241
+    'ysiwa':        {'command': 'nv_feed_key'},  # noqa: E241
     'ysiwafoo>':    {'command': 'nv_feed_key'},  # noqa: E241
     'ysiwb':        {'command': 'nv_feed_key'},  # noqa: E241
+    'ysiwfprint<CR>': {'command': 'nv_feed_key', 'args': {"keys": ['y', 's', 'i', 'w', 'f', 'p', 'r', 'i', 'n', 't', '<CR>']}},  # noqa: E231,E501
     'ysiwr':        {'command': 'nv_feed_key'},  # noqa: E241
-    'ysiwti x="y">':{'command': 'nv_feed_key'},  # noqa: E231,E241
+    'ysiwtdiv<CR>': {'command': 'nv_feed_key', 'args': {"keys": ['y', 's', 'i', 'w', '<', 'd', 'i', 'v', '<CR>']}},  # noqa: E231,E501
+    'ysiwtdiv>':    {'command': 'nv_feed_key'},  # noqa: E231,E241
+    'ysiwti x="y">': {'command': 'nv_feed_key'},  # noqa: E231
     'ysiw{':        {'command': 'nv_feed_key'},  # noqa: E241
     'ysiw}':        {'command': 'nv_feed_key'},  # noqa: E241
     'yss)':         {'command': 'nv_feed_key'},  # noqa: E241
