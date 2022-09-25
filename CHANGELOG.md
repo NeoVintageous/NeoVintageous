@@ -4,7 +4,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.27.0 - Unreleased
 
-* Added [#838](https://github.com/NeoVintageous/NeoVintageous/issues/838): Add support for `<S-tab>`
+* Added [#828](https://github.com/NeoVintageous/NeoVintageous/issues/828): Add `S{char}` in visual line mode (Surround)
+* Added [#838](https://github.com/NeoVintageous/NeoVintageous/issues/838): Add `<S-tab>`
 * Added [#711](https://github.com/NeoVintageous/NeoVintageous/issues/711): Add `[count]` for `*`
 * Added [#711](https://github.com/NeoVintageous/NeoVintageous/issues/711): Add `[count]` for `#`
 * Fixed [#826](https://github.com/NeoVintageous/NeoVintageous/issues/826): Add jumps like `%` inside comments

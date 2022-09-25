@@ -36,6 +36,7 @@ from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
+from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import run_motion
 
@@ -105,7 +106,7 @@ class Surroundyss(Surroundys):
         }
 
 
-@register(seqs.BIG_S, (VISUAL, VISUAL_BLOCK))
+@register(seqs.BIG_S, (VISUAL, VISUAL_LINE, VISUAL_BLOCK))
 class SurroundS(Surroundys):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -408,6 +409,10 @@ def _do_ys(view, edit, mode: str = None, motion=None, replacement: str = '"', co
             view.insert(edit, s.a, replacement_open)
             return
 
+        if mode == VISUAL_LINE:
+            replacement_open = replacement_open + '\n'
+            replacement_close = replacement_close + '\n'
+
         view.insert(edit, s.end(), replacement_close)
         view.insert(edit, s.begin(), replacement_open)
 
@@ -415,7 +420,7 @@ def _do_ys(view, edit, mode: str = None, motion=None, replacement: str = '"', co
         if mode == INTERNAL_NORMAL:
             _surround(view, edit, s, replacement)
             return Region(s.begin())
-        elif mode in (VISUAL, VISUAL_BLOCK):
+        elif mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
             _surround(view, edit, s, replacement)
             return Region(s.begin())
         return s
