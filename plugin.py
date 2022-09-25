@@ -129,6 +129,16 @@ def _init_backwards_compat_patches():
                     os.rename(old_file, new_file)
 
             sublime.save_settings('Preferences.sublime-settings')
+
+        if build_version < 12700:  # pragma: no cover
+            preferences.set('neovintageous_build_version', 12700)
+            old_file = os.path.join(os.path.dirname(sublime.packages_path()), 'Local', 'nvinfo')
+            new_file = os.path.join(os.path.dirname(sublime.packages_path()), 'Local', 'neovintageous.session')
+            if os.path.exists(old_file) and not os.path.exists(new_file):
+                os.rename(old_file, new_file)
+
+            sublime.save_settings('Preferences.sublime-settings')
+
     except Exception:  # pragma: no cover
         traceback.print_exc()
 
