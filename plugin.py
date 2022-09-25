@@ -103,34 +103,24 @@ def _init_backwards_compat_patches():
     # Some setting defaults are changed from time to time. To reduce the impact
     # on users, their current preferences are updated so that when the default
     # is changed later, their preferences will be override the new default.
-    # See: https://github.com/NeoVintageous/NeoVintageous/issues/404.
-    # TODO Remove all backwards compatability settings updates in future version
 
     try:
-
         preferences = sublime.load_settings('Preferences.sublime-settings')
 
-        # The build number is in the format {MAJOR}{MINOR}{PATCH}, where the
-        # major number if one digit, the minor two digits, and the patch two
-        # digits e.g. 1.11.0 -> 11100, 1.11.3 -> 11103, 1.17.1 -> 11701.
+        # The build number is in the format {major}{minor}{patch}, where the
+        # major number is one digit, minor two digits, and patch two digits.
+        #
+        #   Version | Build (as integer)
+        #   ------- | -----
+        #   1.11.0  | 11100
+        #   1.11.3  | 11103
+        #   1.17.1  | 11701
+        #   1.27.0  | 12700
+
         build_version = int(preferences.get('neovintageous_build_version', 0))
 
-        if build_version < 11100:  # pragma: no cover
-            preferences.set('neovintageous_build_version', 11100)
-            # Migrate the ".vintageousrc" (runtime configuation) file. The new
-            # file name is ".neovintageousrc" and is automatically renamed to
-            # the new name to avoid disruption to users.
-            old_file = os.path.join(sublime.packages_path(), 'User', '.vintageousrc')
-            new_file = os.path.join(sublime.packages_path(), 'User', '.neovintageousrc')
-            if os.path.exists(old_file):
-                if os.path.exists(new_file):
-                    print('NeoVintageous: could not migrate "%s" to "%s": target already exists' % (old_file, new_file))  # noqa: E501
-                else:
-                    os.rename(old_file, new_file)
-
-            sublime.save_settings('Preferences.sublime-settings')
-
         if build_version < 12700:  # pragma: no cover
+
             preferences.set('neovintageous_build_version', 12700)
             old_file = os.path.join(os.path.dirname(sublime.packages_path()), 'Local', 'nvinfo')
             new_file = os.path.join(os.path.dirname(sublime.packages_path()), 'Local', 'neovintageous.session')
