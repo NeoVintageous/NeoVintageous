@@ -440,11 +440,11 @@ settings are described below, in |netrw-browser-options|, and in
 
  *g:netrw_use_errorwindow* =2: messages from netrw will use a popup window
 			     Move the mouse and pause to remove the popup window.
-			     (default value if popup windows are availble)
+			     (default value if popup windows are available)
 			 =1 : messages from netrw will use a separate one
 			      line window.  This window provides reliable
 			      delivery of messages.
-			     (default value if popup windows are not availble)
+			     (default value if popup windows are not available)
 			 =0 : messages from netrw will use echoerr ;
 			      messages don't always seem to show up this
 			      way, but one doesn't have to quit the window.
@@ -968,7 +968,7 @@ itself:
      fun! NetReadFixup(method, line1, line2)
        if method == 3   " ftp (no <.netrc>)
         let fourblanklines= line2 - 3
-        silent fourblanklines.",".line2."g/^\s*/d"
+        silent fourblanklines .. "," .. line2 .. "g/^\s*/d"
        endif
      endfunction
     endif
@@ -1198,7 +1198,7 @@ If there are marked files and/or directories, mb will add them to the bookmark
 list.
 
 								*netrw-:NetrwMB*
-Addtionally, one may use :NetrwMB to bookmark files or directories. >
+Additionally, one may use :NetrwMB to bookmark files or directories. >
 
 	:NetrwMB[!] [files/directories]
 
@@ -1975,7 +1975,7 @@ To use this function, simply assign its output to |g:netrw_list_hide| option.  >
 	Example: let g:netrw_list_hide= netrw_gitignore#Hide('my_gitignore_file')
 		Function can take additional files with git-ignore patterns.
 
-	Example: g:netrw_list_hide= netrw_gitignore#Hide() . '.*\.swp$'
+	Example: let g:netrw_list_hide= netrw_gitignore#Hide() .. '.*\.swp$'
 		Combining 'netrw_gitignore#Hide' with custom patterns.
 <
 
@@ -2814,7 +2814,7 @@ your browsing preferences.  (see also: |netrw-settings|)
 				= 2: wide listing (multiple files in columns)
 				= 3: tree style listing
 
-  *g:netrw_list_hide*		comma separated pattern list for hiding files
+  *g:netrw_list_hide*		comma-separated pattern list for hiding files
 				Patterns are regular expressions (see |regexp|)
 				There's some special support for git-ignore
 				files: you may add the output from the helper
@@ -2824,7 +2824,7 @@ your browsing preferences.  (see also: |netrw-settings|)
 
 				Examples:
 				 let g:netrw_list_hide= '.*\.swp$'
-				 let g:netrw_list_hide= netrw_gitignore#Hide().'.*\.swp$'
+				 let g:netrw_list_hide= netrw_gitignore#Hide() .. '.*\.swp$'
 				default: ""
 
   *g:netrw_localcopycmd*	="cp"           Linux/Unix/MacOS/Cygwin
@@ -3917,7 +3917,7 @@ netrw:
 				* Installed |g:netrw_clipboard| setting
 				* Installed option bypass for |'guioptions'|
 				  a/A settings
-				* Changed popup_beval() to |popup_atcursor|()
+				* Changed popup_beval() to |popup_atcursor()|
 				  in netrw#ErrorMsg (lacygoill). Apparently
 				  popup_beval doesn't reliably close the
 				  popup when the mouse is moved.

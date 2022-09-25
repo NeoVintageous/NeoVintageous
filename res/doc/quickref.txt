@@ -356,6 +356,7 @@ In Insert or Command-line mode:
 |v_y|	     {visual}y	yank the highlighted text into a register
 |yy|	  N  yy		yank N lines into a register
 |Y|	  N  Y		yank N lines into a register
+			Note: Mapped to "y$" by default. |default-mappings|
 |p|	  N  p		put a register after the cursor position (N times)
 |P|	  N  P		put a register before the cursor position (N times)
 |]p|	  N  ]p		like p, but adjust indent to current line
@@ -637,6 +638,7 @@ Short explanation of each option:		*option-list*
 'cinkeys'	  'cink'    keys that trigger indent when 'cindent' is set
 'cinoptions'	  'cino'    how to do indenting when 'cindent' is set
 'cinwords'	  'cinw'    words where 'si' and 'cin' add an indent
+'cinscopedecls'	  'cinsd'   words that are recognized by 'cino-g'
 'clipboard'	  'cb'	    use the clipboard as the unnamed register
 'cmdheight'	  'ch'	    number of lines to use for the command-line
 'cmdwinheight'	  'cwh'     height of the command-line window
@@ -647,6 +649,7 @@ Short explanation of each option:		*option-list*
 'complete'	  'cpt'     specify how Insert mode completion works
 'completefunc'	  'cfu'     function to be used for Insert mode completion
 'completeopt'	  'cot'     options for Insert mode completion
+'completeslash'	  'csl'	    like 'shellslash' for completion
 'concealcursor'	  'cocu'    whether concealable text is hidden in cursor line
 'conceallevel'	  'cole'    whether concealable text is shown or hidden
 'confirm'	  'cf'	    ask what to do about unsaved/read-only files
@@ -739,7 +742,6 @@ Short explanation of each option:		*option-list*
 'indentexpr'	  'inde'    expression used to obtain the indent of a line
 'indentkeys'	  'indk'    keys that trigger indenting with 'indentexpr'
 'infercase'	  'inf'     adjust case of match for keyword completion
-'insertmode'	  'im'	    start the edit of a file in Insert mode
 'isfname'	  'isf'     characters included in file names and pathnames
 'isident'	  'isi'     characters included in identifiers
 'iskeyword'	  'isk'     characters included in keywords
@@ -784,6 +786,7 @@ Short explanation of each option:		*option-list*
 'mousefocus'	  'mousef'  keyboard focus follows the mouse
 'mousehide'	  'mh'	    hide mouse pointer while typing
 'mousemodel'	  'mousem'  changes meaning of mouse buttons
+'mousescroll'		    amount to scroll by when scrolling with a mouse
 'mouseshape'	  'mouses'  shape of the mouse pointer in different modes
 'mousetime'	  'mouset'  max time between mouse double-click
 'nrformats'	  'nf'	    number formats recognized for CTRL-A command
@@ -822,7 +825,6 @@ Short explanation of each option:		*option-list*
 'redrawtime'	  'rdt'     timeout for 'hlsearch' and |:match| highlighting
 'regexpengine'	  're'	    default regexp engine to use
 'relativenumber'  'rnu'	    show relative line number in front of each line
-'remap'			    allow mappings to work recursively
 'report'		    threshold for reporting nr. of lines changed
 'revins'	  'ri'	    inserting characters will work backwards
 'rightleft'	  'rl'	    window is right-to-left oriented
@@ -894,7 +896,6 @@ Short explanation of each option:		*option-list*
 'tagstack'	  'tgst'    push tags onto the tag stack
 'term'			    name of the terminal
 'termbidi'	  'tbidi'   terminal takes care of bi-directionality
-'terse'			    shorten some messages
 'textwidth'	  'tw'	    maximum width of text that is being inserted
 'thesaurus'	  'tsr'     list of thesaurus files for keyword completion
 'thesaurusfunc'	  'tsrfu'   function to be used for thesaurus completion
@@ -1267,7 +1268,7 @@ Context-sensitive completion on the command-line:
 |CTRL-W_^|	CTRL-W ^		split window and edit alternate file
 |CTRL-W_n|	CTRL-W n  or  :new	create new empty window
 |CTRL-W_q|	CTRL-W q  or  :q[uit]	quit editing and close window
-|CTRL-W_c|	CTRL-W c  or  :cl[ose]	make buffer hidden and close window
+|CTRL-W_c|	CTRL-W c  or  :clo[se]	make buffer hidden and close window
 |CTRL-W_o|	CTRL-W o  or  :on[ly]	make current window only one on the
 					   screen
 

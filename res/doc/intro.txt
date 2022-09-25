@@ -120,7 +120,7 @@ Vim would never have become what it is now, without the help of these people!
 	Daniel Elstner		GTK+ 2 port
 	Eric Fischer		Mac port, 'cindent', and other improvements
 	Benji Fisher		Answering lots of user questions
-	Bill Foster		Athena GUI port
+	Bill Foster		Athena GUI port (later removed)
 	Google			Lets me work on Vim one day a week
 	Loic Grenie		xvim (ideas for multi windows version)
 	Sven Guckes		Vim promoter and previous WWW page maintainer
@@ -286,10 +286,12 @@ and <> are part of what you type, the context should make this clear.
 
 							*CTRL-{char}*
 CTRL-{char}	{char} typed as a control character; that is, typing {char}
-		while holding the CTRL key down.  The case of {char} does not
-		matter; thus CTRL-A and CTRL-a are equivalent.  But on some
-		terminals, using the SHIFT key will produce another code,
-		don't use it then.
+		while holding the CTRL key down.  The case of {char} is
+		ignored; thus CTRL-A and CTRL-a are equivalent.  But in
+		some terminals and environments, using the SHIFT key will
+		produce a distinct code (e.g. CTRL-SHIFT-a); in these
+		environments using the SHIFT key will not trigger commands
+		such as CTRL-A.
 
 							*'option'*
 'option'	An option, or parameter, that can be set to a value, is
@@ -322,7 +324,6 @@ notation	meaning		    equivalent	decimal value(s)	~
 <Bar>		vertical bar		|	124	*<Bar>*
 <Del>		delete				127
 <CSI>		command sequence intro  ALT-Esc 155	*<CSI>*
-<xCSI>		CSI when typed in the GUI		*<xCSI>*
 
 <EOL>		end-of-line (can be <CR>, <NL> or <CR><NL>,
 		depends on system and 'fileformat')	*<EOL>*
@@ -382,8 +383,10 @@ Note:
   <k1>, ..., <k9> and <kPoint> will not work.
 - Nvim supports mapping multibyte chars with modifiers such as `<M-ä>`. Which
   combinations actually work depends on the the UI or host terminal.
-- When a key is pressed using a meta or alt modifier and no mapping exists
-  for that keypress, Nvim behaves as though <Esc> was pressed before the key.
+- When a key is pressed using a meta or alt modifier and no mapping exists for
+  that keypress, Nvim may behave as though <Esc> was pressed before the key.
+- It is possible to notate combined modifiers (e.g. <C-A-T> for CTRL-ALT-T),
+  but your terminal must encode the input for that to work. |tui-input|
 
 								*<>*
 Examples are often given in the <> notation.  Sometimes this is just to make
@@ -413,6 +416,10 @@ one always works.
 To get a literal "<lt>" in a mapping: >
 	:map <C-L> <lt>lt>
 
+The notation can be used in a double quoted strings, using "\<" at the start,
+e.g. "\<C-Space>".  This results in a special key code.  To convert this back
+to readable text use `keytrans()`.
+
 ==============================================================================
 Modes, introduction				*vim-modes-intro* *vim-modes*
 
@@ -421,8 +428,7 @@ Vim has seven BASIC modes:
 					*Normal* *Normal-mode* *command-mode*
 Normal mode		In Normal mode you can enter all the normal editor
 			commands.  If you start the editor you are in this
-			mode (unless you have set the 'insertmode' option,
-			see below).  This is also known as command mode.
+			mode.  This is also known as command mode.
 
 Visual mode		This is like Normal mode, but the movement commands
 			extend a highlighted area.  When a non-movement
@@ -456,7 +462,7 @@ Ex mode			Like Command-line mode, but after entering a command
 Terminal mode		In Terminal mode all input (except CTRL-\) is sent to
 			the process running in the current |terminal| buffer.
 			If CTRL-\ is pressed, the next key is sent unless it
-			is CTRL-N (|CTRL-\_CTRL-N|).
+			is CTRL-N (|CTRL-\_CTRL-N|) or CTRL-O (|t_CTRL-\_CTRL-O|).
 			If the 'showmode' option is on "-- TERMINAL --" is shown
 			at the bottom of the window.
 
@@ -548,9 +554,8 @@ Ex		 :vi	  --	  --	 --	    --	      --
 *6 Go from Select mode to Insert mode by typing a printable character.  The
    selection is deleted and the character is inserted.
 
-If the 'insertmode' option is on, editing a file will start in Insert mode.
-
-	*CTRL-\_CTRL-N* *i_CTRL-\_CTRL-N* *c_CTRL-\_CTRL-N* *v_CTRL-\_CTRL-N*
+			*CTRL-\_CTRL-N* *i_CTRL-\_CTRL-N* *c_CTRL-\_CTRL-N*
+				      *v_CTRL-\_CTRL-N* *t_CTRL-\_CTRL-N*
 Additionally the command CTRL-\ CTRL-N or <C-\><C-N> can be used to go to
 Normal mode from any other mode.  This can be used to make sure Vim is in
 Normal mode, without causing a beep like <Esc> would.  However, this does not
@@ -558,17 +563,14 @@ work in Ex mode.  When used after a command that takes an argument, such as
 |f| or |m|, the timeout set with 'ttimeoutlen' applies.
 
 	*CTRL-\_CTRL-G* *i_CTRL-\_CTRL-G* *c_CTRL-\_CTRL-G* *v_CTRL-\_CTRL-G*
-The command CTRL-\ CTRL-G or <C-\><C-G> can be used to go to Insert mode when
-'insertmode' is set.  Otherwise it goes to Normal mode.  This can be used to
-make sure Vim is in the mode indicated by 'insertmode', without knowing in
-what mode Vim currently is.
+CTRL-\ CTRL-G works the same as |CTRL-\_CTRL-N| for backward compatibility.
 
 				*gQ* *mode-Ex* *Ex-mode* *Ex* *EX* *E501*
 gQ			Switch to Ex mode.  This is like typing ":" commands
 			one after another, except:
 			- You don't have to keep pressing ":".
 			- The screen doesn't get updated after each command.
-			Use the ":vi" command |:visual| to exit this mode.
+			Use the `:vi` command (|:visual|) to exit this mode.
 
 ==============================================================================
 Window contents						*window-contents*

@@ -6,9 +6,8 @@
 
 Nvim                                                             *deprecated*
 
-The items listed below are "deprecated". This means they will be removed in
-the future. They should not be used in new scripts, and old scripts should be
-updated.
+The items listed below are deprecated: they will be removed in the future.
+They should not be used in new scripts, and old scripts should be updated.
 
 ==============================================================================
 
@@ -25,8 +24,12 @@ Commands ~
 *:wviminfo*		Deprecated alias to |:wshada| command.
 
 Environment Variables ~
-*$NVIM_LISTEN_ADDRESS*	Deprecated in favor of |--listen|.  If both are given,
-			$NVIM_LISTEN_ADDRESS is ignored.
+*$NVIM_LISTEN_ADDRESS*	Deprecated way to
+			* set the server name (use |--listen| instead)
+			* get the server name (use |v:servername| instead)
+			* detect a parent Nvim (use |$NVIM| instead)
+			Unset by |terminal| and |jobstart()| (unless explicitly
+			given by the "env" option). Ignored if --listen is given.
 
 Events ~
 *BufCreate*		Use |BufAdd| instead.
@@ -44,6 +47,11 @@ Functions ~
 *buffer_name()*		Obsolete name for |bufname()|.
 *buffer_number()*	Obsolete name for |bufnr()|.
 *file_readable()*	Obsolete name for |filereadable()|.
+*health#report_error*	Use Lua |vim.health.report_error()| instead.
+*health#report_info*	Use Lua |vim.health.report_info()| instead.
+*health#report_ok*	Use Lua |vim.health.report_ok()| instead.
+*health#report_start*	Use Lua |vim.health.report_start()| instead.
+*health#report_warn*	Use Lua |vim.health.report_warn()| instead.
 *highlight_exists()*	Obsolete name for |hlexists()|.
 *highlightID()*		Obsolete name for |hlID()|.
 *inputdialog()*		Use |input()| instead.
@@ -54,6 +62,10 @@ Functions ~
 			or chanclose(id, "rpc") to close RPC communication
 			without stopping the job. Use chanclose(id) to close
 			any socket.
+
+Highlights ~
+
+*hl-VertSplit*		Use |hl-WinSeparator| instead.
 
 LSP Diagnostics ~
 
@@ -99,11 +111,13 @@ internally and are no longer exposed as part of the API. Instead, use
 *vim.lsp.diagnostic.set_underline()*
 *vim.lsp.diagnostic.set_virtual_text()*
 
-LSP Utility Functions ~
+LSP Functions ~
 
 *vim.lsp.util.diagnostics_to_items()*	Use |vim.diagnostic.toqflist()| instead.
 *vim.lsp.util.set_qflist()*		Use |setqflist()| instead.
 *vim.lsp.util.set_loclist()*		Use |setloclist()| instead.
+*vim.lsp.buf_get_clients()*		Use |vim.lsp.get_active_clients()| with
+                                        {buffer = bufnr} instead.
 
 Lua ~
 *vim.register_keystroke_callback()* Use |vim.on_key()| instead.

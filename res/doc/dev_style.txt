@@ -48,22 +48,6 @@ The format of the symbol name should be `NVIM_<DIRECTORY>_<FILE>_H`.
 <
 
 
-Names and Order of Includes ~
-
-Use standard order for readability and to avoid hidden dependencies: C
-library, other libraries' `.h`, your project's `.h`.
-
-    In foo.c order your includes as follows:
-
-        1. C system files.
-        2. Other libraries' `.h` files.
-        3. Your project's `.h` files.
-
-    Exception: sometimes, system-specific code needs conditional includes.
-    Such code can put conditional includes after other includes. Of course,
-    keep your system-specific code small and localized.
-
-
 Constants ~
 
 Do not use macros to define constants in headers.
@@ -545,12 +529,12 @@ it is for and how it should be used. >
     };
 
 If the field comments are short, you can also put them next to the field. But
-be consistent within one struct. >
+be consistent within one struct, and follow the necessary doxygen style. >
 
     struct wininfo_S {
-      WinInfo *wi_next;  /// Next entry or NULL for last entry.
-      WinInfo *wi_prev;  /// Previous entry or NULL for first entry.
-      Win *wi_win;       /// Pointer to window that did the wi_fpos.
+      WinInfo *wi_next;  ///< Next entry or NULL for last entry.
+      WinInfo *wi_prev;  ///< Previous entry or NULL for first entry.
+      Win *wi_win;       ///< Pointer to window that did the wi_fpos.
       ...
     };
 
@@ -787,15 +771,6 @@ getting used to, but it is important that all project contributors follow the
 style rules so that they can all read and understand everyone's code easily.
 
 
-Line Length ~
-
-Each line of text in your code should be at most 100 characters long.
-
-Exception: if a comment line contains an example command or a literal URL
-longer than 100 characters, that line may be longer than 100 characters for ease
-of cut and paste.
-
-
 Non-ASCII Characters ~
 
 Non-ASCII characters should be rare, and must use UTF-8 formatting.
@@ -812,11 +787,6 @@ encoding understood by most tools able to handle more than just ASCII.
 Hex encoding is also OK, and encouraged where it enhances readability — for
 example, `"\uFEFF"`, is the Unicode zero-width no-break space character, which
 would be invisible if included in the source as straight UTF-8.
-
-
-Spaces vs. Tabs ~
-
-Use only spaces, and indent 2 spaces at a time. Do not use tabs in your code.
 
 
 Function Declarations and Definitions ~
@@ -928,7 +898,7 @@ no name, assume a zero-length name. >
 
 Conditionals ~
 
-Don't use spaces inside parentheses. Always use curly braces. >
+Don't use spaces inside parentheses. >
 
     if (condition) {  // no spaces inside parentheses
       ...  // 2 space indent.
@@ -938,19 +908,9 @@ Don't use spaces inside parentheses. Always use curly braces. >
       ...
     }
 
-You must have a space between the `if` and the open parenthesis. You must also
-have a space between the close parenthesis and the curly brace, if you're
-using one. >
-
-    if(condition) {   // BAD: space missing after IF.
-    if (condition){   // BAD: space missing before {.
-    if (condition) {  // GOOD: proper space after IF and before {.
-
-
 Loops and Switch Statements ~
 
-Annotate non-trivial fall-through between cases. Empty loop bodies should use
-`{}` or `continue`.
+Annotate non-trivial fall-through between cases.
 
 If not conditional on an enumerated value, switch statements should always
 have a `default` case (in the case of an enumerated value, the compiler will
@@ -958,8 +918,8 @@ warn you if any values are not handled). If the default case should never
 execute, simply `assert`: >
 
     switch (var) {
-      case 0:    // 2 space indent
-        ...      // 4 space indent
+      case 0:
+        ...
         break;
       case 1:
         ...
@@ -967,16 +927,6 @@ execute, simply `assert`: >
       default:
         assert(false);
     }
-
-Empty loop bodies should use `{}` or `continue`, but not a single semicolon. >
-
-    while (condition) {
-      // Repeat test until it returns false.
-    }
-    for (int i = 0; i < kSomeNumber; i++) {}  // GOOD: empty body.
-    while (condition) continue;  // GOOD: continue indicates no logic.
-
-    while (condition);  // BAD: looks like part of do/while loop.
 
 Pointer Expressions ~
 
@@ -995,15 +945,6 @@ Note that:
 
     - There are no spaces around the period or arrow when accessing a member.
     - Pointer operators have no space after the * or &.
-
-When declaring a pointer variable or argument, place the asterisk adjacent to
-the variable name: >
-
-    char *c;
-
-    char * c;  // BAD: spaces on both sides of *
-    char* c;   // BAD
-
 
 Boolean Expressions ~
 
@@ -1034,48 +975,12 @@ expr;`. >
     return(result);  // return is not a function!
 
 
-Preprocessor Directives ~
-
-The hash mark that starts a preprocessor directive should always be at the
-beginning of the line.
-
-Even when preprocessor directives are within the body of indented code, the
-directives should start at the beginning of the line.
-
-Nested directives should add one spaces after the hash mark for each level of
-indentation. 
-
-    // GOOD: directives at beginning of line >
-      if (lopsided_score) {
-    #if DISASTER_PENDING      // Correct -- Starts at beginning of line
-        drop_everything();
-    # if NOTIFY               // One space after #
-        notify_client();
-    # endif
-    #endif
-        BackToNormal();
-      }
-
-<    // BAD: indented directives >
-      if (lopsided_score) {
-        #if DISASTER_PENDING  // Wrong!  The "#if" should be at beginning of line
-        drop_everything();
-        #endif                // Wrong!  Do not indent "#endif"
-        back_to_normal();
-      }
-
-
 Horizontal Whitespace ~
 
-Use of horizontal whitespace depends on location. Never put trailing
-whitespace at the end of a line.
+Use of horizontal whitespace depends on location.
 
     General ~
 >
-        if (x) {          // Open braces should always have a space before them.
-          ...
-        }
-        int i = 0;        // Semicolons usually have no space before them.
         int x[] = { 0 };  // Spaces inside braces for braced-init-list.
 <
 
@@ -1095,29 +1000,6 @@ whitespace at the end of a line.
         };
 <
 
-    Macros ~
->
-        #define FI(x) \  // Don't align \'s in macro definitions.
-          foo();      \
-          bar();      \
-          ...
-<
-
-    Loops and Conditionals ~
->
-        if (b) {              // Space after the keyword in condition.
-        } else {              // Spaces around else.
-        }
-        while (test) {}       // There is usually no space inside parentheses.
-        for (; i < 5; i++) {  // For loops always have a space after the
-          ...                 // semicolon and no a space before the
-          ...                 // semicolon.
-        }
-        switch (i) {
-          case 1:             // No space before colon in a switch case.
-            ...
-          case 2: break;      // Space after a colon if there's code after it.
-<
 
     Operators ~
 >
@@ -1127,20 +1009,12 @@ whitespace at the end of a line.
         x++;              // arguments.
         if (x && !y)
           ...
-        v = w*x + y/z;    // Use spaces to indicate operator precedence.
-        v = w * (x + z);  // Parentheses should have no spaces inside them.
         i = (int)d;       // No spaces after a cast operator.
 <
 
 Vertical Whitespace ~
 
 Minimize use of vertical whitespace.
-
-This is more a principle than a rule: don't use blank lines when you don't
-have to. In particular, don't put more than one or two blank lines between
-functions, resist starting functions with a blank line, don't end functions
-with a blank line, and be discriminating with your use of blank lines inside
-functions.
 
 The basic principle is: The more code that fits on one screen, the easier it
 is to follow and understand the control flow of the program. Of course,
