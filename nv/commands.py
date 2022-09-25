@@ -3921,7 +3921,7 @@ class nv_vi_star(TextCommand):
                 start=view.word(s.end()).end(),
                 end=view.size(),
                 flags=flags,
-                times=1
+                times=count
             )
 
             if match:
@@ -3967,7 +3967,7 @@ class nv_vi_octothorp(TextCommand):
                 start=0,
                 end=(s.b if s.a > s.b else s.a),
                 flags=flags,
-                times=1
+                times=count
             )
 
             if match:

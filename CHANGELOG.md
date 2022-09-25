@@ -4,6 +4,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.27.0 - Unreleased
 
+* Added [#711](https://github.com/NeoVintageous/NeoVintageous/issues/711): Add `[count]` for `*`
+* Added [#711](https://github.com/NeoVintageous/NeoVintageous/issues/711): Add `[count]` for `#`
 * Fixed [#826](https://github.com/NeoVintageous/NeoVintageous/issues/826): Add jumps like `%` inside comments
 
 ## 1.26.3 - 2022-06-20
