@@ -336,6 +336,7 @@
     {"keys": ["shift+left"],  "command": "nv_feed_key", "args": {"key": "<S-left>"},  "context": [{"key": "vi_command_mode_aware"}, {"key": "nv_handle_key", "operand": "<S-left>"}]},
     {"keys": ["shift+right"], "command": "nv_feed_key", "args": {"key": "<S-right>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "nv_handle_key", "operand": "<S-right>"}]},
     {"keys": ["shift+space"], "command": "nv_feed_key", "args": {"key": "<S-space>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "nv_handle_key", "operand": "<S-space>"}]},
+    {"keys": ["shift+tab"],   "command": "nv_feed_key", "args": {"key": "<S-tab>"},   "context": [{"key": "vi_command_mode_aware"}, {"key": "nv_handle_key", "operand": "<S-tab>"}]},
     {"keys": ["shift+up"],    "command": "nv_feed_key", "args": {"key": "<S-up>"},    "context": [{"key": "vi_command_mode_aware"}, {"key": "nv_handle_key", "operand": "<S-up>"}]},
 
     {"keys": ["shift+ctrl+enter"], "command": "nv_feed_key", "args": {"key": "<C-S-cr>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}, {"key": "nv_handle_key", "operand": "<C-S-cr>"}]},
