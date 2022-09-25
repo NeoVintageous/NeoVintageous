@@ -34,7 +34,11 @@ def load_session() -> None:
             if content.strip():
                 session = json.loads(content, object_hook=_json_object_hook_dict_str_key_to_int)
                 if session:
-                    accept_keys = ('history', 'ex_substitute_last_pattern', 'ex_substitute_last_replacement')
+                    accept_keys = (
+                        'history',
+                        'ex_substitute_last_pattern',
+                        'ex_substitute_last_replacement')
+
                     for k, v in session.items():
                         if k not in accept_keys:
                             continue
