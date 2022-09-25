@@ -588,7 +588,8 @@ i)							*v_i)* *i)* *i(*
 i(							*vib* *v_ib* *v_i(* *ib*
 ib			"inner block", select [count] blocks, from "[count] [("
 			to the matching ')', excluding the '(' and ')' (see
-			|[(|).
+			|[(|).  If the cursor is not inside a () block, then
+ 			find the next "(".
 			When used in Visual mode it is made charwise.
 
 a>						*v_a>* *v_a<* *a>* *a<*
@@ -735,6 +736,11 @@ Jumping to a mark can be done in two ways:
 2. With ' (single quote): The cursor is positioned on the first non-blank
 			  character in the line of the specified location and
 			  the motion is linewise.
+						*mark-view*
+3. Apart from the above if 'jumpoptions' contains "view", they will also try to
+restore the mark view. This is the number of lines between the cursor position
+and the window topline (first buffer line displayed in the window) when it was
+set.
 
 						*m* *mark* *Mark*
 m{a-zA-Z}		Set mark {a-zA-Z} at cursor position (does not move
@@ -993,7 +999,7 @@ These commands are not marks themselves, but jump to a mark:
 				:let lnum = line(".")
 				:keepjumps normal gg
 				:call SetLastChange()
-				:keepjumps exe "normal " . lnum . "G"
+				:keepjumps exe "normal " .. lnum .. "G"
 <
 			Note that ":keepjumps" must be used for every command.
 			When invoking a function the commands in that function
@@ -1043,6 +1049,9 @@ For example, after three jump commands you have this jump list:
 The "file/text" column shows the file name, or the text at the jump if it is
 in the current file (an indent is removed and a long line is truncated to fit
 in the window).
+
+The marker ">" indicates the current position in the jumplist.  It may not be
+shown when filtering the |:jumps| command using |:filter|
 
 You are currently in line 1167.  If you then use the CTRL-O command, the
 cursor is put in line 1154.  This results in:

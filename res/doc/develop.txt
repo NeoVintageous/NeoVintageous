@@ -105,7 +105,7 @@ in eval.c:
 
 - eval_call_provider(name, method, arguments, discard): calls
   provider#{name}#Call with the method and arguments. If discard is true, any
-  value returned by the provider will be discarded and and empty value be
+  value returned by the provider will be discarded and empty value will be
   returned.
 - eval_has_provider(name): Checks the `g:loaded_{name}_provider` variable
   which must be set to 2 by the provider script to indicate that it is
@@ -204,7 +204,7 @@ Docstring format:
 - Use `<pre>`  for code samples.
 
 Example: the help for |vim.paste()| is generated from a docstring decorating
-vim.paste in src/nvim/lua/vim.lua like this: >
+vim.paste in runtime/lua/vim/_editor.lua like this: >
 
     --- Paste handler, invoked by |nvim_paste()| when a conforming UI
     --- (such as the |TUI|) pastes text into the editor.
@@ -243,12 +243,13 @@ If the function acts on an object then {thing} is the name of that object
 with a {thing} that groups functions under a common concept).
 
 Use existing common {action} names if possible:
-    add   Append to, or insert into, a collection
-    del   Delete a thing (or group of things)
-    exec  Execute code
-    get   Get a thing (or group of things by query)
-    list  Get all things
-    set   Set a thing (or group of things)
+    add     Append to, or insert into, a collection
+    create  Create a new thing
+    del     Delete a thing (or group of things)
+    exec    Execute code
+    get     Get a thing (or group of things by query)
+    list    Get all things
+    set     Set a thing (or group of things)
 
 Use consistent names for {thing} in all API functions. E.g. a buffer is called
 "buf" everywhere, not "buffer" in some places and "buf" in others.

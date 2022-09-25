@@ -544,7 +544,8 @@ also works.  The <CR> and <NL> characters can never appear inside a line.
 
 The second format is new.  It includes additional information in optional
 fields at the end of each line.  It is backwards compatible with Vi.  It is
-only supported by new versions of ctags (such as Exuberant ctags).
+only supported by new versions of ctags (such as Universal ctags or Exuberant
+ctags).
 
 {tagname}	The identifier.  Normally the name of a function, but it can
 		be any identifier.  It cannot contain a <Tab>.
@@ -705,7 +706,7 @@ matches the pattern "^# *define" it is not considered to be a comment.
 If you want to list matches, and then select one to jump to, you could use a
 mapping to do that for you.  Here is an example: >
 
-  :map <F4> [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
+  :map <F4> [I:let nr = input("Which one: ")<Bar>exe "normal " .. nr .. "[\t"<CR>
 <
 							*[i*
 [i			Display the first line that contains the keyword
@@ -869,12 +870,14 @@ like |CTRL-]|.
 
 The function used for generating the taglist is specified by setting the
 'tagfunc' option.  The function will be called with three arguments:
-   a:pattern	The tag identifier or pattern used during the tag search.
-   a:flags	String containing flags to control the function behavior.
-   a:info	Dict containing the following entries:
+   pattern	The tag identifier or pattern used during the tag search.
+   flags	String containing flags to control the function behavior.
+   info		Dict containing the following entries:
 		    buf_ffname	  Full filename which can be used for priority.
 		    user_data	  Custom data String, if stored in the tag
 				  stack previously by tagfunc.
+
+Note that "a:" needs to be prepended to the argument name when using it.
 
 Currently up to three flags may be passed to the tag function:
   'c'		The function was invoked by a normal command being processed

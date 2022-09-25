@@ -161,9 +161,10 @@ If you want to highlight exactly the same area as the last time, you can use
 							*v_<Esc>*
 <Esc>			In Visual mode: Stop Visual mode.
 						*v_META* *v_ALT*
-		ALT (|META|) acts like <Esc> if the chord is not mapped.
+		ALT (|META|) may act like <Esc> if the chord is not mapped.
 		For example <A-x> acts like <Esc>x if <A-x> does not have a
 		visual-mode mapping.
+
 							*v_CTRL-C*
 CTRL-C			In Visual mode: Stop Visual mode.  When insert mode is
 			pending (the mode message shows
@@ -255,6 +256,7 @@ Additionally the following commands can be used:
 	X	delete (2)					|v_X|
 	Y	yank (2)					|v_Y|
 	p	put						|v_p|
+	P	put without overwriting registers		|v_P|
 	J	join (1)					|v_J|
 	U	make uppercase					|v_U|
 	u	make lowercase					|v_u|
@@ -478,6 +480,10 @@ Commands in Select mode:
 - ESC stops Select mode.
 - CTRL-O switches to Visual mode for the duration of one command. *v_CTRL-O*
 - CTRL-G switches to Visual mode.
+- CTRL-R {register} selects the register to be used for the text that is
+  deleted when typing text.					  *v_CTRL-R*
+  Unless you specify the "_" (black hole) register, the unnamed register is
+  also overwritten.
 
 Otherwise, typed characters are handled as in Visual mode.
 
@@ -494,6 +500,13 @@ work both in Visual mode and in Select mode.  When these are used in Select
 mode Vim automatically switches to Visual mode, so that the same behavior as
 in Visual mode is effective.  If you don't want this use |:xmap| or |:smap|.
 
+One particular edge case: >
+  	:vnoremap <C-K> <Esc>
+This ends Visual mode when in Visual mode, but in Select mode it does not
+work, because Select mode is restored after executing the mapped keys.  You
+need to use: >
+  	:snoremap <C-K> <Esc>
+<
 Users will expect printable characters to replace the selected area.
 Therefore avoid mapping printable characters in Select mode.  Or use
 |:sunmap|  after |:map| and |:vmap| to remove it for Select mode.

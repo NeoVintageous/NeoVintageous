@@ -30,10 +30,10 @@ CTRL-L			Clears and redraws the screen.  The redraw may happen
 			function (or a mapping if 'lazyredraw' set).
 
 						*:redraws* *:redrawstatus*
-:redraws[tatus][!]	Redraws the status line of the current window, or all
-			status lines if "!" is included.
-			Useful if 'statusline' includes an item that doesn't
-			cause automatic updating.
+:redraws[tatus][!]	Redraws the status line and window bar of the current
+			window, or all status lines and window bars if "!" is
+			included. Useful if 'statusline' or 'winbar' includes
+			an item that doesn't cause automatic updating.
 
 						*:redrawt* *:redrawtabline*
 :redrawt[abline]	Redraw the tabline.  Useful to update the tabline when
@@ -208,8 +208,6 @@ g8			Print the hex values of the bytes used in the
 			{commands} cannot start with a space.  Put a count of
 			1 (one) before it, "1 " is one space.
 
-			The 'insertmode' option is ignored for {commands}.
-
 			This command cannot be followed by another command,
 			since any '|' is considered part of the command.
 
@@ -241,7 +239,8 @@ g8			Print the hex values of the bytes used in the
 
 			Type |i| to enter |Terminal-mode|, then keys are sent to
 			the job running in the terminal. Type <C-\><C-N> to
-			leave Terminal-mode. |CTRL-\_CTRL-N|
+			leave Terminal-mode. |CTRL-\_CTRL-N|. Type <C-\><C-O>
+			to execute a single normal mode command |t_CTRL-\_CTRL-O|
 
 			Fails if changes have been made to the current buffer,
 			unless 'hidden' is set.
@@ -249,7 +248,7 @@ g8			Print the hex values of the bytes used in the
 			To enter |Terminal-mode| automatically: >
 			      autocmd TermOpen * startinsert
 <
-							*:!cmd* *:!* *E34*
+							*:!cmd* *:!*
 :!{cmd}			Execute {cmd} with 'shell'. See also |:terminal|.
 
 			The command runs in a non-interactive shell connected
@@ -261,6 +260,7 @@ g8			Print the hex values of the bytes used in the
 			Use |jobstart()| instead. >
 				:call jobstart('foo', {'detach':1})
 <
+							*E34*
 			Any "!" in {cmd} is replaced with the previous
 			external command (see also 'cpoptions'), unless
 			escaped by a backslash.  Example: ":!ls" followed by
@@ -274,7 +274,7 @@ g8			Print the hex values of the bytes used in the
 			Special characters are not escaped, use quotes or
 			|shellescape()|: >
 				:!ls "%"
-				:exe "!ls " . shellescape(expand("%"))
+				:exe "!ls " .. shellescape(expand("%"))
 <
 			Newline character ends {cmd} unless a backslash
 			precedes the newline.  What follows is interpreted as
@@ -347,7 +347,11 @@ g8			Print the hex values of the bytes used in the
 			Only string variables can be used.  After the
 			redirection starts, if the variable is removed or
 			locked or the variable type is changed, then further
-			command output messages will cause errors.
+			command output messages will cause errors.  When using
+			a local variable (l:var in a function or s:var in a
+			script) and another `:redir` causes the current one to
+			end, the scope might be different and the assignment
+			fails.
 			To get the output of one command the |execute()|
 			function can be used instead of redirection.
 
@@ -357,19 +361,19 @@ g8			Print the hex values of the bytes used in the
 :redi[r] END		End redirecting messages.
 
 							*:filt* *:filter*
-:filt[er][!] {pat} {command}
-:filt[er][!] /{pat}/ {command}
+:filt[er][!] {pattern} {command}
+:filt[er][!] /{pattern}/ {command}
 			Restrict the output of {command} to lines matching
-			with {pat}.  For example, to list only xml files: >
+			with {pattern}.  For example, to list only xml files: >
 				:filter /\.xml$/ oldfiles
 <			If the [!] is given, restrict the output of {command}
-			to lines that do NOT match {pat}.
+			to lines that do NOT match {pattern}.
 
-			{pat} is a Vim search pattern.  Instead of enclosing
+			{pattern} is a Vim search pattern.  Instead of enclosing
 			it in / any non-ID character (see |'isident'|) can be
-			used, so long as it does not appear in {pat}.  Without
-			the enclosing character the pattern cannot include the
-			bar character. 'ignorecase' is not used.
+			used, so long as it does not appear in {pattern}.
+			Without the enclosing character the pattern cannot
+			include the bar character. 'ignorecase' is not used.
 
 			The pattern is matched against the relevant part of
 			the output, not necessarily the whole line. Only some
@@ -387,6 +391,8 @@ g8			Print the hex values of the bytes used in the
 			   |:marks|      - filter by text in the current file,
 					   or file name for other files
 			   |:oldfiles|   - filter by file name
+			   |:registers|  - filter by register contents
+					   (does not work multi-line)
 			   |:set|        - filter by option name
 
 			Only normal messages are filtered, error messages are
@@ -429,7 +435,7 @@ g8			Print the hex values of the bytes used in the
 			used.  In this example |:silent| is used to avoid the
 			message about reading the file and |:unsilent| to be
 			able to list the first line of each file. >
-    		:silent argdo unsilent echo expand('%') . ": " . getline(1)
+		:silent argdo unsilent echo expand('%') .. ": " .. getline(1)
 <
 
 						*:verb* *:verbose*
@@ -458,10 +464,11 @@ g8			Print the hex values of the bytes used in the
 							*:verbose-cmd*
 When 'verbose' is non-zero, listing the value of a Vim option or a key map or
 an abbreviation or a user-defined function or a command or a highlight group
-or an autocommand will also display where it was last defined.  If it was
-defined manually then there will be no "Last set" message.  When it was
-defined while executing a function, user command or autocommand, the script in
-which it was defined is reported.
+or an autocommand will also display where it was last defined. If they were
+defined in Lua they will only be located if 'verbose' is set. So Start
+nvim with -V1 arg to see them. If it was defined manually then there
+will be no "Last set" message.  When it was defined while executing a function,
+user command or autocommand, the script in which it was defined is reported.
 
 							*K*
 [count]K       		Runs the program given by 'keywordprg' to lookup the

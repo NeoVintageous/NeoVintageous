@@ -67,11 +67,18 @@ CTRL-V		Insert next non-digit literally.  Up to three digits form the
 		decimal value of a single byte.  The non-digit and the three
 		digits are not considered for mapping.  This works the same
 		way as in Insert mode (see above, |i_CTRL-V|).
+		For special keys, the CTRL modifier may be included into the
+		key to produce a control character.  If there is no control
+		character for the key then its |key-notation| is inserted.
 		Note: Under Windows CTRL-V is often mapped to paste text.
 		Use CTRL-Q instead then.
 							*c_CTRL-Q*
 CTRL-Q		Same as CTRL-V.  But with some terminals it is used for
 		control flow, it doesn't work then.
+
+CTRL-SHIFT-V				*c_CTRL-SHIFT-V* *c_CTRL-SHIFT-Q*
+CTRL-SHIFT-Q	Works just like CTRL-V, but do not try to include the CTRL
+		modifier into the key.
 
 							*c_<Left>* *c_Left*
 <Left>		cursor left
@@ -207,7 +214,7 @@ CTRL-\ e {expr}						*c_CTRL-\_e*
 		Example: >
 			:cmap <F7> <C-\>eAppendSome()<CR>
 			:func AppendSome()
-			   :let cmd = getcmdline() . " Some()"
+			   :let cmd = getcmdline() .. " Some()"
 			   :" place the cursor on the )
 			   :call setcmdpos(strlen(cmd))
 			   :return cmd
@@ -233,7 +240,7 @@ CTRL-[						*c_CTRL-[* *c_<Esc>* *c_Esc*
 		Note: If your <Esc> key is hard to hit on your keyboard, train
 		yourself to use CTRL-[.
 						*c_META* *c_ALT*
-		ALT (|META|) acts like <Esc> if the chord is not mapped.
+		ALT (|META|) may act like <Esc> if the chord is not mapped.
 		For example <A-x> acts like <Esc>x if <A-x> does not have a
 		command-line mode mapping.
 							*c_CTRL-C*
@@ -679,7 +686,7 @@ If more line specifiers are given than required for the command, the first
 one(s) will be ignored.
 
 Line numbers may be specified with:		*:range* *{address}*
-	{number}	an absolute line number
+	{number}	an absolute line number  *E1247*
 	.		the current line			  *:.*
 	$		the last line in the file		  *:$*
 	%		equal to 1,$ (the entire file)		  *:%*
@@ -697,7 +704,8 @@ Line numbers may be specified with:		*:range* *{address}*
 
 Each may be followed (several times) by '+' or '-' and an optional number.
 This number is added or subtracted from the preceding line number.  If the
-number is omitted, 1 is used.
+number is omitted, 1 is used.  If there is nothing before the '+' or '-' then
+the current line is used.
 
 The "/" and "?" after {pattern} are required to separate the pattern from
 anything that follows.
@@ -727,7 +735,7 @@ Some commands allow for a count after the command.  This count is used as the
 number of lines to be used, starting with the line given in the last line
 specifier (the default is the cursor line).  The commands that accept a count
 are the ones that use a range but do not have a file name argument (because
-a file name can also be a number).
+a file name can also be a number).  The count cannot be negative.
 
 Examples: >
 	:s/x/X/g 5	substitute 'x' by 'X' in the current line and four
@@ -867,18 +875,30 @@ Note: these are typed literally, they are not special keys!
 		   match with (for FileType, Syntax and SpellFileMissing
 		   events).
 		   When the match is with a file name, it is expanded to the
- 		   full path.
+		   full path.
 							*:<sfile>* *<sfile>*
-	<sfile>    When executing a ":source" command, is replaced with the
+	<sfile>    When executing a `:source` command, is replaced with the
 		   file name of the sourced file.  *E498*
-		   When executing a function, is replaced with:
-		   "function {function-name}[{lnum}]"
-		   function call nesting is indicated like this:
-		   "function {function-name1}[{lnum}]..{function-name2}[{lnum}]"
+		   When executing a function, is replaced with the call stack,
+		   as with <stack> (this is for backwards compatibility, using
+		   <stack> or <script> is preferred).
 		   Note that filename-modifiers are useless when <sfile> is
-		   used inside a function.
+		   not used inside a script.
+							*:<stack>* *<stack>*
+	<stack>	   is replaced with the call stack, using
+		   "function {function-name}[{lnum}]" for a function line
+		   and "script {file-name}[{lnum}]" for a script line, and
+		   ".." in between items.  E.g.:
+		   "function {function-name1}[{lnum}]..{function-name2}[{lnum}]"
+		   If there is no call stack you get error *E489* .
+							*:<script>* *<script>*
+	<script>   When executing a `:source` command, is replaced with the file
+		   name of the sourced file.  When executing a function, is
+		   replaced with the file name of the script where it is
+		   defined.
+		   If the file name cannot be determined you get error *E1274* .
 							*:<slnum>* *<slnum>*
-	<slnum>	   When executing a ":source" command, is replaced with the
+	<slnum>	   When executing a `:source` command, is replaced with the
 		   line number.  *E842*
 		   When executing a function it's the line number relative to
 		   the start of the function.
@@ -907,8 +927,7 @@ These modifiers can be given, in this order:
 		directory.
 	:.	Reduce file name to be relative to current directory, if
 		possible.  File name is unmodified if it is not below the
-		current directory, but on MS-Windows the drive is removed if
-		it is the current drive.
+		current directory.
 		For maximum shortness, use ":~:.".
 	:h	Head of the file name (the last component and any separators
 		removed).  Cannot be used with :e, :r or :t.
@@ -1058,8 +1077,7 @@ line contains the command as typed so far.  The left column will show a
 character that indicates the type of command-line being edited, see
 |cmdwin-char|.
 
-Vim will be in Normal mode when the editor is opened, except when 'insertmode'
-is set.
+Vim will be in Normal mode when the editor is opened.
 
 The height of the window is specified with 'cmdwinheight' (or smaller if there
 is no room).  The window is always full width and is positioned just above the
@@ -1130,8 +1148,8 @@ save the command-line history and read it back later.
 If the 'wildchar' option is set to <Tab>, and the command-line window is used
 for an Ex command, then two mappings will be added to use <Tab> for completion
 in the command-line window, like this: >
-	:imap <buffer> <Tab> <C-X><C-V>
-	:nmap <buffer> <Tab> a<C-X><C-V>
+	:inoremap <buffer> <Tab> <C-X><C-V>
+	:nnoremap <buffer> <Tab> a<C-X><C-V>
 Note that hitting <Tab> in Normal mode will do completion on the next
 character.  That way it works at the end of the line.
 If you don't want these mappings, disable them with: >
