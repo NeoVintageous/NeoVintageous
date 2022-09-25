@@ -885,6 +885,16 @@ example on Ubuntu you can configure keyboard repeat interval and delay: >
     gsettings set org.gnome.desktop.peripherals.keyboard repeat-interval 15
     gsettings set org.gnome.desktop.peripherals.keyboard delay 180
 
+and for KDE: >
+
+    systemsettings5 kcm_keyboard
+
+brings up a window where you can change 'Delay' and 'Rate' as required.
+
+In general if you are on X11 type systems you could directly use: >
+
+    xset r rate <milliseconds_before_repeating> <repetitions_per_second>
+
 ------------------------------------------------------------------------------
 
 Custom key bindings in insert mode                                 *nv-escape*
