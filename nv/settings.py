@@ -19,7 +19,7 @@ import os
 
 from sublime import active_window
 
-from NeoVintageous.nv.polyfill import save_preferences
+from NeoVintageous.nv.polyfill import toggle_preference
 from NeoVintageous.nv.session import get_session_value
 from NeoVintageous.nv.session import get_session_view_value
 from NeoVintageous.nv.session import set_session_value
@@ -355,14 +355,9 @@ def set_visual_block_direction(view, direction: int) -> None:
         view.settings().set('_nv_visual_block_direction', direction)
 
 
-def _toggle_preference(name: str) -> None:
-    with save_preferences() as preferences:
-        preferences.set(name, not preferences.get(name))
-
-
 def toggle_ctrl_keys() -> None:
-    _toggle_preference('vintageous_use_ctrl_keys')
+    toggle_preference('vintageous_use_ctrl_keys')
 
 
 def toggle_super_keys() -> None:
-    _toggle_preference('vintageous_use_super_keys')
+    toggle_preference('vintageous_use_super_keys')
