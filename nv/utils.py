@@ -1233,7 +1233,11 @@ def restore_visual_repeat_data(view, mode: str, data: tuple) -> None:
 
 
 def is_help_view(view) -> bool:
-    return view and view.is_read_only() and view.is_scratch() and '[vim help]' in view.name()
+    return (view and
+            view.is_read_only() and
+            view.is_scratch() and
+            '[vim help]' in view.name() and
+            view.score_selector(0, 'text.neovintageous.help') > 0)
 
 
 def view_count_excluding_help_views(window) -> int:

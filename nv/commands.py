@@ -115,6 +115,7 @@ from NeoVintageous.nv.utils import highest_visible_pt
 from NeoVintageous.nv.utils import highlow_visible_rows
 from NeoVintageous.nv.utils import is_linewise_operation
 from NeoVintageous.nv.utils import is_view
+from NeoVintageous.nv.utils import is_help_view
 from NeoVintageous.nv.utils import lowest_visible_pt
 from NeoVintageous.nv.utils import new_inclusive_region
 from NeoVintageous.nv.utils import next_blank
@@ -2108,7 +2109,7 @@ class nv_vi_ctrl_right_square_bracket(WindowCommand):
 
     def run(self, mode=None, count=1):
         view = self.window.active_view()
-        if view and view.score_selector(0, 'text.neovintageous.help') > 0:
+        if is_help_view(view):
             GotoView(view, mode, count).help()
         else:
             self.window.run_command('goto_definition')
