@@ -39,13 +39,9 @@ from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import status_message
 
 
-def goto_help(window) -> None:
-    view = window.active_view()
-    if not view:
-        raise ValueError('view is required')
-
-    if not view.sel():
-        raise ValueError('selection is required')
+def goto_help(view) -> None:
+    if not view or not view.sel():
+        raise ValueError('view selection is required')
 
     sel = view.sel()[0]
 
@@ -66,9 +62,9 @@ def goto_help(window) -> None:
     if len(subject) > 50:
         return status_message('E149: Sorry, no help found')
 
-    # TODO Refactor ex cmd internets to this common utility
+    # TODO Refactor ex help into reusable api without need for do_ex_command
     from NeoVintageous.nv.ex_cmds import do_ex_command
-    do_ex_command(window, 'help', {'subject': subject})
+    do_ex_command(view.window(), 'help', {'subject': subject})
 
 
 def goto_line(view, mode: str, line_number: int) -> None:
@@ -241,3 +237,35 @@ def goto_next_target(view, mode: str, count: int, target: str) -> None:
         return s
 
     regions_transformer(view, f)
+
+
+class GotoView():
+
+    def __init__(self, view, mode: str, count: int):
+        self.view = view
+        self.mode = mode
+        self.count = count
+
+    def next_change(self) -> None:
+        goto_next_change(self.view, self.mode, self.count)
+
+    def prev_change(self) -> None:
+        goto_prev_change(self.view, self.mode, self.count)
+
+    def next_mispelled_word(self) -> None:
+        goto_next_mispelled_word(self.view, self.mode, self.count)
+
+    def prev_mispelled_word(self) -> None:
+        goto_prev_mispelled_word(self.view, self.mode, self.count)
+
+    def next_target(self, **kwargs) -> None:
+        goto_next_target(self.view, self.mode, self.count, **kwargs)
+
+    def prev_target(self, **kwargs) -> None:
+        goto_prev_target(self.view, self.mode, self.count, **kwargs)
+
+    def line(self) -> None:
+        goto_line(self.view, self.mode, self.count)
+
+    def help(self) -> None:
+        goto_help(self.view)

@@ -40,14 +40,7 @@ from NeoVintageous.nv.ex_cmds import do_ex_cmd_edit_wrap
 from NeoVintageous.nv.ex_cmds import do_ex_cmdline
 from NeoVintageous.nv.ex_cmds import do_ex_command
 from NeoVintageous.nv.feed_key import FeedKeyHandler
-from NeoVintageous.nv.goto import goto_help
-from NeoVintageous.nv.goto import goto_line
-from NeoVintageous.nv.goto import goto_next_change
-from NeoVintageous.nv.goto import goto_next_mispelled_word
-from NeoVintageous.nv.goto import goto_next_target
-from NeoVintageous.nv.goto import goto_prev_change
-from NeoVintageous.nv.goto import goto_prev_mispelled_word
-from NeoVintageous.nv.goto import goto_prev_target
+from NeoVintageous.nv.goto import GotoView
 from NeoVintageous.nv.history import history_get
 from NeoVintageous.nv.history import history_get_type
 from NeoVintageous.nv.history import history_len
@@ -2118,10 +2111,10 @@ class nv_vi_g(TextCommand):
 
 class nv_vi_ctrl_right_square_bracket(WindowCommand):
 
-    def run(self, **kwargs):
+    def run(self, mode=None, count=1):
         view = self.window.active_view()
         if view and view.score_selector(0, 'text.neovintageous.help') > 0:
-            goto_help(self.window)
+            GotoView(view, mode, count).help()
         else:
             self.window.run_command('goto_definition')
 
@@ -3140,7 +3133,7 @@ class nv_vi_k(TextCommand):
 class nv_vi_gg(TextCommand):
     def run(self, edit, mode=None, count=None):
         if count:
-            goto_line(self.view, mode, count)
+            GotoView(self.view, mode, count).line()
             return
 
         def f(view, s):
@@ -3163,7 +3156,7 @@ class nv_vi_gg(TextCommand):
 class nv_vi_big_g(TextCommand):
     def run(self, edit, mode=None, count=None):
         if count:
-            goto_line(self.view, mode, count)
+            GotoView(self.view, mode, count).line()
             return
 
         def f(view, s):
@@ -4277,23 +4270,25 @@ class nv_vi_gm(TextCommand):
 
 class nv_vi_left_square_bracket(TextCommand):
     def run(self, edit, action, mode, count=1, **kwargs):
+        goto = GotoView(self.view, mode, count)
         if action == 'c':
-            goto_prev_change(self.view, mode, count)
+            goto.prev_change()
         elif action == 's':
-            goto_prev_mispelled_word(self.view, mode, count)
+            goto.prev_mispelled_word()
         elif action == 'target':
-            goto_prev_target(self.view, mode, count, **kwargs)
+            goto.prev_target(**kwargs)
         else:
             raise ValueError('unknown action')
 
 
 class nv_vi_right_square_bracket(TextCommand):
     def run(self, edit, action, mode, count=1, **kwargs):
+        goto = GotoView(self.view, mode, count)
         if action == 'c':
-            goto_next_change(self.view, mode, count)
+            goto.next_change()
         elif action == 's':
-            goto_next_mispelled_word(self.view, mode, count)
+            goto.next_mispelled_word()
         elif action == 'target':
-            goto_next_target(self.view, mode, count, **kwargs)
+            goto.next_target(**kwargs)
         else:
             raise ValueError('unknown action')

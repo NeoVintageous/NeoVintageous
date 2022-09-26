@@ -40,7 +40,7 @@ from NeoVintageous.nv.cmdline import CmdlineOutput
 from NeoVintageous.nv.ex.nodes import RangeNode
 from NeoVintageous.nv.ex.parser import parse_command_line
 from NeoVintageous.nv.ex.parser import resolve_address
-from NeoVintageous.nv.goto import goto_line
+from NeoVintageous.nv.goto import GotoView
 from NeoVintageous.nv.history import history
 from NeoVintageous.nv.mappings import mappings_add
 from NeoVintageous.nv.mappings import mappings_remove
@@ -1285,7 +1285,7 @@ def _default_ex_cmd(window, view, line_range: RangeNode, **kwargs) -> None:
     _log.debug('default ex cmd %s %s', line_range, kwargs)
     line = row_at(view, line_range.resolve(view).a) + 1
     enter_normal_mode(window, get_mode(view))
-    goto_line(view, get_mode(view), line)
+    GotoView(view, get_mode(view), line).line()
 
 
 def _get_ex_cmd(name: str):
