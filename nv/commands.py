@@ -1122,7 +1122,6 @@ class nv_vi_dot(WindowCommand):
             count = None
 
         type_, seq_or_cmd, old_mode, visual_data = repeat_data
-        _log.debug('type=%s, seqorcmd=%s, oldmode=%s', type_, seq_or_cmd, old_mode)
 
         if visual_data and (mode != VISUAL):
             restore_visual_repeat_data(self.view, get_mode(self.view), visual_data)
@@ -1837,8 +1836,6 @@ class nv_vi_paste(TextCommand):
         contents, linewise = registers_get_for_paste(self.view, register, mode)
         if not contents:
             return status_message('E353: Nothing in register ' + register)
-
-        _log.debug('paste %s count=%s register=%s before=%s indent=%s end=%s linewise=%s content >>>%s<<<', mode, count, register, before_cursor, adjust_indent, adjust_cursor, linewise, contents)  # noqa: E501
 
         contents = _resolve_paste_items_with_view_sel(self.view, contents)
         if not contents:
