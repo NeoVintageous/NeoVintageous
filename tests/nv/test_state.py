@@ -22,8 +22,8 @@ from NeoVintageous.nv.settings import append_sequence
 from NeoVintageous.nv.settings import get_action_count
 from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_glue_until_normal_mode
-from NeoVintageous.nv.settings import get_last_buffer_search
-from NeoVintageous.nv.settings import get_last_char_search
+from NeoVintageous.nv.settings import get_last_buffer_search_pattern
+from NeoVintageous.nv.settings import get_last_char_search_character
 from NeoVintageous.nv.settings import get_last_char_search_command
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_motion_count
@@ -69,8 +69,9 @@ class TestState(unittest.ViewTestCase):
         # Make sure the actual usage of NeoVintageous doesn't change the
         # pristine state. This isn't great, though.
         self.view.window().settings().erase('_vintageous_last_char_search_command')
-        self.view.window().settings().erase('_vintageous_last_char_search')
-        self.view.window().settings().erase('_vintageous_last_buffer_search')
+        self.view.window().settings().erase('_vintageous_last_char_search_character')
+        self.view.window().settings().erase('_vintageous_last_buffer_search_command')
+        self.view.window().settings().erase('_vintageous_last_buffer_search_pattern')
 
         self.assertEqual(get_sequence(self.view), '')
         self.assertEqual(get_partial_sequence(self.view), '')
@@ -110,11 +111,11 @@ class TestState(unittest.ViewTestCase):
         self.assertEqual(get_action_count(self.view), '')
         self.assertEqual(get_glue_until_normal_mode(self.view), False)
         self.assertEqual(is_processing_notation(self.view), False)
-        self.assertEqual(get_last_char_search(self.view), '')
+        self.assertEqual(get_last_char_search_character(self.view), '')
         self.assertEqual(get_last_char_search_command(self.view), 'vi_f')
         self.assertEqual(is_interactive(self.view), True)
         self.assertEqual(is_must_capture_register_name(self.view), False)
-        self.assertEqual(get_last_buffer_search(self.view), '')
+        self.assertEqual(get_last_buffer_search_pattern(self.view), '')
         self.assertEqual(get_reset_during_init(self.view), True)
 
     def test_must_scroll_into_view(self):

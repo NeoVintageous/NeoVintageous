@@ -69,8 +69,8 @@ from NeoVintageous.nv.search import process_word_search_pattern
 from NeoVintageous.nv.settings import append_sequence
 from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_glue_until_normal_mode
-from NeoVintageous.nv.settings import get_last_buffer_search
 from NeoVintageous.nv.settings import get_last_buffer_search_command
+from NeoVintageous.nv.settings import get_last_buffer_search_pattern
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_normal_insert_count
 from NeoVintageous.nv.settings import get_repeat_data
@@ -80,8 +80,7 @@ from NeoVintageous.nv.settings import get_xpos
 from NeoVintageous.nv.settings import is_processing_notation
 from NeoVintageous.nv.settings import set_glue_until_normal_mode
 from NeoVintageous.nv.settings import set_last_buffer_search
-from NeoVintageous.nv.settings import set_last_buffer_search_command
-from NeoVintageous.nv.settings import set_last_char_search
+from NeoVintageous.nv.settings import set_last_char_search_character
 from NeoVintageous.nv.settings import set_last_char_search_command
 from NeoVintageous.nv.settings import set_mode
 from NeoVintageous.nv.settings import set_normal_insert_count
@@ -2703,7 +2702,7 @@ class nv_vi_find_in_line(TextCommand):
     def run(self, edit, char=None, mode=None, count=1, inclusive=True, skipping=False, save=True):
         if save:
             set_last_char_search_command(self.view, 'vi_f' if inclusive else 'vi_t')
-            set_last_char_search(self.view, char)
+            set_last_char_search_character(self.view, char)
 
         if mode == VISUAL_LINE:
             ui_bell()
@@ -2761,7 +2760,7 @@ class nv_vi_reverse_find_in_line(TextCommand):
     def run(self, edit, char=None, mode=None, count=1, inclusive=True, skipping=False, save=True):
         if save:
             set_last_char_search_command(self.view, 'vi_big_f' if inclusive else 'vi_big_t')
-            set_last_char_search(self.view, char)
+            set_last_char_search_character(self.view, char)
 
         if mode == VISUAL_LINE:
             ui_bell()
@@ -2866,14 +2865,13 @@ class nv_vi_slash(TextCommand):
 class nv_vi_slash_impl(TextCommand):
     def run(self, edit, pattern, mode=None, count=1, save=True):
         if not pattern:
-            pattern = get_last_buffer_search(self.view)
+            pattern = get_last_buffer_search_pattern(self.view)
             if not pattern:
                 ui_bell('E35: no previous regular expression')
                 return
 
         if save:
-            set_last_buffer_search_command(self.view, 'nv_vi_slash')
-            set_last_buffer_search(self.view, pattern)
+            set_last_buffer_search(self.view, 'nv_vi_slash', pattern)
 
         sel = self.view.sel()[0]
         pattern, flags = process_search_pattern(self.view, pattern)
@@ -3505,8 +3503,7 @@ class nv_vi_star(TextCommand):
         add_search_highlighting(self.view, find_word_search_occurrences(self.view, pattern, flags))
 
         if save:
-            set_last_buffer_search(self.view, word)
-            set_last_buffer_search_command(self.view, 'nv_vi_star')
+            set_last_buffer_search(self.view, 'nv_vi_star', word)
 
         show_if_not_visible(self.view)
 
@@ -3552,8 +3549,7 @@ class nv_vi_octothorp(TextCommand):
         add_search_highlighting(self.view, find_word_search_occurrences(self.view, pattern, flags))
 
         if save:
-            set_last_buffer_search(self.view, word)
-            set_last_buffer_search_command(self.view, 'nv_vi_octothorp')
+            set_last_buffer_search(self.view, 'nv_vi_octothorp', word)
 
         show_if_not_visible(self.view)
 
@@ -3902,14 +3898,13 @@ class nv_vi_right_paren(TextCommand):
 class nv_vi_question_mark_impl(TextCommand):
     def run(self, edit, pattern, mode=None, count=1, save=True):
         if not pattern:
-            pattern = get_last_buffer_search(self.view)
+            pattern = get_last_buffer_search_pattern(self.view)
             if not pattern:
                 ui_bell('E35: no previous regular expression')
                 return
 
         if save:
-            set_last_buffer_search_command(self.view, 'nv_vi_question_mark')
-            set_last_buffer_search(self.view, pattern)
+            set_last_buffer_search(self.view, 'nv_vi_question_mark', pattern)
 
         sel = self.view.sel()[0]
         pattern, flags = process_search_pattern(self.view, pattern)
@@ -4005,7 +4000,7 @@ class nv_vi_repeat_buffer_search(TextCommand):
     }
 
     def run(self, edit, mode=None, count=1, reverse=False):
-        last_pattern = get_last_buffer_search(self.view)
+        last_pattern = get_last_buffer_search_pattern(self.view)
         last_command = get_last_buffer_search_command(self.view)
         command = self.commands[last_command][int(reverse)]
 
@@ -4024,7 +4019,7 @@ class nv_vi_repeat_buffer_search(TextCommand):
 class nv_vi_search(TextCommand):
 
     def run(self, edit, mode=None, count=1, forward=True):
-        last_search = get_last_buffer_search(self.view)
+        last_search = get_last_buffer_search_pattern(self.view)
 
         def f(view, s):
             b = get_insertion_point_at_b(s)

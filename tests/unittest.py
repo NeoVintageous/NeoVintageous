@@ -51,11 +51,11 @@ from NeoVintageous.nv.registers import _linewise as _registers_linewise
 from NeoVintageous.nv.registers import _reset as _registers_reset
 from NeoVintageous.nv.registers import _set_numbered_register
 from NeoVintageous.nv.registers import registers_get as _registers_get
+from NeoVintageous.nv.settings import _set_last_buffer_search_command
+from NeoVintageous.nv.settings import _set_last_buffer_search_pattern
 from NeoVintageous.nv.settings import get_mode as _get_mode
 from NeoVintageous.nv.settings import get_visual_block_direction as _get_visual_block_direction
 from NeoVintageous.nv.settings import get_xpos as _get_xpos
-from NeoVintageous.nv.settings import set_last_buffer_search as _set_last_buffer_search
-from NeoVintageous.nv.settings import set_last_buffer_search_command as _set_last_buffer_search_command
 from NeoVintageous.nv.settings import set_mode as _set_mode
 from NeoVintageous.nv.settings import set_reset_during_init as _set_reset_during_init
 from NeoVintageous.nv.settings import set_visual_block_direction as _set_visual_block_direction
@@ -471,7 +471,7 @@ class ViewTestCase(unittest.TestCase):
         self.assertSearchIncremental(content)
 
     def setLastSearch(self, term: str) -> None:
-        _set_last_buffer_search(self.view, term)
+        _set_last_buffer_search_pattern(self.view, term)
 
     def setLastSearchCommand(self, command: str) -> None:
         _set_last_buffer_search_command(self.view, command)
