@@ -105,8 +105,9 @@ def _get_last_sneak_search(view) -> str:
     return get_internal_setting(view.window(), 'last_sneak_search')
 
 
-def _set_last_sneak_search(view, value: str) -> None:
-    set_internal_setting(view.window(), 'last_sneak_search', value)
+def _set_last_sneak_search(view, command: str, search: str) -> None:
+    set_last_char_search_command(view, command)
+    set_internal_setting(view.window(), 'last_sneak_search', search)
 
 
 def _get_search_flags(view, search: str) -> int:
@@ -165,5 +166,4 @@ class nv_sneak_command(TextCommand):
         add_search_highlighting(self.view, occurrences)
 
         if save:
-            set_last_char_search_command(self.view, 'sneak_s' if forward else 'sneak_big_s')
-            _set_last_sneak_search(self.view, search)
+            _set_last_sneak_search(self.view, 'sneak_s' if forward else 'sneak_big_s', search)

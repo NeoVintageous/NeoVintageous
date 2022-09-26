@@ -80,8 +80,7 @@ from NeoVintageous.nv.settings import get_xpos
 from NeoVintageous.nv.settings import is_processing_notation
 from NeoVintageous.nv.settings import set_glue_until_normal_mode
 from NeoVintageous.nv.settings import set_last_buffer_search
-from NeoVintageous.nv.settings import set_last_char_search_character
-from NeoVintageous.nv.settings import set_last_char_search_command
+from NeoVintageous.nv.settings import set_last_char_search
 from NeoVintageous.nv.settings import set_mode
 from NeoVintageous.nv.settings import set_normal_insert_count
 from NeoVintageous.nv.settings import set_repeat_data
@@ -2701,8 +2700,7 @@ class nv_vi_find_in_line(TextCommand):
     # @character is under the caret, nothing happens.
     def run(self, edit, char=None, mode=None, count=1, inclusive=True, skipping=False, save=True):
         if save:
-            set_last_char_search_command(self.view, 'vi_f' if inclusive else 'vi_t')
-            set_last_char_search_character(self.view, char)
+            set_last_char_search(self.view, 'vi_f' if inclusive else 'vi_t', char)
 
         if mode == VISUAL_LINE:
             ui_bell()
@@ -2759,8 +2757,7 @@ class nv_vi_reverse_find_in_line(TextCommand):
     # ``character`` is right before the caret, nothing happens.
     def run(self, edit, char=None, mode=None, count=1, inclusive=True, skipping=False, save=True):
         if save:
-            set_last_char_search_command(self.view, 'vi_big_f' if inclusive else 'vi_big_t')
-            set_last_char_search_character(self.view, char)
+            set_last_char_search(self.view, 'vi_big_f' if inclusive else 'vi_big_t', char)
 
         if mode == VISUAL_LINE:
             ui_bell()

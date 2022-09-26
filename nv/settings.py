@@ -151,6 +151,11 @@ def get_last_char_search_character(view) -> str:
     return _get_private(view.window(), 'last_char_search_character', '')
 
 
+def set_last_char_search(view, command: str, character: str) -> None:
+    set_last_char_search_command(view, command)
+    set_last_char_search_character(view, character)
+
+
 def set_last_char_search_command(view, value: str) -> None:
     _set_private(view.window(), 'last_char_search_command', value)
 

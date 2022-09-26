@@ -524,6 +524,7 @@ def lowest_visible_pt(view) -> int:
     return view.text_point(highlow_visible_rows(view)[1], 0)
 
 
+# Note: the edit object is required for this to work properly
 def scroll_horizontally(view, edit, amount, half_screen: bool = False) -> None:
     if view.settings().get('word_wrap'):
         return
