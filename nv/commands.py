@@ -59,6 +59,7 @@ from NeoVintageous.nv.marks import set_mark
 from NeoVintageous.nv.polyfill import spell_select
 from NeoVintageous.nv.polyfill import split_by_newlines
 from NeoVintageous.nv.polyfill import toggle_side_bar
+from NeoVintageous.nv.process_notation import ProcessNotationHandler
 from NeoVintageous.nv.rc import open_rc
 from NeoVintageous.nv.rc import reload_rc
 from NeoVintageous.nv.registers import registers_get_for_paste
@@ -85,7 +86,6 @@ from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import get_xpos
 from NeoVintageous.nv.settings import is_processing_notation
 from NeoVintageous.nv.settings import set_glue_until_normal_mode
-from NeoVintageous.nv.settings import set_interactive
 from NeoVintageous.nv.settings import set_last_buffer_search
 from NeoVintageous.nv.settings import set_last_buffer_search_command
 from NeoVintageous.nv.settings import set_last_char_search
@@ -98,10 +98,6 @@ from NeoVintageous.nv.settings import set_xpos
 from NeoVintageous.nv.settings import toggle_ctrl_keys
 from NeoVintageous.nv.settings import toggle_super_keys
 from NeoVintageous.nv.state import evaluate_state
-from NeoVintageous.nv.state import get_action
-from NeoVintageous.nv.state import get_motion
-from NeoVintageous.nv.state import is_runnable
-from NeoVintageous.nv.state import must_collect_input
 from NeoVintageous.nv.state import reset_command_data
 from NeoVintageous.nv.state import set_motion
 from NeoVintageous.nv.state import update_status_line
@@ -123,7 +119,6 @@ from NeoVintageous.nv.utils import get_option_scroll
 from NeoVintageous.nv.utils import get_previous_selection
 from NeoVintageous.nv.utils import get_scroll_down_target_pt
 from NeoVintageous.nv.utils import get_scroll_up_target_pt
-from NeoVintageous.nv.utils import gluing_undo_groups
 from NeoVintageous.nv.utils import hide_panel
 from NeoVintageous.nv.utils import highest_visible_pt
 from NeoVintageous.nv.utils import highlow_visible_rows
@@ -168,7 +163,6 @@ from NeoVintageous.nv.utils import unfold_all
 from NeoVintageous.nv.utils import update_xpos
 from NeoVintageous.nv.vi.cmd_defs import ViSearchBackwardImpl
 from NeoVintageous.nv.vi.cmd_defs import ViSearchForwardImpl
-from NeoVintageous.nv.vi.keys import tokenize_keys
 from NeoVintageous.nv.vi.search import find_in_range
 from NeoVintageous.nv.vi.search import find_wrapping
 from NeoVintageous.nv.vi.search import reverse_find_wrapping
@@ -192,7 +186,6 @@ from NeoVintageous.nv.vi.units import word_starts
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
-from NeoVintageous.nv.vim import OPERATOR_PENDING
 from NeoVintageous.nv.vim import REPLACE
 from NeoVintageous.nv.vim import SELECT
 from NeoVintageous.nv.vim import UNKNOWN
@@ -496,145 +489,13 @@ class nv_feed_key(WindowCommand):
 
 class nv_process_notation(WindowCommand):
 
+    # TODO refactor: rename repeat_count -> count
     def run(self, keys, repeat_count=None, check_user_mappings=True):
-        # Args:
-        #   keys (str): Key sequence to be run.
-        #   repeat_count (int): Count to be applied when repeating through the
-        #       '.' command.
-        #   check_user_mappings (bool): Whether user mappings should be
-        #       consulted to expand key sequences.
-        self.view = self.window.active_view()
-        initial_mode = get_mode(self.view)
-
-        # Disable interactive prompts. For example, supress interactive input
-        # collecting for the command-line and search: :ls<CR> and /foo<CR>.
-        set_interactive(self.view, False)
-
-        _log.debug('process notation keys %s for initial mode %s', keys, initial_mode)
-
-        # First, run any motions coming before the first action. We don't keep
-        # these in the undo stack, but they will still be repeated via '.'.
-        # This ensures that undoing will leave the caret where the  first
-        # editing action started. For example, 'lldl' would skip 'll' in the
-        # undo history, but store the full sequence for '.' to use.
-        leading_motions = ''
-        for key in tokenize_keys(keys):
-            self.window.run_command('nv_feed_key', {
-                'key': key,
-                'do_eval': False,
-                'repeat_count': repeat_count,
-                'check_user_mappings': check_user_mappings
-            })
-
-            if get_action(self.view):
-                # The last key press has caused an action to be primed. That
-                # means there are  no more leading motions. Break out of here.
-                reset_command_data(self.view)
-                if get_mode(self.view) == OPERATOR_PENDING:
-                    set_mode(self.view, NORMAL)
-
-                break
-
-            elif is_runnable(self.view):
-                # Run any primed motion.
-                leading_motions += get_sequence(self.view)
-                evaluate_state(self.view)
-                reset_command_data(self.view)
-
-            else:
-                evaluate_state(self.view)
-
-        if must_collect_input(self.view, get_motion(self.view), get_action(self.view)):
-            # State is requesting more input, so this is the last command  in
-            # the sequence and it needs more input.
-            self._collect_input()
-            return
-
-        # Strip the already run commands
-        if leading_motions:
-            if ((len(leading_motions) == len(keys)) and (not must_collect_input(self.view, get_motion(self.view), get_action(self.view)))):  # noqa: E501
-                set_interactive(self.view, True)
-                return
-
-            keys = keys[len(leading_motions):]
-
-        if not (get_motion(self.view) and not get_action(self.view)):
-            with gluing_undo_groups(self.view):
-                try:
-                    for key in tokenize_keys(keys):
-                        if key.lower() == '<esc>':
-                            # XXX: We should pass a mode here?
-                            enter_normal_mode(self.window)
-                            continue
-
-                        elif get_mode(self.view) not in (INSERT, REPLACE):
-                            self.window.run_command('nv_feed_key', {
-                                'key': key,
-                                'repeat_count': repeat_count,
-                                'check_user_mappings': check_user_mappings
-                            })
-                        else:
-                            self.window.run_command('insert', {
-                                'characters': translate_char(key)
-                            })
-
-                    if not must_collect_input(self.view, get_motion(self.view), get_action(self.view)):
-                        return
-
-                finally:
-                    set_interactive(self.view, True)
-                    # Ensure we set the full command for "." to use, but don't
-                    # store "." alone.
-                    if (leading_motions + keys) not in ('.', 'u', '<C-r>'):
-                        set_repeat_data(self.view, ('vi', (leading_motions + keys), initial_mode, None))
-
-        # We'll reach this point if we have a command that requests input whose
-        # input parser isn't satistied. For example, `/foo`. Note that
-        # `/foo<CR>`, on the contrary, would have satisfied the parser.
-
-        action = get_action(self.view)
-        motion = get_motion(self.view)
-
-        _log.debug('unsatisfied parser action = %s, motion=%s', action, motion)
-
-        if (action and motion):
-            # We have a parser an a motion that can collect data. Collect data
-            # interactively.
-            motion_data = motion.translate(self.view) or None
-
-            if motion_data is None:
-                reset_command_data(self.view)
-                ui_bell()
-                return
-
-            run_motion(self.window, motion_data)
-            return
-
-        self._collect_input()
-
-    def _collect_input(self) -> None:
-        try:
-            motion = get_motion(self.view)
-            action = get_action(self.view)
-
-            command = None
-
-            if motion and action:
-                if motion.accept_input:
-                    command = motion
-                else:
-                    command = action
-            else:
-                command = action or motion
-
-            if command.input_parser and command.input_parser.is_interactive():
-                command.input_parser.run_interactive_command(self.window, command.inp)
-
-        except IndexError:
-            _log.debug('could not find a command to collect more user input')
-            ui_bell()
-        finally:
-            set_interactive(self.view, True)
+        ProcessNotationHandler(
+            self.window.active_view(),
+            keys,
+            repeat_count,
+            check_user_mappings).handle()
 
 
 class nv_ex_cmd_edit_wrap(TextCommand):
