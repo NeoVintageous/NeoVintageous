@@ -143,6 +143,11 @@ def regions_transform_extend_to_line_count(view, count) -> None:
     regions_transformer(view, f)
 
 
+def replace_line(view, edit, replacement: str):
+    pt = next_non_blank(view, view.line(view.sel()[0].b).a)
+    view.replace(edit, Region(pt, view.line(pt).b), replacement)
+
+
 def replace_sel(view, new_sel) -> None:
     view.sel().clear()
     if isinstance(new_sel, list):

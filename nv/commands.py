@@ -138,6 +138,7 @@ from NeoVintageous.nv.utils import regions_transform_to_first_non_blank
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import regions_transformer_indexed
 from NeoVintageous.nv.utils import regions_transformer_reversed
+from NeoVintageous.nv.utils import replace_line
 from NeoVintageous.nv.utils import replace_sel
 from NeoVintageous.nv.utils import resolve_internal_normal_target
 from NeoVintageous.nv.utils import resolve_visual_block_begin
@@ -559,16 +560,10 @@ class nv_cmdline(WindowCommand):
 class nv_view(TextCommand):
 
     def run(self, edit, action, **kwargs):
-        action_method = getattr(self, '_%s_action' % action, None)
-        if action_method:
-            action_method(edit, **kwargs)
-
-    def _insert_action(self, edit, text: str):
-        self.view.insert(edit, 0, text)
-
-    def _replace_line_action(self, edit, replacement: str):
-        pt = next_non_blank(self.view, self.view.line(self.view.sel()[0].b).a)
-        self.view.replace(edit, Region(pt, self.view.line(pt).b), replacement)
+        if action == 'insert':
+            self.view.insert(edit, 0, **kwargs)
+        elif action == 'replace_line':
+            replace_line(self.view, edit, **kwargs)
 
 
 class Neovintageous(WindowCommand):
