@@ -3,7 +3,6 @@
 <p align="center">
     <a href="https://github.com/NeoVintageous/NeoVintageous/actions/workflows/ci.yml"><img alt="Continuous Integration" src="https://github.com/NeoVintageous/NeoVintageous/actions/workflows/ci.yml/badge.svg?branch=master"></a>
     <a href="https://ci.appveyor.com/project/gerardroche/neovintageous"><img alt="Build status" src="https://ci.appveyor.com/api/projects/status/g4pkv4ws1k2r1xna?svg=true"></a>
-    <a href="https://coveralls.io/github/NeoVintageous/NeoVintageous?branch=master"><img alt="Coveralls" src="https://img.shields.io/coveralls/NeoVintageous/NeoVintageous/master.svg?style=flat-square&amp;label=coveralls"></a>
     <a href="https://codecov.io/gh/NeoVintageous/NeoVintageous/branch/master"><img alt="Codecov" src="https://img.shields.io/codecov/c/github/NeoVintageous/NeoVintageous/master?style=flat-square&amp;label=codecov"></a>
     <a href="https://packagecontrol.io/packages/NeoVintageous"><img alt="Downloads" src="https://img.shields.io/packagecontrol/dt/NeoVintageous.svg?style=flat-square"></a>
 </p>
