@@ -110,3 +110,10 @@ class Test_ex_help(unittest.FunctionalTestCase):
 
         self.feed(':help CTRL-W')
         self.assertHelpView('index.txt', '*CTRL-W*')
+
+    def test_goto_help_tag_noop(self):
+        self.normal('fi|zz')
+        self.feed(':help')
+        self.assertHelpView('help.txt', '*help.txt*')
+        self.feed('n_<C-]>')
+        self.assertHelpView('help.txt', '*help.txt*')

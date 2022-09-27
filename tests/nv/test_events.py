@@ -384,6 +384,41 @@ class TestOnActivated(unittest.ViewTestCase):
         self.events.on_activated(self.view)
         self.assertVisual('|fizz buzz')
 
+    def test_good_visual_mode(self):
+        self.visual('x |fizz| x')
+        self.events.on_activated(self.view)
+        self.assertVisual('x |fizz| x')
+
+    def test_fix_insert_mode_to_normal_mode(self):
+        self.insert('x |fizz buzz x')
+        self.view.sel().clear()
+        self.view.sel().add(self.Region(2, 4))
+        self.events.on_activated(self.view)
+        self.assertNormal('x fi|zz buzz x')
+
+    def test_fix_normal_mode_to_visual_mode(self):
+        self.normal('x |fizz buzz x')
+        self.view.sel().clear()
+        self.view.sel().add(self.Region(2, 4))
+        self.events.on_activated(self.view)
+        self.assertVisual('x |fi|zz buzz x')
+
+    def test_fix_normal_mode_multiple_selection(self):
+        self.normal('x |fizz buzz fizz buzz x')
+        self.view.sel().clear()
+        self.view.sel().add(self.Region(2, 4))
+        self.view.sel().add(self.Region(12, 14))
+        self.events.on_activated(self.view)
+        self.assertVisual('x |fi|zz buzz |fi|zz buzz x')
+
+    def test_fix_insert_mode_multiple_selection(self):
+        self.insert('x |fizz buzz fizz buzz x')
+        self.view.sel().clear()
+        self.view.sel().add(self.Region(2, 4))
+        self.view.sel().add(self.Region(12, 14))
+        self.events.on_activated(self.view)
+        self.assertNormal('x fi|zz buzz fi|zz buzz x')
+
 
 class TestOnPostSave(unittest.ViewTestCase):
 
