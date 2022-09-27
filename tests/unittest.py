@@ -54,10 +54,13 @@ from NeoVintageous.nv.registers import registers_get as _registers_get
 from NeoVintageous.nv.settings import _set_last_buff_search_command
 from NeoVintageous.nv.settings import _set_last_buff_search_pattern
 from NeoVintageous.nv.settings import get_mode as _get_mode
+from NeoVintageous.nv.settings import get_setting as _get_setting
 from NeoVintageous.nv.settings import get_visual_block_direction as _get_visual_block_direction
 from NeoVintageous.nv.settings import get_xpos as _get_xpos
+from NeoVintageous.nv.settings import reset_setting as _reset_setting
 from NeoVintageous.nv.settings import set_mode as _set_mode
 from NeoVintageous.nv.settings import set_reset_during_init as _set_reset_during_init
+from NeoVintageous.nv.settings import set_setting as _set_setting
 from NeoVintageous.nv.settings import set_visual_block_direction as _set_visual_block_direction
 from NeoVintageous.nv.settings import set_xpos as _set_xpos
 
@@ -192,16 +195,13 @@ class ViewTestCase(unittest.TestCase):
         return self.view.settings()
 
     def set_setting(self, name: str, value) -> None:
-        self.settings().set('vintageous_%s' % name, value)
+        _set_setting(self.view, name, value)
 
     def get_setting(self, name: str):
-        return self.settings().get('vintageous_%s' % name)
-
-    def has_setting(self, name: str) -> bool:
-        return self.settings().has('vintageous_%s' % name)
+        return _get_setting(self.view, name)
 
     def reset_setting(self, name: str) -> None:
-        self.settings().erase('vintageous_%s' % name)
+        _reset_setting(self.view, name)
 
     def set_wrap(self, width: int) -> None:
         self.settings().set('word_wrap', True)
@@ -232,9 +232,8 @@ class ViewTestCase(unittest.TestCase):
 
     def set_option(self, name: str, value, setting: bool = True) -> None:
         _set_option(self.view, name, value)
-        if setting:
-            # Options via settings is DEPRECATED
-            self.settings().set('vintageous_%s' % name, value)
+        if setting:  # DEPRECATED Options via settings is deprecated
+            _set_setting(self.view, name, value)
 
     def get_option(self, name: str, view=None):
         return _get_option(self.view if view is None else view, name)
