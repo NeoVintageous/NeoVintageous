@@ -4,23 +4,23 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.27.0 - 2022-09-28
 
-- Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround change tag with `>` remove attributes e.g. `cst<div>` (Surround)
-- Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround change tag with `\n` (newline) to keep attributes e.g. `cst<div<CR>` (Surround)
-- Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround change tag with `<C-t>` to put tag on lines by themselves e.g. `cst<C-t>div>`, `cst<C-t>div<CR>` (Surround)
-- Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround yank `<C-t>` to put tags on lines by themselves e.g. `ysiW<C-t>div>` (Surround)
-- Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround change `<C-t>` to put tags on lines by themselves e.g. `cs"<C-t>div>` (Surround)
-- Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround yank tag with `t` (same as `<`) e.g. `ysiwtdiv>`, `ysiw<div>` (Surround)
-- Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround tag close with `>` e.g. `ysiwtdiv>`, `cs"tdiv>` (Surround)
-- Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround tag close with `\n` e.g. `ysiwtdiv<CR>`, `cs"tdiv<CR>` (Surround)
-- Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround change tag close with newline e.g. `ysiwtdiv<CR>` (Surround)
-- Added [#830](https://github.com/NeoVintageous/NeoVintageous/issues/830): Add surround `f` (function): press `ysWfprint<cr>` in `"hello"` to get  `print("hello")` (Surround)
-- Added [#830](https://github.com/NeoVintageous/NeoVintageous/issues/830): Add surround `F` (function): press `ysWFprint<cr>` in `"hello"` to get  `print( "hello" )` (Surround)
-- Added [#830](https://github.com/NeoVintageous/NeoVintageous/issues/830): Add surround `<C-f>` (function): press `ysW<C-f>print<cr>` in `"hello"` to get `(print "hello")` (Surround)
+* Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround change tag with `>` remove attributes e.g. `cst<div>` (Surround)
+* Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround change tag with `\n` (newline) to keep attributes e.g. `cst<div<CR>` (Surround)
+* Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround change tag with `<C-t>` to put tag on lines by themselves e.g. `cst<C-t>div>`, `cst<C-t>div<CR>` (Surround)
+* Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround yank `<C-t>` to put tags on lines by themselves e.g. `ysiW<C-t>div>` (Surround)
+* Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround change `<C-t>` to put tags on lines by themselves e.g. `cs"<C-t>div>` (Surround)
+* Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround yank tag with `t` (same as `<`) e.g. `ysiwtdiv>`, `ysiw<div>` (Surround)
+* Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround tag close with `>` e.g. `ysiwtdiv>`, `cs"tdiv>` (Surround)
+* Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround tag close with `\n` e.g. `ysiwtdiv<CR>`, `cs"tdiv<CR>` (Surround)
+* Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround change tag close with newline e.g. `ysiwtdiv<CR>` (Surround)
+* Added [#830](https://github.com/NeoVintageous/NeoVintageous/issues/830): Add surround `f` (function): press `ysWfprint<cr>` in `"hello"` to get  `print("hello")` (Surround)
+* Added [#830](https://github.com/NeoVintageous/NeoVintageous/issues/830): Add surround `F` (function): press `ysWFprint<cr>` in `"hello"` to get  `print( "hello" )` (Surround)
+* Added [#830](https://github.com/NeoVintageous/NeoVintageous/issues/830): Add surround `<C-f>` (function): press `ysW<C-f>print<cr>` in `"hello"` to get `(print "hello")` (Surround)
 * Added [#828](https://github.com/NeoVintageous/NeoVintageous/issues/828): Add `S{char}` in visual line mode (Surround)
 * Added [#838](https://github.com/NeoVintageous/NeoVintageous/issues/838): Add `<S-tab>`
 * Added [#711](https://github.com/NeoVintageous/NeoVintageous/issues/711): Add `[count]` for `*`
 * Added [#711](https://github.com/NeoVintageous/NeoVintageous/issues/711): Add `[count]` for `#`
-* Fixed [#826](https://github.com/NeoVintageous/NeoVintageous/issues/826): Add jumps like `%` inside comments
+* Added [#826](https://github.com/NeoVintageous/NeoVintageous/issues/826): Add jumps like `%` inside comments
 
 ## 1.26.3 - 2022-06-20
 
