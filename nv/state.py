@@ -153,8 +153,8 @@ def _create_definition(view, name: str):
         if cls is None:
             cls = plugin.classes.get(cmd['name'], None)
 
-        if cls is None:
-            ValueError('unknown %s: %s' % (name, cmd))
+            if cls is None:
+                raise ValueError('unknown %s: %s' % (name, cmd))
 
         return cls.from_json(cmd['data'])
 
