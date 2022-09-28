@@ -385,7 +385,7 @@ def ex_global(window, view, pattern: str, line_range: RangeNode, cmd='print', **
     cmd = parse_command_line(cmd).command
     # The cooperates_with_global flag indicates if a command supports :global.
     if not cmd.cooperates_with_global:
-        return status_message('command "%s" does not support :global', cmd.target)
+        return status_message('Command not supported: %s', cmd.target)
 
     # The default line specifier for most commands is the cursor position, but
     # the commands :write and :global have the whole file (1,$) as default.
