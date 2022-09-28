@@ -90,6 +90,8 @@ def _update_ignored_packages():
 
     settings = sublime.load_settings('Preferences.sublime-settings')
     ignored_packages = settings.get('ignored_packages', [])
+    if not isinstance(ignored_packages, list):
+        ignored_packages = []
     conflict_packages = [x for x in ['Six', 'Vintage', 'Vintageous'] if x not in ignored_packages]
     if conflict_packages:  # pragma: no cover
         print('NeoVintageous: update ignored packages with conflicts {}'.format(conflict_packages))
@@ -117,7 +119,9 @@ def _init_backwards_compat_patches():
         #   1.17.1  | 11701
         #   1.27.0  | 12700
 
-        build_version = int(preferences.get('neovintageous_build_version', 0))
+        build_version = preferences.get('neovintageous_build_version', 0)
+        if not isinstance(build_version, int):
+            build_version = 0
 
         if build_version < 12700:  # pragma: no cover
 

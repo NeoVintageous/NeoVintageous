@@ -115,11 +115,13 @@ def spell_undo(word: str) -> None:
     added_words = preferences.get('added_words', [])
 
     try:
-        added_words.remove(word)
+        if isinstance(added_words, list):
+            added_words.remove(word)
+        else:
+            added_words = []
     except ValueError:
         return
 
-    added_words.sort()
     preferences.set('added_words', added_words)
     save_settings('Preferences.sublime-settings')
 
