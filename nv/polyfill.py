@@ -122,6 +122,7 @@ def spell_undo(word: str) -> None:
     except ValueError:
         return
 
+    added_words.sort()
     preferences.set('added_words', added_words)
     save_settings('Preferences.sublime-settings')
 
