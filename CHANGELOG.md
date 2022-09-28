@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.27.0 - Unreleased
+## 1.27.0 - 2022-09-28
 
 - Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround change tag with `>` remove attributes e.g. `cst<div>` (Surround)
 - Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround change tag with `\n` (newline) to keep attributes e.g. `cst<div<CR>` (Surround)
