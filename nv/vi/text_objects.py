@@ -983,7 +983,7 @@ def find_next_item_match_pt(view, s: Region):
                 if closest_tag.contains(pt):
                     begin_tag, end_tag, _ = find_containing_tag(view, pt)
                     if begin_tag:
-                        return begin_tag.a if end_tag.contains(pt) else end_tag.a
+                        return begin_tag.a + 1 if end_tag.contains(pt) else end_tag.a + 1
 
     # Find the next item after or under the cursor.
     bracket = view_find(view, '|'.join(map(re_escape, targets)), pt)

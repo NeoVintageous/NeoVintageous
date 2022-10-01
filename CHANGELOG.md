@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.27.1 - 2022-10-01
+
+* Fixed [#826](https://github.com/NeoVintageous/NeoVintageous/issues/826): `%` doesn't work correctly on html tags
+
 ## 1.27.0 - 2022-09-28
 
 * Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround change tag with `>` remove attributes e.g. `cst<div>` (Surround)
