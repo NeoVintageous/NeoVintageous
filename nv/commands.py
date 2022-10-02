@@ -1399,12 +1399,12 @@ class nv_vi_quote(TextCommand):
             return
 
         def f(view, s):
-            if mode == VISUAL:
+            if mode == NORMAL:
+                resolve_normal_target(s, next_non_blank(view, view.line(target.b).a))
+            elif mode == VISUAL:
                 resolve_visual_target(s, next_non_blank(view, view.line(target.b).a))
             elif mode == VISUAL_LINE:
                 resolve_visual_line_target(view, s, next_non_blank(view, view.line(target.b).a))
-            elif mode == NORMAL:
-                resolve_normal_target(s, next_non_blank(view, view.line(target.b).a))
             elif mode == INTERNAL_NORMAL:
                 if s.a < target.a:
                     s = Region(view.full_line(s.b).a, view.line(target.b).b)
@@ -1438,12 +1438,12 @@ class nv_vi_backtick(TextCommand):
             return
 
         def f(view, s):
-            if mode == VISUAL:
+            if mode == NORMAL:
+                resolve_normal_target(s, target.b)
+            elif mode == VISUAL:
                 resolve_visual_target(s, target.b)
             elif mode == VISUAL_LINE:
                 resolve_visual_line_target(view, s, target.b)
-            elif mode == NORMAL:
-                resolve_normal_target(s, target.b)
             elif mode == INTERNAL_NORMAL:
                 if s.a < target.a:
                     s = Region(view.full_line(s.b).a, view.line(target.b).b)
