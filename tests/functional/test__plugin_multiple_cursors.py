@@ -167,3 +167,6 @@ class TestMultipleCursors(unittest.FunctionalTestCase):
     def test_no_search_occurrences(self):
         self.eq('fi|zz', 'n_gH', 'fi|zz')
         self.assertBell('no available search matches')
+
+    def test_visual_block_enter_multiple_cursor(self):
+        self.eq('b_f|iz|z\nf|iz|z\n', '<C-n>', 'n_f|izz\nf|izz\n')
