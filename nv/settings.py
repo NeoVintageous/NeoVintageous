@@ -139,6 +139,10 @@ def set_ex_substitute_last_replacement(replacement: str) -> None:
     set_session_value('ex_substitute_last_replacement', replacement, persist=True)
 
 
+def get_exit_when_quiting_last_window(view) -> bool:
+    return get_setting(view, 'exit_when_quiting_last_window')
+
+
 # Supports repeating the last search commands. For example the command ";"
 # (semi-colon) repeats the latest f, t, F or T [count] times and ","
 # (comma) repeats the latest f, t, F or T in opposite direction.

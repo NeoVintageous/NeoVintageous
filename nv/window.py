@@ -18,7 +18,7 @@
 import os
 
 from NeoVintageous.nv.settings import get_cmdline_cwd
-from NeoVintageous.nv.settings import get_setting
+from NeoVintageous.nv.settings import get_exit_when_quiting_last_window
 from NeoVintageous.nv.utils import set_selection
 from NeoVintageous.nv.vim import status_message
 
@@ -243,7 +243,7 @@ def _close_active_view(window) -> None:
 def window_quit_view(window, **kwargs) -> None:
     # Need to get the setting before quiting the the view because if closing the
     # last view there may not be a view to get the setting from.
-    exit_when_quiting_last_window = get_setting(window.active_view(), 'exit_when_quiting_last_window')
+    exit_when_quiting_last_window = get_exit_when_quiting_last_window(window.active_view())
 
     _close_view(window, **kwargs)
 
@@ -603,11 +603,7 @@ def window_tab_control(window, action: str, count: int = 1, index: int = None) -
                 continue
 
             window.focus_view(group_view)
-
-            # TODO [review] Probably doesn't need use :quit (just close the view).
-            from NeoVintageous.nv.ex_cmds import do_ex_command
-
-            do_ex_command(window, 'quit')
+            window_quit_view(window)
 
         window.focus_view(view)
 
