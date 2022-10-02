@@ -113,9 +113,9 @@ from NeoVintageous.nv.utils import get_scroll_up_target_pt
 from NeoVintageous.nv.utils import hide_panel
 from NeoVintageous.nv.utils import highest_visible_pt
 from NeoVintageous.nv.utils import highlow_visible_rows
+from NeoVintageous.nv.utils import is_help_view
 from NeoVintageous.nv.utils import is_linewise_operation
 from NeoVintageous.nv.utils import is_view
-from NeoVintageous.nv.utils import is_help_view
 from NeoVintageous.nv.utils import lowest_visible_pt
 from NeoVintageous.nv.utils import new_inclusive_region
 from NeoVintageous.nv.utils import next_blank
@@ -133,6 +133,7 @@ from NeoVintageous.nv.utils import regions_transformer_reversed
 from NeoVintageous.nv.utils import replace_line
 from NeoVintageous.nv.utils import replace_sel
 from NeoVintageous.nv.utils import resolve_internal_normal_target
+from NeoVintageous.nv.utils import resolve_normal_target
 from NeoVintageous.nv.utils import resolve_visual_block_begin
 from NeoVintageous.nv.utils import resolve_visual_block_reverse
 from NeoVintageous.nv.utils import resolve_visual_block_target
@@ -1401,7 +1402,7 @@ class nv_vi_quote(TextCommand):
             elif mode == VISUAL_LINE:
                 resolve_visual_line_target(view, s, next_non_blank(view, view.line(target.b).a))
             elif mode == NORMAL:
-                s.a = s.b = next_non_blank(view, view.line(target.b).a)
+                resolve_normal_target(s, next_non_blank(view, view.line(target.b).a))
             elif mode == INTERNAL_NORMAL:
                 if s.a < target.a:
                     s = Region(view.full_line(s.b).a, view.line(target.b).b)
@@ -1440,7 +1441,7 @@ class nv_vi_backtick(TextCommand):
             elif mode == VISUAL_LINE:
                 resolve_visual_line_target(view, s, target.b)
             elif mode == NORMAL:
-                s.a = s.b = target.b
+                resolve_normal_target(s, target.b)
             elif mode == INTERNAL_NORMAL:
                 if s.a < target.a:
                     s = Region(view.full_line(s.b).a, view.line(target.b).b)
@@ -2884,7 +2885,7 @@ class nv_vi_slash_impl(TextCommand):
 
         def f(view, s):
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -3131,7 +3132,7 @@ class nv_vi_gg(TextCommand):
 
         def f(view, s):
             if mode == NORMAL:
-                s = Region(next_non_blank(view, 0))
+                resolve_normal_target(s, next_non_blank(view, 0))
             elif mode == VISUAL:
                 resolve_visual_target(s, next_non_blank(view, 0))
             elif mode == VISUAL_LINE:
@@ -3154,7 +3155,7 @@ class nv_vi_big_g(TextCommand):
 
         def f(view, s):
             if mode == NORMAL:
-                s = Region(next_non_blank(view, view.line(target).a))
+                resolve_normal_target(s, next_non_blank(view, view.line(target).a))
             elif mode == VISUAL:
                 resolve_visual_target(s, next_non_blank(view, view.line(target).a))
             elif mode == VISUAL_LINE:
@@ -3188,7 +3189,7 @@ class nv_vi_dollar(TextCommand):
             target = _get_target(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target if view.line(target).empty() else (target - 1))
+                resolve_normal_target(s, target if view.line(target).empty() else (target - 1))
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -3214,7 +3215,7 @@ class nv_vi_w(TextCommand):
             target = word_starts(view, get_insertion_point_at_b(s), count, internal=(mode == INTERNAL_NORMAL))
 
             if mode == NORMAL:
-                s = Region(fixup_eof(view, target))
+                resolve_normal_target(s, fixup_eof(view, target))
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
@@ -3238,7 +3239,7 @@ class nv_vi_big_w(TextCommand):
             target = big_word_starts(view, get_insertion_point_at_b(s), count, internal=(mode == INTERNAL_NORMAL))
 
             if mode == NORMAL:
-                s = Region(fixup_eof(view, target))
+                resolve_normal_target(s, fixup_eof(view, target))
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
@@ -3266,7 +3267,7 @@ class nv_vi_e(TextCommand):
             target = _get_target(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
@@ -3296,7 +3297,7 @@ class nv_vi_zero(TextCommand):
             target = _get_target(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -3315,7 +3316,7 @@ class nv_vi_right_brace(TextCommand):
             target = next_paragraph_start(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -3339,7 +3340,7 @@ class nv_vi_left_brace(TextCommand):
             target = prev_paragraph_start(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -3374,7 +3375,7 @@ class nv_vi_percent(TextCommand):
                 if mode == NORMAL:
                     target = find_next_item_match_pt(view, s)
                     if target is not None:
-                        s = Region(target)
+                        resolve_normal_target(s, target)
                 elif mode == VISUAL:
                     target = find_next_item_match_pt(view, s)
                     if target is not None:
@@ -3405,7 +3406,7 @@ class nv_vi_big_h(TextCommand):
     def run(self, edit, mode=None, count=None):
         def f(view, s):
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -3423,7 +3424,7 @@ class nv_vi_big_l(TextCommand):
     def run(self, edit, mode=None, count=None):
         def f(view, s):
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -3441,7 +3442,7 @@ class nv_vi_big_m(TextCommand):
     def run(self, edit, mode=None, count=None):
         def f(view, s):
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -3472,7 +3473,7 @@ class nv_vi_star(TextCommand):
 
             if match:
                 if mode == NORMAL:
-                    s.a = s.b = match.begin()
+                    resolve_normal_target(s, match.begin())
                 elif mode == VISUAL:
                     resolve_visual_target(s, match.begin())
                 elif mode == INTERNAL_NORMAL:
@@ -3517,7 +3518,7 @@ class nv_vi_octothorp(TextCommand):
 
             if match:
                 if mode == NORMAL:
-                    s.a = s.b = match.begin()
+                    resolve_normal_target(s, match.begin())
                 elif mode == VISUAL:
                     resolve_visual_target(s, match.begin())
                 elif mode == INTERNAL_NORMAL:
@@ -3559,7 +3560,7 @@ class nv_vi_b(TextCommand):
             target = word_reverse(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
@@ -3581,7 +3582,7 @@ class nv_vi_big_b(TextCommand):
             target = big_word_reverse(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
@@ -3611,7 +3612,7 @@ class nv_vi_underscore(TextCommand):
             target = _get_target(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -3637,7 +3638,7 @@ class nv_vi_hat(TextCommand):
             target = _get_target(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
@@ -3700,7 +3701,7 @@ class nv_vi_g__(TextCommand):
             target = _get_target(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -3726,7 +3727,7 @@ class nv_vi_ctrl_u(TextCommand):
 
         def f(view, s):
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -3750,7 +3751,7 @@ class nv_vi_ctrl_d(TextCommand):
     def run(self, edit, mode=None, count=0):
         def f(view, s):
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -3791,7 +3792,7 @@ class nv_vi_bar(TextCommand):
             target = _get_target(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
@@ -3812,7 +3813,7 @@ class nv_vi_ge(TextCommand):
             target = word_end_reverse(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
@@ -3833,7 +3834,7 @@ class nv_vi_g_big_e(TextCommand):
             target = big_word_end_reverse(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
@@ -3853,7 +3854,7 @@ class nv_vi_left_paren(TextCommand):
             target = previous_sentence.a
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -3877,7 +3878,7 @@ class nv_vi_right_paren(TextCommand):
             target = next_sentence.b
 
             if mode == NORMAL:
-                s = Region(min(target, view.size() - 1))
+                resolve_normal_target(s, min(target, view.size() - 1))
             elif mode == VISUAL:
                 s = Region(s.a, min(target + 1, view.size() - 1))
             elif mode == VISUAL_LINE:
@@ -3918,7 +3919,7 @@ class nv_vi_question_mark_impl(TextCommand):
 
         def f(view, s):
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -4065,7 +4066,7 @@ class nv_vi_big_e(TextCommand):
             target = _get_target(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
@@ -4126,7 +4127,7 @@ class nv_vi_enter(TextCommand):
             target = next_non_blank(view, get_insertion_point_at_b(s))
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -4145,7 +4146,7 @@ class nv_vi_minus(TextCommand):
             target = next_non_blank(view, get_insertion_point_at_b(s))
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:

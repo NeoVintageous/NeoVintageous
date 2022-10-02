@@ -617,6 +617,10 @@ def get_scroll_down_target_pt(view, number_of_scroll_lines: int):
     return _get_scroll_target(view, number_of_scroll_lines, forward=True)
 
 
+def resolve_normal_target(s: Region, target: int) -> None:
+    s.a = s.b = target
+
+
 def resolve_visual_target(s: Region, target: int) -> None:
     if s.a < s.b:               # A --> B
         if target < s.a:        # TARGET < A --> B
