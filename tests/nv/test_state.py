@@ -40,7 +40,7 @@ from NeoVintageous.nv.settings import set_motion_count
 from NeoVintageous.nv.settings import set_must_capture_register_name
 from NeoVintageous.nv.settings import set_partial_sequence
 from NeoVintageous.nv.settings import set_register
-from NeoVintageous.nv.state import _must_scroll_into_view
+from NeoVintageous.nv.state import _should_scroll_into_view
 from NeoVintageous.nv.state import get_action
 from NeoVintageous.nv.state import get_motion
 from NeoVintageous.nv.state import init_state
@@ -119,11 +119,11 @@ class TestState(unittest.ViewTestCase):
         self.assertEqual(get_reset_during_init(self.view), True)
 
     def test_must_scroll_into_view(self):
-        self.assertFalse(_must_scroll_into_view(get_motion(self.view), get_action(self.view)))
+        self.assertFalse(_should_scroll_into_view(get_motion(self.view), get_action(self.view)))
 
         motion = cmd_defs.ViGotoSymbolInFile()
         set_motion(self.view, motion)
-        self.assertTrue(_must_scroll_into_view(get_motion(self.view), get_action(self.view)))
+        self.assertTrue(_should_scroll_into_view(get_motion(self.view), get_action(self.view)))
 
 
 class TestStateResettingState(unittest.ViewTestCase):

@@ -99,7 +99,7 @@ def must_collect_input(view, motion: ViMotionDef, action: ViOperatorDef) -> bool
     return False
 
 
-def _must_scroll_into_view(motion: ViMotionDef, action: ViOperatorDef) -> bool:
+def _should_scroll_into_view(motion: ViMotionDef, action: ViOperatorDef) -> bool:
     if motion and motion.scroll_into_view:
         return True
 
@@ -185,7 +185,7 @@ def reset_command_data(view) -> None:
     if _must_update_xpos(motion, action):
         update_xpos(view)
 
-    if _must_scroll_into_view(motion, action):
+    if _should_scroll_into_view(motion, action):
         # Intentionally using the active view because the previous command
         # may have switched views and view would be the previous one.
         active_view = active_window().active_view()
