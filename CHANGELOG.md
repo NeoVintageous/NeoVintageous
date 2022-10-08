@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.27.2 - Unreleased
+
+* Fixed [#788](https://github.com/NeoVintageous/NeoVintageous/issues/788): Make `:g/pattern/p` include last line even if it doesn't end with `\n`
+
 ## 1.27.1 - 2022-10-01
 
 * Fixed [#826](https://github.com/NeoVintageous/NeoVintageous/issues/826): `%` doesn't work correctly on html tags
