@@ -17,7 +17,7 @@ def session_on_close(view) -> None:
 
 
 def _session_file() -> str:
-    return os.path.join(os.path.dirname(packages_path()), 'Local', 'nvinfo')
+    return os.path.join(os.path.dirname(packages_path()), 'Local', 'neovintageous.session')
 
 
 def _json_object_hook_dict_str_key_to_int(x):
@@ -34,7 +34,11 @@ def load_session() -> None:
             if content.strip():
                 session = json.loads(content, object_hook=_json_object_hook_dict_str_key_to_int)
                 if session:
-                    accept_keys = ('history', 'ex_substitute_last_pattern', 'ex_substitute_last_replacement')
+                    accept_keys = (
+                        'history',
+                        'ex_substitute_last_pattern',
+                        'ex_substitute_last_replacement')
+
                     for k, v in session.items():
                         if k not in accept_keys:
                             continue
@@ -58,7 +62,7 @@ def load_session() -> None:
 
 def save_session() -> None:
     with open(_session_file(), 'w', encoding='utf-8') as f:
-        session_dump = json.dumps(_session)
+        session_dump = json.dumps(_session, sort_keys=True, indent=4)
         f.write(session_dump)
 
 

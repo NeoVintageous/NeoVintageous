@@ -76,8 +76,22 @@ PAIRS = {
     '"': (('"', '"'), QUOTE),
     "'": (("'", "'"), QUOTE),
     '`': (('`', '`'), QUOTE),
-    '/': (('/', '/'), QUOTE),  # {not in Vim}
-    '_': (('_', '_'), QUOTE),  # {not in Vim}
+    '#': (('#', '#'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    '$': (('$', '$'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    '&': (('&', '&'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    '*': (('*', '*'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    '+': (('+', '+'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    ',': ((',', ','), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    '-': (('-', '-'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    '.': (('.', '.'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    '/': (('/', '/'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    ':': ((':', ':'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    ';': ((';', ';'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    '=': (('=', '='), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    '_': (('_', '_'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    '|': (('|', '|'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    '~': (('~', '~'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
+    '\\': (('\\', '\\'), QUOTE),  # {plugin https://github.com/wellle/targets.vim}
     '(': (('\\(', '\\)'), BRACKET),
     ')': (('\\(', '\\)'), BRACKET),
     '[': (('\\[', '\\]'), BRACKET),
@@ -298,7 +312,7 @@ def _get_text_object_tag(view, s: Region, inclusive: bool, count: int) -> Region
     # the tags are included, for "it" they are excluded. But when "it" is
     # repeated the tags will be included (otherwise nothing would change).
     if not inclusive:
-        if s == Region(begin_tag.end(), end_tag.begin()):
+        if s and s == Region(begin_tag.end(), end_tag.begin()):
             inclusive = True
 
     if inclusive:
@@ -312,7 +326,7 @@ def _get_text_object_paragraph(view, s: Region, inclusive: bool, count: int) -> 
 
 
 def _get_text_object_bracket(view, s: Region, inclusive: bool, count: int, delims: tuple) -> Region:
-    opening = find_prev_lone_bracket(view, max(0, s.begin() - 1), delims)
+    opening = find_prev_lone_bracket(view, max(0, s.begin()), delims)
     closing = find_next_lone_bracket(view, s.end(), delims)
 
     if not (opening and closing):
@@ -345,6 +359,7 @@ def _get_text_object_quote(view, s: Region, inclusive: bool, count: int, delims:
     line = view.line(s)
 
     delim_open = delims[0]
+    delim_open = re_escape(delim_open)
 
     # FIXME: Escape sequences like \" are probably syntax-dependant.
     prev_quote = reverse_search_by_pt(view, r'(?<!\\\\)' + delim_open, start=line.a, end=s.b)
@@ -968,7 +983,7 @@ def find_next_item_match_pt(view, s: Region):
                 if closest_tag.contains(pt):
                     begin_tag, end_tag, _ = find_containing_tag(view, pt)
                     if begin_tag:
-                        return begin_tag.a if end_tag.contains(pt) else end_tag.a
+                        return begin_tag.a + 1 if end_tag.contains(pt) else end_tag.a + 1
 
     # Find the next item after or under the cursor.
     bracket = view_find(view, '|'.join(map(re_escape, targets)), pt)
@@ -989,7 +1004,7 @@ def find_next_item_match_pt(view, s: Region):
     else:
         target_pair = (targets[target_index - 1], targets[target_index])
 
-    accepted_selector = 'punctuation|text.plain'
+    accepted_selector = 'punctuation|text.plain|comment'
 
     if forward:
         counter = 0

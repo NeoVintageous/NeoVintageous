@@ -26,3 +26,7 @@ class TestSurround_S(unittest.FunctionalTestCase):
 
     def test_v_S_multiple_selections(self):
         self.eq('x |hello| y |world| z', 'v_S"', 'n_x |"hello" y |"world" z')
+
+    def test_V_S(self):
+        self.eq('x\n|fizz\n|x', 'V_S"', 'n_x\n|"\nfizz\n"\nx')
+        self.eq('x\n|fizz\nfizz\n|x', 'V_S"', 'n_x\n|"\nfizz\nfizz\n"\nx')

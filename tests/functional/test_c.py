@@ -16,6 +16,7 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 from NeoVintageous.tests import unittest
+from NeoVintageous.tests.fixtures.text_object_targets import all_one_line_targets
 
 
 class Test_c(unittest.ResetRegisters, unittest.FunctionalTestCase):
@@ -151,8 +152,8 @@ class Test_c(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('"1|23  "', 'ci"', 'i_"|"')
         self.assertRegister('"123  ')
 
-    def test_ci__slash__or__underscore(self):
-        for t in ('/', '_'):
+    def test_ci__one_line_targets(self):
+        for t in all_one_line_targets:
             self.eq('{0}|{0}'.format(t), 'ci' + t, 'i_{0}|{0}'.format(t))
             self.eq('{0}1|23{0}'.format(t), 'ci' + t, 'i_{0}|{0}'.format(t))
             self.assertRegister('"123')
@@ -161,8 +162,8 @@ class Test_c(unittest.ResetRegisters, unittest.FunctionalTestCase):
             self.assertRegisterEmpty('1')
             self.eq('{0}1|23  {0}'.format(t), 'ci' + t, 'i_{0}|{0}'.format(t))
 
-    def test_ca__quote__or__slash__or__underscore(self):
-        for t in ('\'', '"', '/', '_'):
+    def test_ca__one_line_targets(self):
+        for t in all_one_line_targets:
             self.eq('{0}|{0}'.format(t), 'ca' + t, 'i_|')
             self.eq('x{0}fi|zz{0}x'.format(t), 'ca' + t, 'i_x|x')
             self.assertRegister('"{0}fizz{0}'.format(t))
@@ -218,3 +219,12 @@ class Test_c(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_issue_654(self):
         self.eq('<header>\n |   <h1>fizz</h1>\n<header>', 'cit', 'i_<header>\n    <h1>|</h1>\n<header>')
+
+    def test_issue_740(self):
+        self.eq('fizz |(inner) buzz', 'ci(', 'i_fizz (|) buzz')
+        self.eq('fizz |(inner) buzz', 'ca(', 'i_fizz | buzz')
+
+    def test_issue_734_empty_tag(self):
+        self.eq('<div>|</div>', 'cit', 'i_<div>|</div>')
+        self.eq('x<div>|</div>x', 'cit', 'i_x<div>|</div>x')
+        self.eq('<fi|zz></fizz>', 'cit', 'i_<fizz>|</fizz>')

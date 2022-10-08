@@ -122,8 +122,8 @@ class BooleanViewOption(BooleanOption):
 
 class NumberViewOption(NumberOption):
 
-    def __init__(self, name: str):
-        super().__init__(name, None)
+    def __init__(self, name: str, default=None):
+        super().__init__(name, default)
 
     def _set(self, view, value):
         settings = view.settings()
@@ -132,7 +132,7 @@ class NumberViewOption(NumberOption):
             settings.set(self._name, value)
 
     def _get(self, view):
-        return view.settings().get(self._name)
+        return view.settings().get(self._name, self._default)
 
 
 def get_window_ui_element_visible(name: str, window=None) -> None:
@@ -186,7 +186,7 @@ _options = {
     'modelines': NumberOption('modelines', 5),
     'number': BooleanViewOption('line_numbers'),
     'relativenumber': BooleanViewOption('relative_line_numbers'),
-    'scrolloff': NumberViewOption('scroll_context_lines'),
+    'scrolloff': NumberViewOption('scroll_context_lines', 0),
     'shell': StringOption('shell', _get_default_shell()),
     'sidebar': BooleanIsVisibleOption('sidebar', True),  # {not in Vim}
     'sidescrolloff': NumberOption('sidescrolloff', 5),

@@ -2,9 +2,78 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## Unreleased
+## 1.27.1 - 2022-10-01
+
+* Fixed [#826](https://github.com/NeoVintageous/NeoVintageous/issues/826): `%` doesn't work correctly on html tags
+
+## 1.27.0 - 2022-09-28
+
+* Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround change tag with `>` remove attributes e.g. `cst<div>` (Surround)
+* Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround change tag with `\n` (newline) to keep attributes e.g. `cst<div<CR>` (Surround)
+* Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround change tag with `<C-t>` to put tag on lines by themselves e.g. `cst<C-t>div>`, `cst<C-t>div<CR>` (Surround)
+* Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround yank `<C-t>` to put tags on lines by themselves e.g. `ysiW<C-t>div>` (Surround)
+* Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround change `<C-t>` to put tags on lines by themselves e.g. `cs"<C-t>div>` (Surround)
+* Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround yank tag with `t` (same as `<`) e.g. `ysiwtdiv>`, `ysiw<div>` (Surround)
+* Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround tag close with `>` e.g. `ysiwtdiv>`, `cs"tdiv>` (Surround)
+* Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround tag close with `\n` e.g. `ysiwtdiv<CR>`, `cs"tdiv<CR>` (Surround)
+* Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround change tag close with newline e.g. `ysiwtdiv<CR>` (Surround)
+* Added [#830](https://github.com/NeoVintageous/NeoVintageous/issues/830): Add surround `f` (function): press `ysWfprint<cr>` in `"hello"` to get  `print("hello")` (Surround)
+* Added [#830](https://github.com/NeoVintageous/NeoVintageous/issues/830): Add surround `F` (function): press `ysWFprint<cr>` in `"hello"` to get  `print( "hello" )` (Surround)
+* Added [#830](https://github.com/NeoVintageous/NeoVintageous/issues/830): Add surround `<C-f>` (function): press `ysW<C-f>print<cr>` in `"hello"` to get `(print "hello")` (Surround)
+* Added [#828](https://github.com/NeoVintageous/NeoVintageous/issues/828): Add `S{char}` in visual line mode (Surround)
+* Added [#838](https://github.com/NeoVintageous/NeoVintageous/issues/838): Add `<S-tab>`
+* Added [#711](https://github.com/NeoVintageous/NeoVintageous/issues/711): Add `[count]` for `*`
+* Added [#711](https://github.com/NeoVintageous/NeoVintageous/issues/711): Add `[count]` for `#`
+* Added [#826](https://github.com/NeoVintageous/NeoVintageous/issues/826): Add jumps like `%` inside comments
+
+## 1.26.3 - 2022-06-20
+
+* Fixed [#827](https://github.com/NeoVintageous/NeoVintageous/issues/827): `Y` should work the same as `y` in visual line mode
+* Fixed [#821](https://github.com/NeoVintageous/NeoVintageous/issues/821): Add German `Ü`, `§`, and `°` keys
+
+## 1.26.2 - 2022-05-16
+
+* Fixed [#821](https://github.com/NeoVintageous/NeoVintageous/issues/821): Add German `ü` and `ß` keys
+* Fixed [#815](https://github.com/NeoVintageous/NeoVintageous/issues/815): Add `vintageous_i_escape_kj` setting for common escape mapping
+
+## 1.26.1 - 2022-02-21
+
+* Fixed [#807](https://github.com/NeoVintageous/NeoVintageous/issues/807): Delete register no longer working on selection made by other plugins
+
+## 1.26.0 - 2022-01-10
+
+### Added
+
+* Added [#615](https://github.com/NeoVintageous/NeoVintageous/issues/615): Support for chaining ex commands with `<Bar>` (vertical bar)
+* Added [#759](https://github.com/NeoVintageous/NeoVintageous/issues/759): Support for mapping multiple ex commands
+* Added [#786](https://github.com/NeoVintageous/NeoVintageous/issues/786): Paste is now more flexible for multi cursors
+* Added [#781](https://github.com/NeoVintageous/NeoVintageous/issues/781): New text objects `i,`, `i.`, `i;`, `i:`, `i+`, `i-`, `i=`, `i~`, `i_`, `i*`, `i#`, `i/`, `i|`, `i\`, `i&`, `i$` (port of https://github.com/wellle/targets.vim)
+* Added [#781](https://github.com/NeoVintageous/NeoVintageous/issues/781): New text objects `a,`, `a.`, `a;`, `a:`, `a+`, `a-`, `a=`, `a~`, `a_`, `a*`, `a#`, `a/`, `a|`, `a\`, `a&`, `a$` (port of https://github.com/wellle/targets.vim)
+
+### Fixed
+
+* Fixed [#800](https://github.com/NeoVintageous/NeoVintageous/issues/800): scroll_context_lines setting for H and L
+* Fixed [#806](https://github.com/NeoVintageous/NeoVintageous/issues/806): Quote-Quote and Quote-Backtick commands don't work
+* Fixed [#786](https://github.com/NeoVintageous/NeoVintageous/issues/786): Pasting with p or P does not work when multiple cursors are enabled
+* Fixed [#734](https://github.com/NeoVintageous/NeoVintageous/issues/734): Change In Tag deletes empty HTML tag instead of placing caret inside it
+* Fixed [#740](https://github.com/NeoVintageous/NeoVintageous/issues/740): Change inside parentheses not working as expected?
+* Fixed [#739](https://github.com/NeoVintageous/NeoVintageous/issues/739): Wrong behaviour for nested motions
+* Fixed [#744](https://github.com/NeoVintageous/NeoVintageous/issues/744): Delete-surround not deleting the right pair
+* Fixed [#644](https://github.com/NeoVintageous/NeoVintageous/issues/644): Surround plugin deletes non-matching parentheses
+* Fixed [#745](https://github.com/NeoVintageous/NeoVintageous/issues/745): `ds` sometimes doesn't work when the cursor is on first target
+* Fixed [#791](https://github.com/NeoVintageous/NeoVintageous/issues/791): Reset mode setting is ignored when mode is already normal
+* Fixed [#790](https://github.com/NeoVintageous/NeoVintageous/issues/790): Various file saving edge-case issues
+* Fixed [#790](https://github.com/NeoVintageous/NeoVintageous/issues/790): Asynchronous file saving with `:w`, `:wq`
+
+## 1.25.0 - 2021-12-14
+
+### Added
 
 * Added [#789](https://github.com/NeoVintageous/NeoVintageous/issues/789): Support inverse global-command `:g!/pattern/cmd`
+
+### Fixed
+
+* Fixed [#797](https://github.com/NeoVintageous/NeoVintageous/issues/797): `:cd` not working as expected
 
 ## 1.24.1 - 2021-07-07
 

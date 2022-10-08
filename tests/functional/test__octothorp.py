@@ -35,6 +35,15 @@ class Test_octothorp(unittest.FunctionalTestCase):
         self.assertSearch('x |fizz| x')
         self.assertSearchCurrent('x |fizz| x')
 
+    def test_n_count(self):
+        self.eq('xx\nxx\nxx\n|xx\n', 'n_1#', 'xx\nxx\n|xx\nxx\n')
+        self.eq('xx\nxx\nxx\n|xx\n', 'n_2#', 'xx\n|xx\nxx\nxx\n')
+        self.eq('xx\nxx\nxx\n|xx\n', 'n_3#', '|xx\nxx\nxx\nxx\n')
+        self.eq('xx\nxx\nxx\n|xx\n', 'n_4#', 'xx\nxx\nxx\n|xx\n')
+        self.eq('xx\n|xx\nxx\nxx\n', 'n_3#', 'xx\nxx\n|xx\nxx\n')
+        self.set_option('wrapscan', False)
+        self.eq('xx\n|xx\nxx\nxx\n', 'n_3#', 'xx\n|xx\nxx\nxx\n')
+
     def test_n_empty(self):
         self.eq('|', 'n_#', '|')
         self.assertSearch('')
@@ -93,7 +102,7 @@ class Test_octothorp(unittest.FunctionalTestCase):
         self.set_option('wrapscan', False)
         self.eq('x\nabc\nx\na|bc\nx', 'n_#', 'x\n|abc\nx\nabc\nx')
         self.eq('x\n|abc\nx\nabc\nx', 'n_#', 'x\n|abc\nx\nabc\nx')
-        self.eq('x\nabc\nx\na|bc\nx', 'n_3#', 'x\n|abc\nx\nabc\nx')
+        self.eq('x\nabc\nx\na|bc\nx', 'n_3#', 'x\nabc\nx\na|bc\nx')
 
     def test_n_ignorecase(self):
         self.normal('xxx\nXXX\nx|xx\nXxX\n')

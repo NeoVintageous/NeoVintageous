@@ -632,7 +632,9 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['wall', 'wa'], cmd('wall'))
         self.assertRoute(['wq!'], cmd('wq', forced=True))
         self.assertRoute(['wq'], cmd('wq'))
-        self.assertRoute(['wqall', 'wqa', 'xall', 'xa'], cmd('wqall', addressable=True))
+        self.assertRoute(['wqall', 'wqa', 'xall', 'xa'], cmd('wqall', forced=False, addressable=True))
+        self.assertRoute(['wqall!', 'wqa!', 'xall!', 'xa!'], cmd('wqall', forced=True, addressable=True))
+        self.assertRoute(['wqall'], cmd('wqall', forced=False, addressable=True))
         self.assertRoute(['write file.txt', 'w file.txt'], cmd('write', params={'++': '', 'file_name': 'file.txt', '>>': False, 'cmd': ''}, addressable=True))  # noqa: E501
         self.assertRoute(['write! file.txt', 'w! file.txt'], cmd('write', params={'++': '', 'file_name': 'file.txt', '>>': False, 'cmd': ''}, addressable=True, forced=True))  # noqa: E501
         self.assertRoute(['write!', 'w!'], cmd('write', params={'++': '', 'file_name': '', '>>': False, 'cmd': ''}, addressable=True, forced=True))  # noqa: E501

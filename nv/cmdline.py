@@ -50,16 +50,15 @@ class Cmdline():
         SEARCH_FORWARD,
     )
 
-    def __init__(self, window, type: str, on_done=None, on_change=None, on_cancel=None):
-        self._window = window
+    def __init__(self, view, type: str, on_done=None, on_change=None, on_cancel=None):
+        self._window = view.window()
 
         if type not in self._TYPES:
             raise ValueError('invalid cmdline type')
 
         self._type = type
 
-        # TODO Make view a contructor dependency? window.active_view() is a race-condition whereas view.window() isn't
-        if type in (self.SEARCH_FORWARD, self.SEARCH_BACKWARD) and not get_option(window.active_view(), 'incsearch'):
+        if type in (self.SEARCH_FORWARD, self.SEARCH_BACKWARD) and not get_option(view, 'incsearch'):
             on_change = None
 
         self._callbacks = {

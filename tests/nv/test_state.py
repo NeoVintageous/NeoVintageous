@@ -43,6 +43,7 @@ from NeoVintageous.nv.settings import set_register
 from NeoVintageous.nv.state import _must_scroll_into_view
 from NeoVintageous.nv.state import get_action
 from NeoVintageous.nv.state import get_motion
+from NeoVintageous.nv.state import init_state
 from NeoVintageous.nv.state import is_runnable
 from NeoVintageous.nv.state import reset_command_data
 from NeoVintageous.nv.state import set_action
@@ -52,6 +53,17 @@ from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
 
 
 class TestState(unittest.ViewTestCase):
+
+    def test_init_state_on_invalid_view(self):
+        panel = self.view.window().create_output_panel('test_invalid_state', unlisted=True)
+        panel.settings().set('is_widget', True)
+        panel.settings().set('command_mode', True)
+        panel.settings().set('inverse_caret_state', True)
+        panel.settings().set('vintage', True)
+        init_state(panel)
+        self.assertIsNone(panel.settings().get('command_mode'))
+        self.assertIsNone(panel.settings().get('inverse_caret_state'))
+        self.assertIsNone(panel.settings().get('vintage'))
 
     def test_can_initialize(self):
         # Make sure the actual usage of NeoVintageous doesn't change the

@@ -33,7 +33,7 @@ def get_setting(view, name: str, default=None):
 
 
 def set_setting(view, name: str, value) -> None:
-    view.settings().set('vintageous_%s' % name)
+    view.settings().set('vintageous_%s' % name, value)
 
 
 def reset_setting(view, name: str) -> None:

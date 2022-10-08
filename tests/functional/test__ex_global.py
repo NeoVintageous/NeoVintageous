@@ -41,3 +41,31 @@ class Test_ex_global(unittest.FunctionalTestCase):
         self.eq('|fizz\nxyz\nbuzz\n', ':global!/^x/d', 'xyz\n|')
         self.eq('|fizz\nxyz\nbuzz\nfizz\nxyz\nbuzz\n', ':global!/^x/d', 'xyz\nxyz\n|')
 
+    @unittest.mock_status_message()
+    def test_global_delete_pattern_not_found(self):
+        self.normal('|fizz\nxyz\nbuzz\n')
+        self.feed(':global/[0-9]/d')
+        self.assertNormal('|fizz\nxyz\nbuzz\n')
+        self.assertStatusMessage('Pattern not found: [0-9]')
+
+    def test_global_delete_with_last_pattern(self):
+        self.normal('|fizz\nxyz\nbuzz\n')
+        self.feed(':global/^x/d')
+        self.assertNormal('fizz\n|buzz\n')
+        self.normal('|fizz\nxyz\nbuzz\n')
+        self.feed(':global//d')
+        self.assertNormal('fizz\n|buzz\n')
+
+    @unittest.mock_status_message()
+    def test_global_delete_no_previous_pattern(self):
+        self.normal('|fizz\nxyz\nbuzz\n')
+        self.feed(':global//d')
+        self.assertNormal('|fizz\nxyz\nbuzz\n')
+        self.assertStatusMessage('E35: No previous regular expression')
+
+    @unittest.mock_status_message()
+    def test_global_command_not_supported(self):
+        self.normal('|fizz\nxyz\nbuzz\n')
+        self.feed(':global/^/nohlsearch')
+        self.assertNormal('|fizz\nxyz\nbuzz\n')
+        self.assertStatusMessage('Command not supported: nohlsearch')

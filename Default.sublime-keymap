@@ -31,6 +31,7 @@
     // Escape mappings.
     { "keys": ["j", "j"], "command": "nv_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_i_escape_jj"}]},
     { "keys": ["j", "k"], "command": "nv_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_i_escape_jk"}]},
+    { "keys": ["k", "j"], "command": "nv_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_i_escape_kj"}]},
 
     // Command-line output.
     {"keys": ["enter"], "command": "show_panel", "args": {"panel": "output.Command-line", "toggle": true}, "context": [{"key": "setting.nv_cmdline_output"}]},
@@ -71,6 +72,7 @@
     {"keys": ["!"],         "command": "nv_feed_key", "args": {"key": "!"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["#"],         "command": "nv_feed_key", "args": {"key": "#"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["$"],         "command": "nv_feed_key", "args": {"key": "$"},        "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["§"],         "command": "nv_feed_key", "args": {"key": "§"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["%"],         "command": "nv_feed_key", "args": {"key": "%"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["&"],         "command": "nv_feed_key", "args": {"key": "&"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["'"],         "command": "nv_feed_key", "args": {"key": "'"},        "context": [{"key": "vi_command_mode_aware"}]},
@@ -167,15 +169,19 @@
     {"keys": ["´"],         "command": "nv_feed_key", "args": {"key": "´"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["·"],         "command": "nv_feed_key", "args": {"key": "·"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["º"],         "command": "nv_feed_key", "args": {"key": "º"},        "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["°"],         "command": "nv_feed_key", "args": {"key": "°"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["¿"],         "command": "nv_feed_key", "args": {"key": "¿"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["Ä"],         "command": "nv_feed_key", "args": {"key": "Ä"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["Ç"],         "command": "nv_feed_key", "args": {"key": "Ç"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["Ñ"],         "command": "nv_feed_key", "args": {"key": "Ñ"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["Ö"],         "command": "nv_feed_key", "args": {"key": "Ö"},        "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["Ü"],         "command": "nv_feed_key", "args": {"key": "Ü"},        "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["ß"],         "command": "nv_feed_key", "args": {"key": "ß"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["ä"],         "command": "nv_feed_key", "args": {"key": "ä"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["ç"],         "command": "nv_feed_key", "args": {"key": "ç"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["ñ"],         "command": "nv_feed_key", "args": {"key": "ñ"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["ö"],         "command": "nv_feed_key", "args": {"key": "ö"},        "context": [{"key": "vi_command_mode_aware"}]},
+    {"keys": ["ü"],         "command": "nv_feed_key", "args": {"key": "ü"},        "context": [{"key": "vi_command_mode_aware"}]},
     {"keys": ["č"],         "command": "nv_feed_key", "args": {"key": "č"},        "context": [{"key": "vi_command_mode_aware"}]},
 
     {"keys": ["alt+backspace"], "command": "nv_feed_key", "args": {"key": "<M-bs>"},       "context": [{"key": "nv_winaltkeys", "operand": "backspace"}, {"key": "nv_handle_key", "operand": "<M-bs>"}]},
@@ -330,6 +336,7 @@
     {"keys": ["shift+left"],  "command": "nv_feed_key", "args": {"key": "<S-left>"},  "context": [{"key": "vi_command_mode_aware"}, {"key": "nv_handle_key", "operand": "<S-left>"}]},
     {"keys": ["shift+right"], "command": "nv_feed_key", "args": {"key": "<S-right>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "nv_handle_key", "operand": "<S-right>"}]},
     {"keys": ["shift+space"], "command": "nv_feed_key", "args": {"key": "<S-space>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "nv_handle_key", "operand": "<S-space>"}]},
+    {"keys": ["shift+tab"],   "command": "nv_feed_key", "args": {"key": "<S-tab>"},   "context": [{"key": "vi_command_mode_aware"}, {"key": "nv_handle_key", "operand": "<S-tab>"}]},
     {"keys": ["shift+up"],    "command": "nv_feed_key", "args": {"key": "<S-up>"},    "context": [{"key": "vi_command_mode_aware"}, {"key": "nv_handle_key", "operand": "<S-up>"}]},
 
     {"keys": ["shift+ctrl+enter"], "command": "nv_feed_key", "args": {"key": "<C-S-cr>"}, "context": [{"key": "vi_command_mode_aware"}, {"key": "setting.vintageous_use_ctrl_keys"}, {"key": "nv_handle_key", "operand": "<C-S-cr>"}]},

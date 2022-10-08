@@ -18,7 +18,27 @@
 import os
 import tempfile
 
+from sublime import platform
+
 from NeoVintageous.tests import unittest
+
+
+def mock_write():
+    """Mock saving view via ex command.
+
+    Async saving makes testing flaky.
+    """
+    def wrapper(f):
+        @unittest.mock_hide_panel()
+        @unittest.mock_status_message()
+        @unittest.mock.patch('NeoVintageous.nv.ex_cmds.save')
+        def wrapped(self, *args, **kwargs):
+            save = args[-1]
+            save.side_effect = lambda obj: obj.run_command('save', {'async': False})
+
+            return f(self, *args[:-1], **kwargs)
+        return wrapped
+    return wrapper
 
 
 class Test_ex_write(unittest.FunctionalTestCase):
@@ -29,8 +49,11 @@ class Test_ex_write(unittest.FunctionalTestCase):
         self.feed(':write')
         self.assertStatusMessage('E32: No file name')
 
-    @unittest.mock_hide_panel()
-    @unittest.mock_status_message()
+    def assertFileContentEqual(self, expected: str, file_name: str) -> None:
+        with open(file_name, 'r') as f:
+            self.assertEqual(expected, f.read())
+
+    @mock_write()
     def test_write(self):
         with tempfile.TemporaryDirectory() as tmpdirname:
             file_name = os.path.join(tmpdirname, 'new.txt')
@@ -41,27 +64,23 @@ class Test_ex_write(unittest.FunctionalTestCase):
             self.normal('fizz\n')
             self.feed(':write ' + file_name)
             self.assertEqual(file_name, self.view.file_name())
-            with open(file_name, 'r') as f:
-                self.assertEqual('fizz\n', f.read())
+            self.assertFileContentEqual('fizz\n', file_name)
 
             # Test an existing file can be saved.
             self.write('buzz\n')
             self.feed(':write')
             self.assertEqual(file_name, self.view.file_name())
-            with open(file_name, 'r') as f:
-                self.assertEqual('buzz\n', f.read())
+            self.assertFileContentEqual('buzz\n', file_name)
 
             # Test can append to current file.
             self.feed(':write >>')
             self.assertEqual(file_name, self.view.file_name())
-            with open(file_name, 'r') as f:
-                self.assertEqual('buzz\nbuzz\n', f.read())
+            self.assertFileContentEqual('buzz\nbuzz\n', file_name)
 
             # Test can write to another file.
             self.feed(':write ' + file_name_alt)
             self.assertEqual(file_name_alt, self.view.file_name())
-            with open(file_name_alt, 'r') as f:
-                self.assertEqual('buzz\nbuzz\n', f.read())
+            self.assertFileContentEqual('buzz\nbuzz\n', file_name_alt)
 
             self.assertNoStatusMessage()
 
@@ -69,10 +88,8 @@ class Test_ex_write(unittest.FunctionalTestCase):
             self.feed(':write >> ' + file_name)
             self.assertStatusMessage('Appended to %s' % file_name)
             self.assertEqual(file_name_alt, self.view.file_name())
-            with open(file_name_alt, 'r') as f:
-                self.assertEqual('buzz\nbuzz\n', f.read())
-            with open(file_name, 'r') as f:
-                self.assertEqual('buzz\nbuzz\nbuzz\nbuzz\n', f.read())
+            self.assertFileContentEqual('buzz\nbuzz\n', file_name_alt)
+            self.assertFileContentEqual('buzz\nbuzz\nbuzz\nbuzz\n', file_name)
 
             # Test trying to append to non-existing file.
             self.feed(':write >> ' + file_name_noop)
@@ -88,9 +105,33 @@ class Test_ex_write(unittest.FunctionalTestCase):
             self.feed(':write')
             self.feed(':3,6write >> ' + file_name_alt)
             self.assertStatusMessage('Appended to %s' % file_name_alt)
-            with open(file_name_alt, 'r') as f:
-                self.assertEqual('1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n3\n4\n5\n6\n', f.read())
+            self.assertFileContentEqual('1\n2\n3\n4\n5\n6\n7\n8\n9\n0\n3\n4\n5\n6\n', file_name_alt)
 
-            # # Test trying to write to a file that already exists.
-            # self.feed(':write ' + file_name)
-            # self.assertStatusMessage('E13: File exists (add ! to override)', count=5)
+            # Test readonly emits status message
+            self.view.run_command('insert', {'characters': 'x'})
+            self.view.set_read_only(True)
+            self.feed(':write')
+            self.assertStatusMessage("E45: 'readonly' option is set (add ! to override)")
+            self.view.set_read_only(False)
+
+    @mock_write()
+    @unittest.skipIf(platform() == 'windows', 'Test does not work on Windows')
+    def test_write_file_exists(self):
+        with tempfile.NamedTemporaryFile(suffix='txt') as tmpfile:
+            self.normal('fizz\n')
+            self.assertIsNone(self.view.file_name())
+            self.feed(':write ' + tmpfile.name)
+            self.assertStatusMessage("E13: File exists (add ! to override)")
+            self.assertFileContentEqual('', tmpfile.name)
+            self.assertIsNone(self.view.file_name())
+
+    @mock_write()
+    @unittest.skipIf(platform() == 'windows', 'Test does not work on Windows')
+    def test_write_force_even_if_file_exists(self):
+        with tempfile.NamedTemporaryFile(suffix='txt') as tmpfile:
+            self.normal('fizz\n')
+            self.assertIsNone(self.view.file_name())
+            self.feed(':write! ' + tmpfile.name)
+            self.assertNoStatusMessage()
+            self.assertFileContentEqual('fizz\n', tmpfile.name)
+            self.assertEqual(tmpfile.name, self.view.file_name())

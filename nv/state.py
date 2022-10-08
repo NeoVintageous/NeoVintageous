@@ -22,6 +22,7 @@ from sublime import active_window
 from NeoVintageous.nv import macros
 from NeoVintageous.nv import plugin
 from NeoVintageous.nv.macros import add_macro_step
+from NeoVintageous.nv.polyfill import run_window_command
 from NeoVintageous.nv.session import get_session_view_value
 from NeoVintageous.nv.session import set_session_view_value
 from NeoVintageous.nv.settings import get_glue_until_normal_mode
@@ -64,7 +65,6 @@ from NeoVintageous.nv.vim import mode_to_name
 from NeoVintageous.nv.vim import reset_status_line
 from NeoVintageous.nv.vim import run_action
 from NeoVintageous.nv.vim import run_motion
-from NeoVintageous.nv.vim import run_window_command
 
 
 _log = logging.getLogger(__name__)
@@ -153,8 +153,8 @@ def _create_definition(view, name: str):
         if cls is None:
             cls = plugin.classes.get(cmd['name'], None)
 
-        if cls is None:
-            ValueError('unknown %s: %s' % (name, cmd))
+            if cls is None:
+                raise ValueError('unknown %s: %s' % (name, cmd))
 
         return cls.from_json(cmd['data'])
 
@@ -305,9 +305,6 @@ def evaluate_state(view) -> None:
         run_motion(view, motion_cmd)
 
     if action:
-
-        # Evaluate action. Run it.
-
         action_cmd = action.translate(view)
 
         _log.debug('action: %s', action_cmd)
@@ -351,14 +348,15 @@ def evaluate_state(view) -> None:
     reset_command_data(view)
 
 
-def init_state(view) -> None:
-    # Initialise view state e.g. runs every time a view is activated.
+def _should_reset_mode(view, current_mode: str) -> bool:
+    return current_mode == UNKNOWN or get_setting(view, 'reset_mode_when_switching_tabs')
 
-    # Don't initialise view if it's a console, widget, panel, non-view, or any
-    # view where Vim behaviours should be disabled or are not applicable.
+
+def init_state(view) -> None:
+    # If the view not a regular vim capable view (e.g. console, widget, panel),
+    # skip the state initialisation and perform a clean routine on the view.
+    # TODO is a clean routine really necessary on non-vim capable views?
     if not is_view(view):
-        # Some initialised state may cause unexpected behaviours.
-        # TODO Is cleaning the view necessary?
         clean_view(view)
         return
 
@@ -371,8 +369,7 @@ def init_state(view) -> None:
 
     mode = get_mode(view)
 
-    # Does user want to reset mode (to normal mode) when initialising state?
-    if mode not in (NORMAL, UNKNOWN) and not get_setting(view, 'reset_mode_when_switching_tabs'):
+    if not _should_reset_mode(view, mode):
         return
 
     # Fix malformed selection: if we have no selections, add one.

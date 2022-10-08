@@ -290,6 +290,15 @@ class TestViewTestCase(unittest.ViewTestCase):
         self.view.sel().add(Region(7, 11))
         self.assertVisual('hel|lo| w|orld|')
 
+    def test_status_line(self):
+        self.view.set_status('vim-mode', 'MODE')
+        self.view.set_status('vim-seq', 'SEQ')
+        self.view.set_status('vim-recorder', 'REC')
+        self.assertStatusLineEqual('MODE SEQ REC')
+        self.assertStatusLineRegex('^[A-Z]+ [A-Z]+ [A-Z]+$')
+        with self.assertRaises(AssertionError):
+            self.assertStatusLineRegex('[0-9]+')
+
     def test_assertVisual_asserts_visual_mode(self):
         self.view.run_command('insert', {'characters': 'hello world'})
         self.view.sel().clear()

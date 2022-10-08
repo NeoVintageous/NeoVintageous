@@ -231,3 +231,8 @@ class Test_y(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('r_u_fi|zz bu|zz\nfizz buzz', 'b_y', 'n_fi|zz buzz\nfizz buzz')
         self.eq('r_u_fi|zz bu|zz\nfi|zz bu|zz', 'b_y', 'n_fi|zz buzz\nfizz buzz')
         self.eq('r_u_fi|zz bu|zz\nfi|zz bu|zz\nfi|zz bu|zz\n', 'b_y', 'n_fi|zz buzz\nfizz buzz\nfizz buzz\n')
+
+    def test_issue_739_nested_braces(self):
+        self.eq(' { nested |{    targets    } } ', 'yi{', ' { nested {    |targets    } } ')
+        self.resetRegisters()
+        self.eq(' { nested |{    targets    } } ', 'ya{', ' { nested |{    targets    } } ')

@@ -103,15 +103,36 @@ class Test_percent_in_PHP_syntax(unittest.FunctionalTestCase):
 
     def test_percent(self):
         self.eq('<?php\nfunct|ion x() {\n//...\n}\n', 'n_%', '<?php\nfunction x(|) {\n//...\n}\n')
-        self.eq('<fi|zz>buzz</fizz>', 'n_%', '<fizz>buzz|</fizz>')
-        self.eq('<?php function x() |{/*{*/}\n', 'n_%', '<?php function x() {/*{*/|}\n')
-        self.eq('<?php function x() {/*{*/|}\n', 'n_%', '<?php function x() |{/*{*/}\n')
+        self.eq('<fi|zz>buzz</fizz>', 'n_%', '<fizz>buzz<|/fizz>')
         self.eq('<?php functi|on x($x="_)_") {}\n', 'n_%', '<?php function x($x="_)_"|) {}\n')
         self.eq('<?php function x($x="_(_"|) {}\n', 'n_%', '<?php function x|($x="_(_") {}\n')
+        self.eq('<?php if (true) {\nif (true) |{\n$x = "{";\n}\n}\n', 'n_%', '<?php if (true) {\nif (true) {\n$x = "{";\n|}\n}\n')  # noqa: E501
+
+    def test_percent_should_work_inside_comments(self):
+        self.eq('<?php /* |{fizz} */', 'n_%', '<?php /* {fizz|} */')
+        self.eq('<?php /* {fizz|} */', 'n_%', '<?php /* |{fizz} */')
+        self.eq('<?php // |{fizz} ', 'n_%', '<?php // {fizz|} ')
+        self.eq('<?php // {fizz|} ', 'n_%', '<?php // |{fizz} ')
+        self.eq('<?php /*\n|{\nfizz\n}\n */', 'n_%', '<?php /*\n{\nfizz\n|}\n */')
+        self.eq('<?php\n/**\n * |{\n * fizz\n * }\n */ ', 'n_%', '<?php\n/**\n * {\n * fizz\n * |}\n */ ')
+
+    @unittest.skip('Re #826')
+    def test_percent_should_only_keep_count_of_open_close_brackets_within_each_scope(self):
+        # For example, in the following there are 2 open brackets but only 1
+        # closing. This would normally mean a noop but the scope of the comment
+        # and code are not the same so the comment bracket should not count.
+        #
+        #   <?php
+        #
+        #   function x() {
+        #       // {
+        #   }
+        #
+        self.eq('<?php function x() |{/*{*/}\n', 'n_%', '<?php function x() {/*{*/|}\n')
+        self.eq('<?php function x() {/*{*/|}\n', 'n_%', '<?php function x() |{/*{*/}\n')
         self.eq('<?php function x() |{\n// {{}}}\n$x=\'{{}}}\';\n}\n', 'n_%', '<?php function x() {\n// {{}}}\n$x=\'{{}}}\';\n|}\n')  # noqa: E501
         self.eq('<?php function x() {\n// {{}}}\n$x=\'{{}}}\';\n|}\n', 'n_%', '<?php function x() |{\n// {{}}}\n$x=\'{{}}}\';\n}\n')  # noqa: E501
         self.eq('<?php function f() {  |{ // 1\n  // {\n  } // 2\n} // 3\n', 'n_%', '<?php function f() {  { // 1\n  // {\n  |} // 2\n} // 3\n')  # noqa: E501
-        self.eq('<?php if (true) {\nif (true) |{\n$x = "{";\n}\n}\n', 'n_%', '<?php if (true) {\nif (true) {\n$x = "{";\n|}\n}\n')  # noqa: E501
 
     def test_find_next_item_in_this_line_after_the_cursor(self):
         start = '<?php\nfunct|ion x() {\n    //...\n}\n'
@@ -152,22 +173,32 @@ class Test_percent_in_HTML_syntax(unittest.FunctionalTestCase):
         self.eq('|fi<div>zzbu</div>zz', 'n_%', 'fi<div|>zzbu</div>zz')
         self.eq('f|i<div>zzbu</div>zz', 'n_%', 'fi<div|>zzbu</div>zz')
         self.eq('fi|<div>zzbu</div>zz', 'n_%', 'fi<div|>zzbu</div>zz')
-        self.eq('fi<|div>zzbu</div>zz', 'n_%', 'fi<div>zzbu|</div>zz')
-        self.eq('fi<d|iv>zzbu</div>zz', 'n_%', 'fi<div>zzbu|</div>zz')
-        self.eq('fi<di|v>zzbu</div>zz', 'n_%', 'fi<div>zzbu|</div>zz')
+        self.eq('fi<|div>zzbu</div>zz', 'n_%', 'fi<div>zzbu<|/div>zz')
+        self.eq('fi<d|iv>zzbu</div>zz', 'n_%', 'fi<div>zzbu<|/div>zz')
+        self.eq('fi<di|v>zzbu</div>zz', 'n_%', 'fi<div>zzbu<|/div>zz')
         self.eq('fi<div|>zzbu</div>zz', 'n_%', 'fi|<div>zzbu</div>zz')
-        self.eq('fi<div>|zzbu</div>zz', 'n_%', 'fi<div>zzbu|</div>zz')
+        self.eq('fi<div>|zzbu</div>zz', 'n_%', 'fi<div>zzbu<|/div>zz')
         self.eq('fi<div>z|zbu</div>zz', 'n_%', 'fi<div>zzbu</div|>zz')
         self.eq('fi<div>zz|bu</div>zz', 'n_%', 'fi<div>zzbu</div|>zz')
         self.eq('fi<div>zzb|u</div>zz', 'n_%', 'fi<div>zzbu</div|>zz')
         self.eq('fi<div>zzbu|</div>zz', 'n_%', 'fi<div>zzbu</div|>zz')
-        self.eq('fi<div>zzbu<|/div>zz', 'n_%', 'fi|<div>zzbu</div>zz')
-        self.eq('fi<div>zzbu</|div>zz', 'n_%', 'fi|<div>zzbu</div>zz')
-        self.eq('fi<div>zzbu</d|iv>zz', 'n_%', 'fi|<div>zzbu</div>zz')
-        self.eq('fi<div>zzbu</di|v>zz', 'n_%', 'fi|<div>zzbu</div>zz')
+        self.eq('fi<div>zzbu<|/div>zz', 'n_%', 'fi<|div>zzbu</div>zz')
+        self.eq('fi<div>zzbu</|div>zz', 'n_%', 'fi<|div>zzbu</div>zz')
+        self.eq('fi<div>zzbu</d|iv>zz', 'n_%', 'fi<|div>zzbu</div>zz')
+        self.eq('fi<div>zzbu</di|v>zz', 'n_%', 'fi<|div>zzbu</div>zz')
         self.eq('fi<div>zzbu</div|>zz', 'n_%', 'fi<div>zzbu|</div>zz')
-        self.eq('fi<div>zzbu</div>|zz', 'n_%', 'fi|<div>zzbu</div>zz')
+        self.eq('fi<div>zzbu</div>|zz', 'n_%', 'fi<|div>zzbu</div>zz')
         self.eq('fi<div>zzbu</div>z|z', 'n_%', 'fi<div>zzbu</div>z|z')
+
+    def test_v_percent(self):
+        self.eq('<di|v|>fizz</div>', 'v_%', '<di|v>fizz</|div>')
+        self.eq('<di|v>fizz</|div>', 'v_%', 'r_<|div|>fizz</div>')
+        self.eq('r_<|div|>fizz</div>', 'v_%', '<di|v>fizz</|div>')
+        self.eq('|<|div>fizz</div>', 'v_%', '|<div>|fizz</div>')
+        self.eq('|<div>|fizz</div>', 'v_%', '|<|div>fizz</div>')
+        self.eq('<div>f|i|zz</div>', 'v_%', '<div>f|izz</div>|')
+        self.eq('<div>f|izz</div>|', 'v_%', '<div>f|izz<|/div>')
+        self.eq('<div>f|izz<|/div>', 'v_%', '<div>f|izz</div>|')
 
 
 class Test_percent_in_XML_syntax(unittest.FunctionalTestCase):
@@ -177,7 +208,8 @@ class Test_percent_in_XML_syntax(unittest.FunctionalTestCase):
         self.syntax('Packages/XML/XML.sublime-syntax')
 
     def test_percent(self):
-        self.eq('<fi|zz>buzz</fizz>', 'n_%', '<fizz>buzz|</fizz>')
+        self.eq('|<fizz>buzz</fizz>', 'n_%', '<fizz|>buzz</fizz>')
+        self.eq('<fi|zz>buzz</fizz>', 'n_%', '<fizz>buzz<|/fizz>')
 
 
 class Test_workaround_for_issue_243(unittest.FunctionalTestCase):

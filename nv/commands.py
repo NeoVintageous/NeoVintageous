@@ -27,6 +27,7 @@ from sublime import ENCODED_POSITION
 from sublime import LITERAL
 from sublime import MONOSPACE_FONT
 from sublime import Region
+from sublime import version
 from sublime_plugin import TextCommand
 from sublime_plugin import WindowCommand
 
@@ -494,20 +495,6 @@ class nv_run_cmds(TextCommand):
             self.view.run_command(cmd, args)
 
 
-def _fix_malformed_selection(view, mode: str) -> str:
-    # If multiple cursor selection has been made by the mouse or a built-in ST
-    # command the mode may be incorrectly set to Normal mode.
-    # See https://github.com/NeoVintageous/NeoVintageous/issues/742
-    if mode == NORMAL and len(view.sel()) > 1:
-        mode = VISUAL
-        set_mode(view, mode)
-
-    # TODO Extract fix malformed selections specific logic from init_state()
-    init_state(view)
-
-    return mode
-
-
 class nv_feed_key(WindowCommand):
 
     def run(self, key, repeat_count=None, do_eval=True, check_user_mappings=True):
@@ -539,10 +526,7 @@ class nv_feed_key(WindowCommand):
 
         _log.debug('mode: %s', mode)
 
-        # Try to fix possibly malformed selections: if the user has made a
-        # selection with the mouse or a built-in ST command (non-vim), the
-        # selection may be in an incorrect mode or inconsistent state.
-        if mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, SELECT) and self.view.has_non_empty_selection_region():
+        if _is_selection_malformed(self.view, mode):
             mode = _fix_malformed_selection(self.view, mode)
 
         if key.lower() == '<esc>':
@@ -745,7 +729,7 @@ class nv_feed_key(WindowCommand):
 
         if is_interactive(self.view):
             if command.accept_input and command.input_parser and command.input_parser.is_panel():
-                command.input_parser.run_command()
+                command.input_parser.run_command(self.view.window())
 
         if get_mode(self.view) == OPERATOR_PENDING:
             set_partial_sequence(self.view, '')
@@ -781,6 +765,29 @@ class nv_feed_key(WindowCommand):
             return True
 
         return False
+
+
+def _is_selection_malformed(view, mode) -> bool:
+    return mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, SELECT) and view.has_non_empty_selection_region()
+
+
+def _fix_malformed_selection(view, mode: str) -> str:
+    # If a selection was made via the mouse or a built-in ST command the
+    # selection may be in an inconsistent state e.g. incorrect mode.
+    # https://github.com/NeoVintageous/NeoVintageous/issues/742
+    if mode == NORMAL and len(view.sel()) > 1:
+        mode = VISUAL
+        set_mode(view, mode)
+    elif mode != VISUAL and view.has_non_empty_selection_region():
+        # Try to fixup a malformed visual state. For example, apparently this
+        # can happen when a search is performed via a search panel and "Find
+        # All" is pressed. In that case, multiple selections may need fixing.
+        view.window().run_command('nv_enter_visual_mode', {'mode': mode})
+
+    # TODO Extract fix malformed selections specific logic from init_state()
+    init_state(view)
+
+    return mode
 
 
 class nv_process_notation(WindowCommand):
@@ -963,7 +970,7 @@ class nv_cmdline(WindowCommand):
             initial_text = ""
 
         self._cmdline = Cmdline(
-            self.window,
+            view,
             Cmdline.EX,
             self.on_done,
             self.on_change,
@@ -1670,7 +1677,7 @@ class nv_vi_yy(TextCommand):
                     s.b = min(view.size(), s.b + 1)
                 else:
                     s = view.full_line(s.b)
-            elif mode == VISUAL:
+            elif mode in (VISUAL, VISUAL_LINE):
                 startline = view.line(s.begin())
                 endline = view.line(s.end() - 1)
                 s.a = startline.a
@@ -1678,7 +1685,7 @@ class nv_vi_yy(TextCommand):
 
             return s
 
-        if mode not in (INTERNAL_NORMAL, VISUAL):
+        if mode not in (INTERNAL_NORMAL, VISUAL, VISUAL_LINE):
             enter_normal_mode(self.view, mode)
             ui_bell()
             return
@@ -1833,6 +1840,10 @@ class nv_vi_m(TextCommand):
 class nv_vi_quote(TextCommand):
 
     def run(self, edit, mode=None, count=1, character=None):
+        if int(version()) >= 4082 and character == "'":
+            self.view.run_command('jump_back')
+            return
+
         def f(view, s):
             if mode == VISUAL:
                 resolve_visual_target(s, next_non_blank(view, view.line(target.b).a))
@@ -1868,6 +1879,10 @@ class nv_vi_quote(TextCommand):
 class nv_vi_backtick(TextCommand):
 
     def run(self, edit, mode=None, count=1, character=None):
+        if int(version()) >= 4082 and character == '`':
+            self.view.run_command('jump_back')
+            return
+
         def f(view, s):
             if mode == VISUAL:
                 resolve_visual_target(s, target.b)
@@ -2274,12 +2289,12 @@ class nv_vi_paste(TextCommand):
 
         _log.debug('paste %s count=%s register=%s before=%s indent=%s end=%s linewise=%s content >>>%s<<<', mode, count, register, before_cursor, adjust_indent, adjust_cursor, linewise, contents)  # noqa: E501
 
-        sels = list(self.view.sel())
+        contents = _resolve_paste_items_with_view_sel(self.view, contents)
+        if not contents:
+            ui_bell()
+            return
 
-        # When the number of selections is more than one but not equal to the
-        # number of contents then the operation is a NOOP and a bell is rung.
-        if len(sels) > 1 and len(contents) != len(sels):
-            return ui_bell()
+        sels = list(self.view.sel())
 
         # Some paste operations need to reposition the cursor to a specific
         # point after the paste operation has been completed successfully.
@@ -2451,6 +2466,33 @@ class nv_vi_paste(TextCommand):
             resolve_to_specific_pt += 1
 
         return sels, contents, before_cursor, resolve_to_specific_pt
+
+
+def _resolve_paste_items_with_view_sel(view, contents: list) -> list:
+    sels_count = len(view.sel())
+    contents_len = len(contents)
+
+    if sels_count == contents_len:
+        return contents
+
+    if sels_count > 1:
+        # If the number of items in the paste register exceeds the number of
+        # selections then slice the paste items up to the number of sels.
+        if contents_len > sels_count:
+            return contents[:sels_count]
+
+        # If the paste items are all the same then fill the paste items up the
+        # number of selections.
+        if len(set(contents)) == 1:
+            for x in range(sels_count - contents_len):
+                contents.append(contents[0])
+
+            return contents[:sels_count]
+
+        # The cpaste contents is not compatible with the number of selections.
+        return []
+
+    return contents
 
 
 class nv_vi_ga(WindowCommand):
@@ -3222,7 +3264,7 @@ class nv_vi_slash(TextCommand):
         set_reset_during_init(self.view, False)
 
         self._cmdline = Cmdline(
-            self.view.window(),
+            self.view,
             Cmdline.SEARCH_FORWARD,
             self.on_done,
             self.on_change,
@@ -3879,7 +3921,7 @@ class nv_vi_star(TextCommand):
                 start=view.word(s.end()).end(),
                 end=view.size(),
                 flags=flags,
-                times=1
+                times=count
             )
 
             if match:
@@ -3925,7 +3967,7 @@ class nv_vi_octothorp(TextCommand):
                 start=0,
                 end=(s.b if s.a > s.b else s.a),
                 flags=flags,
-                times=1
+                times=count
             )
 
             if match:
@@ -4354,7 +4396,7 @@ class nv_vi_question_mark(TextCommand):
         set_reset_during_init(self.view, False)
 
         self._cmdline = Cmdline(
-            self.view.window(),
+            self.view,
             Cmdline.SEARCH_BACKWARD,
             self.on_done,
             self.on_change,

@@ -36,6 +36,15 @@ class Test_star(unittest.FunctionalTestCase):
         self.assertSearchCurrent('x |fizz| x')
         self.eq('|', 'n_*', '|')
 
+    def test_n_count(self):
+        self.eq('|xx\nxx\nxx\nxx\n', 'n_1*', 'xx\n|xx\nxx\nxx\n')
+        self.eq('|xx\nxx\nxx\nxx\n', 'n_2*', 'xx\nxx\n|xx\nxx\n')
+        self.eq('|xx\nxx\nxx\nxx\n', 'n_3*', 'xx\nxx\nxx\n|xx\n')
+        self.eq('|xx\nxx\nxx\nxx\n', 'n_4*', '|xx\nxx\nxx\nxx\n')
+        self.eq('xx\nxx\nxx\n|xx\n', 'n_2*', 'xx\n|xx\nxx\nxx\n')
+        self.set_option('wrapscan', False)
+        self.eq('xx\nxx\nxx\n|xx\n', 'n_2*', 'xx\nxx\nxx\n|xx\n')
+
     def test_n_multiple_cursors(self):
         self.eq('xy x|y xy xy x|y xy xy', 'n_*', 'xy xy |xy xy xy |xy xy')
         self.assertSearch('|xy| |xy| |xy| |xy| |xy| |xy| |xy|')
@@ -82,7 +91,7 @@ class Test_star(unittest.FunctionalTestCase):
         self.set_option('wrapscan', False)
         self.eq('a|bc\nx\nabc\nx', 'n_*', 'abc\nx\n|abc\nx')
         self.eq('abc\nx\n|abc\nx', 'n_*', 'abc\nx\n|abc\nx')
-        self.eq('a|bc\nx\nabc\nx', 'n_5*', 'abc\nx\n|abc\nx')
+        self.eq('|abc\nx\nabc\nx', 'n_5*', '|abc\nx\nabc\nx')
 
     def test_n_ignorecase(self):
         self.normal('x|xx\nXXX\nxxx\nXxX\n')

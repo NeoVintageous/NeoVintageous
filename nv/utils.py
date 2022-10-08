@@ -53,7 +53,6 @@ from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import is_visual_mode
-from NeoVintageous.nv.vim import run_window_command
 
 
 def has_dirty_buffers(window) -> bool:
@@ -507,7 +506,9 @@ def highlow_visible_rows(view) -> tuple:
     if lowest_position > (view_position[1] + viewport_extent[1]):
         lowest_visible_row -= 1
 
-    return (highest_visible_row, lowest_visible_row)
+    context_lines = get_option(view, 'scrolloff')
+
+    return (highest_visible_row + context_lines, lowest_visible_row - context_lines)
 
 
 def highest_visible_pt(view) -> int:
@@ -1007,8 +1008,8 @@ class InputParser():
     def is_interactive(self) -> bool:
         return self.is_panel() and bool(self._command)
 
-    def run_command(self) -> None:
-        run_window_command(self._command)
+    def run_command(self, window) -> None:
+        window.run_command(self._command)
 
     def run_interactive_command(self, window, value) -> None:
         window.run_command(self._command, {self._param: value})
@@ -1123,7 +1124,7 @@ def fixup_eof(view, pt: int) -> int:
 def should_motion_apply_op_transformer(motion) -> bool:
     if motion['motion'] == 'nv_vi_select_text_object':
         if 'text_object' in motion['motion_args']:
-            if motion['motion_args']['text_object'] in '"\'/_t':
+            if motion['motion_args']['text_object'] in '"\'/_t,.;:+-=~*#\\&$|':
                 return False
 
     blacklist = (

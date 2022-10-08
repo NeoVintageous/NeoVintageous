@@ -17,14 +17,13 @@
 
 from NeoVintageous.tests import unittest
 
-
 noop_targets = 'wWsp'
 
 invalid_targets = '20qe'
 
 quote_targets = '\'"`'
 
-other_targets = '.,-_'
+other_targets = '.,-_,.;:+-=~*#\\&$'
 
 punctuation_targets = 'b()B{}r[]a<>'
 
@@ -111,15 +110,13 @@ class TestSurround_ds(unittest.FunctionalTestCase):
     def test_multiple_cursors(self):
         self.eq('x"a|c"\n"d|c"y', 'ds"', 'x|ac\n|dcy')
 
-    def test_issue_305_multiple_selection_leaves_cursors_in_the_wrong_place(self):
-        self.eq("eats 'fi|sh'\neats 'fi|sh'\neats 'fi|sh'", "ds'", "eats |fish\neats |fish\neats |fish")
-
     def test_should_delete_targets(self):
         expected = 'x |abc y'
-
         for t in quote_targets + other_targets:
             self.eq('x {0}a|bc{0} y'.format(t), 'ds' + t, expected)
 
+    def test_should_delete_targets_for_punctuation(self):
+        expected = 'x |abc y'
         for o, c, a in punctuation_targets_data:
             seed = 'x {}a|bc{} y'.format(o, c)
             self.eq(seed, 'ds' + o, expected)  # Open target
@@ -145,18 +142,24 @@ class TestSurround_ds(unittest.FunctionalTestCase):
 
     def test_should_not_strip_contained_whitespace(self):
         expected = 'x  |   ab     y'
-
         for t in quote_targets + other_targets:
             self.eq('x  {0}   a|b    {0} y'.format(t), 'ds' + t, expected)
 
+    def test_should_not_strip_contained_whitespace_for_punctuation(self):
+        expected = 'x  |   ab     y'
         for o, c, a in punctuation_targets_data:
             seed = 'x  {}   a|b    {} y'.format(o, c)
             self.eq(seed, 'ds' + c, expected)  # Close target
             self.eq(seed, 'ds' + a, expected)  # Close alias target
 
+    def test_nested_punctuation_marks(self):
+        for o, c, a in punctuation_targets_data:
+            self.eq('x {0} fi|zz{0}{1} {1} x'.format(o, c), 'ds' + o, 'x |fizz{0}{1} x'.format(o, c))
+            self.eq('x |{0} fizz{0}{1} {1} x'.format(o, c), 'ds' + o, 'x |fizz{0}{1} x'.format(o, c))
+            self.eq('x {0} fizz|{0}{1} {1} x'.format(o, c), 'ds' + o, 'x {0} fizz| {1} x'.format(o, c))
+
     def test_punctuation_open_targets_should_strip_contained_whitespace(self):
         for t in punctuation_targets_data:
-
             self.eq('x {}    a|b    {} y'.format(t[0], t[1]), 'ds' + t[0], 'x |ab y')
 
     def test_targets_that_should_only_search_the_current_line(self):
@@ -170,6 +173,7 @@ class TestSurround_ds(unittest.FunctionalTestCase):
             self.eq('|{0}abc{0}'.format(t), 'ds' + t, '|abc')
             self.eq('x |{0}abc{0} y'.format(t), 'ds' + t, 'x |abc y')
 
+    def test_quote_and_other_targets_should_work_when_cursor_is_on_begin_target_for_punctuation(self):
         for o, c, a in punctuation_targets_data:
             self.eq('|{}abc{}'.format(o, c), 'ds' + o, '|abc')  # Open target
             self.eq('|{}abc{}'.format(o, c), 'ds' + c, '|abc')  # Close target
@@ -194,7 +198,7 @@ class TestSurround_ds(unittest.FunctionalTestCase):
             self.eq(text, 'ds' + t[1], expected)  # Close
             self.eq(text, 'ds' + t[2], expected)  # Alias (close)
 
-        # Ensure dst doesn't match the t under the cursor
+    def test_regression_ensure_dst_doesnt_match_the_t_under_the_cursor(self):
         self.eq('<i>|t</i>', 'dst', '|t')
         self.eq('<i>t|t</i>', 'dst', '|tt')
         self.eq('<t>t|t</t>', 'dst', '|tt')
@@ -222,12 +226,44 @@ class TestSurround_ds(unittest.FunctionalTestCase):
             self.eq(text, 'dst', expected)
 
 
-class TestIssue282(unittest.FunctionalTestCase):
+class TestIssues(unittest.FunctionalTestCase):
+
+    def test_issue_305_multiple_selection_leaves_cursors_in_the_wrong_place(self):
+        self.eq("eats 'fi|sh'\neats 'fi|sh'\neats 'fi|sh'", "ds'", "eats |fish\neats |fish\neats |fish")
 
     def test_issue_282(self):
         self.eq('|"Hello world!"', 'ds"', '|Hello world!')
         self.eq('"|Hello world!"', 'ds"', '|Hello world!')
-        self.eq('"Hello |"world!"', 'ds"', '"Hello |world!')
+        self.eq('"Hello |"world!"', 'ds"', '|Hello world!"')
         self.eq('"Hello "|world!"', 'ds"', '"Hello |world!')
         self.eq('"Hello\n|"world!"', 'ds"', '"Hello\n|world!')
         self.eq('"Hello\n"|world!"', 'ds"', '"Hello\n|world!')
+
+    def test_issue_745(self):
+        self.eq('hello |"fizz" world', 'ds"', 'hello |fizz world')
+        self.eq('hello "fi|zz" world', 'ds"', 'hello |fizz world')
+        self.eq('hello "fizz|" world', 'ds"', 'hello |fizz world')
+        self.eq('he"ll\no |"fizz" world', 'ds"', 'he"ll\no |fizz world')
+        self.eq('he(llo |(fizz) wo)rld', 'ds)', 'he(llo |fizz wo)rld')
+        self.eq('he(llo (fizz|) wo)rld', 'ds)', 'he(llo |fizz wo)rld')
+
+    def test_issue_644_nested_targets(self):
+        self.eq(
+            'return (kernel.std|out.readline().decode("utf-8").strip(),) x',
+            'ds(',
+            'return |kernel.stdout.readline().decode("utf-8").strip(), x')
+
+        self.eq(
+            'return (kernel.std|out.readline().decode("utf-8").strip(),) x',
+            'ds)',
+            'return |kernel.stdout.readline().decode("utf-8").strip(), x')
+
+    def test_issue_744_nested_targets(self):
+        self.eq(
+            'document.addEventListener("mouseup", (fun|ction (_event) {\n    console.log("clicked!");\n}));',
+            'ds(',
+            'document.addEventListener("mouseup", |function (_event) {\n    console.log("clicked!");\n});')
+        self.eq(
+            'document.addEventListener("mouseup", (fun|ction (_event) {\n    console.log("clicked!");\n}));',
+            'ds)',
+            'document.addEventListener("mouseup", |function (_event) {\n    console.log("clicked!");\n});')

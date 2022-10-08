@@ -117,3 +117,10 @@ class Test_ex_substitute(unittest.FunctionalTestCase):
     def test_repeat(self):
         self.eq('|abc abc', ':substitute/b/x/', '|axc abc')
         self.eq('|abc abc', ':substitute', '|axc abc')
+
+    def test_repeat_substitute(self):
+        self.eq('|12345\nfizz', ':substitute/[0-9]//', '|2345\nfizz')
+        self.feed(':&&')
+        self.assertNormal('|345\nfizz')
+        self.feed(':&&')
+        self.assertNormal('|45\nfizz')

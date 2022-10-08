@@ -99,16 +99,9 @@ class TestSurround_cs(unittest.FunctionalTestCase):
         self.eq('x"ab"x"cd|"x"ef"', 'cs"\'', 'x"ab"x|\'cd\'x"ef"')
         self.eq('x"ab"x"cd"x|"ef"', 'cs"\'', 'x"ab"x"cd|\'x\'ef"')
 
-    @unittest.expectedFailure
     def test_should_work_in_all_cursor_positions_bug_01(self):
         self.eq('x|(abc)y', 'cs("', 'x|"abc"y')
-
-    @unittest.expectedFailure
-    def test_should_work_in_all_cursor_positions_bug_02(self):
         self.eq('x|(abc)y', 'cs)"', 'x|"abc"y')
-
-    @unittest.expectedFailure
-    def test_should_work_in_all_cursor_positions_bug_03(self):
         self.eq('x|(abc)y', 'csb"', 'x|"abc"y')
 
     def test_should_work_within_line_for_quote_marks(self):
@@ -120,17 +113,19 @@ class TestSurround_cs(unittest.FunctionalTestCase):
     def test_multiple_cursors(self):
         self.eq('x"a|c"\n"d|c"y', 'cs"]', 'x|[ac]\n|[dc]y')
 
-    def test_issue_305_multiple_selection_leaves_cursors_in_the_wrong_place(self):
-        self.eq("eats 'fi|sh'\neats 'fi|sh'\neats 'fi|sh'", "cs'(", "eats |( fish )\neats |( fish )\neats |( fish )")
-
     def test_tags(self):
         self.eq('|<li>ab</li>', 'cst"', '|"ab"')
         self.eq('<l|i>ab</li>', 'cstta>', '|<a>ab</a>')
         self.eq('<li>a|b</li>', 'cst<a>', '|<a>ab</a>')
+        self.eq('<li>a|b</li>', 'cst<a<CR>', '|<a>ab</a>')
         self.eq("'a|b'", "cs'<q>", '|<q>ab</q>')
         self.eq("'a|b'", "cs'tq>", '|<q>ab</q>')
         self.eq("'a|b'", "cs'<div>", '|<div>ab</div>')
         self.eq("'a|b'", "cs'tdiv>", '|<div>ab</div>')
+        self.eq("'a|b'", "cs'<div<CR>", '|<div>ab</div>')
+        self.eq("'a|b'", "cs'tdiv<CR>", '|<div>ab</div>')
+        self.eq("'a|b'", "cs'<C-t>div>", '|<div>\nab\n</div>')
+        self.eq("'a|b'", "cs'<C-t>div<CR>", '|<div>\nab\n</div>')
         self.eq('"fi|zz"', 'cs"ti x="y">', '|<i x="y">fizz</i>')
         self.eq('"fi|zz"', 'cs"<i x="y">', '|<i x="y">fizz</i>')
         self.eq('f|izz', 'cst"', 'f|izz')
@@ -138,6 +133,11 @@ class TestSurround_cs(unittest.FunctionalTestCase):
         self.eq('<li>f|izz', 'cst"', '<li>f|izz')
         self.eq('|ab</li>', 'cst"', '|ab</li>')
         self.eq('f|izz</li>', 'cst"', 'f|izz</li>')
+        self.eq('<li class="x">a|b</li>', 'cst<a>', '|<a>ab</a>')
+        self.eq('<li class="x">a|b</li>', 'cst<a<CR>', '|<a class="x">ab</a>')
+        self.eq('<li class="x y" id="z">a|bc</li>', 'cst<div<CR>', '|<div class="x y" id="z">abc</div>')
+        self.eq('<li class="x y" id="z">a|bc</li>', 'cst<C-t>div<CR>', '|<div class="x y" id="z">\nabc\n</div>')
+        self.eq('<li class="x y" id="z">a|bc</li>', 'cst<div>', '|<div>abc</div>')
 
     def test_can_disable_plugin(self):
         self.normal('"x|xx"')
@@ -151,3 +151,6 @@ class TestSurround_cs(unittest.FunctionalTestCase):
         self.normal('"x|xx"')
         self.feed('cs"\'')
         self.assertNormal("|'xxx'")
+
+    def test_issue_305_multiple_selection_leaves_cursors_in_the_wrong_place(self):
+        self.eq("eats 'fi|sh'\neats 'fi|sh'\neats 'fi|sh'", "cs'(", "eats |( fish )\neats |( fish )\neats |( fish )")

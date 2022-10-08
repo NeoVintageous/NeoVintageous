@@ -43,6 +43,9 @@ class Test_X(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('|\n|', 'v_X', 'n_|\n')
         self.eq('r_|\n|', 'v_X', 'n_|\n')
         self.assertRegistersEmpty('-0')
+        self.eq('r_1\nx |fizz| x\n2\n3', 'v_X', 'n_1\n|2\n3')
+        self.assertLinewiseRegisters('"1', 'x fizz x\n')
+        self.assertRegistersEmpty('-0')
 
     def test_V(self):
         self.eq('one\n|two\n|three', 'V_X', 'n_one\n|three')

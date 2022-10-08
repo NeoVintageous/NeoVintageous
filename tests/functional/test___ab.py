@@ -26,13 +26,16 @@ class Test_ab(unittest.ResetRegisters, unittest.FunctionalTestCase):
             self.eq('x(\nfi|zz\n)x', 'v_a' + target, 'x|(\nfizz\n)|x')
             self.eq('x(\n\n  \n    fi|zz\n\n\n)x', 'v_a' + target, 'x|(\n\n  \n    fizz\n\n\n)|x')
             self.eq('(hello, (w|orl|d))', 'v_a' + target, '(hello, |(world)|)')
-            self.eq('(hello, |(world)|)', 'v_a' + target, '|(hello, (world))|')
             self.eq('r_(hello, (w|orl|d))', 'v_a' + target, '(hello, |(world)|)')
-            self.eq('r_(hello, |(world)|)', 'v_a' + target, '|(hello, (world))|')
-            self.eq('fizz (hello, |(world)|) buzz', 'v_a' + target, 'fizz |(hello, (world))| buzz')
-            self.eq('(fizz (hello, |(world)|) buzz)', 'v_a' + target, '(fizz |(hello, (world))| buzz)')
-            self.eq('(fizz |(hello, (world))| buzz)', 'v_a' + target, '|(fizz (hello, (world)) buzz)|')
-            self.eq('r_(fizz |(hello, (world))| buzz)', 'v_a' + target, '|(fizz (hello, (world)) buzz)|')
+
+    def test_vab_when_on_cursor_on_open_target(self):
+        for target in ('(', ')', 'b'):
+            self.eq('(hello, |(wor|ld))', 'v_a' + target, '(hello, |(world)|)')
+            self.eq('r_(hello, |(wor|ld))', 'v_a' + target, '(hello, |(world)|)')
+            self.eq('fizz (hello, |(wor|ld)) buzz', 'v_a' + target, 'fizz (hello, |(world)|) buzz')
+            self.eq('(fizz (hello, |(wor|ld)) buzz)', 'v_a' + target, '(fizz (hello, |(world)|) buzz)')
+            self.eq('(fizz |(hel|lo, (world)) buzz)', 'v_a' + target, '(fizz |(hello, (world))| buzz)')
+            self.eq('r_(fizz |(hel|lo, (world)) buzz)', 'v_a' + target, '(fizz |(hello, (world))| buzz)')
 
     def test_cab(self):
         for target in ('(', ')', 'b'):

@@ -19,22 +19,24 @@
 
 import re
 
-from sublime import LITERAL
 from sublime import Region
 from sublime_plugin import TextCommand
 
 from NeoVintageous.nv.plugin import register
+from NeoVintageous.nv.polyfill import view_find
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.search import reverse_search
+from NeoVintageous.nv.vi.text_objects import get_text_object_region
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_BLOCK
+from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import run_motion
 
@@ -42,6 +44,13 @@ from NeoVintageous.nv.vim import run_motion
 __all__ = [
     'nv_surround_command'
 ]
+
+
+def _should_tag_accept_input(inp: str) -> bool:
+    if inp.lower().startswith('<c-t>'):
+        return not re.match('<[Cc]-t>.*?[\n>]', inp)
+
+    return not inp[-1] in ('>', '\n')
 
 
 @register(seqs.YS, (NORMAL,))
@@ -56,10 +65,18 @@ class Surroundys(ViOperatorDef):
 
     @property
     def accept_input(self) -> bool:
-        single = len(self.inp) == 1 and self.inp != '<'
-        tag = re.match('<.*?>', self.inp)
+        if not self.inp:
+            return True
 
-        return not (single or tag)
+        # Function
+        if self.inp[0] in ('f', 'F') or self.inp.lower().startswith('<c-f>'):
+            return self.inp[-1] != '\n'
+
+        # Tag
+        if self.inp[0] in ('t', '<'):
+            return _should_tag_accept_input(self.inp)
+
+        return False
 
     def accept(self, key: str) -> bool:
         self.inp += translate_char(key)
@@ -104,7 +121,7 @@ class Surroundyss(Surroundys):
         }
 
 
-@register(seqs.BIG_S, (VISUAL, VISUAL_BLOCK))
+@register(seqs.BIG_S, (VISUAL, VISUAL_LINE, VISUAL_BLOCK))
 class SurroundS(Surroundys):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -156,21 +173,18 @@ class Surroundcs(ViOperatorDef):
 
     @property
     def accept_input(self) -> bool:
-        # Requires at least two characters (target and replacement).
+        if not self.inp:
+            return True
 
-        # A tag replacement is indicated by "<" ("t" is an alias for "<"). Tag
-        # replacements can accept more than one character. A tag name is
-        # terminated by ">".
+        # Requires at least two characters, a target and a replacement.
+        if len(self.inp) < 2:
+            return True
 
-        if len(self.inp) > 1 and self.inp[1] in ('t', '<'):
-            # Guard against runaway input collecting.
-            if len(self.inp) > 20:
-                return False
+        # Tag
+        if self.inp[1] in ('t', '<'):
+            return _should_tag_accept_input(self.inp[1:])
 
-            # Terminates input collecting for tag.
-            return not self.inp.endswith('>')
-
-        return len(self.inp) < 2
+        return False
 
     def accept(self, key: str) -> bool:
         self.inp += translate_char(key)
@@ -219,33 +233,56 @@ _PUNCTUTION_MARK_ALIASES = {
 }
 
 
-def _resolve_punctuation_aliases(target: str) -> str:
-    return _PUNCTUTION_MARK_ALIASES.get(target, target)
-
-
-# Eight punctuation marks, (, ), {, }, [, ], <, and >, represent themselves and
-# their counterparts. The targets b, B, r, and a are aliases for ), }, ], and >
-# (the first two mirror Vim; the second two are completely arbitrary and subject
-# to change).
-def _get_punctuation_marks(target: str) -> tuple:
-    target = _resolve_punctuation_aliases(target)
+# Expand target punctuation marks. Eight punctuation marks, (, ), {, }, [, ], <,
+# and >, represent themselves and their counterparts. The targets b, B, r, and
+# a are aliases for ), }, ], and > (the first two mirror Vim; the second two
+# are completely arbitrary and subject to change). Some marks and their
+# counterparts are the same for example quote marks: ', ", `.
+def _expand_targets(target: str) -> tuple:
+    target = _resolve_target_aliases(target)
 
     return _PUNCTUATION_MARKS.get(target, (target, target))
+
+
+def _resolve_target_aliases(target: str) -> str:
+    return _PUNCTUTION_MARK_ALIASES.get(target, target)
 
 
 # If either ), }, ], or > is used, the text is wrapped in the appropriate pair
 # of characters. Similar behavior can be found with (, {, and [ (but not <),
 # which append an additional space to the inside. Like with the targets above,
 # b, B, r, and a are aliases for ), }, ], and >.
-def _get_punctuation_mark_replacements(target: str) -> tuple:
+def _expand_replacements(target: str) -> tuple:
+    # Function replacement
+    if target[0] == 'f':
+        return (target[1:].strip() + '(', ')')
+    if target[0] == 'F':
+        return (target[1:].strip() + '( ', ' )')
+    if target.lower().startswith('<c-f>'):
+        return ('(' + target[5:].strip() + ' ', ')')
+
+    # Tag replacement
     if target[0] in ('t', '<') and len(target) >= 3:
+        append = prefix = ''
+
+        if target.lower().startswith('<c-t>'):
+            target = '<' + target[5:]
+            append = prefix = '\n'
+
         # Attributes are stripped in the closing tag. The first character if
         # "t", which is an alias for "<", is replaced too.
-        return ('<' + target[1:], '</' + target[1:].strip()[:-1].strip().split(' ', 1)[0] + '>')
+        if target[-1] == '\n':
+            target = target[0:-1] + '>'
 
-    target = _resolve_punctuation_aliases(target)
+        replacement_a = '<' + target[1:] + append
+        replacement_b = prefix + '</' + target[1:].strip()[:-1].strip().split(' ', 1)[0] + '>'
+
+        return (replacement_a, replacement_b)
+
+    # Pair replacement
+    target = _resolve_target_aliases(target)
     append_addition_space = True if target in '({[' else False
-    begin, end = _get_punctuation_marks(target)
+    begin, end = _expand_targets(target)
     if append_addition_space:
         begin = begin + ' '
         end = ' ' + end
@@ -266,191 +303,162 @@ def _rsynced_regions_transformer(view, f) -> None:
         view_sel.add(new_sel)
 
 
-def _find(view, sub: str, start: int, flags: int = 0):
-    return view.find(sub, start, flags)
-
-
-def _rfind(view, sub: str, start: int, end: int, flags: int = 0):
-    res = reverse_search(view, sub, start, end, flags)
-    if res is None:
-        return Region(-1)
-
-    return res
-
-
 def _do_cs(view, edit, mode: str, target: str, replacement: str) -> None:
-    # Targets are always one character.
+    if not target and replacement:
+        return
+
     if len(target) != 1:
         return
 
-    # Replacements must be one character long, except for tags which must be at
-    # least three character long.
+    # Replacements must be 1 character long or at least 3 characters for tags.
     if len(replacement) >= 3:
-        if replacement[0] not in ('t', '<') or not replacement.endswith('>'):
+        if replacement[0] not in ('t', '<') or not replacement[-1] in ('>', '\n'):
             return
     elif len(replacement) != 1:
         return
 
+    # Targets.
+    target_open, target_close = _expand_targets(target)
+
+    # Replacements
+    replacement_open, replacement_close = _expand_replacements(replacement)
+
     def _f(view, s):
         if mode == INTERNAL_NORMAL:
-            old = target
-            new = replacement
-            open_, close_ = _get_punctuation_marks(old)
-            new_open, new_close = _get_punctuation_mark_replacements(new)
-
-            if open_ == 't':
-                open_, close_ = ('<[^>\\/]+>', '<\\/[^>]+>')
-                next_ = view.find(close_, s.b)
-                if next_:
-                    prev_ = reverse_search(view, open_, end=next_.begin(), start=0)
-                else:
-                    prev_ = None
+            if target == 't':
+                target_tag_open, target_tag_close = ('<[^>\\/]+>', '<\\/[^>]+>')
+                region_begin = None
+                region_end = view.find(target_tag_close, s.b)
+                if region_end:
+                    region_begin = reverse_search(view, target_tag_open, end=region_end.begin(), start=0)
             else:
-                if open_ == close_:
-                    line = view.line(s.b)
-                    prev_ = None
-                    next_ = view.find(close_, s.b, flags=LITERAL)
-                    if next_:
-                        if next_.a > line.b:
-                            next_ = None
-                        else:
-                            prev_ = reverse_search(view, open_, end=s.b, start=0, flags=LITERAL)
-                            if not prev_ or (prev_ and prev_.a < line.a):
-                                prev_ = next_
-                                next_ = view.find(close_, s.b + 1, flags=LITERAL)
-                else:
-                    next_ = view.find(close_, s.b, flags=LITERAL)
-                    if next_:
-                        prev_ = reverse_search(view, open_, end=s.b, start=0, flags=LITERAL)
-                    else:
-                        next_ = None
+                region_begin, region_end = _get_regions_for_target(view, s, target_open)
 
-            if not (next_ and prev_):
+            if not (region_end and region_begin):
                 return s
 
-            view.replace(edit, next_, new_close)
-            view.replace(edit, prev_, new_open)
+            replacement_a = replacement_open
 
-            return Region(prev_.begin())
+            # You may specify attributes here and they will be stripped from the
+            # closing tag. If replacing a tag, its attributes are kept in the
+            # new tag. End your input with > to discard the those attributes.
+            if target == 't' and replacement[-1] == '\n':
+                match = re.match('<([^ >]+)(.*)>', view.substr(region_begin))
+                if match:
+                    if replacement_open[-1] == '\n':
+                        replacement_a = replacement_open[:-2] + match.group(2) + '>\n'
+                    else:
+                        replacement_a = replacement_open[:-1] + match.group(2) + '>'
+
+            # It's important that the regions are replaced in reverse because
+            # otherwise the buffer size would be reduced by the number of
+            # characters replaced and would result in an off-by-n bugs.
+            view.replace(edit, region_end, replacement_close)
+            view.replace(edit, region_begin, replacement_a)
+
+            return Region(region_begin.begin())
 
         return s
 
-    if target and replacement:
-        _rsynced_regions_transformer(view, _f)
+    _rsynced_regions_transformer(view, _f)
 
 
 def _do_ds(view, edit, mode: str, target: str) -> None:
+    if not target:
+        return
+
+    if len(target) != 1:
+        return
+
+    # The target letters w, W, s, and p correspond to a word, a WORD, a
+    # sentence, and a paragraph respectively. These are special in that they
+    # have nothing to delete, and used with ds they are a no-op.
+    noop_targets = 'wWsp'
+    if target in noop_targets:
+        return
+
+    # Includes targets for plugin https://github.com/wellle/targets.vim
+    valid_targets = '\'"`b()B{}r[]a<>t.,-_;:@#~*\\/|+=&$'
+    if target not in valid_targets:
+        return
+
+    # Trim contained whitespace for opening punctuation mark targets.
+    should_trim_contained_whitespace = True if target in '({[<' else False
+
+    # Targets.
+    target_open, target_close = _expand_targets(target)
+
     def _f(view, s):
         if mode == INTERNAL_NORMAL:
-            if len(target) != 1:
-                return s
-
-            # The *target* letters w, W, s, and p correspond to a |word|, a
-            # |WORD|, a |sentence|, and a |paragraph| respectively.  These are
-            # special in that they have nothing to delete, and used with |ds| they
-            # are a no-op. With |cs|, one could consider them a slight shortcut for
-            # ysi (cswb == ysiwb, more or less).
-
-            noop = 'wWsp'
-            if target in noop:
-                return s
-
-            valid_targets = '\'"`b()B{}r[]a<>t.,-_;:@#~*\\/|'
-            if target not in valid_targets:
-                return s
-
-            # All marks, except punctuation marks, are only searched for on the
-            # current line.
-            search_current_line_only = True if target not in 'b()B{}r[]a<>' else False
-
-            # If opening punctuation mark is used, contained whitespace is also trimmed.
-            trim_contained_whitespace = True if target in '({[<' else False
-
-            # Expand targets into begin and end variables because punctuation marks
-            # and their aliases represent themselves and their counterparts e.g. (),
-            # []. Target is the same for begin and end for all other valid marks
-            # e.g. ', ", `, -, _, etc.
-
-            t_char_begin, t_char_end = _get_punctuation_marks(target)
-
-            s_rowcol_begin = view.rowcol(s.begin())
-            s_rowcol_end = view.rowcol(s.end())
-
             # A t is a pair of HTML or XML tags.
             if target == 't':
                 # TODO test dst works when cursor position is inside tag begin <a|bc>x</abc> -> dst -> |x
                 # TODO test dst works when cursor position is inside tag end   <abc>x</a|bc> -> dst -> |x
-                t_region_end = view.find('<\\/.*?>', s.b)
-                t_region_begin = reverse_search(view, '<.*?>', start=0, end=s.b)
+                region_end = view.find('<\\/.*?>', s.b)
+                region_begin = reverse_search(view, '<.*?>', start=0, end=s.b)
             else:
-                current = view.substr(s.begin())
-                # TODO test ds{char} works when cursor position is on target begin |"x" -> ds" -> |x
-                # TODO test ds{char} works when cursor position is on target end   "x|" -> ds" -> |x
-                if current == t_char_begin:
-                    t_region_begin = Region(s.begin(), s.begin() + 1)
-                else:
-                    t_region_begin = _rfind(view, t_char_begin, start=0, end=s.begin(), flags=LITERAL)
+                region_begin, region_end = _get_regions_for_target(view, s, target_open)
+                if should_trim_contained_whitespace and (region_begin and region_end):
+                    region_begin, region_end = _trim_regions(view, region_begin, region_end)
 
-                t_region_begin_rowcol = view.rowcol(t_region_begin.begin())
-
-                t_region_end = _find(view, t_char_end, start=t_region_begin.end(), flags=LITERAL)
-                t_region_end_rowcol = view.rowcol(t_region_end.end())
-
-                if search_current_line_only:
-                    if t_region_begin_rowcol[0] != s_rowcol_begin[0]:
-                        return s
-
-                    if t_region_end_rowcol[0] != s_rowcol_end[0]:
-                        return s
-
-                if trim_contained_whitespace:
-                    t_region_begin_ws = _find(view, '\\s*.', start=t_region_begin.end())
-                    t_region_end_ws = _rfind(view, '.\\s*', start=t_region_begin.end(), end=t_region_end.begin())
-
-                    if t_region_begin_ws.size() > 1:
-                        t_region_begin = Region(t_region_begin.begin(), t_region_begin_ws.end() - 1)
-
-                    if t_region_end_ws.size() > 1:
-                        t_region_end = Region(t_region_end_ws.begin() + 1, t_region_end.end())
-
-            # Note: Be careful using boolean evaluation on a Region because an empty
-            # Region evaluates to False. It evaluates to False because Region
-            # invokes `__len__()` which will be zero if the Region is empty e.g.
-            # `Region(3).size()` is `0`, whereas `Region(3, 4).size()` is `1`.
-            # `sublime.View.find(sub)` returns `Region(-1)` if *sub* not found. This
-            # is similar to how the python `str.find(sub)` function works i.e. it
-            # returns `-1` if *sub* not found, because *sub* could be found at
-            # position `0`. To check if a Region was found use `Region(3) >= 0`. To
-            # check if a Region is non empty you can use boolean evaluation i.e. `if
-            # Region(3): ...`. In the following case boolean evaluation is
-            # intentional.
-
-            if not (t_region_end and t_region_begin):
+            if not (region_begin and region_end):
                 return s
 
-            # It's important that the end is replaced first. If we replaced the
-            # begin region first then the end replacement would be off-by-one
-            # because the begin is reducing the size of the internal buffer by one
-            # i.e. it's deleting a character.
+            # It's important that the regions are replaced in reverse because
+            # otherwise the buffer size would be reduced by the number of
+            # characters replaced and would result in an off-by-one bug.
+            view.replace(edit, region_end, '')
+            view.replace(edit, region_begin, '')
 
-            view.replace(edit, t_region_end, '')
-            view.replace(edit, t_region_begin, '')
-
-            return Region(t_region_begin.begin())
+            return Region(region_begin.begin())
 
         return s
 
-    if target:
-        _rsynced_regions_transformer(view, _f)
+    _rsynced_regions_transformer(view, _f)
+
+
+def _get_regions_for_target(view, s: Region, target: str) -> tuple:
+    text_object = get_text_object_region(view, s, target, inclusive=True)
+    if not text_object:
+        return (None, None)
+
+    begin = Region(text_object.begin(), text_object.begin() + 1)
+    end = Region(text_object.end(), text_object.end() - 1)
+
+    return (begin, end)
+
+
+def _view_rfind(view, sub: str, start: int, end: int, flags: int = 0):
+    match = reverse_search(view, sub, start, end, flags)
+    if match is None or match.b == -1:
+        return None
+
+    return match
+
+
+def _trim_regions(view, start: Region, end: Region) -> tuple:
+    start_ws = view_find(view, '\\s*.', start_pt=start.end())
+    if start_ws and start_ws.size() > 1:
+        start = Region(start.begin(), start_ws.end() - 1)
+
+    end_ws = _view_rfind(view, '.\\s*', start=start.end(), end=end.begin())
+    if end_ws and end_ws.size() > 1:
+        end = Region(end_ws.begin() + 1, end.end())
+
+    return (start, end)
 
 
 def _do_ys(view, edit, mode: str = None, motion=None, replacement: str = '"', count: int = 1) -> None:
     def _surround(view, edit, s, replacement: str) -> None:
-        replacement_open, replacement_close = _get_punctuation_mark_replacements(replacement)
+        replacement_open, replacement_close = _expand_replacements(replacement)
         if replacement_open.startswith('<'):
             view.insert(edit, s.b, replacement_close)
             view.insert(edit, s.a, replacement_open)
             return
+
+        if mode == VISUAL_LINE:
+            replacement_open = replacement_open + '\n'
+            replacement_close = replacement_close + '\n'
 
         view.insert(edit, s.end(), replacement_close)
         view.insert(edit, s.begin(), replacement_open)
@@ -459,7 +467,7 @@ def _do_ys(view, edit, mode: str = None, motion=None, replacement: str = '"', co
         if mode == INTERNAL_NORMAL:
             _surround(view, edit, s, replacement)
             return Region(s.begin())
-        elif mode in (VISUAL, VISUAL_BLOCK):
+        elif mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
             _surround(view, edit, s, replacement)
             return Region(s.begin())
         return s

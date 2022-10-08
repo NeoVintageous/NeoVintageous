@@ -354,7 +354,7 @@ class TestOnActivated(unittest.ViewTestCase):
             self.events.on_activated(self.view)
             self.assertVblock('|1|\n|2|\n')
 
-    def test_wwhen_reset_mode_when_switching_tabs_is_false_the_mode_is_not_reset(self):
+    def test_reset_mode_when_switching_tabs_is_false(self):
         self.normal('fi|zz')
         self.set_setting('reset_mode_when_switching_tabs', False)
         self.events.on_activated(self.view)
@@ -365,6 +365,59 @@ class TestOnActivated(unittest.ViewTestCase):
         self.visual('f|iz|z')
         self.events.on_activated(self.view)
         self.assertVisual('f|iz|z')
+
+    def test_multiple_cursors_when_reset_mode_when_switching_tabs_is_false(self):
+        self.normal('fi|zz bu|zz')
+        self.set_setting('reset_mode_when_switching_tabs', False)
+        self.events.on_activated(self.view)
+        self.assertNormal('fi|zz bu|zz')
+
+    def test_fix_malformed_normal_mode_is_fixed_by_resetting_it(self):
+        self.normal('fi|zz')
+        self.view.sel().clear()
+        self.events.on_activated(self.view)
+        self.assertNormal('|fizz')
+
+    def test_fix_malformed_visual_mode_is_fixed_by_resetting_it(self):
+        self.visual('fi|zz| buzz')
+        self.view.sel().clear()
+        self.events.on_activated(self.view)
+        self.assertVisual('|fizz buzz')
+
+    def test_good_visual_mode(self):
+        self.visual('x |fizz| x')
+        self.events.on_activated(self.view)
+        self.assertVisual('x |fizz| x')
+
+    def test_fix_insert_mode_to_normal_mode(self):
+        self.insert('x |fizz buzz x')
+        self.view.sel().clear()
+        self.view.sel().add(self.Region(2, 4))
+        self.events.on_activated(self.view)
+        self.assertNormal('x fi|zz buzz x')
+
+    def test_fix_normal_mode_to_visual_mode(self):
+        self.normal('x |fizz buzz x')
+        self.view.sel().clear()
+        self.view.sel().add(self.Region(2, 4))
+        self.events.on_activated(self.view)
+        self.assertVisual('x |fi|zz buzz x')
+
+    def test_fix_normal_mode_multiple_selection(self):
+        self.normal('x |fizz buzz fizz buzz x')
+        self.view.sel().clear()
+        self.view.sel().add(self.Region(2, 4))
+        self.view.sel().add(self.Region(12, 14))
+        self.events.on_activated(self.view)
+        self.assertVisual('x |fi|zz buzz |fi|zz buzz x')
+
+    def test_fix_insert_mode_multiple_selection(self):
+        self.insert('x |fizz buzz fizz buzz x')
+        self.view.sel().clear()
+        self.view.sel().add(self.Region(2, 4))
+        self.view.sel().add(self.Region(12, 14))
+        self.events.on_activated(self.view)
+        self.assertNormal('x fi|zz buzz fi|zz buzz x')
 
 
 class TestOnPostSave(unittest.ViewTestCase):

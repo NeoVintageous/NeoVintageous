@@ -20,7 +20,6 @@ import inspect
 import logging
 import os
 import re
-import stat
 import sys
 import traceback
 
@@ -48,6 +47,9 @@ from NeoVintageous.nv.mappings import mappings_remove
 from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.options import set_option
 from NeoVintageous.nv.options import toggle_option
+from NeoVintageous.nv.polyfill import is_file_read_only
+from NeoVintageous.nv.polyfill import is_view_read_only
+from NeoVintageous.nv.polyfill import save
 from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
 from NeoVintageous.nv.polyfill import view_find
@@ -153,16 +155,6 @@ def ex_buffer(window, index: int = None, **kwargs) -> None:
         ui_bell('E86: Buffer %s does not exist' % index)
 
 
-def _is_read_only(file_name: str) -> bool:
-    if file_name:
-        try:
-            return (stat.S_IMODE(os.stat(file_name).st_mode) & stat.S_IWUSR != stat.S_IWUSR)
-        except FileNotFoundError:
-            return False
-
-    return False
-
-
 def ex_buffers(window, **kwargs) -> None:
     def _format_buffer_line(view) -> str:
         path = view.file_name()
@@ -173,7 +165,7 @@ def ex_buffers(window, **kwargs) -> None:
             path = view.name() or '[No Name]'
 
         current_indicator = '%' if view.id() == window.active_view().id() else ' '
-        readonly_indicator = '=' if view.is_read_only() or _is_read_only(view.file_name()) else ' '
+        readonly_indicator = '=' if is_view_read_only(view) else ' '
         modified_indicator = '+' if view.is_dirty() else ' '
 
         active_group_view = window.active_view_in_group(window.get_view_index(view)[0])
@@ -193,6 +185,14 @@ def ex_buffers(window, **kwargs) -> None:
     output.show()
 
 
+def _expand_to_realpath(path: str) -> str:
+    expanded_user = os.path.expanduser(path)
+    expanded_vars = os.path.expandvars(expanded_user)
+
+    return os.path.realpath(expanded_vars)
+
+
+@_init_cwd
 def ex_cd(view, path=None, **kwargs) -> None:
     if not path:
         path = os.path.expanduser('~')
@@ -201,7 +201,7 @@ def ex_cd(view, path=None, **kwargs) -> None:
         if fname:
             path = os.path.dirname(fname)
     else:
-        path = os.path.realpath(os.path.expandvars(os.path.expanduser(path)))
+        path = _expand_to_realpath(path)
 
     if not os.path.isdir(path):
         return status_message("E344: Can't find directory \"%s\" in cdpath" % path)
@@ -240,7 +240,6 @@ def ex_copy(view, edit, line_range: RangeNode, address=None, **kwargs) -> None:
     enter_normal_mode(view)
 
 
-# TODO [refactor] into window module
 def ex_cquit(window, **kwargs) -> None:
     window.run_command('exit')
 
@@ -344,10 +343,8 @@ def ex_edit(window, view, file_name: str = None, forceit: bool = False, **kwargs
         status_message("E37: No write since last change")
 
 
-# TODO [refactor] into window module
 def ex_exit(window, view, **kwargs) -> None:
-    if view.is_dirty():
-        window.run_command('save')
+    _do_write(view)
 
     window.run_command('close')
 
@@ -388,7 +385,7 @@ def ex_global(window, view, pattern: str, line_range: RangeNode, cmd='print', **
     cmd = parse_command_line(cmd).command
     # The cooperates_with_global flag indicates if a command supports :global.
     if not cmd.cooperates_with_global:
-        return status_message('command "%s" does not support :global', cmd.target)
+        return status_message('Command not supported: %s', cmd.target)
 
     # The default line specifier for most commands is the cursor position, but
     # the commands :write and :global have the whole file (1,$) as default.
@@ -621,7 +618,6 @@ def ex_move(view, edit, line_range: RangeNode, address: str = None, **kwargs) ->
     enter_normal_mode(view)
 
 
-# TODO [refactor] into window module
 @_init_cwd
 def ex_new(window, **kwargs) -> None:
     window.run_command('new_file')
@@ -733,7 +729,6 @@ def ex_pwd(**kwargs) -> None:
     status_message(os.getcwd())
 
 
-# TODO [refactor] into window module
 def ex_qall(window, forceit: bool = False, **kwargs) -> None:
     if forceit:
         for view in window.views():
@@ -1064,16 +1059,11 @@ def ex_tabprevious(window, **kwargs) -> None:
 
 
 def ex_unmap(lhs: str, **kwargs) -> None:
-    no_such_mapping = True
     for mode in (NORMAL, OPERATOR_PENDING, VISUAL, VISUAL_LINE, VISUAL_BLOCK):
         try:
             mappings_remove(mode, lhs)
-            no_such_mapping = False
         except KeyError:
-            pass
-
-    if no_such_mapping:
-        status_message('E31: No such mapping')
+            status_message('E31: No such mapping')
 
 
 # TODO [review] Either remove or refactor into window module. Preferably remove, because there should be standard commands that can achieve the same thing.  # noqa: E501
@@ -1114,7 +1104,6 @@ def ex_vnoremap(lhs: str = None, rhs: str = None, **kwargs) -> None:
     mappings_add(VISUAL_LINE, lhs, rhs)
 
 
-# TODO [refactor] into window module
 # TODO Refactor like ExSplit
 def ex_vsplit(window, view, file: str = None, **kwargs) -> None:
     max_splits = 4
@@ -1165,136 +1154,112 @@ def ex_vsplit(window, view, file: str = None, **kwargs) -> None:
 
 
 def ex_vunmap(lhs: str, **kwargs) -> None:
-    no_such_mapping = True
     for mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
         try:
             mappings_remove(mode, lhs)
-            no_such_mapping = False
         except KeyError:
-            pass
-
-    if no_such_mapping:
-        status_message('E31: No such mapping')
+            status_message('E31: No such mapping')
 
 
-@_init_cwd
-def ex_wall(window, forceit: bool = False, **kwargs) -> None:
-    # TODO read-only views don't get properly saved.
-    for v in (v for v in window.views() if v.file_name()):
-        if v.is_read_only() and not forceit:
-            continue
-
-        if v.is_dirty():
-            v.run_command('save')
-
-
-# TODO [refactor] into window module
-def ex_wq(window, view, forceit: bool = False, **kwargs) -> None:
-    if forceit:
-        # TODO raise not implemented exception and make the command runner handle it.
-        return status_message('not implemented')
-
-    if view.is_read_only():
-        return status_message("can't write a read-only buffer")
-
-    if not view.file_name():
-        return status_message("can't save a file without name")
-
-    window.run_command('save')
-
-    ex_quit(window=window, view=view, forceit=forceit, **kwargs)
-
-
-def ex_wqall(window, **kwargs) -> None:
-    if not all(view.file_name() for view in window.views()):
-        ui_bell("E32: No file name")
-        return
-
-    if any(view.is_read_only() for view in window.views()):
-        ui_bell("E45: 'readonly' option is set (add ! to override)")
-        return
-
-    window.run_command('save_all')
-
-    # TODO Remove assert statements
-    assert not any(view.is_dirty() for view in window.views())
-
-    window.run_command('close_all')
-    window.run_command('exit')
+def ex_wall(window, **kwargs) -> None:
+    # a specific view is passed instead
+    del kwargs['view']
+    for view in window.views():
+        ex_write(window=window, view=view, **kwargs)
 
 
 @_init_cwd
-def ex_write(window, view, file_name: str, line_range: RangeNode, forceit: bool = False, **kwargs) -> None:
-    def _get_buffer(view, line_range: RangeNode) -> str:
-        # If no range, write whe whole buffer.
-        if line_range.is_empty:
-            region = view_to_region(view)
-        else:
-            region = line_range.resolve(view)
+def ex_wq(**kwargs) -> None:
+    ex_write(**kwargs)
+    ex_quit(**kwargs)
 
-        return view.substr(region)
 
-    def _append_to_file(view, file_name: str, forceit: bool, line_range: RangeNode) -> None:
-        if not forceit and not os.path.exists(file_name):
-            return status_message("E212: Can't open file for writing: %s", file_name)
+def ex_wqall(**kwargs) -> None:
+    ex_wall(**kwargs)
+    ex_qall(**kwargs)
 
-        try:
-            with open(file_name, 'at') as f:
-                f.write(_get_buffer(view, line_range))
 
-            status_message('Appended to %s' % os.path.abspath(file_name))
-            return
-        except IOError as e:
-            status_message('could not write file %s', str(e))
-            return
-
-    def _append(view, line_range: RangeNode) -> None:
-        view.run_command('append', {'characters': _get_buffer(view, line_range)})
-        view.run_command('save')
-
-        enter_normal_mode(window, get_mode(view))
-
-    def _write_to_file(window, view, file_name: str, forceit: bool, line_range: RangeNode) -> None:
-        if not forceit:
-            if os.path.exists(file_name):
-                ui_bell("E13: File exists (add ! to override)")
-                return
-
-            if _is_read_only(file_name):
-                ui_bell("E45: 'readonly' option is set (add ! to override)")
-                return
-
-        try:
-            file_path = os.path.abspath(os.path.expandvars(os.path.expanduser(file_name)))
-            with open(file_path, 'wt') as f:
-                f.write(_get_buffer(view, line_range))
-
-            view.retarget(file_path)
-            window.run_command('save')
-        except IOError:
-            status_message("E212: Can't open file for writing: {}".format(file_name))
-            return
-
+@_init_cwd
+def ex_write(window, view, file_name: str = None, line_range: RangeNode = None, forceit: bool = False, **kwargs) -> None:  # noqa: E501
     if kwargs.get('++') or kwargs.get('cmd'):
-        return status_message('argument not implemented')
+        status_message('argument not implemented')
+        return
 
     if kwargs.get('>>'):
         if file_name:
-            return _append_to_file(view, file_name, forceit, line_range)
+            _do_write_append_file(view, file_name, forceit, line_range)
+        else:
+            _do_write_append(window, view, line_range)
+    else:
+        if file_name:
+            _do_write_file(window, view, file_name, forceit, line_range)
+        else:
+            _do_write(view)
 
-        return _append(view, line_range)
 
-    if file_name:
-        return _write_to_file(window, view, file_name, forceit, line_range)
+def _do_write(view) -> None:
+    if not view.is_dirty():
+        return
 
     if not view.file_name():
-        return status_message("E32: No file name")
+        ui_bell("E32: No file name")
+        return
 
-    if _is_read_only(view.file_name()) or view.is_read_only() and not forceit:
+    if is_view_read_only(view):
         ui_bell("E45: 'readonly' option is set (add ! to override)")
         return
 
-    window.run_command('save')
+    save(view)
+
+
+def _do_write_file(window, view, file_name: str, forceit: bool, line_range: RangeNode = None) -> None:
+    if not forceit:
+        if os.path.exists(file_name):
+            ui_bell("E13: File exists (add ! to override)")
+            return
+
+        if is_file_read_only(file_name):
+            ui_bell("E45: 'readonly' option is set (add ! to override)")
+            return
+
+    try:
+        file_path = os.path.abspath(os.path.expandvars(os.path.expanduser(file_name)))
+        with open(file_path, 'wt') as f:
+            f.write(_get_write_buffer(view, line_range))
+
+        view.retarget(file_path)
+        save(window)
+    except IOError:
+        ui_bell("E212: Can't open file for writing: {}".format(file_name))
+
+
+def _get_write_buffer(view, line_range: RangeNode = None) -> str:
+    if line_range is None or line_range.is_empty:
+        region = view_to_region(view)
+    else:
+        region = line_range.resolve(view)
+
+    return view.substr(region)
+
+
+def _do_write_append_file(view, file_name: str, forceit: bool, line_range: RangeNode = None) -> None:
+    if not forceit and not os.path.exists(file_name):
+        status_message("E212: Can't open file for writing: %s", file_name)
+        return
+
+    try:
+        with open(file_name, 'at') as f:
+            f.write(_get_write_buffer(view, line_range))
+
+        status_message('Appended to %s' % os.path.abspath(file_name))
+    except IOError as e:
+        status_message('could not write file %s', str(e))
+
+
+def _do_write_append(window, view, line_range: RangeNode = None) -> None:
+    view.run_command('append', {'characters': _get_write_buffer(view, line_range)})
+    save(view)
+    enter_normal_mode(window, get_mode(view))
 
 
 def ex_yank(view, register: str, line_range: RangeNode, **kwargs) -> None:
@@ -1439,9 +1404,23 @@ def do_ex_command(window, name: str, args=None) -> None:
     ex_cmd(window=window, line_range=RangeNode(), **args)
 
 
-def _parse_user_cmdline(line):
+def _parse_user_cmdline(line: str):
+    commands = []
+    for line in _split_cmdline_lines(line):
+        command = _parse_user_cmdline_split(line)
+        if command:
+            commands.append(command)
+
+    return commands
+
+
+def _split_cmdline_lines(line: str) -> list:
+    return re.split('\\<bar\\>', line, flags=re.IGNORECASE)
+
+
+def _parse_user_cmdline_split(line: str):
     re_cmd = '[A-Z][a-zA-Z_]*'
-    re_arg_name = '[a-zA-Z_]+'
+    re_arg_name = '[a-zA-Z_][a-zA-Z0-9_]*'
     re_arg_value = '[a-zA-Z0-9\\:\\.,\n\t#@_-]+'
 
     match = re.match('^\\:(?P<cmd>' + re_cmd + ')(?P<args>(?:\\s' + re_arg_name + '=' + re_arg_value + ')+)?$', line)
@@ -1513,7 +1492,6 @@ def do_ex_cmdline(window, line: str) -> None:
     # Is roughly equivalant to:
     #
     # >>> sublime.active_window().run('command_name', {'str': 'fizz', 'bool': True, 'int': 42})
-
     _log.debug('do ex cmdline >>>%s<<<', line)
 
     if len(line) < 2:
@@ -1524,13 +1502,16 @@ def do_ex_cmdline(window, line: str) -> None:
 
     if line[1].isupper():
         # Run user command. User commands begin with an uppercase letter.
-        user_command = _parse_user_cmdline(line)
-        if not user_command:
+        user_commands = _parse_user_cmdline(line)
+        if not user_commands:
             return status_message('invalid command')
 
-        _log.debug('execute user ex command: %s', user_command)
+        _log.debug('execute user ex command: %s', user_commands)
 
-        return window.run_command(user_command['cmd'], user_command['args'])
+        for command in user_commands:
+            window.run_command(command['cmd'], command['args'])
+
+        return
 
     try:
         cmdline = parse_command_line(line[1:])
@@ -1585,7 +1566,9 @@ def do_ex_user_cmdline(window, line: str) -> None:
     _log.debug('do ex user cmdline >>>%s<<<', line)
 
     if line.lower().endswith('<cr>'):
-        do_ex_cmdline(window, line[:-4])
+        # Strips carriage return
+        for line in _split_cmdline_lines(line[:-4]):
+            do_ex_cmdline(window, line)
     else:
         if ':' == line:
             return window.run_command('nv_cmdline')

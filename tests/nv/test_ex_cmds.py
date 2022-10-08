@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+from unittest.mock import call
+
 import sublime
 
 from NeoVintageous.tests import unittest
@@ -30,6 +32,13 @@ from NeoVintageous.nv.ex_cmds import do_ex_user_cmdline
 
 
 _mock = {}
+
+
+def _mock_ex_cmd(cmd: str):
+    def _mock_inner_ex_cmd(**kwargs) -> None:
+        _mock[cmd] = kwargs
+
+    return _mock_inner_ex_cmd
 
 
 def _mock_ex_copy(view, edit, address, line_range, *args, **kwargs):
@@ -436,11 +445,21 @@ class Test_do_ex_user_cmdline(unittest.ViewTestCase):
         super().setUp()
         _mock.clear()
 
+    def createWindowAndViewMock(self) -> tuple:
+        window = unittest.mock.Mock(spec=sublime.Window)
+        view = unittest.mock.Mock(spec=sublime.View)
+        window.active_view.return_value = view
+
+        return (window, view)
+
+    def createWindowMock(self) -> sublime.Window:
+        return self.createWindowAndViewMock()[0]
+
     @unittest.mock.patch('NeoVintageous.nv.ex_cmds.do_ex_cmdline')
     @unittest.mock.patch('NeoVintageous.nv.ex_cmds.do_ex_command')
     @unittest.mock.patch('NeoVintageous.nv.ex_cmds._default_ex_cmd')
     def test_can_run_cmdline_with_no_initial_text(self, default_ex_cmd, do_ex_command, do_ex_cmdline):
-        window = unittest.mock.Mock()
+        window = self.createWindowMock()
 
         do_ex_user_cmdline(window, ':')
 
@@ -453,7 +472,7 @@ class Test_do_ex_user_cmdline(unittest.ViewTestCase):
     @unittest.mock.patch('NeoVintageous.nv.ex_cmds.do_ex_command')
     @unittest.mock.patch('NeoVintageous.nv.ex_cmds._default_ex_cmd')
     def test_can_run_cmdline_with_initial_text(self, default_ex_cmd, do_ex_command, do_ex_cmdline):
-        window = unittest.mock.Mock()
+        window = self.createWindowMock()
 
         do_ex_user_cmdline(window, ':reg')
 
@@ -466,7 +485,7 @@ class Test_do_ex_user_cmdline(unittest.ViewTestCase):
     @unittest.mock.patch('NeoVintageous.nv.ex_cmds.do_ex_command')
     @unittest.mock.patch('NeoVintageous.nv.ex_cmds._default_ex_cmd')
     def test_run_cmdline_with_initial_text_must_start_with_colon(self, default_ex_cmd, do_ex_command, do_ex_cmdline):
-        window = unittest.mock.Mock()
+        window = self.createWindowMock()
 
         with self.assertRaisesRegex(RuntimeError, 'user cmdline must begin with a colon'):
             do_ex_user_cmdline(window, ' :')
@@ -483,9 +502,7 @@ class Test_do_ex_user_cmdline(unittest.ViewTestCase):
     @unittest.mock.patch('NeoVintageous.nv.ex_cmds.do_ex_command')
     @unittest.mock.patch('NeoVintageous.nv.ex_cmds._default_ex_cmd')
     def test_can_run_ex_command(self, default_ex_cmd, do_ex_command):
-        window = unittest.mock.Mock(spec=sublime.Window)
-        view = unittest.mock.Mock(spec=sublime.View)
-        window.active_view.return_value = view
+        window, view = self.createWindowAndViewMock()
 
         do_ex_user_cmdline(window, ':help hello<CR>')
 
@@ -508,9 +525,7 @@ class Test_do_ex_user_cmdline(unittest.ViewTestCase):
     @unittest.mock.patch('NeoVintageous.nv.ex_cmds.do_ex_command')
     @unittest.mock.patch('NeoVintageous.nv.ex_cmds._default_ex_cmd')
     def test_can_run_command_with_range(self, default_ex_cmd, do_ex_command):
-        window = unittest.mock.Mock(spec=sublime.Window)
-        view = unittest.mock.Mock(spec=sublime.View)
-        window.active_view.return_value = view
+        window, view = self.createWindowAndViewMock()
 
         do_ex_user_cmdline(window, ':2,$copy 3<CR>')
 
@@ -532,9 +547,7 @@ class Test_do_ex_user_cmdline(unittest.ViewTestCase):
     @unittest.mock.patch('NeoVintageous.nv.ex_cmds.do_ex_command')
     @unittest.mock.patch('NeoVintageous.nv.ex_cmds._default_ex_cmd')
     def test_can_run_default_ex_command(self, default_ex_cmd, do_ex_command):
-        window = unittest.mock.Mock(spec=sublime.Window)
-        view = unittest.mock.Mock(spec=sublime.View)
-        window.active_view.return_value = view
+        window, view = self.createWindowAndViewMock()
 
         do_ex_user_cmdline(window, ':1<CR>')
 
@@ -543,16 +556,28 @@ class Test_do_ex_user_cmdline(unittest.ViewTestCase):
         self.assertEqual(window.run_command.call_count, 0)
         self.assertEqual(view.run_command.call_count, 0)
 
+    @unittest.mock.patch('NeoVintageous.nv.ex_cmds.ex_help', _mock_ex_cmd('help'))
+    @unittest.mock.patch('NeoVintageous.nv.ex_cmds.ex_only', _mock_ex_cmd('only'))
+    def test_can_run_multiple_ex_commands(self):
+        do_ex_user_cmdline(self.createWindowMock(), ':help<Bar>:only<CR>')
+        self.assertTrue('help' in _mock)
+        self.assertTrue('only' in _mock)
+
     @unittest.mock.patch('NeoVintageous.nv.ex_cmds.do_ex_command')
     @unittest.mock.patch('NeoVintageous.nv.ex_cmds._default_ex_cmd')
     def test_can_run_user_command(self, default_ex_cmd, do_ex_command):
         window = unittest.mock.Mock()
         mem = {'run_command_count': 0}
 
-        def assert_run_command(line, expected_cmd, expected_args):
+        def assert_run_command(line, expected_cmd, expected_args=None):
             do_ex_user_cmdline(window, line)
-            mem['run_command_count'] += 1
-            window.run_command.assert_called_with(expected_cmd, expected_args)
+            if isinstance(expected_cmd, list):
+                mem['run_command_count'] += len(expected_cmd)
+                window.run_command.assert_has_calls(expected_cmd)
+            else:
+                mem['run_command_count'] += 1
+                window.run_command.assert_called_with(expected_cmd, expected_args)
+
             self.assertEqual(window.run_command.call_count, mem['run_command_count'])
             self.assertEqual(default_ex_cmd.call_count, 0)
             self.assertEqual(do_ex_command.call_count, 0)
@@ -593,11 +618,34 @@ class Test_do_ex_user_cmdline(unittest.ViewTestCase):
         assert_run_command(':N x=42<CR>', 'n', {'x': 42})
         assert_run_command(':N x=4 y=2<CR>', 'n', {'x': 4, 'y': 2})
 
+        # Multi commands
+        assert_run_command(':Fizz<Bar>:Buzz<CR>', [call('fizz', None), call('buzz', None)])
+        assert_run_command(':Fizz<Bar>:Buzz<Bar>:Fooo<CR>', [
+            call('fizz', None),
+            call('buzz', None),
+            call('fooo', None),
+        ])
+        assert_run_command(':Fizz a=1 b=true<Bar>:Buzz c=false<CR>', [
+            call('fizz', {'a': 1, 'b': True}),
+            call('buzz', {'c': False})
+        ])
+
 
 class Test_parse_user_cmdline(unittest.TestCase):
 
     def assert_parsed(self, line, expected):
-        self.assertEqual(_parse_user_cmdline(line), expected)
+        parsed = _parse_user_cmdline(line)
+
+        # TODO cleanup tests; The _parse_user_cmdline now returns a list of
+        # commands and an empty list to represent none, previously this
+        # function returned none or a dict.
+        if parsed is not None:
+            if len(parsed) == 1:
+                parsed = parsed[0]
+            elif len(parsed) == 0:
+                parsed = None
+
+        self.assertEqual(parsed, expected)
 
     def test_command_is_underscored(self):
         self.assert_parsed(':Fizz', {'cmd': 'fizz', 'args': None})
@@ -682,3 +730,25 @@ class Test_parse_user_cmdline(unittest.TestCase):
         self.assert_parsed(':Name foo=', None)
         self.assert_parsed(':Name foo=<', None)
         self.assert_parsed(':Name$', None)
+
+    def test_allow_alnum_arg_names(self):
+        self.assert_parsed(':FizzBuzz a1=true test123=true', {
+            'cmd': 'fizz_buzz',
+            'args': {'a1': True, 'test123': True}
+        })
+
+    def test_multi_commands(self):
+        self.assert_parsed(':Fizz<bar>:Buzz', [
+            {'cmd': 'fizz', 'args': None},
+            {'cmd': 'buzz', 'args': None},
+        ])
+        self.assert_parsed(':Fizz a=true b=3<bar>:Buzz c=val', [
+            {'cmd': 'fizz', 'args': {'a': True, 'b': 3}},
+            {'cmd': 'buzz', 'args': {'c': 'val'}},
+        ])
+
+    def test_multi_command_case_insensitive_bar_char(self):
+        self.assert_parsed(':Fizz<BAR>:Buzz', [
+            {'cmd': 'fizz', 'args': None},
+            {'cmd': 'buzz', 'args': None},
+        ])

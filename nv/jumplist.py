@@ -28,7 +28,8 @@ if int(sublime.version()) < 4082:
 
 else:
     def jumplist_update(view) -> None:
-        pass  # TODO Fixme See https://github.com/NeoVintageous/NeoVintageous/issues/741
+        view.run_command("add_jump_record", {"selection": [(r.a, r.b) for r in view.sel()]})
 
     def jumplist_back(view) -> tuple:
-        return (None, [])  # TODO Fixme See https://github.com/NeoVintageous/NeoVintageous/issues/741
+        # No-op @see https://github.com/NeoVintageous/NeoVintageous/issues/806
+        return (None, [])

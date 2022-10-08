@@ -16,6 +16,7 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 from NeoVintageous.tests import unittest
+from NeoVintageous.tests.fixtures.text_object_targets import all_one_line_targets
 
 
 class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
@@ -163,8 +164,8 @@ class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('1\n2\n3\n|', 'dd', '1\n2\n|3')
         self.eq('1\n2\n|3\n', 'dd', '1\n2\n|')
 
-    def test_di__quote__or__slash__or__underscore(self):
-        for t in ('\'', '"', '/', '_'):
+    def test_di__one_line_targets(self):
+        for t in all_one_line_targets:
             self.eq('{0}|{0}'.format(t), 'di' + t, '{0}|{0}'.format(t))
             self.eq('x{0}fi|zz{0}x'.format(t), 'di' + t, 'x{0}|{0}x'.format(t))
             self.assertRegister('"fizz')
@@ -173,7 +174,7 @@ class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
             self.assertRegisterEmpty('1')
 
     def test_da__quote__or__slash__or__underscore(self):
-        for t in ('\'', '"', '/', '_'):
+        for t in all_one_line_targets:
             self.eq('{0}|{0}'.format(t), 'da' + t, '|')
             self.eq('x{0}fi|zz{0}y'.format(t), 'da' + t, 'x|y')
             self.assertRegister('"{0}fizz{0}'.format(t))

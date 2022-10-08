@@ -16,11 +16,31 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 from contextlib import contextmanager
+import os
 import re
+import stat
+import sys
 
 from sublime import Region
+from sublime import active_window as _active_window
 from sublime import load_settings
 from sublime import save_settings
+from sublime import status_message as _status_message
+
+
+def is_py38() -> bool:
+    return sys.version_info >= (3, 8)
+
+
+def status_message(msg: str, *args: str) -> None:
+    _status_message(_format_message(msg, *args))
+
+
+def _format_message(msg: str, *args) -> str:
+    if args:
+        msg = msg % args
+
+    return msg
 
 
 # There's no Sublime API to set a window status.
@@ -37,17 +57,48 @@ def erase_window_status(window, key: str) -> None:
         view.erase_status(key)
 
 
+def run_window_command(cmd: str, args: dict = None, window=None) -> None:
+    if not window:
+        window = _active_window()
+
+    window.run_command(cmd, args)
+
+
+def save(window_or_view) -> None:
+    window_or_view.run_command('save', {'async': True})
+
+
+def is_view_read_only(view) -> bool:
+    return view.is_read_only() or is_file_read_only(view.file_name())
+
+
+def is_file_read_only(file_name: str) -> bool:
+    if file_name:
+        try:
+            return (stat.S_IMODE(os.stat(file_name).st_mode) & stat.S_IWUSR != stat.S_IWUSR)
+        except FileNotFoundError:
+            return False
+
+    return False
+
+
 # A future compatable regular expression special character escaper. In Python
 # 3.7 only characters that have special meaning in regex patterns are escaped.
-def re_escape(pattern: str):
-    return re.escape(pattern).replace(
-        '\\<', '<').replace(
-        '\\>', '>')
+if is_py38():
+    def re_escape(pattern: str):
+        return re.escape(pattern)
+else:
+    def re_escape(pattern: str):
+        return re.escape(pattern).replace(
+            '\\<', '<').replace(
+            '\\>', '>').replace(
+            '\\\'', '\'').replace(
+            '\\`', '`')
 
 
 # There's no Sublime API to show a corrections select list. The workaround is to
 # mimic the mouse right button click which opens a corrections context menu.
-# See: https://github.com/SublimeTextIssues/Core/issues/2539.
+# @see https://github.com/SublimeTextIssues/Core/issues/2539
 def spell_select(view) -> None:
     x, y = view.text_to_window(view.sel()[0].b)
     view.run_command('context_menu', {'event': {'button': 2, 'x': x, 'y': y}})
@@ -58,13 +109,16 @@ def spell_add(view, word: str) -> None:
 
 
 # There's no Sublime API to remove words from the added_words list.
-# See: https://github.com/SublimeTextIssues/Core/issues/2539.
+# @see https://github.com/SublimeTextIssues/Core/issues/2539
 def spell_undo(word: str) -> None:
     preferences = load_settings('Preferences.sublime-settings')
     added_words = preferences.get('added_words', [])
 
     try:
-        added_words.remove(word)
+        if isinstance(added_words, list):
+            added_words.remove(word)
+        else:
+            added_words = []
     except ValueError:
         return
 
@@ -73,10 +127,15 @@ def spell_undo(word: str) -> None:
     save_settings('Preferences.sublime-settings')
 
 
-# Polyfill to workaround Sublime's view.find() return value issues.
-# Returns None if nothing is found instead of returning Region(-1).
-# See: https://forum.sublimetext.com/t/find-pattern-returns-1-1-instead-of-none/43866.
-# See: https://github.com/SublimeTextIssues/Core/issues/534.
+# Returns the first region matching the pattern, starting from start_point, or
+# None if no position in the string matches the pattern; note that this is
+# different from finding a zero-length match at some point in the string.
+#
+# The optional flags parameter may be sublime.LITERAL, sublime.IGNORECASE, or
+# the two ORed together.
+#
+# @see https://forum.sublimetext.com/t/find-pattern-returns-1-1-instead-of-none/43866
+# @see https://github.com/SublimeTextIssues/Core/issues/534
 def view_find(view, pattern: str, start_pt: int, flags: int = 0):
     match = view.find(pattern, start_pt, flags)
     if match is None or match.b == -1:
@@ -86,7 +145,7 @@ def view_find(view, pattern: str, start_pt: int, flags: int = 0):
 
 
 # There's no Sublime API to find patterns in reverse direction.
-# See: https://github.com/SublimeTextIssues/Core/issues/245.
+# @see https://github.com/SublimeTextIssues/Core/issues/245
 def view_rfind_all(view, pattern: str, start_pt: int, flags: int = 0):
     matches = view.find_all(pattern, flags)
     for region in matches:
@@ -97,7 +156,7 @@ def view_rfind_all(view, pattern: str, start_pt: int, flags: int = 0):
 
 
 # There's no Sublime API to find a pattern in reverse direction.
-# See: https://github.com/SublimeTextIssues/Core/issues/245.
+# @see https://github.com/SublimeTextIssues/Core/issues/245
 def view_rfind(view, pattern: str, start_pt: int, flags: int = 0):
     matches = view_rfind_all(view, pattern, start_pt, flags)
     if matches:
@@ -107,11 +166,22 @@ def view_rfind(view, pattern: str, start_pt: int, flags: int = 0):
             pass
 
 
-# There's no Sublime API to find a pattern within a start-end range.
-# Note that this returns zero-length matches. Also see view_find().
-# Returns None if nothing is found instead of returning Region(-1).
-# See: https://forum.sublimetext.com/t/find-pattern-returns-1-1-instead-of-none/43866.
-# See: https://github.com/SublimeTextIssues/Core/issues/534.
+# Returns the first region matching the pattern, between indexes pos and endpos,
+# or None if no position in the string matches the pattern; note that this is
+# different from finding a zero-length match at some point in the string.
+#
+# The parameter pos is an index in the string where the search is to start.
+#
+# The parameter endpos limits how far the string will be searched; it will be as
+# if the string is endpos characters long, so only the characters from pos to
+# endpos - 1 will be searched for a match.
+#
+# The optional flags parameter may be sublime.LITERAL, sublime.IGNORECASE, or
+# the two ORed together.
+#
+# @see https://forum.sublimetext.com/t/find-pattern-returns-1-1-instead-of-none/43866
+# @see https://github.com/sublimehq/sublime_text/issues/2797
+# @see https://github.com/SublimeTextIssues/Core/issues/534
 def view_find_in_range(view, pattern: str, pos: int, endpos: int, flags: int = 0):
     match = view_find(view, pattern, pos, flags)
     if match is not None and match.b <= endpos:
@@ -121,9 +191,10 @@ def view_find_in_range(view, pattern: str, pos: int, endpos: int, flags: int = 0
 # There's no Sublime API to find all matching pattern within a range.
 # Note that this returns zero-length matches. Also see view_find().
 # Returns None if nothing is found instead of returning Region(-1).
-# See: https://forum.sublimetext.com/t/find-pattern-returns-1-1-instead-of-none/43866.
-# See: https://github.com/SublimeTextIssues/Core/issues/534.
-# TODO Refactor to generator
+# @see https://forum.sublimetext.com/t/find-pattern-returns-1-1-instead-of-none/43866
+# @see https://github.com/sublimehq/sublime_text/issues/2797
+# @see https://github.com/SublimeTextIssues/Core/issues/534
+# @todo Refactor to generator
 def view_find_all_in_range(view, pattern: str, pos: int, endpos: int, flags: int = 0) -> list:
     matches = []
     while pos <= endpos:
@@ -142,7 +213,7 @@ def view_find_all_in_range(view, pattern: str, pos: int, endpos: int, flags: int
 
 
 # Polyfill to work around bug in internal APIs.
-# See: https://github.com/SublimeTextIssues/Core/issues/2879.
+# @see https://github.com/SublimeTextIssues/Core/issues/2879
 def view_indentation_level(view, pt: int):
     return view.indentation_level(pt)
 
@@ -172,9 +243,10 @@ def view_to_str(view) -> str:
     return view.substr(view_to_region(view))
 
 
-# Polyfill fix for Sublime Text 4. In Sublime Text 4 split_by_newlines includes
-# full lines, previously the lines were constrianed to given region start and
-# end points. See https://github.com/NeoVintageous/NeoVintageous/issues/647.
+# In ST4 split_by_newlines includes full lines, previously the lines were
+# constrained to given region start and end points. This function emulates the
+# previous behaviour and constrains to the given region start and end points.
+# @see https://github.com/NeoVintageous/NeoVintageous/issues/647
 def split_by_newlines(view, region: Region) -> list:
     regions = view.split_by_newlines(region)
 

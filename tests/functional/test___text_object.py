@@ -16,6 +16,7 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 from NeoVintageous.tests import unittest
+from NeoVintageous.tests.fixtures.text_object_targets import all_one_line_targets
 
 
 class TestTextObjectSelection(unittest.FunctionalTestCase):
@@ -120,6 +121,18 @@ class TestTextObjectSelection(unittest.FunctionalTestCase):
             self.eq('x{\nfi|zz\n}y', 'ya' + target, 'x|{\nfizz\n}y')
             self.assertLinewiseRegisters('"0', '{\nfizz\n}', '-1')
 
+    def test_yi__one_line_targets(self):
+        for t in all_one_line_targets:
+            self.resetRegisters()
+            self.eq('x{0}fi|zz{0}x'.format(t), 'yi' + t, 'x{0}|fizz{0}x'.format(t))
+            self.assertRegisters('"0', 'fizz', '1-')
+
+    def test_ya__one_line_targets(self):
+        for t in all_one_line_targets:
+            self.resetRegisters()
+            self.eq('x{0}fi|zz{0}x'.format(t), 'ya' + t, 'x|{0}fizz{0}x'.format(t))
+            self.assertRegisters('"0', '{0}fizz{0}'.format(t), '1-')
+
     def test_va__angle_bracket__(self):
         for target in ('<', '>'):
             self.eq('x<fi|zz>x', 'v_a' + target, 'x|<fizz>|x')
@@ -174,15 +187,15 @@ class TestTextObjectSelection(unittest.FunctionalTestCase):
             self.eq('{\na\n|b\nc\n}\n', 'v_i' + target, '{\n|a\nb\nc\n|}\n')
             self.eq('{xx\na\n|b\nc\nxx}\n', 'v_i' + target, '{|xx\na\nb\nc\nxx|}\n')
 
-    def test_va__quote__or__slash__or__underscore(self):
-        for mark in ('\'', '"', '/', '_'):
-            self.eq('f|iz|z', 'v_i' + mark, 'f|iz|z')
+    def test_va__one_line_targets(self):
+        for mark in all_one_line_targets:
+            self.eq('f|iz|z', 'v_i.', 'f|iz|z')
             self.eq('f|iz{0}z'.format(mark), 'v_a' + mark, 'f|i|z{0}z'.format(mark))
             self.eq('x{0}fi|zz{0}x'.format(mark), 'v_a' + mark, 'x|{0}fizz{0}|x'.format(mark))
             self.eq('x{0}fi|zz bu|zz{0}x'.format(mark), 'v_a' + mark, 'x|{0}fizz buzz{0}|x'.format(mark))
 
-    def test_vi__quote__or__slash__or__underscore(self):
-        for mark in ('\'', '"', '/', '_'):
+    def test_vi__one_line_targets(self):
+        for mark in all_one_line_targets:
             self.eq('f|iz|z', 'v_i' + mark, 'f|iz|z')
             self.eq('f|iz{0}z'.format(mark), 'v_i' + mark, 'f|i|z{0}z'.format(mark))
             self.eq('x{0}fi|zz{0}x'.format(mark), 'v_i' + mark, 'x{0}|fizz|{0}x'.format(mark))
