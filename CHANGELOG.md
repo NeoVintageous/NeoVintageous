@@ -4,6 +4,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.27.2 - Unreleased
 
+* Fixed [#847](https://github.com/NeoVintageous/NeoVintageous/issues/847): Allow numbers in mapped user commands
 * Fixed [#788](https://github.com/NeoVintageous/NeoVintageous/issues/788): Make `:g/pattern/p` include last line even if it doesn't end with `\n`
 
 ## 1.27.1 - 2022-10-01

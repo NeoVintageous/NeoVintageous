@@ -1420,7 +1420,7 @@ def _split_cmdline_lines(line: str) -> list:
 
 
 def _parse_user_cmdline_split(line: str):
-    re_cmd = '[A-Z][a-zA-Z_]*'
+    re_cmd = '[A-Z][a-zA-Z_0-9]*'
     re_arg_name = '[a-zA-Z_][a-zA-Z0-9_]*'
     re_arg_value = '[a-zA-Z0-9\\:\\.,\n\t#@_-]+'
 
