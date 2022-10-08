@@ -236,11 +236,11 @@ class ViewTestCase(unittest.TestCase):
             # Options via settings is DEPRECATED
             self.settings().set('vintageous_%s' % name, value)
 
-    def get_option(self, name: str):
-        return _get_option(self.view, name)
+    def get_option(self, name: str, view=None):
+        return _get_option(self.view if view is None else view, name)
 
     def assertOption(self, name: str, expected, msg: str = None) -> None:
-        self.assertEqual(_get_option(self.view, name), expected, msg=msg)
+        self.assertEqual(self.get_option(name), expected, msg=msg)
 
     def syntax(self, syntax_file: str) -> None:
         self.view.assign_syntax(syntax_file)
@@ -420,10 +420,15 @@ class ViewTestCase(unittest.TestCase):
             if v.is_scratch() and v.settings().get('nv_ex_print_output'):
                 v.close()
 
-    def exPrintOutput(self) -> str:
+    def exPrintOutputView(self) -> str:
         for v in self.view.window().views():
             if v.is_scratch() and v.settings().get('nv_ex_print_output'):
-                return _view_to_str(v)
+                return v
+
+    def exPrintOutput(self) -> str:
+        v = self.exPrintOutputView()
+        if v:
+            return _view_to_str(v)
 
     def assertExPrintOutput(self, expected, msg: str = None) -> None:
         self.assertEqual(self.exPrintOutput(), expected, msg)
