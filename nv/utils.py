@@ -143,6 +143,11 @@ def regions_transform_extend_to_line_count(view, count) -> None:
     regions_transformer(view, f)
 
 
+def replace_line(view, edit, replacement: str):
+    pt = next_non_blank(view, view.line(view.sel()[0].b).a)
+    view.replace(edit, Region(pt, view.line(pt).b), replacement)
+
+
 def replace_sel(view, new_sel) -> None:
     view.sel().clear()
     if isinstance(new_sel, list):
@@ -519,6 +524,7 @@ def lowest_visible_pt(view) -> int:
     return view.text_point(highlow_visible_rows(view)[1], 0)
 
 
+# Note: the edit object is required for this to work properly
 def scroll_horizontally(view, edit, amount, half_screen: bool = False) -> None:
     if view.settings().get('word_wrap'):
         return
@@ -609,6 +615,10 @@ def get_scroll_up_target_pt(view, number_of_scroll_lines: int):
 
 def get_scroll_down_target_pt(view, number_of_scroll_lines: int):
     return _get_scroll_target(view, number_of_scroll_lines, forward=True)
+
+
+def resolve_normal_target(s: Region, target: int) -> None:
+    s.a = s.b = target
 
 
 def resolve_visual_target(s: Region, target: int) -> None:
@@ -1227,7 +1237,11 @@ def restore_visual_repeat_data(view, mode: str, data: tuple) -> None:
 
 
 def is_help_view(view) -> bool:
-    return view and view.is_read_only() and view.is_scratch() and '[vim help]' in view.name()
+    return (view and
+            view.is_read_only() and
+            view.is_scratch() and
+            '[vim help]' in view.name() and
+            view.score_selector(0, 'text.neovintageous.help') > 0)
 
 
 def view_count_excluding_help_views(window) -> int:

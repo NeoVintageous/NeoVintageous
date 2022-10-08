@@ -17,13 +17,13 @@
 
 from NeoVintageous.tests import unittest
 
-from NeoVintageous.nv.commands import nv_feed_key
+from NeoVintageous.nv.feed_key import FeedKeyHandler
 from NeoVintageous.nv.settings import append_sequence
 from NeoVintageous.nv.settings import get_action_count
 from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_glue_until_normal_mode
-from NeoVintageous.nv.settings import get_last_buffer_search
-from NeoVintageous.nv.settings import get_last_char_search
+from NeoVintageous.nv.settings import get_last_buff_search_pattern
+from NeoVintageous.nv.settings import get_last_char_search_character
 from NeoVintageous.nv.settings import get_last_char_search_command
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_motion_count
@@ -40,7 +40,7 @@ from NeoVintageous.nv.settings import set_motion_count
 from NeoVintageous.nv.settings import set_must_capture_register_name
 from NeoVintageous.nv.settings import set_partial_sequence
 from NeoVintageous.nv.settings import set_register
-from NeoVintageous.nv.state import _must_scroll_into_view
+from NeoVintageous.nv.state import _should_scroll_into_view
 from NeoVintageous.nv.state import get_action
 from NeoVintageous.nv.state import get_motion
 from NeoVintageous.nv.state import init_state
@@ -69,8 +69,9 @@ class TestState(unittest.ViewTestCase):
         # Make sure the actual usage of NeoVintageous doesn't change the
         # pristine state. This isn't great, though.
         self.view.window().settings().erase('_vintageous_last_char_search_command')
-        self.view.window().settings().erase('_vintageous_last_char_search')
-        self.view.window().settings().erase('_vintageous_last_buffer_search')
+        self.view.window().settings().erase('_vintageous_last_char_search_character')
+        self.view.window().settings().erase('_vintageous_last_buff_search_command')
+        self.view.window().settings().erase('_vintageous_last_buff_search_pattern')
 
         self.assertEqual(get_sequence(self.view), '')
         self.assertEqual(get_partial_sequence(self.view), '')
@@ -110,19 +111,19 @@ class TestState(unittest.ViewTestCase):
         self.assertEqual(get_action_count(self.view), '')
         self.assertEqual(get_glue_until_normal_mode(self.view), False)
         self.assertEqual(is_processing_notation(self.view), False)
-        self.assertEqual(get_last_char_search(self.view), '')
+        self.assertEqual(get_last_char_search_character(self.view), '')
         self.assertEqual(get_last_char_search_command(self.view), 'vi_f')
         self.assertEqual(is_interactive(self.view), True)
         self.assertEqual(is_must_capture_register_name(self.view), False)
-        self.assertEqual(get_last_buffer_search(self.view), '')
+        self.assertEqual(get_last_buff_search_pattern(self.view), '')
         self.assertEqual(get_reset_during_init(self.view), True)
 
     def test_must_scroll_into_view(self):
-        self.assertFalse(_must_scroll_into_view(get_motion(self.view), get_action(self.view)))
+        self.assertFalse(_should_scroll_into_view(get_motion(self.view), get_action(self.view)))
 
         motion = cmd_defs.ViGotoSymbolInFile()
         set_motion(self.view, motion)
-        self.assertTrue(_must_scroll_into_view(get_motion(self.view), get_action(self.view)))
+        self.assertTrue(_should_scroll_into_view(get_motion(self.view), get_action(self.view)))
 
 
 class TestStateResettingState(unittest.ViewTestCase):
@@ -249,37 +250,36 @@ class TestStateSetCommand(unittest.ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        self.command = nv_feed_key(self.view.window())
-        self.command.view = self.view
+        self.handler = FeedKeyHandler(self.view, 'w', None, True, False)
 
     def test_raise_error_if_unknown_command_type(self):
         with self.assertRaisesRegex(ValueError, 'unexpected command type'):
-            self.command._handle_command('foobar', True)
+            self.handler._handle_command('foobar', True)
 
     def test_unexpected_type(self):
         class Foobar(ViCommandDefBase):
             pass
 
         with self.assertRaisesRegex(ValueError, 'unexpected command type'):
-            self.command._handle_command(Foobar(), True)
+            self.handler._handle_command(Foobar(), True)
 
     def test_raises_error_if_too_many_motions(self):
         set_motion(self.view, cmd_defs.ViMoveRightByChars())
         with self.assertRaisesRegex(ValueError, 'too many motions'):
-            self.command._handle_command(cmd_defs.ViMoveRightByChars(), True)
+            self.handler._handle_command(cmd_defs.ViMoveRightByChars(), True)
 
     def test_changes_mode_for_lone_motion(self):
         set_mode(self.view, unittest.OPERATOR_PENDING)
         motion = cmd_defs.ViMoveRightByChars()
-        self.command._handle_command(motion, True)
+        self.handler._handle_command(motion, True)
         self.assertEqual(get_mode(self.view), unittest.NORMAL)
 
     def test_raises_error_if_too_many_actions(self):
         set_motion(self.view, cmd_defs.ViDeleteLine())
         with self.assertRaisesRegex(ValueError, 'too many actions'):
-            self.command._handle_command(cmd_defs.ViDeleteLine(), True)
+            self.handler._handle_command(cmd_defs.ViDeleteLine(), True)
 
     def test_changes_mode_for_lone_action(self):
         operator = cmd_defs.ViDeleteByChars()
-        self.command._handle_command(operator, True)
+        self.handler._handle_command(operator, True)
         self.assertEqual(get_mode(self.view), unittest.OPERATOR_PENDING)

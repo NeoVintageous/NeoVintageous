@@ -60,7 +60,7 @@ class Test_s(unittest.FunctionalTestCase):
     @unittest.mock_status_message()
     def test_n_no_last_search(self):
         self.normal('|fizz')
-        _set_last_sneak_search(self.view, '')
+        _set_last_sneak_search(self.view, 'sneak_s', '')
         self.feed('s<CR>')
         self.assertNormal('|fizz')
         self.assertStatusMessage('no previous sneak search')

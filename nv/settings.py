@@ -19,7 +19,7 @@ import os
 
 from sublime import active_window
 
-from NeoVintageous.nv.polyfill import save_preferences
+from NeoVintageous.nv.polyfill import toggle_preference
 from NeoVintageous.nv.session import get_session_value
 from NeoVintageous.nv.session import get_session_view_value
 from NeoVintageous.nv.session import set_session_value
@@ -139,42 +139,56 @@ def set_ex_substitute_last_replacement(replacement: str) -> None:
     set_session_value('ex_substitute_last_replacement', replacement, persist=True)
 
 
-def get_last_char_search(view) -> str:
-    # The last characte used for searches such as "f" and "t".
-    return _get_private(view.window(), 'last_char_search', '')
+def get_exit_when_quiting_last_window(view) -> bool:
+    return get_setting(view, 'exit_when_quiting_last_window')
 
 
+# Supports repeating the last search commands. For example the command ";"
+# (semi-colon) repeats the latest f, t, F or T [count] times and ","
+# (comma) repeats the latest f, t, F or T in opposite direction.
 def get_last_char_search_command(view) -> str:
-    # Supports repeating the last search commands. For example the command ";"
-    # (semi-colon) repeats the latest f, t, F or T [count] times and "," (comma)
-    # repeats the latest f, t, F or T in opposite direction [count] times.
     return _get_private(view.window(), 'last_char_search_command', 'vi_f')
 
 
-def set_last_char_search(view, value: str) -> None:
-    _set_private(view.window(), 'last_char_search', value)
+# The last character used for searches such as "f" and "t".
+def get_last_char_search_character(view) -> str:
+    return _get_private(view.window(), 'last_char_search_character', '')
+
+
+def set_last_char_search(view, command: str, character: str) -> None:
+    set_last_char_search_command(view, command)
+    set_last_char_search_character(view, character)
 
 
 def set_last_char_search_command(view, value: str) -> None:
     _set_private(view.window(), 'last_char_search_command', value)
 
 
-def get_last_buffer_search(view) -> str:
-    # The last characte used for searches such as "/" and "?".
-    return _get_private(view.window(), 'last_buffer_search', '')
+def set_last_char_search_character(view, value: str) -> None:
+    _set_private(view.window(), 'last_char_search_character', value)
 
 
-def get_last_buffer_search_command(view) -> str:
-    # Supports repeating the last search commands. For example the command "n".
-    return _get_private(view.window(), 'last_buffer_search_command', 'nv_vi_slash')
+# Supports repeating the last search commands. For example the command "n".
+def get_last_buff_search_command(view) -> str:
+    return _get_private(view.window(), 'last_buff_search_command', 'nv_vi_slash')
 
 
-def set_last_buffer_search(view, value: str) -> None:
-    _set_private(view.window(), 'last_buffer_search', value)
+# The last characte used for searches such as "/" and "?".
+def get_last_buff_search_pattern(view) -> str:
+    return _get_private(view.window(), 'last_buff_search_pattern', '')
 
 
-def set_last_buffer_search_command(view, value: str) -> None:
-    _set_private(view.window(), 'last_buffer_search_command', value)
+def set_last_buff_search(view, command: str, pattern: str) -> None:
+    _set_last_buff_search_command(view, command)
+    _set_last_buff_search_pattern(view, pattern)
+
+
+def _set_last_buff_search_command(view, value: str) -> None:
+    _set_private(view.window(), 'last_buff_search_command', value)
+
+
+def _set_last_buff_search_pattern(view, value: str) -> None:
+    _set_private(view.window(), 'last_buff_search_pattern', value)
 
 
 def get_mode(view) -> str:
@@ -355,14 +369,9 @@ def set_visual_block_direction(view, direction: int) -> None:
         view.settings().set('_nv_visual_block_direction', direction)
 
 
-def _toggle_preference(name: str) -> None:
-    with save_preferences() as preferences:
-        preferences.set(name, not preferences.get(name))
-
-
 def toggle_ctrl_keys() -> None:
-    _toggle_preference('vintageous_use_ctrl_keys')
+    toggle_preference('vintageous_use_ctrl_keys')
 
 
 def toggle_super_keys() -> None:
-    _toggle_preference('vintageous_use_super_keys')
+    toggle_preference('vintageous_use_super_keys')

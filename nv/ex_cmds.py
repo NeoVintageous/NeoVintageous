@@ -27,10 +27,7 @@ from sublime import DIALOG_CANCEL
 from sublime import DIALOG_YES
 from sublime import ENCODED_POSITION
 from sublime import FORCE_GROUP
-from sublime import LITERAL
 from sublime import Region
-from sublime import find_resources
-from sublime import load_resource
 from sublime import set_timeout
 from sublime import yes_no_cancel_dialog
 
@@ -40,7 +37,8 @@ from NeoVintageous.nv.cmdline import CmdlineOutput
 from NeoVintageous.nv.ex.nodes import RangeNode
 from NeoVintageous.nv.ex.parser import parse_command_line
 from NeoVintageous.nv.ex.parser import resolve_address
-from NeoVintageous.nv.goto import goto_line
+from NeoVintageous.nv.goto import GotoView
+from NeoVintageous.nv.goto import goto_help_subject
 from NeoVintageous.nv.history import history
 from NeoVintageous.nv.mappings import mappings_add
 from NeoVintageous.nv.mappings import mappings_remove
@@ -52,7 +50,6 @@ from NeoVintageous.nv.polyfill import is_view_read_only
 from NeoVintageous.nv.polyfill import save
 from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
-from NeoVintageous.nv.polyfill import view_find
 from NeoVintageous.nv.polyfill import view_find_all_in_range
 from NeoVintageous.nv.polyfill import view_to_region
 from NeoVintageous.nv.registers import registers_get_all
@@ -419,148 +416,12 @@ def ex_global(window, view, pattern: str, line_range: RangeNode, cmd='print', **
     set_ex_global_last_pattern(pattern)
 
 
-_help_tags_cache = {}  # type: dict
-
-
 def ex_help(window, subject: str = None, forceit: bool = False, **kwargs) -> None:
-    if not subject:
-        subject = 'help.txt'
-
-        if forceit:
-            status_message("E478: Don't panic!")
-            return
-
-    if not _help_tags_cache:
-        tags_matcher = re.compile('^([^\\s]+)\\s+([^\\s]+)\\s+(.+)$')
-        for line in load_resource('Packages/NeoVintageous/res/doc/tags').split('\n'):
-            if line:
-                match = tags_matcher.match(line)
-                if match:
-                    _help_tags_cache[match.group(1)] = (match.group(2), match.group(3))
-
-    subject = subject.rstrip()
-
-    # Recognize a few exceptions e.g. some strings that contain '*' with "star",
-    # "|" with "bar" and '"' with "quote".
-    subject_replacements = {
-        "*": "star",
-        "g*": "gstar",
-        "[*": "[star",
-        "]*": "]star",
-        "/*": "/star",
-        "/\\*": "/\\star",
-        "\"*": "quotestar",
-        "**": "starstar",
-        "/|": "/bar",
-        "/\\|": "/\\bar",
-        '|': 'bar',
-        '"': 'quote'
-    }
-
-    try:
-        subject = subject_replacements[subject]
-    except KeyError:
-        pass
-
-    if subject not in _help_tags_cache:
-
-        # Basic hueristic to find nearest relevant help e.g. `help ctrl-k` will
-        # look for "ctrl-k", "c_ctrl-k", "i_ctrl-k", etc. Another example is
-        # `:help copy` will look for "copy" then ":copy". Also checks lowercase
-        # variants e.g. ctrl-k", "c_ctrl-k, etc., and uppercase variants e.g.
-        # CTRL-K", "C_CTRL-K, etc.
-
-        subject_candidates = [subject]
-
-        if subject.lower() not in subject_candidates:
-            subject_candidates.append(subject.lower())
-
-        if subject.upper() not in subject_candidates:
-            subject_candidates.append(subject.upper())
-
-        ctrl_key = re.sub('ctrl-([a-zA-Z])', lambda m: 'CTRL-' + m.group(1).upper(), subject)
-        if ctrl_key not in subject_candidates:
-            subject_candidates.append(ctrl_key)
-
-        found = False
-        for p in ('', ':', 'c_', 'i_', 'v_', '-', '/'):
-            for s in subject_candidates:
-                _subject = p + s
-                if _subject in _help_tags_cache:
-                    subject = _subject
-                    found = True
-                    break
-
-            if found:
-                break
-
-    try:
-        help_file, help_tag = _help_tags_cache[subject]
-    except KeyError:
-        status_message('E149: Sorry, no help for %s' % subject)
+    if not subject and forceit:
+        status_message("E478: Don't panic!")
         return
 
-    help_file_resource = 'Packages/NeoVintageous/res/doc/' + help_file
-
-    # TODO There must be a better way to test for the existence of a resource.
-    doc_resources = [r for r in find_resources(help_file) if r.startswith('Packages/NeoVintageous/res/doc/')]
-    if not doc_resources:
-        # This should only happen if the help "tags" file is out of date.
-        status_message('Sorry, help file "%s" not found' % help_file)
-        return
-
-    def _window_find_open_view(window, name: str):
-        for view in window.views():
-            if view.name() == name:
-                return view
-
-    help_view_name = '%s [vim help]' % (help_file)
-    view = _window_find_open_view(window, help_view_name)
-    if view:
-        window.focus_view(view)
-    else:
-        view = window.new_file()
-        view.set_scratch(True)
-        view.set_name(help_view_name)
-        settings = view.settings()
-        settings.set('auto_complete', False)
-        settings.set('auto_indent', False)
-        settings.set('auto_match_enabled', False)
-        settings.set('draw_centered', False)
-        settings.set('draw_indent_guides', False)
-        settings.set('line_numbers', False)
-        settings.set('match_selection', False)
-        settings.set('rulers', [])
-        settings.set('scroll_past_end', False)
-        settings.set('smart_indent', False)
-        settings.set('tab_size', 8)
-        settings.set('translate_tabs_to_spaces', False)
-        settings.set('trim_automatic_white_space', False)
-        settings.set('word_wrap', False)
-        view.assign_syntax('Packages/NeoVintageous/res/Help.sublime-syntax')
-        view.run_command('nv_view', {'action': 'insert', 'text': load_resource(help_file_resource)})
-        view.set_read_only(True)
-
-    # Format the tag so that we can
-    # do a literal search rather
-    # than regular expression.
-    tag_region = view_find(view, help_tag.lstrip('/').replace('\\/', '/').replace('\\\\', '\\'), 0, LITERAL)
-    if not tag_region:
-        # This should only happen if the help "tags" file is out of date.
-        tag_region = Region(0)
-
-    # Add one point so that the cursor is
-    # on the tag rather than the tag
-    # punctuation star character.
-    c_pt = tag_region.begin() + 1
-
-    set_selection(view, c_pt)
-    view.show(c_pt, False)
-
-    # Fixes #420 show() doesn't work properly when the Sublime Text
-    # animation_enabled is true, which the default in Sublime.
-    xy = view.text_to_layout(view.text_point(view.rowcol(c_pt)[0], 0))
-    view.set_viewport_position(xy)
+    goto_help_subject(window, subject)
 
 
 def ex_history(window, name: str = 'all', **kwargs) -> None:
@@ -1285,7 +1146,7 @@ def _default_ex_cmd(window, view, line_range: RangeNode, **kwargs) -> None:
     _log.debug('default ex cmd %s %s', line_range, kwargs)
     line = row_at(view, line_range.resolve(view).a) + 1
     enter_normal_mode(window, get_mode(view))
-    goto_line(view, get_mode(view), line)
+    GotoView(view, get_mode(view), line).line()
 
 
 def _get_ex_cmd(name: str):

@@ -15,10 +15,16 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+import re
+
+from sublime import LITERAL
 from sublime import Region
+from sublime import find_resources
+from sublime import load_resource
 from sublime import version
 
 from NeoVintageous.nv.jumplist import jumplist_update
+from NeoVintageous.nv.polyfill import view_find
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transform_to_normal_mode
@@ -39,13 +45,9 @@ from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import status_message
 
 
-def goto_help(window) -> None:
-    view = window.active_view()
-    if not view:
-        raise ValueError('view is required')
-
-    if not view.sel():
-        raise ValueError('selection is required')
+def goto_help(view) -> None:
+    if not view or not view.sel():
+        raise ValueError('view selection is required')
 
     sel = view.sel()[0]
 
@@ -66,9 +68,148 @@ def goto_help(window) -> None:
     if len(subject) > 50:
         return status_message('E149: Sorry, no help found')
 
-    # TODO Refactor ex cmd internets to this common utility
-    from NeoVintageous.nv.ex_cmds import do_ex_command
-    do_ex_command(window, 'help', {'subject': subject})
+    goto_help_subject(view.window(), subject)
+
+
+# TODO Refactor into common cache module
+_help_tags_cache = {}  # type: dict
+
+
+def goto_help_subject(window, subject: str = None) -> None:
+    if not subject:
+        subject = 'help.txt'
+
+    if not _help_tags_cache:
+        tags_matcher = re.compile('^([^\\s]+)\\s+([^\\s]+)\\s+(.+)$')
+        for line in load_resource('Packages/NeoVintageous/res/doc/tags').split('\n'):
+            if line:
+                match = tags_matcher.match(line)
+                if match:
+                    _help_tags_cache[match.group(1)] = (match.group(2), match.group(3))
+
+    subject = subject.rstrip()
+
+    # Recognize a few exceptions e.g. some strings that contain '*'
+    # with "star", "|" with "bar" and '"' with "quote".
+    subject_replacements = {
+        "*": "star",
+        "g*": "gstar",
+        "[*": "[star",
+        "]*": "]star",
+        "/*": "/star",
+        "/\\*": "/\\star",
+        "\"*": "quotestar",
+        "**": "starstar",
+        "/|": "/bar",
+        "/\\|": "/\\bar",
+        '|': 'bar',
+        '"': 'quote'
+    }
+
+    try:
+        subject = subject_replacements[subject]
+    except KeyError:
+        pass
+
+    if subject not in _help_tags_cache:
+
+        # Basic hueristic to find nearest relevant help e.g. `help ctrl-k` will
+        # look for "ctrl-k", "c_ctrl-k", "i_ctrl-k", etc. Another example is
+        # `:help copy` will look for "copy" then ":copy". Also checks lowercase
+        # variants e.g. ctrl-k", "c_ctrl-k, etc., and uppercase variants e.g.
+        # CTRL-K", "C_CTRL-K, etc.
+
+        subject_candidates = [subject]
+
+        if subject.lower() not in subject_candidates:
+            subject_candidates.append(subject.lower())
+
+        if subject.upper() not in subject_candidates:
+            subject_candidates.append(subject.upper())
+
+        ctrl_key = re.sub('ctrl-([a-zA-Z])', lambda m: 'CTRL-' + m.group(1).upper(), subject)
+        if ctrl_key not in subject_candidates:
+            subject_candidates.append(ctrl_key)
+
+        found = False
+        for p in ('', ':', 'c_', 'i_', 'v_', '-', '/'):
+            for s in subject_candidates:
+                _subject = p + s
+                if _subject in _help_tags_cache:
+                    subject = _subject
+                    found = True
+                    break
+
+            if found:
+                break
+
+    try:
+        help_file, help_tag = _help_tags_cache[subject]
+    except KeyError:
+        status_message('E149: Sorry, no help for %s' % subject)
+        return
+
+    help_file_resource = 'Packages/NeoVintageous/res/doc/' + help_file
+
+    # TODO There must be a better way to test for the existence of a resource.
+    doc_resources = [r for r in find_resources(help_file) if r.startswith('Packages/NeoVintageous/res/doc/')]
+    if not doc_resources:
+        # This should only happen if the help "tags" file is out of date.
+        status_message('Sorry, help file "%s" not found' % help_file)
+        return
+
+    def _window_find_open_view(window, name: str):
+        for view in window.views():
+            if view.name() == name:
+                return view
+
+    help_view_name = '%s [vim help]' % (help_file)
+    view = _window_find_open_view(window, help_view_name)
+    if view:
+        window.focus_view(view)
+    else:
+        view = window.new_file()
+        view.set_scratch(True)
+        view.set_name(help_view_name)
+        settings = view.settings()
+        settings.set('auto_complete', False)
+        settings.set('auto_indent', False)
+        settings.set('auto_match_enabled', False)
+        settings.set('draw_centered', False)
+        settings.set('draw_indent_guides', False)
+        settings.set('line_numbers', False)
+        settings.set('match_selection', False)
+        settings.set('rulers', [])
+        settings.set('scroll_past_end', False)
+        settings.set('smart_indent', False)
+        settings.set('tab_size', 8)
+        settings.set('translate_tabs_to_spaces', False)
+        settings.set('trim_automatic_white_space', False)
+        settings.set('word_wrap', False)
+        view.assign_syntax('Packages/NeoVintageous/res/Help.sublime-syntax')
+        view.run_command('nv_view', {'action': 'insert', 'text': load_resource(help_file_resource)})
+        view.set_read_only(True)
+
+    # Format the tag so that we can
+    # do a literal search rather
+    # than regular expression.
+    tag_region = view_find(view, help_tag.lstrip('/').replace('\\/', '/').replace('\\\\', '\\'), 0, LITERAL)
+    if not tag_region:
+        # This should only happen if the help "tags" file is out of date.
+        tag_region = Region(0)
+
+    # Add one point so that the cursor is
+    # on the tag rather than the tag
+    # punctuation star character.
+    c_pt = tag_region.begin() + 1
+
+    set_selection(view, c_pt)
+    view.show(c_pt, False)
+
+    # Fixes #420 show() doesn't work properly when the Sublime Text
+    # animation_enabled is true, which the default in Sublime.
+    xy = view.text_to_layout(view.text_point(view.rowcol(c_pt)[0], 0))
+    view.set_viewport_position(xy)
 
 
 def goto_line(view, mode: str, line_number: int) -> None:
@@ -241,3 +382,35 @@ def goto_next_target(view, mode: str, count: int, target: str) -> None:
         return s
 
     regions_transformer(view, f)
+
+
+class GotoView():
+
+    def __init__(self, view, mode: str, count: int):
+        self.view = view
+        self.mode = mode
+        self.count = count
+
+    def next_change(self) -> None:
+        goto_next_change(self.view, self.mode, self.count)
+
+    def prev_change(self) -> None:
+        goto_prev_change(self.view, self.mode, self.count)
+
+    def next_mispelled_word(self) -> None:
+        goto_next_mispelled_word(self.view, self.mode, self.count)
+
+    def prev_mispelled_word(self) -> None:
+        goto_prev_mispelled_word(self.view, self.mode, self.count)
+
+    def next_target(self, **kwargs) -> None:
+        goto_next_target(self.view, self.mode, self.count, **kwargs)
+
+    def prev_target(self, **kwargs) -> None:
+        goto_prev_target(self.view, self.mode, self.count, **kwargs)
+
+    def line(self) -> None:
+        goto_line(self.view, self.mode, self.count)
+
+    def help(self) -> None:
+        goto_help(self.view)

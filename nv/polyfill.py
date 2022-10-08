@@ -271,3 +271,8 @@ def toggle_side_bar(window) -> None:
 def save_preferences():
     yield load_settings('Preferences.sublime-settings')
     save_settings('Preferences.sublime-settings')
+
+
+def toggle_preference(name: str) -> None:
+    with save_preferences() as preferences:
+        preferences.set(name, not preferences.get(name))

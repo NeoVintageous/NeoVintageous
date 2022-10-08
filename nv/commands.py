@@ -39,30 +39,22 @@ from NeoVintageous.nv.ex.completions import reset_cmdline_completion_state
 from NeoVintageous.nv.ex_cmds import do_ex_cmd_edit_wrap
 from NeoVintageous.nv.ex_cmds import do_ex_cmdline
 from NeoVintageous.nv.ex_cmds import do_ex_command
-from NeoVintageous.nv.ex_cmds import do_ex_user_cmdline
-from NeoVintageous.nv.goto import goto_help
-from NeoVintageous.nv.goto import goto_line
-from NeoVintageous.nv.goto import goto_next_change
-from NeoVintageous.nv.goto import goto_next_mispelled_word
-from NeoVintageous.nv.goto import goto_next_target
-from NeoVintageous.nv.goto import goto_prev_change
-from NeoVintageous.nv.goto import goto_prev_mispelled_word
-from NeoVintageous.nv.goto import goto_prev_target
+from NeoVintageous.nv.feed_key import FeedKeyHandler
+from NeoVintageous.nv.goto import GotoView
 from NeoVintageous.nv.history import history_get
 from NeoVintageous.nv.history import history_get_type
 from NeoVintageous.nv.history import history_len
 from NeoVintageous.nv.history import history_update
 from NeoVintageous.nv.jumplist import jumplist_update
 from NeoVintageous.nv.macros import add_macro_step
-from NeoVintageous.nv.mappings import Mapping
-from NeoVintageous.nv.mappings import mappings_can_resolve
-from NeoVintageous.nv.mappings import mappings_is_incomplete
-from NeoVintageous.nv.mappings import mappings_resolve
 from NeoVintageous.nv.marks import get_mark
 from NeoVintageous.nv.marks import set_mark
+from NeoVintageous.nv.paste import pad_visual_block_paste_contents
+from NeoVintageous.nv.paste import resolve_paste_items_with_view_sel
 from NeoVintageous.nv.polyfill import spell_select
 from NeoVintageous.nv.polyfill import split_by_newlines
 from NeoVintageous.nv.polyfill import toggle_side_bar
+from NeoVintageous.nv.process_notation import ProcessNotationHandler
 from NeoVintageous.nv.rc import open_rc
 from NeoVintageous.nv.rc import reload_rc
 from NeoVintageous.nv.registers import registers_get_for_paste
@@ -77,49 +69,29 @@ from NeoVintageous.nv.search import get_search_occurrences
 from NeoVintageous.nv.search import process_search_pattern
 from NeoVintageous.nv.search import process_word_search_pattern
 from NeoVintageous.nv.settings import append_sequence
-from NeoVintageous.nv.settings import get_action_count
 from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_glue_until_normal_mode
-from NeoVintageous.nv.settings import get_last_buffer_search
-from NeoVintageous.nv.settings import get_last_buffer_search_command
+from NeoVintageous.nv.settings import get_last_buff_search_command
+from NeoVintageous.nv.settings import get_last_buff_search_pattern
 from NeoVintageous.nv.settings import get_mode
-from NeoVintageous.nv.settings import get_motion_count
 from NeoVintageous.nv.settings import get_normal_insert_count
-from NeoVintageous.nv.settings import get_partial_sequence
-from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.settings import get_repeat_data
 from NeoVintageous.nv.settings import get_sequence
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import get_xpos
-from NeoVintageous.nv.settings import is_interactive
-from NeoVintageous.nv.settings import is_must_capture_register_name
 from NeoVintageous.nv.settings import is_processing_notation
-from NeoVintageous.nv.settings import set_action_count
 from NeoVintageous.nv.settings import set_glue_until_normal_mode
-from NeoVintageous.nv.settings import set_interactive
-from NeoVintageous.nv.settings import set_last_buffer_search
-from NeoVintageous.nv.settings import set_last_buffer_search_command
+from NeoVintageous.nv.settings import set_last_buff_search
 from NeoVintageous.nv.settings import set_last_char_search
-from NeoVintageous.nv.settings import set_last_char_search_command
 from NeoVintageous.nv.settings import set_mode
-from NeoVintageous.nv.settings import set_motion_count
-from NeoVintageous.nv.settings import set_must_capture_register_name
 from NeoVintageous.nv.settings import set_normal_insert_count
-from NeoVintageous.nv.settings import set_partial_sequence
-from NeoVintageous.nv.settings import set_register
 from NeoVintageous.nv.settings import set_repeat_data
 from NeoVintageous.nv.settings import set_reset_during_init
 from NeoVintageous.nv.settings import set_xpos
 from NeoVintageous.nv.settings import toggle_ctrl_keys
 from NeoVintageous.nv.settings import toggle_super_keys
 from NeoVintageous.nv.state import evaluate_state
-from NeoVintageous.nv.state import get_action
-from NeoVintageous.nv.state import get_motion
-from NeoVintageous.nv.state import init_state
-from NeoVintageous.nv.state import is_runnable
-from NeoVintageous.nv.state import must_collect_input
 from NeoVintageous.nv.state import reset_command_data
-from NeoVintageous.nv.state import set_action
 from NeoVintageous.nv.state import set_motion
 from NeoVintageous.nv.state import update_status_line
 from NeoVintageous.nv.ui import ui_bell
@@ -140,10 +112,10 @@ from NeoVintageous.nv.utils import get_option_scroll
 from NeoVintageous.nv.utils import get_previous_selection
 from NeoVintageous.nv.utils import get_scroll_down_target_pt
 from NeoVintageous.nv.utils import get_scroll_up_target_pt
-from NeoVintageous.nv.utils import gluing_undo_groups
 from NeoVintageous.nv.utils import hide_panel
 from NeoVintageous.nv.utils import highest_visible_pt
 from NeoVintageous.nv.utils import highlow_visible_rows
+from NeoVintageous.nv.utils import is_help_view
 from NeoVintageous.nv.utils import is_linewise_operation
 from NeoVintageous.nv.utils import is_view
 from NeoVintageous.nv.utils import lowest_visible_pt
@@ -160,8 +132,10 @@ from NeoVintageous.nv.utils import regions_transform_to_first_non_blank
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import regions_transformer_indexed
 from NeoVintageous.nv.utils import regions_transformer_reversed
+from NeoVintageous.nv.utils import replace_line
 from NeoVintageous.nv.utils import replace_sel
 from NeoVintageous.nv.utils import resolve_internal_normal_target
+from NeoVintageous.nv.utils import resolve_normal_target
 from NeoVintageous.nv.utils import resolve_visual_block_begin
 from NeoVintageous.nv.utils import resolve_visual_block_reverse
 from NeoVintageous.nv.utils import resolve_visual_block_target
@@ -183,16 +157,8 @@ from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.utils import unfold
 from NeoVintageous.nv.utils import unfold_all
 from NeoVintageous.nv.utils import update_xpos
-from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
-from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
-from NeoVintageous.nv.vi.cmd_base import ViMotionDef
-from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
-from NeoVintageous.nv.vi.cmd_defs import ViOpenNameSpace
-from NeoVintageous.nv.vi.cmd_defs import ViOpenRegister
 from NeoVintageous.nv.vi.cmd_defs import ViSearchBackwardImpl
 from NeoVintageous.nv.vi.cmd_defs import ViSearchForwardImpl
-from NeoVintageous.nv.vi.keys import to_bare_command_name
-from NeoVintageous.nv.vi.keys import tokenize_keys
 from NeoVintageous.nv.vi.search import find_in_range
 from NeoVintageous.nv.vi.search import find_wrapping
 from NeoVintageous.nv.vi.search import reverse_find_wrapping
@@ -216,7 +182,6 @@ from NeoVintageous.nv.vi.units import word_starts
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
-from NeoVintageous.nv.vim import OPERATOR_PENDING
 from NeoVintageous.nv.vim import REPLACE
 from NeoVintageous.nv.vim import SELECT
 from NeoVintageous.nv.vim import UNKNOWN
@@ -497,440 +462,36 @@ class nv_run_cmds(TextCommand):
 
 class nv_feed_key(WindowCommand):
 
+    # TODO refactor: rename repeat_count -> count
     def run(self, key, repeat_count=None, do_eval=True, check_user_mappings=True):
         start_time = time.time()
-        _log.info('key evt: %s count=%s eval=%s mappings=%s', key, repeat_count, do_eval, check_user_mappings)  # noqa: E501
 
         try:
-            self._feed_key(key, repeat_count, do_eval, check_user_mappings)
+            FeedKeyHandler(
+                self.window.active_view(),
+                key,
+                repeat_count,
+                do_eval,
+                check_user_mappings).handle()
         except Exception as e:
-            print('NeoVintageous: An error occurred during key press handle:')
-            _log.exception(str(e))
+            print('NeoVintageous: An error occurred:')
+            _log.exception(e)
             clean_views()
 
-        _log.info('key processed in %s secs', '{:.4f}'.format(time.time() - start_time))
-
-    def _feed_key(self, key, repeat_count=None, do_eval=True, check_user_mappings=True):
-        # Args:
-        #   key (str): Key pressed.
-        #   repeat_count (int): Count to be used when repeating through the '.' command.
-        #   do_eval (bool): Whether to evaluate the global state when it's in a
-        #       runnable state. Most of the time, the default value of `True` should
-        #       be used. Set to `False` when you want to manually control the global
-        #       state's evaluation. For example, this is what the nv_feed_key
-        #       command does.
-        #   check_user_mappings (bool):
-        self.view = self.window.active_view()
-
-        mode = get_mode(self.view)
-
-        _log.debug('mode: %s', mode)
-
-        if _is_selection_malformed(self.view, mode):
-            mode = _fix_malformed_selection(self.view, mode)
-
-        if key.lower() == '<esc>':
-            if mode == SELECT:
-                self.view.run_command('nv_vi_select_big_j', {'mode': mode})
-            else:
-                enter_normal_mode(self.window, mode)
-                reset_command_data(self.view)
-            return
-
-        append_sequence(self.view, key)
-        update_status_line(self.view)
-
-        if is_must_capture_register_name(self.view):
-            _log.debug('capturing register name...')
-            set_register(self.view, key)
-            set_partial_sequence(self.view, '')
-
-            return
-
-        motion = get_motion(self.view)
-        action = get_action(self.view)
-
-        if must_collect_input(self.view, motion, action):
-            _log.debug('collecting input!')
-
-            if motion and motion.accept_input:
-                motion.accept(key)
-                # Processed motion needs to reserialised and stored.
-                set_motion(self.view, motion)
-            else:
-                action.accept(key)
-                # Processed action needs to reserialised and stored.
-                set_action(self.view, action)
-
-            if is_runnable(self.view) and do_eval:
-                evaluate_state(self.view)
-                reset_command_data(self.view)
-
-            return
-
-        # If the user has defined any mappings that starts with a number
-        # (count), or " (register character), we need to skip the count handler
-        # and go straight to resolving the mapping, otherwise it won't resolve.
-        # See https://github.com/NeoVintageous/NeoVintageous/issues/434.
-        if not mappings_can_resolve(get_mode(self.view), get_partial_sequence(self.view) + key):
-            if repeat_count:
-                set_action_count(self.view, str(repeat_count))
-
-            if self._handle_count(key, repeat_count):
-                _log.debug('handled count')
-
-                return
-
-        set_partial_sequence(self.view, get_partial_sequence(self.view) + key)
-
-        if check_user_mappings and mappings_is_incomplete(get_mode(self.view), get_partial_sequence(self.view)):
-            _log.debug('found incomplete mapping')
-
-            return
-
-        command = mappings_resolve(self.view, check_user_mappings=check_user_mappings)
-
-        if isinstance(command, ViOpenNameSpace):
-            return
-
-        if isinstance(command, ViOpenRegister):
-            set_must_capture_register_name(self.view, True)
-            return
-
-        if isinstance(command, Mapping):
-            # TODO Review What happens if Mapping + do_eval=False
-            if do_eval:
-                _log.debug('evaluating user mapping...')
-
-                # TODO Review Why does rhs of mapping need to be resequenced in OPERATOR PENDING mode?
-                rhs = command.rhs
-                if get_mode(self.view) == OPERATOR_PENDING:
-                    rhs = get_sequence(self.view)[:-len(get_partial_sequence(self.view))] + command.rhs
-
-                # TODO Review Why does state need to be reset before running user mapping?
-                reg = get_register(self.view)
-                acount = get_action_count(self.view)
-                mcount = get_motion_count(self.view)
-                reset_command_data(self.view)
-                set_register(self.view, reg)
-                set_motion_count(self.view, mcount)
-                set_action_count(self.view, acount)
-
-                _log.info('user mapping %s -> %s', command.lhs, rhs)
-
-                if ':' in rhs:
-
-                    # This hacky piece of code (needs refactoring), is to
-                    # support mappings in the format of {seq}:{ex-cmd}<CR>{seq},
-                    # where leading and trailing sequences are optional.
-                    #
-                    # Examples:
-                    #
-                    #   :
-                    #   :w
-                    #   :sort<CR>
-                    #   vi]:sort u<CR>
-                    #   vi]:sort u<CR>vi]y<Esc>
-
-                    colon_pos = rhs.find(':')
-                    leading = rhs[:colon_pos]
-                    rhs = rhs[colon_pos:]
-
-                    cr_pos = rhs.lower().find('<cr>')
-                    if cr_pos >= 0:
-                        command = rhs[:cr_pos + 4]
-                        trailing = rhs[cr_pos + 4:]
-                    else:
-                        # Example :reg
-                        command = rhs
-                        trailing = ''
-
-                    _log.debug('parsed user mapping before="%s", cmd="%s", after="%s"', leading, command, trailing)
-
-                    if leading:
-                        self.window.run_command('nv_process_notation',
-                                                {'keys': leading, 'check_user_mappings': False})
-
-                    do_ex_user_cmdline(self.window, command)
-
-                    if trailing:
-                        self.window.run_command('nv_process_notation',
-                                                {'keys': trailing, 'check_user_mappings': False})
-
-                else:
-                    self.window.run_command('nv_process_notation', {'keys': rhs, 'check_user_mappings': False})
-
-            return
-
-        if isinstance(command, ViMissingCommandDef):
-
-            # TODO We shouldn't need to try resolve the command again. The
-            # resolver should handle commands correctly the first time. The
-            # reason this logic is still needed is because we might be looking
-            # at a command like 'dd', which currently doesn't resolve properly.
-            # The first 'd' is mapped for NORMAL mode, but 'dd' is not mapped in
-            # OPERATOR PENDING mode, so we get a missing command, and here we
-            # try to fix that (user mappings are excluded, since they've already
-            # been given a chance to evaluate).
-
-            if get_mode(self.view) == OPERATOR_PENDING:
-                command = mappings_resolve(self.view, sequence=to_bare_command_name(get_sequence(self.view)),
-                                           mode=NORMAL, check_user_mappings=False)
-            else:
-                command = mappings_resolve(self.view, sequence=to_bare_command_name(get_sequence(self.view)))
-
-            if self._handle_missing_command(command):
-                return
-
-        if (get_mode(self.view) == OPERATOR_PENDING and isinstance(command, ViOperatorDef)):
-
-            # TODO This should be unreachable code. The mapping resolver should
-            # handle anything that can still reach this point (the first time).
-            # We're expecting a motion, but we could still get an action. For
-            # example, dd, g~g~ or g~~ remove counts. It looks like it might
-            # only be the '>>' command that needs this code.
-
-            command = mappings_resolve(self.view, sequence=to_bare_command_name(get_sequence(self.view)), mode=NORMAL)
-            if self._handle_missing_command(command):
-                return
-
-            if not command.motion_required:
-                set_mode(self.view, NORMAL)
-
-        self._handle_command(command, do_eval)
-
-    def _handle_command(self, command: ViCommandDefBase, do_eval: bool) -> None:
-        # Raises:
-        #   ValueError: If too many motions.
-        #   ValueError: If too many actions.
-        #   ValueError: Unexpected command type.
-        _is_runnable = is_runnable(self.view)
-
-        if isinstance(command, ViMotionDef):
-            if _is_runnable:
-                raise ValueError('too many motions')
-
-            set_motion(self.view, command)
-
-            if get_mode(self.view) == OPERATOR_PENDING:
-                set_mode(self.view, NORMAL)
-
-        elif isinstance(command, ViOperatorDef):
-            if _is_runnable:
-                raise ValueError('too many actions')
-
-            set_action(self.view, command)
-
-            if command.motion_required and not is_visual_mode(get_mode(self.view)):
-                set_mode(self.view, OPERATOR_PENDING)
-
-        else:
-            raise ValueError('unexpected command type')
-
-        if is_interactive(self.view):
-            if command.accept_input and command.input_parser and command.input_parser.is_panel():
-                command.input_parser.run_command(self.view.window())
-
-        if get_mode(self.view) == OPERATOR_PENDING:
-            set_partial_sequence(self.view, '')
-
-        if do_eval:
-            evaluate_state(self.view)
-
-    def _handle_count(self, key: str, repeat_count: int) -> bool:
-        # NOTE motion/action counts need to be cast to strings because they need
-        # to be "joined" to the previous key press, not added. For example when
-        # you press the digit 1 followed by 2, it's a count of 12, not 3.
-
-        if not get_action(self.view) and key.isdigit():
-            if not repeat_count and (key != '0' or get_action_count(self.view)):
-                set_action_count(self.view, str(get_action_count(self.view)) + key)
-                return True
-
-        if (get_action(self.view) and (get_mode(self.view) == OPERATOR_PENDING) and key.isdigit()):
-            if not repeat_count and (key != '0' or get_motion_count(self.view)):
-                set_motion_count(self.view, str(get_motion_count(self.view)) + key)
-                return True
-
-        return False
-
-    def _handle_missing_command(self, command):
-        if isinstance(command, ViMissingCommandDef):
-            if get_mode(self.view) == OPERATOR_PENDING:
-                set_mode(self.view, NORMAL)
-
-            reset_command_data(self.view)
-            ui_bell()
-
-            return True
-
-        return False
-
-
-def _is_selection_malformed(view, mode) -> bool:
-    return mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, SELECT) and view.has_non_empty_selection_region()
-
-
-def _fix_malformed_selection(view, mode: str) -> str:
-    # If a selection was made via the mouse or a built-in ST command the
-    # selection may be in an inconsistent state e.g. incorrect mode.
-    # https://github.com/NeoVintageous/NeoVintageous/issues/742
-    if mode == NORMAL and len(view.sel()) > 1:
-        mode = VISUAL
-        set_mode(view, mode)
-    elif mode != VISUAL and view.has_non_empty_selection_region():
-        # Try to fixup a malformed visual state. For example, apparently this
-        # can happen when a search is performed via a search panel and "Find
-        # All" is pressed. In that case, multiple selections may need fixing.
-        view.window().run_command('nv_enter_visual_mode', {'mode': mode})
-
-    # TODO Extract fix malformed selections specific logic from init_state()
-    init_state(view)
-
-    return mode
+        _log.info(
+            'key completed in %s ms', '{:.2f}'
+            .format((time.time() - start_time) * 1000))
 
 
 class nv_process_notation(WindowCommand):
 
+    # TODO refactor: rename repeat_count -> count
     def run(self, keys, repeat_count=None, check_user_mappings=True):
-        # Args:
-        #   keys (str): Key sequence to be run.
-        #   repeat_count (int): Count to be applied when repeating through the
-        #       '.' command.
-        #   check_user_mappings (bool): Whether user mappings should be
-        #       consulted to expand key sequences.
-        self.view = self.window.active_view()
-        initial_mode = get_mode(self.view)
-
-        # Disable interactive prompts. For example, supress interactive input
-        # collecting for the command-line and search: :ls<CR> and /foo<CR>.
-        set_interactive(self.view, False)
-
-        _log.debug('process notation keys %s for initial mode %s', keys, initial_mode)
-
-        # First, run any motions coming before the first action. We don't keep
-        # these in the undo stack, but they will still be repeated via '.'.
-        # This ensures that undoing will leave the caret where the  first
-        # editing action started. For example, 'lldl' would skip 'll' in the
-        # undo history, but store the full sequence for '.' to use.
-        leading_motions = ''
-        for key in tokenize_keys(keys):
-            self.window.run_command('nv_feed_key', {
-                'key': key,
-                'do_eval': False,
-                'repeat_count': repeat_count,
-                'check_user_mappings': check_user_mappings
-            })
-
-            if get_action(self.view):
-                # The last key press has caused an action to be primed. That
-                # means there are  no more leading motions. Break out of here.
-                reset_command_data(self.view)
-                if get_mode(self.view) == OPERATOR_PENDING:
-                    set_mode(self.view, NORMAL)
-
-                break
-
-            elif is_runnable(self.view):
-                # Run any primed motion.
-                leading_motions += get_sequence(self.view)
-                evaluate_state(self.view)
-                reset_command_data(self.view)
-
-            else:
-                evaluate_state(self.view)
-
-        if must_collect_input(self.view, get_motion(self.view), get_action(self.view)):
-            # State is requesting more input, so this is the last command  in
-            # the sequence and it needs more input.
-            self._collect_input()
-            return
-
-        # Strip the already run commands
-        if leading_motions:
-            if ((len(leading_motions) == len(keys)) and (not must_collect_input(self.view, get_motion(self.view), get_action(self.view)))):  # noqa: E501
-                set_interactive(self.view, True)
-                return
-
-            keys = keys[len(leading_motions):]
-
-        if not (get_motion(self.view) and not get_action(self.view)):
-            with gluing_undo_groups(self.view):
-                try:
-                    for key in tokenize_keys(keys):
-                        if key.lower() == '<esc>':
-                            # XXX: We should pass a mode here?
-                            enter_normal_mode(self.window)
-                            continue
-
-                        elif get_mode(self.view) not in (INSERT, REPLACE):
-                            self.window.run_command('nv_feed_key', {
-                                'key': key,
-                                'repeat_count': repeat_count,
-                                'check_user_mappings': check_user_mappings
-                            })
-                        else:
-                            self.window.run_command('insert', {
-                                'characters': translate_char(key)
-                            })
-
-                    if not must_collect_input(self.view, get_motion(self.view), get_action(self.view)):
-                        return
-
-                finally:
-                    set_interactive(self.view, True)
-                    # Ensure we set the full command for "." to use, but don't
-                    # store "." alone.
-                    if (leading_motions + keys) not in ('.', 'u', '<C-r>'):
-                        set_repeat_data(self.view, ('vi', (leading_motions + keys), initial_mode, None))
-
-        # We'll reach this point if we have a command that requests input whose
-        # input parser isn't satistied. For example, `/foo`. Note that
-        # `/foo<CR>`, on the contrary, would have satisfied the parser.
-
-        action = get_action(self.view)
-        motion = get_motion(self.view)
-
-        _log.debug('unsatisfied parser action = %s, motion=%s', action, motion)
-
-        if (action and motion):
-            # We have a parser an a motion that can collect data. Collect data
-            # interactively.
-            motion_data = motion.translate(self.view) or None
-
-            if motion_data is None:
-                reset_command_data(self.view)
-                ui_bell()
-                return
-
-            run_motion(self.window, motion_data)
-            return
-
-        self._collect_input()
-
-    def _collect_input(self) -> None:
-        try:
-            motion = get_motion(self.view)
-            action = get_action(self.view)
-
-            command = None
-
-            if motion and action:
-                if motion.accept_input:
-                    command = motion
-                else:
-                    command = action
-            else:
-                command = action or motion
-
-            if command.input_parser and command.input_parser.is_interactive():
-                command.input_parser.run_interactive_command(self.window, command.inp)
-
-        except IndexError:
-            _log.debug('could not find a command to collect more user input')
-            ui_bell()
-        finally:
-            set_interactive(self.view, True)
+        ProcessNotationHandler(
+            self.window.active_view(),
+            keys,
+            repeat_count,
+            check_user_mappings).handle()
 
 
 class nv_ex_cmd_edit_wrap(TextCommand):
@@ -994,16 +555,10 @@ class nv_cmdline(WindowCommand):
 class nv_view(TextCommand):
 
     def run(self, edit, action, **kwargs):
-        action_method = getattr(self, '_%s_action' % action, None)
-        if action_method:
-            action_method(edit, **kwargs)
-
-    def _insert_action(self, edit, text: str):
-        self.view.insert(edit, 0, text)
-
-    def _replace_line_action(self, edit, replacement: str):
-        pt = next_non_blank(self.view, self.view.line(self.view.sel()[0].b).a)
-        self.view.replace(edit, Region(pt, self.view.line(pt).b), replacement)
+        if action == 'insert':
+            self.view.insert(edit, 0, **kwargs)
+        elif action == 'replace_line':
+            replace_line(self.view, edit, **kwargs)
 
 
 class Neovintageous(WindowCommand):
@@ -1571,7 +1126,6 @@ class nv_vi_dot(WindowCommand):
             count = None
 
         type_, seq_or_cmd, old_mode, visual_data = repeat_data
-        _log.debug('type=%s, seqorcmd=%s, oldmode=%s', type_, seq_or_cmd, old_mode)
 
         if visual_data and (mode != VISUAL):
             restore_visual_repeat_data(self.view, get_mode(self.view), visual_data)
@@ -1845,12 +1399,12 @@ class nv_vi_quote(TextCommand):
             return
 
         def f(view, s):
-            if mode == VISUAL:
+            if mode == NORMAL:
+                resolve_normal_target(s, next_non_blank(view, view.line(target.b).a))
+            elif mode == VISUAL:
                 resolve_visual_target(s, next_non_blank(view, view.line(target.b).a))
             elif mode == VISUAL_LINE:
                 resolve_visual_line_target(view, s, next_non_blank(view, view.line(target.b).a))
-            elif mode == NORMAL:
-                s.a = s.b = next_non_blank(view, view.line(target.b).a)
             elif mode == INTERNAL_NORMAL:
                 if s.a < target.a:
                     s = Region(view.full_line(s.b).a, view.line(target.b).b)
@@ -1884,12 +1438,12 @@ class nv_vi_backtick(TextCommand):
             return
 
         def f(view, s):
-            if mode == VISUAL:
+            if mode == NORMAL:
+                resolve_normal_target(s, target.b)
+            elif mode == VISUAL:
                 resolve_visual_target(s, target.b)
             elif mode == VISUAL_LINE:
                 resolve_visual_line_target(view, s, target.b)
-            elif mode == NORMAL:
-                s.a = s.b = target.b
             elif mode == INTERNAL_NORMAL:
                 if s.a < target.a:
                     s = Region(view.full_line(s.b).a, view.line(target.b).b)
@@ -2287,9 +1841,7 @@ class nv_vi_paste(TextCommand):
         if not contents:
             return status_message('E353: Nothing in register ' + register)
 
-        _log.debug('paste %s count=%s register=%s before=%s indent=%s end=%s linewise=%s content >>>%s<<<', mode, count, register, before_cursor, adjust_indent, adjust_cursor, linewise, contents)  # noqa: E501
-
-        contents = _resolve_paste_items_with_view_sel(self.view, contents)
+        contents = resolve_paste_items_with_view_sel(self.view, contents)
         if not contents:
             ui_bell()
             return
@@ -2304,7 +1856,7 @@ class nv_vi_paste(TextCommand):
         # are pasted as a visual block. Selections are added to match the number
         # of contents and adjusted with left-padded whitespace where neccessary.
         if len(sels) == 1 and len(contents) > 1:
-            sels, contents, before_cursor, sel_to_specific_pt = self._pad_visual_block_contents(
+            sels, contents, before_cursor, sel_to_specific_pt = pad_visual_block_paste_contents(
                 self.view, sels, contents, before_cursor)
 
         contents = zip(reversed(contents), reversed(sels))
@@ -2417,83 +1969,6 @@ class nv_vi_paste(TextCommand):
             self.view.sel().clear()
             self.view.sel().add(sel_to_specific_pt)
 
-    def _pad_visual_block_contents(self, view, sels: list, contents: list, before_cursor: bool) -> tuple:
-        sel = sels[0]
-        row, col = view.rowcol(sel.a)
-        view_size = view.size()
-
-        # When the selection line is empty the insertion point is always as
-        # if before_cursor was true i.e. column zero of the empty line.
-        before_cursor = True if view.line(sel.a).empty() else before_cursor
-
-        for index in range(1, len(contents)):
-            content = contents[index]
-            sel_row = row + index
-            line = view.line(view.text_point(sel_row, 0))
-            pad_size = col - line.size()
-
-            # When the paste column is greater than the line size then the
-            # selection content needs to be left-padded with whitespace.
-            if pad_size >= 0:
-                pt = line.begin() + line.size()
-                if pad_size > 0:
-                    content = (' ' * pad_size) + content
-
-                if not before_cursor:
-                    content = ' ' + content
-                    if line.size() > 0:
-                        pt -= 1
-
-                contents[index] = content
-            else:
-                pt = view.text_point(sel_row, col)
-
-            if view.rowcol(pt)[0] < sel_row:
-                lead = '\n'
-                if pt >= view_size and pad_size < 0:
-                    lead += (' ' * col)
-                    if not before_cursor:
-                        lead += ' '
-                        pt -= 1
-
-                contents[index] = lead + contents[index]
-
-            sels.append(Region(pt))
-
-        # Cursor needs to reset to start of pasted text.
-        resolve_to_specific_pt = sels[0].begin()
-        if not before_cursor:
-            resolve_to_specific_pt += 1
-
-        return sels, contents, before_cursor, resolve_to_specific_pt
-
-
-def _resolve_paste_items_with_view_sel(view, contents: list) -> list:
-    sels_count = len(view.sel())
-    contents_len = len(contents)
-
-    if sels_count == contents_len:
-        return contents
-
-    if sels_count > 1:
-        # If the number of items in the paste register exceeds the number of
-        # selections then slice the paste items up to the number of sels.
-        if contents_len > sels_count:
-            return contents[:sels_count]
-
-        # If the paste items are all the same then fill the paste items up the
-        # number of selections.
-        if len(set(contents)) == 1:
-            for x in range(sels_count - contents_len):
-                contents.append(contents[0])
-
-            return contents[:sels_count]
-
-        # The cpaste contents is not compatible with the number of selections.
-        return []
-
-    return contents
-
 
 class nv_vi_ga(WindowCommand):
 
@@ -2558,10 +2033,10 @@ class nv_vi_g(TextCommand):
 
 class nv_vi_ctrl_right_square_bracket(WindowCommand):
 
-    def run(self, **kwargs):
+    def run(self, mode=None, count=1):
         view = self.window.active_view()
-        if view and view.score_selector(0, 'text.neovintageous.help') > 0:
-            goto_help(self.window)
+        if is_help_view(view):
+            GotoView(view, mode, count).help()
         else:
             self.window.run_command('goto_definition')
 
@@ -3149,8 +2624,7 @@ class nv_vi_find_in_line(TextCommand):
     # @character is under the caret, nothing happens.
     def run(self, edit, char=None, mode=None, count=1, inclusive=True, skipping=False, save=True):
         if save:
-            set_last_char_search_command(self.view, 'vi_f' if inclusive else 'vi_t')
-            set_last_char_search(self.view, char)
+            set_last_char_search(self.view, 'vi_f' if inclusive else 'vi_t', char)
 
         if mode == VISUAL_LINE:
             ui_bell()
@@ -3207,8 +2681,7 @@ class nv_vi_reverse_find_in_line(TextCommand):
     # ``character`` is right before the caret, nothing happens.
     def run(self, edit, char=None, mode=None, count=1, inclusive=True, skipping=False, save=True):
         if save:
-            set_last_char_search_command(self.view, 'vi_big_f' if inclusive else 'vi_big_t')
-            set_last_char_search(self.view, char)
+            set_last_char_search(self.view, 'vi_big_f' if inclusive else 'vi_big_t', char)
 
         if mode == VISUAL_LINE:
             ui_bell()
@@ -3313,14 +2786,13 @@ class nv_vi_slash(TextCommand):
 class nv_vi_slash_impl(TextCommand):
     def run(self, edit, pattern, mode=None, count=1, save=True):
         if not pattern:
-            pattern = get_last_buffer_search(self.view)
+            pattern = get_last_buff_search_pattern(self.view)
             if not pattern:
                 ui_bell('E35: no previous regular expression')
                 return
 
         if save:
-            set_last_buffer_search_command(self.view, 'nv_vi_slash')
-            set_last_buffer_search(self.view, pattern)
+            set_last_buff_search(self.view, 'nv_vi_slash', pattern)
 
         sel = self.view.sel()[0]
         pattern, flags = process_search_pattern(self.view, pattern)
@@ -3338,7 +2810,7 @@ class nv_vi_slash_impl(TextCommand):
 
         def f(view, s):
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -3580,12 +3052,12 @@ class nv_vi_k(TextCommand):
 class nv_vi_gg(TextCommand):
     def run(self, edit, mode=None, count=None):
         if count:
-            goto_line(self.view, mode, count)
+            GotoView(self.view, mode, count).line()
             return
 
         def f(view, s):
             if mode == NORMAL:
-                s = Region(next_non_blank(view, 0))
+                resolve_normal_target(s, next_non_blank(view, 0))
             elif mode == VISUAL:
                 resolve_visual_target(s, next_non_blank(view, 0))
             elif mode == VISUAL_LINE:
@@ -3603,12 +3075,12 @@ class nv_vi_gg(TextCommand):
 class nv_vi_big_g(TextCommand):
     def run(self, edit, mode=None, count=None):
         if count:
-            goto_line(self.view, mode, count)
+            GotoView(self.view, mode, count).line()
             return
 
         def f(view, s):
             if mode == NORMAL:
-                s = Region(next_non_blank(view, view.line(target).a))
+                resolve_normal_target(s, next_non_blank(view, view.line(target).a))
             elif mode == VISUAL:
                 resolve_visual_target(s, next_non_blank(view, view.line(target).a))
             elif mode == VISUAL_LINE:
@@ -3642,7 +3114,7 @@ class nv_vi_dollar(TextCommand):
             target = _get_target(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target if view.line(target).empty() else (target - 1))
+                resolve_normal_target(s, target if view.line(target).empty() else (target - 1))
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -3668,7 +3140,7 @@ class nv_vi_w(TextCommand):
             target = word_starts(view, get_insertion_point_at_b(s), count, internal=(mode == INTERNAL_NORMAL))
 
             if mode == NORMAL:
-                s = Region(fixup_eof(view, target))
+                resolve_normal_target(s, fixup_eof(view, target))
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
@@ -3692,7 +3164,7 @@ class nv_vi_big_w(TextCommand):
             target = big_word_starts(view, get_insertion_point_at_b(s), count, internal=(mode == INTERNAL_NORMAL))
 
             if mode == NORMAL:
-                s = Region(fixup_eof(view, target))
+                resolve_normal_target(s, fixup_eof(view, target))
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
@@ -3720,7 +3192,7 @@ class nv_vi_e(TextCommand):
             target = _get_target(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
@@ -3750,7 +3222,7 @@ class nv_vi_zero(TextCommand):
             target = _get_target(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -3769,7 +3241,7 @@ class nv_vi_right_brace(TextCommand):
             target = next_paragraph_start(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -3793,7 +3265,7 @@ class nv_vi_left_brace(TextCommand):
             target = prev_paragraph_start(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -3828,7 +3300,7 @@ class nv_vi_percent(TextCommand):
                 if mode == NORMAL:
                     target = find_next_item_match_pt(view, s)
                     if target is not None:
-                        s = Region(target)
+                        resolve_normal_target(s, target)
                 elif mode == VISUAL:
                     target = find_next_item_match_pt(view, s)
                     if target is not None:
@@ -3859,7 +3331,7 @@ class nv_vi_big_h(TextCommand):
     def run(self, edit, mode=None, count=None):
         def f(view, s):
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -3877,7 +3349,7 @@ class nv_vi_big_l(TextCommand):
     def run(self, edit, mode=None, count=None):
         def f(view, s):
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -3895,7 +3367,7 @@ class nv_vi_big_m(TextCommand):
     def run(self, edit, mode=None, count=None):
         def f(view, s):
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -3926,7 +3398,7 @@ class nv_vi_star(TextCommand):
 
             if match:
                 if mode == NORMAL:
-                    s.a = s.b = match.begin()
+                    resolve_normal_target(s, match.begin())
                 elif mode == VISUAL:
                     resolve_visual_target(s, match.begin())
                 elif mode == INTERNAL_NORMAL:
@@ -3952,8 +3424,7 @@ class nv_vi_star(TextCommand):
         add_search_highlighting(self.view, find_word_search_occurrences(self.view, pattern, flags))
 
         if save:
-            set_last_buffer_search(self.view, word)
-            set_last_buffer_search_command(self.view, 'nv_vi_star')
+            set_last_buff_search(self.view, 'nv_vi_star', word)
 
         show_if_not_visible(self.view)
 
@@ -3972,7 +3443,7 @@ class nv_vi_octothorp(TextCommand):
 
             if match:
                 if mode == NORMAL:
-                    s.a = s.b = match.begin()
+                    resolve_normal_target(s, match.begin())
                 elif mode == VISUAL:
                     resolve_visual_target(s, match.begin())
                 elif mode == INTERNAL_NORMAL:
@@ -3999,8 +3470,7 @@ class nv_vi_octothorp(TextCommand):
         add_search_highlighting(self.view, find_word_search_occurrences(self.view, pattern, flags))
 
         if save:
-            set_last_buffer_search(self.view, word)
-            set_last_buffer_search_command(self.view, 'nv_vi_octothorp')
+            set_last_buff_search(self.view, 'nv_vi_octothorp', word)
 
         show_if_not_visible(self.view)
 
@@ -4015,7 +3485,7 @@ class nv_vi_b(TextCommand):
             target = word_reverse(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
@@ -4037,7 +3507,7 @@ class nv_vi_big_b(TextCommand):
             target = big_word_reverse(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
@@ -4067,7 +3537,7 @@ class nv_vi_underscore(TextCommand):
             target = _get_target(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -4093,7 +3563,7 @@ class nv_vi_hat(TextCommand):
             target = _get_target(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
@@ -4156,7 +3626,7 @@ class nv_vi_g__(TextCommand):
             target = _get_target(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -4182,7 +3652,7 @@ class nv_vi_ctrl_u(TextCommand):
 
         def f(view, s):
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -4206,7 +3676,7 @@ class nv_vi_ctrl_d(TextCommand):
     def run(self, edit, mode=None, count=0):
         def f(view, s):
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -4247,7 +3717,7 @@ class nv_vi_bar(TextCommand):
             target = _get_target(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
@@ -4268,7 +3738,7 @@ class nv_vi_ge(TextCommand):
             target = word_end_reverse(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
@@ -4289,7 +3759,7 @@ class nv_vi_g_big_e(TextCommand):
             target = big_word_end_reverse(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
@@ -4309,7 +3779,7 @@ class nv_vi_left_paren(TextCommand):
             target = previous_sentence.a
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -4333,7 +3803,7 @@ class nv_vi_right_paren(TextCommand):
             target = next_sentence.b
 
             if mode == NORMAL:
-                s = Region(min(target, view.size() - 1))
+                resolve_normal_target(s, min(target, view.size() - 1))
             elif mode == VISUAL:
                 s = Region(s.a, min(target + 1, view.size() - 1))
             elif mode == VISUAL_LINE:
@@ -4349,14 +3819,13 @@ class nv_vi_right_paren(TextCommand):
 class nv_vi_question_mark_impl(TextCommand):
     def run(self, edit, pattern, mode=None, count=1, save=True):
         if not pattern:
-            pattern = get_last_buffer_search(self.view)
+            pattern = get_last_buff_search_pattern(self.view)
             if not pattern:
                 ui_bell('E35: no previous regular expression')
                 return
 
         if save:
-            set_last_buffer_search_command(self.view, 'nv_vi_question_mark')
-            set_last_buffer_search(self.view, pattern)
+            set_last_buff_search(self.view, 'nv_vi_question_mark', pattern)
 
         sel = self.view.sel()[0]
         pattern, flags = process_search_pattern(self.view, pattern)
@@ -4375,7 +3844,7 @@ class nv_vi_question_mark_impl(TextCommand):
 
         def f(view, s):
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -4452,8 +3921,8 @@ class nv_vi_repeat_buffer_search(TextCommand):
     }
 
     def run(self, edit, mode=None, count=1, reverse=False):
-        last_pattern = get_last_buffer_search(self.view)
-        last_command = get_last_buffer_search_command(self.view)
+        last_pattern = get_last_buff_search_pattern(self.view)
+        last_command = get_last_buff_search_command(self.view)
         command = self.commands[last_command][int(reverse)]
 
         _log.debug('repeat search %s reverse=%s -> %s (pattern=%s)', last_command, reverse, command, last_pattern)
@@ -4471,7 +3940,7 @@ class nv_vi_repeat_buffer_search(TextCommand):
 class nv_vi_search(TextCommand):
 
     def run(self, edit, mode=None, count=1, forward=True):
-        last_search = get_last_buffer_search(self.view)
+        last_search = get_last_buff_search_pattern(self.view)
 
         def f(view, s):
             b = get_insertion_point_at_b(s)
@@ -4522,7 +3991,7 @@ class nv_vi_big_e(TextCommand):
             target = _get_target(view, get_insertion_point_at_b(s), count)
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == INTERNAL_NORMAL:
@@ -4583,7 +4052,7 @@ class nv_vi_enter(TextCommand):
             target = next_non_blank(view, get_insertion_point_at_b(s))
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -4602,7 +4071,7 @@ class nv_vi_minus(TextCommand):
             target = next_non_blank(view, get_insertion_point_at_b(s))
 
             if mode == NORMAL:
-                s = Region(target)
+                resolve_normal_target(s, target)
             elif mode == VISUAL:
                 resolve_visual_target(s, target)
             elif mode == VISUAL_LINE:
@@ -4717,23 +4186,25 @@ class nv_vi_gm(TextCommand):
 
 class nv_vi_left_square_bracket(TextCommand):
     def run(self, edit, action, mode, count=1, **kwargs):
+        goto = GotoView(self.view, mode, count)
         if action == 'c':
-            goto_prev_change(self.view, mode, count)
+            goto.prev_change()
         elif action == 's':
-            goto_prev_mispelled_word(self.view, mode, count)
+            goto.prev_mispelled_word()
         elif action == 'target':
-            goto_prev_target(self.view, mode, count, **kwargs)
+            goto.prev_target(**kwargs)
         else:
             raise ValueError('unknown action')
 
 
 class nv_vi_right_square_bracket(TextCommand):
     def run(self, edit, action, mode, count=1, **kwargs):
+        goto = GotoView(self.view, mode, count)
         if action == 'c':
-            goto_next_change(self.view, mode, count)
+            goto.next_change()
         elif action == 's':
-            goto_next_mispelled_word(self.view, mode, count)
+            goto.next_mispelled_word()
         elif action == 'target':
-            goto_next_target(self.view, mode, count, **kwargs)
+            goto.next_target(**kwargs)
         else:
             raise ValueError('unknown action')

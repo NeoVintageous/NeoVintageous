@@ -136,10 +136,10 @@ class Test_slash_cmdline_prompt(unittest.FunctionalTestCase):
         self.assertSearchIncremental('x fiz x fiz x')
 
     @unittest.mock_status_message()
-    @unittest.mock.patch('NeoVintageous.nv.commands.get_last_buffer_search')
+    @unittest.mock.patch('NeoVintageous.nv.commands.get_last_buff_search_pattern')
     @unittest.mock.patch('NeoVintageous.nv.commands.Cmdline')
-    def test_on_done_no_previous_pattern(self, cmdline, get_last_buffer_search):
-        get_last_buffer_search.return_value = None
+    def test_on_done_no_previous_pattern(self, cmdline, get_last_buff_search_pattern):
+        get_last_buff_search_pattern.return_value = None
         self.normal('x f|iz x fiz x')
         self.initCmdlineSearchMock(cmdline, '/', 'on_done', '')
         self.feed('n_/')
@@ -148,10 +148,10 @@ class Test_slash_cmdline_prompt(unittest.FunctionalTestCase):
         self.assertStatusMessage('E35: no previous regular expression')
 
     @unittest.mock_status_message()
-    @unittest.mock.patch('NeoVintageous.nv.commands.get_last_buffer_search')
+    @unittest.mock.patch('NeoVintageous.nv.commands.get_last_buff_search_pattern')
     @unittest.mock.patch('NeoVintageous.nv.commands.Cmdline')
-    def test_on_done_with_previous_pattern(self, cmdline, get_last_buffer_search):
-        get_last_buffer_search.return_value = 'fi'
+    def test_on_done_with_previous_pattern(self, cmdline, get_last_buff_search_pattern):
+        get_last_buff_search_pattern.return_value = 'fi'
         self.normal('x f|iz x fiz x')
         self.initCmdlineSearchMock(cmdline, '/', 'on_done', '')
         self.feed('n_/')

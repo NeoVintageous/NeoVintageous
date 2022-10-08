@@ -17,7 +17,7 @@
 
 from NeoVintageous.nv.settings import get_action_count
 from NeoVintageous.nv.settings import get_count
-from NeoVintageous.nv.settings import get_last_char_search
+from NeoVintageous.nv.settings import get_last_char_search_character
 from NeoVintageous.nv.settings import get_last_char_search_command
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_motion_count
@@ -2331,7 +2331,7 @@ class ViRepeatCharSearchForward(ViMotionDef):
             'motion_args': {
                 'mode': get_mode(view),
                 'count': get_count(view),
-                'char': get_last_char_search(view),
+                'char': get_last_char_search_character(view),
                 'inclusive': inclusive,
                 'skipping': skipping,
                 'save': False
@@ -2605,7 +2605,7 @@ class ViRepeatCharSearchBackward(ViMotionDef):
             'motion_args': {
                 'mode': get_mode(view),
                 'count': get_count(view),
-                'char': get_last_char_search(view),
+                'char': get_last_char_search_character(view),
                 'inclusive': inclusive,
                 'skipping': skipping,
                 'save': False
