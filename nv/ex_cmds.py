@@ -714,7 +714,7 @@ def ex_print(window, view, line_range: RangeNode, flags: list = None, global_lin
     for i, (text, row) in enumerate(lines):
         characters = ''
         if '#' in flags:
-            characters = "{} {}".format(row, text).lstrip()
+            characters = "{} {}".format(row + 1, text).lstrip()
         else:
             characters = text.lstrip()
 
