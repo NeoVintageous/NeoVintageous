@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.27.2 - Unreleased
+## 1.27.2 - 2022-10-09
 
 * Fixed [#848](https://github.com/NeoVintageous/NeoVintageous/issues/848): Ex print with `#` flag adds incorrect line numbers
 * Fixed [#847](https://github.com/NeoVintageous/NeoVintageous/issues/847): Allow numbers in mapped user commands
