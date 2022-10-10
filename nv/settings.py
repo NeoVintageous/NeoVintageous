@@ -191,10 +191,10 @@ def _set_last_buff_search_pattern(view, value: str) -> None:
     _set_private(view.window(), 'last_buff_search_pattern', value)
 
 
+# State of current mode. It isn't guaranteed that the underlying view's
+# .sel() will be in a consistent state (for example, that it will at least
+# have one non- empty region in visual mode.
 def get_mode(view) -> str:
-    # State of current mode. It isn't guaranteed that the underlying view's
-    # .sel() will be in a consistent state (for example, that it will at least
-    # have one non- empty region in visual mode.
     return get_session_view_value(view, 'mode', UNKNOWN)
 
 
@@ -216,9 +216,9 @@ def set_motion_count(view, value: str) -> None:
 
 # This setting isn't reset automatically. nv_enter_normal_mode mode must take care
 # of that so it can repeat the commands issued while in insert mode.
+# Count issued to 'i' or 'a', etc. These commands enter insert mode. If
+# passed a count, they must repeat the commands run while in insert mode.
 def get_normal_insert_count(view) -> int:
-    # Count issued to 'i' or 'a', etc. These commands enter insert mode. If
-    # passed a count, they must repeat the commands run while in insert mode.
     return int(get_session_view_value(view, 'normal_insert_count', 1))
 
 
@@ -226,20 +226,20 @@ def set_normal_insert_count(view, value: int) -> None:
     set_session_view_value(view, 'normal_insert_count', value)
 
 
+# See set_interactive().
 def is_interactive(view) -> bool:
-    # See set_interactive().
     return get_session_view_value(view, 'interactive', True)
 
 
+# Indicate if prompts should be interactive or suppressed (non-interactive).
+# For example, cmdline and search input collecting: :ls<CR> and /foo<CR>.
 def set_interactive(view, value: bool) -> None:
-    # Indicate if prompts should be interactive or suppressed (non-interactive).
-    # For example, cmdline and search input collecting: :ls<CR> and /foo<CR>.
     set_session_view_value(view, 'interactive', value)
 
 
+# Sometimes we need to store a partial sequence to obtain the commands' full
+# name. Such is the case of `gD`, for example.
 def get_partial_sequence(view) -> str:
-    # Sometimes we need to store a partial sequence to obtain the commands' full
-    # name. Such is the case of `gD`, for example.
     return get_session_view_value(view, 'partial_sequence', '')
 
 
@@ -247,14 +247,14 @@ def set_partial_sequence(view, value: str) -> None:
     set_session_view_value(view, 'partial_sequence', value)
 
 
+# Indicate whether nv_process_notation is running.
+#
+# Indicates whether nv_process_notation is running a command and is
+# grouping all edits in one single undo step. That is, we are running a non-
+# interactive sequence of commands.
+#
+# This property is *VOLATILE*; it shouldn't be persisted between sessions.
 def is_processing_notation(view) -> bool:
-    # Indicate whether nv_process_notation is running.
-    #
-    # Indicates whether nv_process_notation is running a command and is
-    # grouping all edits in one single undo step. That is, we are running a non-
-    # interactive sequence of commands.
-    #
-    # This property is *VOLATILE*; it shouldn't be persisted between sessions.
     return get_session_view_value(view, 'processing_notation', False)
 
 
@@ -324,10 +324,10 @@ def get_repeat_data(view):
     return get_session_view_value(view, 'repeat_data')
 
 
+# Some commands gather input through input panels. An input panel is a view,
+# but when it's closed, the previous view gets activated and init code runs.
+# This setting can be used to inhibit running the init code when activated.
 def get_reset_during_init(view) -> bool:
-    # Some commands gather input through input panels. An input panel is a view,
-    # but when it's closed, the previous view gets activated and init code runs.
-    # This setting can be used to inhibit running the init code when activated.
     return _get_private(view.window(), 'reset_during_init', True)
 
 
@@ -347,11 +347,11 @@ def append_sequence(view, value: str) -> None:
     set_sequence(view, get_sequence(view) + value)
 
 
+# Indicate that editing commands should be grouped together. They should be
+# grouped together in a single undo step after the user requested
+# `nv_enter_normal_mode` next. This property is *VOLATILE*; it shouldn't be
+# persisted between sessions.
 def get_glue_until_normal_mode(view) -> bool:
-    # Indicate that editing commands should be grouped together. They should be
-    # grouped together in a single undo step after the user requested
-    # `nv_enter_normal_mode` next. This property is *VOLATILE*; it shouldn't be
-    # persisted between sessions.
     return get_session_view_value(view, 'glue_until_normal_mode', False)
 
 
