@@ -153,8 +153,15 @@ def clean_view(view) -> None:
 
     try:
         settings = view.settings()
-        settings.erase('command_mode')
-        settings.erase('inverse_caret_state')
-        settings.erase('vintage')
+
+        if settings.has('command_mode'):
+            settings.erase('command_mode')
+
+        if settings.has('inverse_caret_state'):
+            settings.erase('inverse_caret_state')
+
+        if settings.has('vintage'):
+            settings.erase('vintage')
+
     except Exception:  # pragma: no cover
         traceback.print_exc()
