@@ -21,10 +21,16 @@ from NeoVintageous.tests import unittest
 class Test_ex_sort(unittest.FunctionalTestCase):
 
     def test_sort(self):
-        self.eq('d\nb\n|c\na', ':sort', 'a\nb\n|c\nd')
+        if unittest.ST_VERSION >= 4138:  # fixed in 4138
+            self.eq('d\nb\n|c\na', ':sort', '|a\nb\nc\nd')
+        else:
+            self.eq('d\nb\n|c\na', ':sort', 'a\nb\n|c\nd')
 
     def test_sort_options(self):
-        self.eq('1\n1\n2\n|3\n2\n4', ':sort u', '1\n|2\n3\n4')
+        if unittest.ST_VERSION >= 4138:  # fixed in 4138
+            self.eq('1\n1\n2\n|3\n2\n4', ':sort u', '|1\n2\n3\n4')
+        else:
+            self.eq('1\n1\n2\n|3\n2\n4', ':sort u', '1\n|2\n3\n4')
         self.eq('|a\nA\nB\nb', ':sort i', '|a\nA\nB\nb')
         self.eq('|b\nA\na\nB', ':sort i', '|A\na\nb\nB')
         self.eq('|b\na\nA\nB', ':sort i', '|a\nA\nb\nB')
