@@ -112,6 +112,7 @@ from NeoVintageous.nv.utils import get_option_scroll
 from NeoVintageous.nv.utils import get_previous_selection
 from NeoVintageous.nv.utils import get_scroll_down_target_pt
 from NeoVintageous.nv.utils import get_scroll_up_target_pt
+from NeoVintageous.nv.utils import get_string_under_cursor
 from NeoVintageous.nv.utils import hide_panel
 from NeoVintageous.nv.utils import highest_visible_pt
 from NeoVintageous.nv.utils import highlow_visible_rows
@@ -3406,7 +3407,7 @@ class nv_vi_star(TextCommand):
 
             return s
 
-        word = pattern or self.view.substr(self.view.word(self.view.sel()[0].end()))
+        word = pattern or get_string_under_cursor(self.view)
         if not word.strip():
             ui_bell('E348: No string under cursor')
             return
@@ -3452,7 +3453,7 @@ class nv_vi_octothorp(TextCommand):
 
             return s
 
-        word = pattern or self.view.substr(self.view.word(self.view.sel()[0].end()))
+        word = pattern or get_string_under_cursor(self.view)
         if not word.strip():
             ui_bell('E348: No string under cursor')
             return

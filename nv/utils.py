@@ -458,6 +458,10 @@ def extract_url(view):
     return _extract_url_from_text(_URL_REGEX, text)
 
 
+def get_string_under_cursor(view) -> str:
+    return view.substr(view.word(view.sel()[0].end()))
+
+
 def extract_word(view, mode: str, sel) -> str:
     if is_visual_mode(mode):
         word = view.substr(sel)
