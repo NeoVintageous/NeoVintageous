@@ -16,7 +16,7 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 
-_special_strings = {
+_special = {
     '<leader>': 'mapleader',
     '<localleader>': 'maplocalleader',
 }
@@ -33,7 +33,7 @@ _variables = {}  # type: dict
 
 def expand_keys(seq: str) -> str:
     seq_lower = seq.lower()
-    for key, key_value, in _special_strings.items():
+    for key, key_value, in _special.items():
         while key in seq_lower:
             index = seq_lower.index(key)
             value = _variables.get(key_value, _defaults.get(key_value))
@@ -53,12 +53,12 @@ def expand_keys(seq: str) -> str:
 
 
 def is_key_name(name: str) -> bool:
-    return name.lower() in _special_strings
+    return name.lower() in _special
 
 
 def get(name: str) -> str:
     name = name.lower()
-    name = _special_strings.get(name, name)
+    name = _special.get(name, name)
 
     return _variables.get(name, _defaults.get(name))
 
