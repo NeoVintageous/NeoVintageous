@@ -158,44 +158,12 @@ disabled by default, see|nv-settings|for details on enabling them): >
 
     nnoremap <D-i> :GotoSymbolInProject<CR>
 
-Here is an example neovintageous file: >
+To enable toggling the side bar, first add: >
 
-    set ignorecase
-    set winaltkeys=menu
-
-    let mapleader=,
-
-    nnoremap <leader><bar> <C-w><bar>
-    nnoremap <leader>= <C-w>=
-    nnoremap <leader>_ <C-w>_
     nnoremap <leader>d :Neovintageous action=toggle_side_bar<CR>
-    nnoremap <leader>en :Neovintageous action=open_rc_file<CR>
-    nnoremap <leader>f :ShowOverlay overlay=goto text=@<CR>
-    nnoremap <leader>hu :RevertModification<CR>
-    nnoremap <leader>o :ls<CR>
-    nnoremap <leader>q gqip:w<CR>
-    nnoremap <leader>r :reg<CR>
 
-    nnoremap <D-i> :GotoSymbolInProject<CR>
-    noremap <C-l> :nohlsearch<CR>
-    noremap <C-s> :w<CR>
-    noremap <space> :
-
-    noremap <leader>y "+y
-    noremap <leader>Y "+Y
-    noremap <leader>p "+p
-    noremap <leader>P "+P
-
-    nnoremap <leader>s) vi):sort u<CR>
-    nnoremap <leader>s] vi]:sort u<CR>
-    nnoremap <leader>si vii:sort u<CR>
-    nnoremap <leader>sp vip:sort u<CR>
-    nnoremap <leader>ss vip:sort u<CR>
-    vnoremap <leader>s :sort u<CR>
-
-
-To enable toggling the side bar when the side bar has focus add the following
-key binding, Goto  Menu > Preferences > Key Bindings: >
+Then to enable toggling the side bar when the side bar has focus add the
+following key binding, Goto  Menu > Preferences > Key Bindings: >
 
     [
         {
