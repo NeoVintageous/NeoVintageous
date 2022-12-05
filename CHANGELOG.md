@@ -2,8 +2,9 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.27.3 - Unreleased
+## 1.27.3 - 2022-12-05
 
+* Fixed [#853](https://github.com/NeoVintageous/NeoVintageous/issues/853): Tab key doesn't work properly with snippets
 * Fixed [#852](https://github.com/NeoVintageous/NeoVintageous/issues/852): PowerShell does not work with `:shell`
 
 ## 1.27.2 - 2022-10-09
