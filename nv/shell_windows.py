@@ -54,7 +54,11 @@ def _translate_newlines(text: str):
 def open(view) -> None:
     term = get_setting(view, 'terminal', 'cmd.exe')
     if term:
-        subprocess.Popen([term, '/k'], cwd=os.getcwd())
+        args = [term]
+        if term == 'cmd.exe':
+            args.append('/k')
+
+        subprocess.Popen(args, cwd=os.getcwd())
 
 
 def read(view, cmd: str) -> str:
