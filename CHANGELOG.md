@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.27.4 - Unreleased
+
+* Fixed [#822](https://github.com/NeoVintageous/NeoVintageous/issues/822): `Esc` shouldn't close autocomplete-suggester *and* insert mode at the same time
+
 ## 1.27.3 - 2022-12-05
 
 * Fixed [#853](https://github.com/NeoVintageous/NeoVintageous/issues/853): Tab key doesn't work properly with snippets
