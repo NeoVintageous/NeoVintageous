@@ -29,6 +29,11 @@
     //      stippled_underline
     "neovintageous_search_occ_style": "fill",
 
+    // On Esc, close auto complete, if visible, and exit to normal mode.
+    //
+    // When set to false, only the auto complete is closed.
+    "vintageous_auto_complete_exit_from_insert_mode": true,
+
     //  Visual bell style.
     //
     //  Valid values are:

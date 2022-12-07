@@ -29,6 +29,7 @@ from NeoVintageous.nv.settings import get_motion_count
 from NeoVintageous.nv.settings import get_partial_sequence
 from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.settings import get_sequence
+from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import is_interactive
 from NeoVintageous.nv.settings import is_must_capture_register_name
 from NeoVintageous.nv.settings import set_action_count
@@ -55,6 +56,7 @@ from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.cmd_defs import ViOpenNameSpace
 from NeoVintageous.nv.vi.cmd_defs import ViOpenRegister
 from NeoVintageous.nv.vi.keys import to_bare_command_name
+from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
 from NeoVintageous.nv.vim import SELECT
@@ -116,7 +118,11 @@ class FeedKeyHandler():
 
     def _handle_escape(self) -> bool:
         if self.key.lower() == '<esc>':
-            if self.mode == SELECT:
+            if (self.mode == INSERT and
+                    self.view.is_auto_complete_visible() and
+                    not get_setting(self.view, 'auto_complete_exit_from_insert_mode')):
+                self.view.window().run_command('hide_auto_complete')
+            elif self.mode == SELECT:
                 self.view.run_command('nv_vi_select_big_j', {'mode': self.mode})
             else:
                 enter_normal_mode(self.window, self.mode)
