@@ -394,7 +394,7 @@ class TestOnActivated(unittest.ViewTestCase):
         self.view.sel().clear()
         self.view.sel().add(self.Region(2, 4))
         self.events.on_activated(self.view)
-        self.assertNormal('x fi|zz buzz x')
+        self.assertNormal('x |fizz buzz x')
 
     def test_fix_normal_mode_to_visual_mode(self):
         self.normal('x |fizz buzz x')
@@ -417,7 +417,7 @@ class TestOnActivated(unittest.ViewTestCase):
         self.view.sel().add(self.Region(2, 4))
         self.view.sel().add(self.Region(12, 14))
         self.events.on_activated(self.view)
-        self.assertNormal('x fi|zz buzz fi|zz buzz x')
+        self.assertNormal('x |fizz buzz |fizz buzz x')
 
 
 class TestOnPostSave(unittest.ViewTestCase):

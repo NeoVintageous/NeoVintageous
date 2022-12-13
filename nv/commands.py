@@ -887,7 +887,7 @@ class nv_enter_normal_mode(TextCommand):
             elif mode == SELECT:
                 return Region(s.begin())
 
-            return Region(s.b)
+            return Region(s.a if s.b >= s.a else s.b)
 
         if mode != UNKNOWN:
             if len(self.view.sel()) > 1 and mode == NORMAL:
