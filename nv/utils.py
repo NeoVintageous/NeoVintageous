@@ -43,6 +43,7 @@ from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
 from NeoVintageous.nv.settings import get_visual_block_direction
 from NeoVintageous.nv.settings import set_mode
+from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import set_processing_notation
 from NeoVintageous.nv.settings import set_visual_block_direction
 from NeoVintageous.nv.settings import set_xpos
@@ -81,6 +82,15 @@ def is_view(view) -> bool:
         return False
 
     return True
+
+
+def save_view(view) -> None:
+    if get_setting(view, 'lsp_save'):
+        # Override native save to handle LSP Code-Actions-On-Save.
+        # See https://github.com/sublimelsp/LSP/issues/1725
+        view.run_command('lsp_save')
+    else:
+        view.run_command('save', {'async': True})
 
 
 def _regions_transformer(sels, view, f, with_idx) -> None:

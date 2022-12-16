@@ -47,7 +47,6 @@ from NeoVintageous.nv.options import set_option
 from NeoVintageous.nv.options import toggle_option
 from NeoVintageous.nv.polyfill import is_file_read_only
 from NeoVintageous.nv.polyfill import is_view_read_only
-from NeoVintageous.nv.polyfill import save
 from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
 from NeoVintageous.nv.polyfill import view_find_all_in_range
@@ -77,6 +76,7 @@ from NeoVintageous.nv.utils import has_newline_at_eof
 from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import row_at
+from NeoVintageous.nv.utils import save_view
 from NeoVintageous.nv.utils import set_selection
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import NORMAL
@@ -1071,7 +1071,7 @@ def _do_write(view) -> None:
         ui_bell("E45: 'readonly' option is set (add ! to override)")
         return
 
-    save(view)
+    save_view(view)
 
 
 def _do_write_file(window, view, file_name: str, forceit: bool, line_range: RangeNode = None) -> None:
@@ -1090,7 +1090,7 @@ def _do_write_file(window, view, file_name: str, forceit: bool, line_range: Rang
             f.write(_get_write_buffer(view, line_range))
 
         view.retarget(file_path)
-        save(window)
+        save_view(view)
     except IOError:
         ui_bell("E212: Can't open file for writing: {}".format(file_name))
 
@@ -1120,7 +1120,7 @@ def _do_write_append_file(view, file_name: str, forceit: bool, line_range: Range
 
 def _do_write_append(window, view, line_range: RangeNode = None) -> None:
     view.run_command('append', {'characters': _get_write_buffer(view, line_range)})
-    save(view)
+    save_view(view)
     enter_normal_mode(window, get_mode(view))
 
 

@@ -64,10 +64,6 @@ def run_window_command(cmd: str, args: dict = None, window=None) -> None:
     window.run_command(cmd, args)
 
 
-def save(window_or_view) -> None:
-    window_or_view.run_command('save', {'async': True})
-
-
 def is_view_read_only(view) -> bool:
     return view.is_read_only() or is_file_read_only(view.file_name())
 

@@ -792,6 +792,12 @@ List of available settings:
         to go back to Normal mode, and still be able to operate on all the
         cursors.
 
+                                                 *'vintageous_lsp_save'*
+'vintageous_lsp_save'
+                        boolean (default off)
+        Override native save to handle LSP Code-Actions-On-Save.
+        See https://github.com/sublimelsp/LSP/issues/1725
+
                                  *'vintageous_reset_mode_when_switching_tabs'*
 'vintageous_reset_mode_when_switching_tabs'
                         boolean (default on)

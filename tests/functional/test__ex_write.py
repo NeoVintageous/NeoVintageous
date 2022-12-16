@@ -31,7 +31,7 @@ def mock_write():
     def wrapper(f):
         @unittest.mock_hide_panel()
         @unittest.mock_status_message()
-        @unittest.mock.patch('NeoVintageous.nv.ex_cmds.save')
+        @unittest.mock.patch('NeoVintageous.nv.ex_cmds.save_view')
         def wrapped(self, *args, **kwargs):
             save = args[-1]
             save.side_effect = lambda obj: obj.run_command('save', {'async': False})

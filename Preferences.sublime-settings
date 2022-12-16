@@ -146,6 +146,10 @@
     //     }
     "vintageous_handle_keys": {},
 
+    // Override native save to handle LSP Code-Actions-On-Save.
+    // See https://github.com/sublimelsp/LSP/issues/1725
+    "vintageous_lsp_save": false,
+
     // Exit visual multi cursor visual on quit key.
     //
     // When false then pressing a quit key (e.g. <Esc> or J) in multiple cursor

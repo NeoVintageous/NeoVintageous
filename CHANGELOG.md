@@ -4,6 +4,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.27.4 - Unreleased
 
+* Fixed [#787](https://github.com/NeoVintageous/NeoVintageous/issues/787): Add `vintageous_lsp_save` setting to fix lsp format on save doesn't seem to work
 * Fixed [#822](https://github.com/NeoVintageous/NeoVintageous/issues/822): `Esc` shouldn't close autocomplete-suggester *and* insert mode at the same time
 
 ## 1.27.3 - 2022-12-05
@@ -22,6 +23,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Fixed [#826](https://github.com/NeoVintageous/NeoVintageous/issues/826): `%` doesn't work correctly on html tags
 
 ## 1.27.0 - 2022-09-28
+
+### Added
 
 * Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround change tag with `>` remove attributes e.g. `cst<div>` (Surround)
 * Added [#768](https://github.com/NeoVintageous/NeoVintageous/issues/768): surround change tag with `\n` (newline) to keep attributes e.g. `cst<div<CR>` (Surround)
