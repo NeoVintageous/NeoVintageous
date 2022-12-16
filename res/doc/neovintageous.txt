@@ -741,7 +741,7 @@ List of available settings:
         Plugin: A port of https://github.com/tpope/vim-unimpaired.
 
 'vintageous_handle_keys'                            *'vintageous_handle_keys'*
-                        boolean (default {})
+                        dict (default {})
         Delegate configured keys to be handled by Sublime Text. 
 
         For example to use ctrl+f for find (native ST behaviour):
