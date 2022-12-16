@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.27.4 - Unreleased
+## 1.27.4 - 2022-12-16
 
 * Fixed [#787](https://github.com/NeoVintageous/NeoVintageous/issues/787): Add `vintageous_lsp_save` setting to fix lsp format on save doesn't seem to work
 * Fixed [#822](https://github.com/NeoVintageous/NeoVintageous/issues/822): `Esc` shouldn't close autocomplete-suggester *and* insert mode at the same time
