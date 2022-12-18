@@ -1,4 +1,4 @@
-*commentary.txt*  Comment stuff out
+*commentary.txt* *commentary*  Comment stuff out
 
 Author:  Tim Pope <http://tpo.pe/>
 License: Same terms as Vim itself (see |license|)
