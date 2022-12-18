@@ -1,4 +1,4 @@
-*editing.txt*   Nvim
+*editing.txt*   For Vim version 9.0.  Last change: 2022 Nov 02
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -6,7 +6,17 @@
 
 Editing files						*edit-files*
 
-                                      Type |gO| to see the table of contents.
+1.  Introduction		|edit-intro|
+2.  Editing a file		|edit-a-file|
+3.  The argument list		|argument-list|
+4.  Writing			|writing|
+5.  Writing and quitting	|write-quit|
+6.  Dialogs			|edit-dialogs|
+7.  The current directory	|current-directory|
+8.  Editing binary files	|edit-binary|
+9.  Encryption			|encryption|
+10. Timestamps			|timestamps|
+11. File Searching		|file-searching|
 
 ==============================================================================
 1. Introduction						*edit-intro*
@@ -125,8 +135,24 @@ You can use this file if you discover that you need the original file.  See
 also the 'patchmode' option.  The name of the backup file is normally the same
 as the original file with 'backupext' appended.  The default "~" is a bit
 strange to avoid accidentally overwriting existing files.  If you prefer ".bak"
-change the 'backupext' option.  The backup file can be placed in another
-directory by setting 'backupdir'.
+change the 'backupext' option.  Extra dots are replaced with '_' on MS-Windows
+machines, when Vim has detected that an MS-DOS-like filesystem is being used
+(e.g., messydos or crossdos) or when the 'shortname' option is on.  The
+backup file can be placed in another directory by setting 'backupdir'.
+
+							*auto-shortname*
+Technical: On the Amiga you can use 30 characters for a file name.  But on an
+	   MS-DOS-compatible filesystem only 8 plus 3 characters are
+	   available.  Vim tries to detect the type of filesystem when it is
+	   creating the .swp file.  If an MS-DOS-like filesystem is suspected,
+	   a flag is set that has the same effect as setting the 'shortname'
+	   option.  This flag will be reset as soon as you start editing a
+	   new file.  The flag will be used when making the file name for the
+	   ".swp" and ".~" files for the current file.  But when you are
+	   editing a file in a normal filesystem and write to an MS-DOS-like
+	   filesystem the flag will not have been set.  In that case the
+	   creation of the ".~" file may fail and you will get an error
+	   message.  Use the 'shortname' option in this case.
 
 When you started editing without giving a file name, "No File" is displayed in
 messages.  If the ":write" command is used with a file name argument, the file
@@ -262,6 +288,9 @@ CTRL-^			Edit the alternate file.  Mostly the alternate file is
 			files.
 			See |CTRL-^| above for further details.
 
+[count]]f						*]f* *[f*
+[count][f		Same as "gf".  Deprecated.
+
 							*gf* *E446* *E447*
 [count]gf		Edit the file whose name is under or after the cursor.
 			Mnemonic: "goto file".
@@ -336,10 +365,10 @@ expected are mentioned at |cmdline-special|.
 Note for systems other than Unix: When using a command that accepts a single
 file name (like ":edit file") spaces in the file name are allowed, but
 trailing spaces are ignored.  This is useful on systems that regularly embed
-spaces in file names (like MS-Windows).  Example: The command ":e   Long File
-Name " will edit the file "Long File Name".  When using a command that accepts
-more than one file name (like ":next file1 file2") embedded spaces must be
-escaped with a backslash.
+spaces in file names (like MS-Windows and the Amiga).  Example: The command
+":e   Long File Name " will edit the file "Long File Name".  When using a
+command that accepts more than one file name (like ":next file1 file2")
+embedded spaces must be escaped with a backslash.
 
 						*wildcard* *wildcards*
 Wildcards in {file} are expanded, but as with file completion, 'wildignore'
@@ -400,7 +429,7 @@ This also works for most other systems, with the restriction that the
 backticks must be around the whole item.  It is not possible to have text
 directly before the first or just after the last backtick.
 
-							*`=*
+						*`=* *E1083*
 You can have the backticks expanded as a Vim expression, instead of as an
 external command, by putting an equal sign right after the first backtick,
 e.g.: >
@@ -494,11 +523,12 @@ The 'fileformat' option sets the <EOL> style for a file:
   "dos"		<CR><NL> or <NL>   DOS format		*DOS-format*
   "unix"	<NL>		   Unix format		*Unix-format*
   "mac"		<CR>		   Mac format		*Mac-format*
+Previously 'textmode' was used.  It is obsolete now.
 
 When reading a file, the mentioned characters are interpreted as the <EOL>.
-In DOS format (default for Windows), <CR><NL> and <NL> are both interpreted as
-the <EOL>. Note that when writing the file in DOS format, <CR> characters will
-be added for each single <NL>.  Also see |file-read|.
+In DOS format (default for Win32), <CR><NL> and <NL> are both interpreted as
+the <EOL>.  Note that when writing the file in DOS format, <CR> characters
+will be added for each single <NL>.  Also see |file-read|.
 
 When writing a file, the mentioned characters are used for <EOL>.  For DOS
 format <CR><NL> is used.  Also see |DOS-format-write|.
@@ -518,8 +548,8 @@ characters will be replaced with <CR><NL> (assuming 'fileformats' includes
 If you start editing a new file and the 'fileformats' option is not empty
 (which is the default), Vim will try to detect whether the lines in the file
 are separated by the specified formats.  When set to "unix,dos", Vim will
-check for lines with a single <NL> (as used on Unix) or by a <CR><NL> pair
-(MS-Windows).  Only when ALL lines end in <CR><NL>, 'fileformat' is
+check for lines with a single <NL> (as used on Unix and Amiga) or by a <CR>
+<NL> pair (MS-Windows).  Only when ALL lines end in <CR><NL>, 'fileformat' is
 set to "dos", otherwise it is set to "unix".  When 'fileformats' includes
 "mac", and no <NL> characters are found in the file, 'fileformat' is set to
 "mac".
@@ -544,6 +574,47 @@ Before editing binary, executable or Vim script files you should set the
 'binary' option.  A simple way to do this is by starting Vim with the "-b"
 option.  This will avoid the use of 'fileformat'.  Without this you risk that
 single <NL> characters are unexpectedly replaced with <CR><NL>.
+
+You can encrypt files that are written by setting the 'key' option.  This
+provides some security against others reading your files. |encryption|
+
+END OF LINE AND END OF FILE				*eol-and-eof*
+
+Vim has several options to control the file format:
+	'fileformat'	the <EOL> style: Unix, DOS, Mac
+	'endofline'	whether the last line ends with a <EOL>
+	'endoffile'	whether the file ends with a CTRL-Z
+	'fixendofline'	whether to fix eol and eof
+
+The first three values are normally detected automatically when reading the
+file and are used when writing the text to a file.  While editing the buffer
+it looks like every line has a line ending and the CTRL-Z isn't there (an
+exception is when 'binary' is set, it works differently then).
+
+The 'fixendofline' option can be used to choose what to write.  You can also
+change the option values to write the file differently than how it was read.
+
+Here are some examples how to use them.
+
+If you want files in Unix format (every line NL terminated): >
+	setl ff=unix fixeol
+You should probably do this on any Unix-like system.  Also modern MS-Windows
+systems tend to work well with this.  It is recommended to always use this
+format for Vim scripts.
+
+If you want to use an old MS-DOS file in a modern environment, fixing line
+endings and dropping CTRL-Z, but keeping the <CR><NL> style <EOL>: >
+	setl ff=dos fixeol
+This is useful for many MS-Windows programs, they regularly expect the
+<CR><NL> line endings.
+
+If you want to drop the final <EOL> and add a final CTRL-Z (e.g. for an old
+system like CP/M): >
+	setl ff=dos nofixeol noeol eof
+
+If you want to preserve the fileformat exactly as-is, including any final
+<EOL> and final CTRL-Z: >
+	setl nofixeol
 
 ==============================================================================
 3. The argument list				*argument-list* *arglist*
@@ -596,7 +667,7 @@ list of the current window.
 			Also see |++opt| and |+cmd|.
 
 :[count]arga[dd] {name} ..			*:arga* *:argadd* *E479*
-:[count]arga[dd]
+:[count]arga[dd]						*E1156*
 			Add the {name}s to the argument list.  When {name} is
 			omitted add the current buffer name to the argument
 			list.
@@ -810,8 +881,8 @@ current window.  The two windows then share this list, until one of them uses
 USING THE ARGUMENT LIST
 
 						*:argdo*
-:[range]argdo[!] {cmd}	Execute {cmd} for each file in the argument list or,
-			if [range] is specified, only for arguments in that
+:[range]argdo[!] {cmd}	Execute {cmd} for each file in the argument list or
+			if [range] is specified only for arguments in that
 			range.  It works like doing this: >
 				:rewind
 				:{cmd}
@@ -831,7 +902,7 @@ USING THE ARGUMENT LIST
 			'eventignore'.  This considerably speeds up editing
 			each file.
 			Also see |:windo|, |:tabdo|, |:bufdo|, |:cdo|, |:ldo|,
-			|:cfdo| and |:lfdo|.
+			|:cfdo| and |:lfdo|
 
 Example: >
 	:args *.c
@@ -941,7 +1012,7 @@ WRITING WITH MULTIPLE BUFFERS				*buffer-write*
 
 
 Vim will warn you if you try to overwrite a file that has been changed
-elsewhere (unless "!" was used).  See |timestamp|.
+elsewhere.  See |timestamp|.
 
 			    *backup* *E207* *E506* *E507* *E508* *E509* *E510*
 If you write to an existing file (but do not append) while the 'backup',
@@ -1004,11 +1075,11 @@ lost the original file.
 
 						*DOS-format-write*
 If the 'fileformat' is "dos", <CR><NL> is used for <EOL>.  This is default
-for Windows. On other systems the message "[dos format]" is shown to
-remind you that an unusual <EOL> was used.
+for Win32.  On other systems the message "[dos format]" is shown to remind you
+that an unusual <EOL> was used.
 						*Unix-format-write*
-If the 'fileformat' is "unix", <NL> is used for <EOL>.  On Windows
-the message "[unix format]" is shown.
+If the 'fileformat' is "unix", <NL> is used for <EOL>.  On Win32 the message
+"[unix format]" is shown.
 						*Mac-format-write*
 If the 'fileformat' is "mac", <CR> is used for <EOL>.  On non-Mac systems the
 message "[mac format]" is shown.
@@ -1037,11 +1108,12 @@ When the file name is actually a device name, Vim will not make a backup (that
 would be impossible).  You need to use "!", since the device already exists.
 Example for Unix: >
 	:w! /dev/lpt0
-and MS-Windows: >
+and for MS-Windows: >
 	:w! lpt0
 For Unix a device is detected when the name doesn't refer to a normal file or
 a directory.  A fifo or named pipe also looks like a device to Vim.
 For MS-Windows the device is detected by its name:
+	AUX
 	CON
 	CLOCK$
 	NUL
@@ -1079,7 +1151,8 @@ The names can be in upper- or lowercase.
 			Use ":qall!" to exit always.
 
 :cq[uit]		Quit always, without writing, and return an error
-			code.  See |:cq|.
+			code.  See |:cq|.  Used for Manx's QuickFix mode (see
+			|quickfix|).
 
 							*:wq*
 :wq [++opt]		Write the current file and close the window.  If this
@@ -1108,6 +1181,9 @@ The names can be in upper- or lowercase.
 			made.
 			When 'hidden' is set and there are more windows, the
 			current buffer becomes hidden, after writing the file.
+			This command is not supported in |Vim9| script,
+			because it is too easily confused with a variable
+			name.
 
 							*:exi* *:exit*
 :[range]exi[t][!] [++opt] [file]
@@ -1121,6 +1197,7 @@ ZZ			Write current file, if modified, and close the current
 
 							*ZQ*
 ZQ			Quit without checking for changes (same as ":q!").
+
 
 MULTIPLE WINDOWS AND BUFFERS				*window-exit*
 
@@ -1155,7 +1232,8 @@ MULTIPLE WINDOWS AND BUFFERS				*window-exit*
 :wqa[ll]! [++opt]
 :xa[ll]!	Write all changed buffers, even the ones that are readonly,
 		and exit Vim.  If there are buffers without a file name or
-		which cannot be written for another reason, Vim will not quit.
+		which cannot be written for another reason, or there is a
+		terminal with a running job, Vim will not quit.
 
 ==============================================================================
 6. Dialogs						*edit-dialogs*
@@ -1180,7 +1258,7 @@ Examples: >
 
 If you want to always use ":confirm", set the 'confirm' option.
 
-					*:browse* *:bro* *E338* *E614* *E615* *E616*
+							*:browse* *:bro* *E338*
 :bro[wse] {command}	Open a file selection dialog for an argument to
 			{command}.  At present this works for |:e|, |:w|,
 			|:wall|, |:wq|, |:wqall|, |:x|, |:xall|, |:exit|,
@@ -1188,14 +1266,16 @@ If you want to always use ":confirm", set the 'confirm' option.
 			|:mkvimrc|, |:mksession|, |:mkview|, |:split|,
 			|:vsplit|, |:tabe|, |:tabnew|, |:cfile|, |:cgetfile|,
 			|:caddfile|, |:lfile|, |:lgetfile|, |:laddfile|,
-			|:diffsplit|, |:diffpatch|, |:pedit|, |:redir|,
-			|:source|, |:update|, |:visual|, |:vsplit|,
+			|:diffsplit|, |:diffpatch|, |:open|, |:pedit|,
+			|:redir|, |:source|, |:update|, |:visual|, |:vsplit|,
 			and |:qall| if 'confirm' is set.
-			{only in Win32 GUI, in console `browse edit` works
-			if the FileExplorer autocommand group exists}
+			{only in Win32, Motif, GTK and Mac GUI, in
+			console `browse edit` works if the FileExplorer
+			autocommand group exists}
 			When ":browse" is not possible you get an error
-			message.  If {command} doesn't support browsing, the
-			{command} is executed without a dialog.
+			message.  If the |+browse| feature is missing or the
+			{command} doesn't support browsing, the {command} is
+			executed without a dialog.
 			":browse set" works like |:options|.
 			See also |:oldfiles| for ":browse oldfiles".
 
@@ -1219,13 +1299,16 @@ For versions of Vim where browsing is not supported, the command is executed
 unmodified.
 
 							*browsefilter*
-For MS-Windows you can modify the filters that are used in the browse
+For MS-Windows and GTK, you can modify the filters that are used in the browse
 dialog.  By setting the g:browsefilter or b:browsefilter variables, you can
 change the filters globally or locally to the buffer.  The variable is set to
 a string in the format "{filter label}\t{pattern};{pattern}\n" where {filter
 label} is the text that appears in the "Files of Type" comboBox, and {pattern}
 is the pattern which filters the filenames.  Several patterns can be given,
 separated by ';'.
+
+For Motif the same format is used, but only the very first pattern is actually
+used (Motif only offers one pattern, but you can edit it).
 
 For example, to have only Vim files in the dialog, you could use the following
 command: >
@@ -1250,15 +1333,13 @@ use has("browsefilter"): >
 ==============================================================================
 7. The current directory				*current-directory*
 
-You can use |:cd|, |:tcd| and |:lcd| to change to another directory, so you
-will not have to type that directory name in front of the file names.  It also
-makes a difference for executing external commands, e.g. ":!ls" or ":te ls".
+You can use the |:cd|, |:tcd| and |:lcd| commands to change to another
+directory, so you will not have to type that directory name in front of the
+file names.  It also makes a difference for executing external commands, e.g.
+":!ls".
 
-There are three current-directory "scopes": global, tab and window.  The
-window-local working directory takes precedence over the tab-local
-working directory, which in turn takes precedence over the global
-working directory.  If a local working directory (tab or window) does not
-exist, the next-higher scope in the hierarchy applies.
+Changing directory fails when the current buffer is modified, the '.' flag is
+present in 'cpoptions' and "!" is not used in the command.
 
 							*:cd* *E747* *E472*
 :cd[!]			On non-Unix systems when 'cdhome' is off: Print the
@@ -1271,6 +1352,7 @@ exist, the next-higher scope in the hierarchy applies.
 :cd[!] {path}		Change the current directory to {path}.
 			If {path} is relative, it is searched for in the
 			directories listed in |'cdpath'|.
+			Clear any window-local directory.
 			Does not change the meaning of an already opened file,
 			because its full path name is remembered.  Files from
 			the |arglist| may change though!
@@ -1293,23 +1375,24 @@ exist, the next-higher scope in the hierarchy applies.
 			have their own window-local directory.
 
 							*:tcd-*
-:tc[d][!] -		Change to the previous current directory (before the
-			previous ":tcd {path}" command).
+:tc[d][!] -		Change to the previous current directory, before the
+			last ":tcd {path}" command.
 
 							*:tch* *:tchdir*
 :tch[dir][!]		Same as |:tcd|.
 
 							*:lc* *:lcd*
-:lc[d][!] {path}	Like |:cd|, but only set the current directory for the
-			current window.  The current directory for other
-			windows or tabs is not changed.
+:lc[d][!] {path}	Like |:cd|, but only set the current directory when
+			the cursor is in the current window.  The current
+			directory for other windows is not changed, switching
+			to another window will stop using {path}.
+
+							*:lcd-*
+:lcd[!] -		Change to the previous current directory, before the
+			last ":lcd {path}" command.
 
 							*:lch* *:lchdir*
 :lch[dir][!]		Same as |:lcd|.
-
-							*:lcd-*
-:lc[d][!] -		Change to the previous current directory (before the
-			previous ":lcd {path}" command).
 
 							*:pw* *:pwd* *E187*
 :pw[d]			Print the current directory name.
@@ -1334,20 +1417,23 @@ So long as no |:lcd| or |:tcd| command has been used, all windows share the
 same current directory.  Using a command to jump to another window doesn't
 change anything for the current directory.
 
-When |:lcd| has been used for a window, the specified directory becomes the
-current directory for that window.  Windows where the |:lcd| command has not
-been used stick to the global or tab-local directory.  When jumping to another
-window the current directory is changed to the last specified local current
-directory.  If none was specified, the global or tab-local directory is used.
-When creating a new window it inherits the local directory of the current window.
+When a |:lcd| command has been used for a window, the specified directory
+becomes the current directory for that window.  Windows where the |:lcd|
+command has not been used stick to the global or tab-local current directory.
+When jumping to another window the current directory is changed to the last
+specified local current directory.  If none was specified, the global or
+tab-local current directory is used.  When creating a new window it inherits
+the local directory of the current window.
 
-When changing tabs the same behaviour applies.  If the current tab has no
-local working directory the global working directory is used.
+When a |:tcd| command has been used for a tab page, the specified directory
+becomes the current directory for the current tab page and the current window.
+The current directory of other tab pages is not affected.  When jumping to
+another tab page, the current directory is changed to the last specified local
+directory for that tab page. If the current tab has no local current directory
+the global current directory is used.
 
-When a |:cd| command is used, the current window and tab will lose their local
-current directories and will use the global current directory from now on.
-When a |:tcd| command is used, only the current window will lose its local
-working directory.
+When a |:cd| command is used, the current window and tab page will lose the
+local current directory and will use the global current directory from now on.
 
 After using |:cd| the full path name will be used for reading and writing
 files.  On some networked file systems this may cause problems.  The result of
@@ -1375,15 +1461,16 @@ There are a few things to remember when editing binary files:
   split in two.
 - When there are not many <EOL>s, the lines will become very long.  If you
   want to edit a line that does not fit on the screen reset the 'wrap' option.
-  Horizontal scrolling is used then.  If a line becomes too long (see |limits|)
-  you cannot edit that line.  The line will be split when reading the file.
-  It is also possible that you get an "out of memory" error when reading the
-  file.
+  Horizontal scrolling is used then.  If a line becomes too long (more than
+  about 32767 bytes on the Amiga, much more on 32-bit and 64-bit systems, see
+  |limits|) you cannot edit that line.  The line will be split when reading
+  the file.  It is also possible that you get an "out of memory" error when
+  reading the file.
 - Make sure the 'binary' option is set BEFORE loading the
   file.  Otherwise both <CR><NL> and <NL> are considered to end a line
   and when the file is written the <NL> will be replaced with <CR><NL>.
 - <Nul> characters are shown on the screen as ^@.  You can enter them with
-  "CTRL-V CTRL-@" or "CTRL-V 000".
+  "CTRL-V CTRL-@" or "CTRL-V 000"
 - To insert a <NL> character in the file split a line.  When writing the
   buffer to a file a <NL> will be written for the <EOL>.
 - Vim normally appends an <EOL> at the end of the file if there is none.
@@ -1395,10 +1482,149 @@ There are a few things to remember when editing binary files:
 ==============================================================================
 9. Encryption						*encryption*
 
-					                *:X* *E817* *E818* *E819* *E820*
-Support for editing encrypted files has been removed.
-	https://github.com/neovim/neovim/issues/694
-	https://github.com/neovim/neovim/issues/701
+Vim is able to write files encrypted, and read them back.  The encrypted text
+cannot be read without the right key.
+{only available when compiled with the |+cryptv| feature}  *E833*
+
+The text in the swap file and the undo file is also encrypted.  *E843*
+However, this is done block-by-block and may reduce the time needed to crack a
+password.  You can disable the swap file, but then a crash will cause you to
+lose your work.  The undo file can be disabled without too much disadvantage. >
+	:set noundofile
+	:noswapfile edit secrets
+
+Note: The text in memory is not encrypted.  A system administrator may be able
+to see your text while you are editing it.  When filtering text with
+":!filter" or using ":w !command" the text is also not encrypted, this may
+reveal it to others.  The 'viminfo' file is not encrypted.
+
+You could do this to edit very secret text: >
+	:set noundofile viminfo=
+	:noswapfile edit secrets.txt
+Keep in mind that without a swap file you risk losing your work in the event
+of a crash or a power failure.
+
+WARNING: If you make a typo when entering the key and then write the file and
+exit, the text will be lost!
+
+The normal way to work with encryption, is to use the ":X" command, which will
+ask you to enter a key.  A following write command will use that key to
+encrypt the file.  If you later edit the same file, Vim will ask you to enter
+a key.  If you type the same key as that was used for writing, the text will
+be readable again.  If you use a wrong key, it will be a mess.
+
+							*:X*
+:X	Prompt for an encryption key.  The typing is done without showing the
+	actual text, so that someone looking at the display won't see it.
+	The typed key is stored in the 'key' option, which is used to encrypt
+	the file when it is written.
+	The file will remain unchanged until you write it.  Note that commands
+	such as `:xit` and `ZZ` will NOT write the file unless there are other
+	changes.
+	See also |-x|.
+
+The value of the 'key' options is used when text is written.  When the option
+is not empty, the written file will be encrypted, using the value as the
+encryption key.  A magic number is prepended, so that Vim can recognize that
+the file is encrypted.
+
+To disable the encryption, reset the 'key' option to an empty value: >
+	:set key=
+
+You can use the 'cryptmethod' option to select the type of encryption, use one
+of these: >
+	:setlocal cm=zip        " weak method, backwards compatible
+	:setlocal cm=blowfish   " method with flaws
+	:setlocal cm=blowfish2  " medium strong method
+
+Do this before writing the file.  When reading an encrypted file it will be
+set automatically to the method used when that file was written.  You can
+change 'cryptmethod' before writing that file to change the method.
+
+To set the default method, used for new files, use this in your |vimrc|
+file: >
+	set cm=blowfish2
+Using "blowfish2" is highly recommended.  Only use another method if you
+must use an older Vim version that does not support it.
+
+The message given for reading and writing a file will show "[crypted]" when
+using zip, "[blowfish]" when using blowfish, etc.
+
+When writing an undo file, the same key and method will be used for the text
+in the undo file. |persistent-undo|.
+
+To test for blowfish support you can use these conditions: >
+	has('crypt-blowfish')
+	has('crypt-blowfish2')
+This works since Vim 7.4.1099 while blowfish support was added earlier.
+Thus the condition failing doesn't mean blowfish is not supported. You can
+test for blowfish with: >
+	v:version >= 703
+And for blowfish2 with: >
+	v:version > 704 || (v:version == 704 && has('patch401'))
+If you are sure Vim includes patch 7.4.237 a simpler check is: >
+	has('patch-7.4.401')
+<
+						*E817* *E818* *E819* *E820*
+When encryption does not work properly, you would be able to write your text
+to a file and never be able to read it back.  Therefore a test is performed to
+check if the encryption works as expected.  If you get one of these errors
+don't write the file encrypted!  You need to rebuild the Vim binary to fix
+this.
+
+*E831* This is an internal error, "cannot happen".  If you can reproduce it,
+please report to the developers.
+
+When reading a file that has been encrypted and the 'key' option is not empty,
+it will be used for decryption.  If the value is empty, you will be prompted
+to enter the key.  If you don't enter a key, or you enter the wrong key, the
+file is edited without being decrypted.  There is no warning about using the
+wrong key (this makes brute force methods to find the key more difficult).
+
+If want to start reading a file that uses a different key, set the 'key'
+option to an empty string, so that Vim will prompt for a new one.  Don't use
+the ":set" command to enter the value, other people can read the command over
+your shoulder.
+
+Since the value of the 'key' option is supposed to be a secret, its value can
+never be viewed.  You should not set this option in a vimrc file.
+
+An encrypted file can be recognized by the "file" command, if you add these
+lines to "/etc/magic", "/usr/share/misc/magic" or wherever your system has the
+"magic" file: >
+     0	string	VimCrypt~	Vim encrypted file
+     >9	string	01	- "zip" cryptmethod
+     >9	string	02	- "blowfish" cryptmethod
+     >9	string	03	- "blowfish2" cryptmethod
+
+Notes:
+- Encryption is not possible when doing conversion with 'charconvert'.
+- Text you copy or delete goes to the numbered registers.  The registers can
+  be saved in the .viminfo file, where they could be read.  Change your
+  'viminfo' option to be safe.
+- Someone can type commands in Vim when you walk away for a moment, he should
+  not be able to get the key.
+- If you make a typing mistake when entering the key, you might not be able to
+  get your text back!
+- If you type the key with a ":set key=value" command, it can be kept in the
+  history, showing the 'key' value in a viminfo file.
+- There is never 100% safety.  The encryption in Vim has not been tested for
+  robustness.
+- The algorithm used for 'cryptmethod' "zip" is breakable.  A 4 character key
+  in about one hour, a 6 character key in one day (on a Pentium 133 PC).  This
+  requires that you know some text that must appear in the file.  An expert
+  can break it for any key.  When the text has been decrypted, this also means
+  that the key can be revealed, and other files encrypted with the same key
+  can be decrypted.
+- Pkzip uses the same encryption as 'cryptmethod' "zip", and US Govt has no
+  objection to its export.  Pkzip's public file APPNOTE.TXT describes this
+  algorithm in detail.
+- The implementation of 'cryptmethod' "blowfish" has a flaw.  It is possible
+  to crack the first 64 bytes of a file and in some circumstances more of the
+  file. Use of it is not recommended, but it's still the strongest method
+  supported by Vim 7.3 and 7.4.  The "zip" method is even weaker.
+- Vim originates from the Netherlands.  That is where the sources come from.
+  Thus the encryption code is not exported from the USA.
 
 ==============================================================================
 10. Timestamps					*timestamp* *timestamps*
@@ -1481,8 +1707,8 @@ doing something there and closing it should be OK (if there are no side
 effects from other autocommands).  Closing unrelated windows and buffers will
 get you into trouble.
 
-Before writing a file, the timestamp is checked (unless "!" was used).
-If it has changed, Vim will ask if you really want to overwrite the file:
+Before writing a file the timestamp is checked.  If it has changed, Vim will
+ask if you really want to overwrite the file:
 
 	WARNING: The file has been changed since reading it!!!
 	Do you really want to write to it (y/n)?

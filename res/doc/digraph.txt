@@ -1,4 +1,4 @@
-*digraph.txt*   Nvim
+*digraph.txt*   For Vim version 9.0.  Last change: 2022 Nov 22
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -14,7 +14,10 @@ with CTRL-V (see |i_CTRL-V|).
 There is a brief introduction on digraphs in the user manual: |24.9|
 An alternative is using the 'keymap' option.
 
-                                      Type |gO| to see the table of contents.
+1. Defining digraphs	|digraphs-define|
+2. Using digraphs	|digraphs-use|
+3. Default digraphs	|digraphs-default|
+
 
 ==============================================================================
 1. Defining digraphs					*digraphs-define*
@@ -38,6 +41,9 @@ An alternative is using the 'keymap' option.
 			NOTE: This command cannot add a digraph that starts
 			with a white space.  If you want to add such digraph,
 			you can use |digraph_set()| instead.
+
+Vim is normally compiled with the |+digraphs| feature.  If the feature is
+disabled, the ":digraph" command will display an error message.
 
 Example of the output of ":digraphs": >
  TH Þ  222  ss ß  223  a! à  224  a' á  225  a> â  226  a? ã  227  a: ä  228
@@ -156,7 +162,7 @@ These are the RFC1345 digraphs for the one-byte characters.  See the output of
 ":digraphs" for the others.
 
 EURO
-
+							*euro* *euro-digraph*
 Exception: RFC1345 doesn't specify the euro sign.  In Vim the digraph =e was
 added for this.  Note the difference between latin1, where the digraph Cu is
 used for the currency sign, and latin9 (iso-8859-15), where the digraph =e is
@@ -168,7 +174,7 @@ ROUBLE
 The rouble sign was added in 2014 as 0x20bd.  Vim supports the digraphs =R and
 =P for this.  Note that R= and P= are other characters.
 
-						*digraph-table* *digraph-table-mbyte*
+							*digraph-table*
 char  digraph	hex	dec	official name ~
 ^@	NU	0x00	  0	NULL (NUL)
 ^A	SH	0x01	  1	START OF HEADING (SOH)
@@ -344,6 +350,12 @@ $	DO	0x24	 36	DOLLAR SIGN
 ý	y'	0xfd	253	LATIN SMALL LETTER Y WITH ACUTE
 þ	th	0xfe	254	LATIN SMALL LETTER THORN (Icelandic)
 ÿ	y:	0xff	255	LATIN SMALL LETTER Y WITH DIAERESIS
+
+If you are using a |multibyte| 'encoding', Vim provides this enhanced set of
+additional digraphs:
+
+							*digraph-table-mbyte*
+char  digraph	hex	dec	official name ~
 Ā	A-	0100	0256	LATIN CAPITAL LETTER A WITH MACRON
 ā	a-	0101	0257	LATIN SMALL LETTER A WITH MACRON
 Ă	A(	0102	0258	LATIN CAPITAL LETTER A WITH BREVE

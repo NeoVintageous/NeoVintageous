@@ -1,26 +1,37 @@
-*diff.txt*      Nvim
+*diff.txt*      For Vim version 9.0.  Last change: 2022 Oct 01
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
 
 
-							*diff* *diff-mode*
-This file describes the diff feature: Showing differences between two to
+				*diff* *vimdiff* *gvimdiff* *diff-mode*
+This file describes the |+diff| feature: Showing differences between two to
 eight versions of the same file.
 
 The basics are explained in section |08.7| of the user manual.
 
-                                      Type |gO| to see the table of contents.
+1. Starting diff mode		|start-vimdiff|
+2. Viewing diffs		|view-diffs|
+3. Jumping to diffs		|jumpto-diffs|
+4. Copying diffs		|copy-diffs|
+5. Diff options			|diff-options|
 
 ==============================================================================
 1. Starting diff mode					*start-vimdiff*
 
-To start editing in diff mode, run "nvim -d".  This starts Nvim as usual, and
-additionally sets up for viewing the differences between the arguments. >
+The easiest way to start editing in diff mode is with the "vimdiff" command.
+This starts Vim as usual, and additionally sets up for viewing the differences
+between the arguments. >
 
-	nvim -d file1 file2 [file3 [file4]]
+	vimdiff file1 file2 [file3 [file4]]
 
-In addition to the |-d| argument, |-R| may be used for readonly mode.
+This is equivalent to: >
+
+	vim -d file1 file2 [file3 [file4]]
+
+You may also use "gvimdiff" or "vim -d -g".  The GUI is started then.
+You may also use "viewdiff" or "gviewdiff".  Vim starts in readonly mode then.
+"r" may be prepended for restricted mode (see |-Z|).
 
 The second and following arguments may also be a directory name.  Vim will
 then append the file name of the first argument to the directory name to find
@@ -34,11 +45,11 @@ Diffs are local to the current tab page |tab-page|.  You can't see diffs with
 a window in another tab page.  This does make it possible to have several
 diffs at the same time, each in their own tab page.
 
-What happens is that Nvim opens a window for each of the files.  This is like
-using the |-O| argument.  This uses vertical splits, but if you prefer
-horizontal splits use the |-o| argument instead: >
+What happens is that Vim opens a window for each of the files.  This is like
+using the |-O| argument.  This uses vertical splits.  If you prefer horizontal
+splits add the |-o| argument: >
 
-	nvim -d -o file1 file2 [file3 [file4]]
+	vimdiff -o file1 file2 [file3 [file4]]
 
 If you always prefer horizontal splits include "horizontal" in 'diffopt'.
 
@@ -64,7 +75,7 @@ make changes after loading a file, these will be included in the displayed
 diffs.  You might have to do ":diffupdate" now and then, not all changes are
 immediately taken into account, especially when using an external diff command.
 
-In your vimrc file you could do something special when Vim was started in
+In your .vimrc file you could do something special when Vim was started in
 diff mode.  You could use a construct like this: >
 
 	if &diff
@@ -78,17 +89,17 @@ While already in Vim you can start diff mode in three ways.
 							*E98*
 :diffs[plit] {filename}					*:diffs* *:diffsplit*
 		Open a new window on the file {filename}.  The options are set
-		as for "nvim -d" for the current and the newly opened window.
+		as for "vimdiff" for the current and the newly opened window.
 		Also see 'diffexpr'.
 
 							*:difft* *:diffthis*
 :difft[his]	Make the current window part of the diff windows.  This sets
-		the options as for "nvim -d".
+		the options like for "vimdiff".
 
 :diffp[atch] {patchfile}			 *E816* *:diffp* *:diffpatch*
 		Use the current buffer, patch it with the diff found in
-		{patchfile} and open a buffer on the result.  This sets the
-		options as for "nvim -d".
+		{patchfile} and open a buffer on the result.  The options are
+		set as for "vimdiff".
 		{patchfile} can be in any format that the "patch" program
 		understands or 'patchexpr' can handle.
 		Note that {patchfile} should only contain a diff for one file,
@@ -165,10 +176,10 @@ in diff mode in one window and "normal" in another window.  It is also
 possible to view the changes you have made to a buffer since the file was
 loaded.  Since Vim doesn't allow having two buffers for the same file, you
 need another buffer.  This command is useful: >
-	 command DiffOrig vert new | set buftype=nofile | read ++edit # | 0d_
-		\ | diffthis | wincmd p | diffthis
-Use ":DiffOrig" to see the differences
-between the current buffer and the file it was loaded from.
+	 command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_
+	 	\ | diffthis | wincmd p | diffthis
+(this is in |defaults.vim|).  Use ":DiffOrig" to see the differences between
+the current buffer and the file it was loaded from.
 
 A buffer that is unloaded cannot be used for the diff.  But it does work for
 hidden buffers.  You can use ":hide" to close a window without unloading the
@@ -326,7 +337,7 @@ FINDING THE DIFFERENCES					*diff-diffexpr*
 
 The 'diffexpr' option can be set to use something else than the internal diff
 support or the standard "diff" program to compare two files and find the
-differences.
+differences. *E959*
 
 When 'diffexpr' is empty, Vim uses this command to find the differences
 between file1 and file2: >
@@ -365,6 +376,9 @@ Additionally, 'diffexpr' should take care of "icase" and "iwhite" in the
 'diffopt' option.  'diffexpr' cannot change the value of 'lines' and
 'columns'.
 
+The advantage of using a function call without arguments is that it is faster,
+see |expr-option-function|.
+
 Example (this does almost the same as 'diffexpr' being empty): >
 
 	set diffexpr=MyDiff()
@@ -387,6 +401,13 @@ mode, so that a CTRL-Z doesn't end the text on DOS.
 
 The `redraw!` command may not be needed, depending on whether executing a
 shell command shows something on the display or not.
+
+If the 'diffexpr' expression starts with s: or |<SID>|, then it is replaced
+with the script ID (|local-function|). Example: >
+		set diffexpr=s:MyDiffExpr()
+		set diffexpr=<SID>SomeDiffExpr()
+Otherwise, the expression is evaluated in the context of the script where the
+option was set, thus script-local items are available.
 
 						*E810* *E97*
 Vim will do a test if the diff output looks alright.  If it doesn't, you will
@@ -423,6 +444,9 @@ will have the same effect.  These variables are set to the file names used:
 	v:fname_diff		patch file
 	v:fname_out		resulting patched file
 
+The advantage of using a function call without arguments is that it is faster,
+see |expr-option-function|.
+
 Example (this does the same as 'patchexpr' being empty): >
 
 	set patchexpr=MyPatch()
@@ -438,5 +462,13 @@ deleted.  It should just patch the file and nothing else.
 evaluating 'patchexpr'.  This hopefully avoids that files in the current
 directory are accidentally patched.  Vim will also delete files starting with
 v:fname_in and ending in ".rej" and ".orig".
+
+If the 'patchexpr' expression starts with s: or |<SID>|, then it is replaced
+with the script ID (|local-function|). Example: >
+		set patchexpr=s:MyPatchExpr()
+		set patchexpr=<SID>SomePatchExpr()
+Otherwise, the expression is evaluated in the context of the script where the
+option was set, thus script-local items are available.
+
 
  vim:tw=78:ts=8:noet:ft=help:norl:

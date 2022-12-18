@@ -1,4 +1,4 @@
-*helphelp.txt*	Nvim
+*helphelp.txt*	For Vim version 9.0.  Last change: 2022 Jan 08
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -6,7 +6,9 @@
 
 Help on help files					*helphelp*
 
-                                      Type |gO| to see the table of contents.
+1. Help commands		|online-help|
+2. Translated help files	|help-translated|
+3. Writing help files		|help-writing|
 
 ==============================================================================
 1. Help commands					*online-help*
@@ -22,8 +24,6 @@ Help on help files					*helphelp*
 			the very top.
 			The 'helplang' option is used to select a language, if
 			the main help file is available in several languages.
-
-			Type |gO| to see the table of contents.
 
 						*{subject}* *E149* *E661*
 :h[elp] {subject}	Like ":help", additionally jump to the tag {subject}.
@@ -96,13 +96,12 @@ Help on help files					*helphelp*
 			command from a following command.  You need to type
 			CTRL-V first to insert the <NL> or <CR>.  Example: >
 				:help so<C-V><CR>only
-<
 
 :h[elp]! [subject]	Like ":help", but in non-English help files prefer to
 			find a tag in a file with the same language as the
 			current file.  See |help-translated|.
 
-							*:helpc* *:helpclose*
+						 	*:helpc* *:helpclose*
 :helpc[lose]		Close one help window, if there is one.
 			Vim will try to restore the window layout (including
 			cursor position) to the same layout it was before
@@ -218,8 +217,14 @@ command: >
 	:!xterm -e vim +help &
 <
 
+			*:helpfind* *:helpf*
+:helpf[ind]		Like |:help|, but use a dialog to enter the argument.
+			Only for backwards compatibility.  It now executes the
+			ToolBar.FindHelp menu entry instead of using a builtin
+			dialog.  {only when compiled with |+GUI_GTK|}
+
 					*:helpt* *:helptags*
-			*E150* *E151* *E152* *E153* *E154* *E670* *E856*
+				*E150* *E151* *E152* *E153* *E154* *E670*
 :helpt[ags] [++t] {dir}
 			Generate the help tags file(s) for directory {dir}.
 			When {dir} is ALL then all "doc" directories in
@@ -241,14 +246,13 @@ command: >
 			To rebuild the help tags in the runtime directory
 			(requires write permission there): >
 				:helptags $VIMRUNTIME/doc
-<
-
 
 ==============================================================================
 2. Translated help files				*help-translated*
 
 It is possible to add translated help files, next to the original English help
 files.  Vim will search for all help in "doc" directories in 'runtimepath'.
+This is only available when compiled with the |+multi_lang| feature.
 
 At this moment translations are available for:
 	Chinese  - multiple authors
@@ -357,9 +361,6 @@ highlighted as a command, like a code block (see below).
 When referring to a Vim option in the help file, place the option name between
 two single quotes, eg. 'statusline'
 
-When referring to any other technical term, such as a filename or function
-parameter, surround it in backticks, eg. `~/.path/to/init.vim`.
-
 
 HIGHLIGHTING
 
@@ -392,6 +393,18 @@ highlighting.  So do these:
 	*Error	something wrong
 
 You can find the details in $VIMRUNTIME/syntax/help.vim
+
+							*inclusion*
+Vim is for everybody, no matter race, gender or anything.  Some people make a
+big deal about using "he" or "his" when referring to the user, thinking it
+means we assume the user is male.  That is not the case, it's just a habit of
+writing help text, which quite often is many years old.  Also, a lot of the
+text is written by contributors for whom English is not their first language.
+We do not make any assumptions about the gender of the user, no matter how the
+text is phrased.  Some people have suggested using "they", but that is not
+regular English. We do not want to spend much time on this discussion.  The
+goal is that the reader understands how Vim works, the exact wording is
+secondary.
 
 
  vim:tw=78:ts=8:noet:ft=help:norl:

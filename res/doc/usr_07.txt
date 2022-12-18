@@ -1,4 +1,4 @@
-*usr_07.txt*	Nvim
+*usr_07.txt*	For Vim version 9.0.  Last change: 2020 Mar 23
 
 		     VIM USER MANUAL - by Bram Moolenaar
 
@@ -242,8 +242,8 @@ Now edit the file "bar.txt" and place the B mark (B for bar) at its last line:
 >
 	GmB
 
-Now you can use the "'F" command to jump back to halfway of foo.txt.  Or edit
-yet another file, type "'B" and you jump to the end of bar.txt.
+Now you can use the "'F" command to jump back to halfway foo.txt.  Or edit yet
+another file, type "'B" and you are at the end of bar.txt again.
 
 The file marks are remembered until they are placed somewhere else.  Thus you
 can place the mark, do hours of editing and still be able to jump back to that
@@ -336,7 +336,7 @@ there. >
 
 Of course you can use many other commands to yank the text.  For example, to
 select whole lines start Visual mode with "V".  Or use CTRL-V to select a
-rectangular block.  Or use "yy" to yank a single line, "yaw" to yank-a-word,
+rectangular block.  Or use "Y" to yank a single line, "yaw" to yank-a-word,
 etc.
    The "p" command puts the text after the cursor.  Use "P" to put the text
 before the cursor.  Notice that Vim remembers if you yanked a whole line or a
@@ -359,7 +359,7 @@ the text should be placed in the f register.  This must come just before the
 yank command.
    Now yank three whole lines to the l register (l for line): >
 
-	"l3yy
+	"l3Y
 
 The count could be before the "l just as well.  To yank a block of text to the
 b (for block) register: >

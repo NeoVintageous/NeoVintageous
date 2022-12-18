@@ -1,4 +1,4 @@
-*usr_09.txt*	Nvim
+*usr_09.txt*	For Vim version 9.0.  Last change: 2017 Aug 11
 
 		     VIM USER MANUAL - by Bram Moolenaar
 
@@ -82,6 +82,10 @@ is Edit/Global Settings.  You will find these entries:
 	Toggle Left Scrollbar	make a scrollbar appear/disappear at the left
 	Toggle Right Scrollbar	make a scrollbar appear/disappear at the right
 
+On most systems you can tear-off the menus.  Select the top item of the menu,
+the one that looks like a dashed line.  You will get a separate window with
+the items of the menu.  It will hang around until you close the window.
+
 
 THE TOOLBAR
 
@@ -135,10 +139,10 @@ The following command makes the mouse work like a Microsoft Windows mouse: >
 
 	:behave mswin
 
-The default behavior of the mouse on Unix systems is xterm.  The default
-behavior on Windows systems is selected during the installation process.  For
-details about what the two behaviors are, see |:behave|.  Here follows a
-summary.
+The default behavior of the mouse on UNIX systems is xterm.  The default
+behavior on a Microsoft Windows system is selected during the installation
+process.  For details about what the two behaviors are, see |:behave|.  Here
+follows a summary.
 
 
 XTERM MOUSE BEHAVIOR

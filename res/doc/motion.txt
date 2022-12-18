@@ -1,4 +1,4 @@
-*motion.txt*    Nvim
+*motion.txt*    For Vim version 9.0.  Last change: 2022 Sep 26
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -9,6 +9,16 @@ Cursor motions					*cursor-motions* *navigation*
 These commands move the cursor position.  If the new position is off of the
 screen, the screen is scrolled to show the cursor (see also 'scrolljump' and
 'scrolloff' options).
+
+1. Motions and operators	|operator|
+2. Left-right motions		|left-right-motions|
+3. Up-down motions		|up-down-motions|
+4. Word motions			|word-motions|
+5. Text object motions		|object-motions|
+6. Text object selection	|object-select|
+7. Marks			|mark-motions|
+8. Jumps			|jump-motions|
+9. Various motions		|various-motions|
 
 General remarks:
 
@@ -25,8 +35,6 @@ at the keyboard.  Think of j as an arrow pointing downwards.
 The 'virtualedit' option can be set to make it possible to move the cursor to
 positions where there is no character or within a multi-column character (like
 a tab).
-
-                                      Type |gO| to see the table of contents.
 
 ==============================================================================
 1. Motions and operators				*operator*
@@ -65,18 +73,17 @@ After applying the operator the cursor is mostly left at the start of the text
 that was operated upon.  For example, "yfe" doesn't move the cursor, but "yFe"
 moves the cursor leftwards to the "e" where the yank started.
 
-						*linewise* *charwise* *characterwise*
+						*linewise* *characterwise*
 The operator either affects whole lines, or the characters between the start
 and end position.  Generally, motions that move between lines affect lines
 (are linewise), and motions that move within a line affect characters (are
-charwise).  However, there are some exceptions.
+characterwise).  However, there are some exceptions.
 
 						*exclusive* *inclusive*
-Character motion is either inclusive or exclusive.  When inclusive, the
+A character motion is either inclusive or exclusive.  When inclusive, the
 start and end position of the motion are included in the operation.  When
 exclusive, the last character towards the end of the buffer is not included.
-Linewise motions always include the start and end position.  Plugins can
-check the v:event.inclusive flag of the |TextYankPost| event.
+Linewise motions always include the start and end position.
 
 Which motions are linewise, inclusive or exclusive is mentioned with the
 command.  There are however, two general exceptions:
@@ -111,10 +118,10 @@ This cannot be repeated: >
 	d:if 1<CR>
 	   call search("f")<CR>
 	endif<CR>
-Note that when using ":" any motion becomes charwise exclusive.
+Note that when using ":" any motion becomes characterwise exclusive.
 
 								*forced-motion*
-FORCING A MOTION TO BE LINEWISE, CHARWISE OR BLOCKWISE
+FORCING A MOTION TO BE LINEWISE, CHARACTERWISE OR BLOCKWISE
 
 When a motion is not of the type you would like to use, you can force another
 type by using "v", "V" or CTRL-V just after the operator.
@@ -126,22 +133,22 @@ deletes from the cursor position until the character below the cursor >
 	d<C-V>j
 deletes the character under the cursor and the character below the cursor. >
 
-Be careful with forcing a linewise movement to be used charwise or blockwise,
-the column may not always be defined.
+Be careful with forcing a linewise movement to be used characterwise or
+blockwise, the column may not always be defined.
 
 							*o_v*
 v		When used after an operator, before the motion command: Force
-		the operator to work charwise, also when the motion is
+		the operator to work characterwise, also when the motion is
 		linewise.  If the motion was linewise, it will become
 		|exclusive|.
-		If the motion already was charwise, toggle
+		If the motion already was characterwise, toggle
 		inclusive/exclusive.  This can be used to make an exclusive
 		motion inclusive and an inclusive motion exclusive.
 
 							*o_V*
 V		When used after an operator, before the motion command: Force
 		the operator to work linewise, also when the motion is
-		charwise.
+		characterwise.
 
 							*o_CTRL-V*
 CTRL-V		When used after an operator, before the motion command: Force
@@ -166,6 +173,8 @@ CTRL-H		or					*CTRL-H* *<BS>*
 				:map CTRL-V<BS>		X
 			(to enter "CTRL-V<BS>" type the CTRL-V key, followed
 			by the <BS> key)
+			See |:fixdel| if the <BS> key does not do what you
+			want.
 
 l		or					*l*
 <Right>		or					*<Right>* *<Space>*
@@ -357,12 +366,18 @@ gg			Goto line [count], default first line, on the first
 			'fileformat' setting.
 			Also see the |line2byte()| function, and the 'o'
 			option in 'statusline'.
+			{not available when compiled without the
+			|+byte_offset| feature}
 
 These commands move to the specified line.  They stop when reaching the first
 or the last line.  The first two commands put the cursor in the same column
 (if possible) as it was after the last command that changed the column,
 except after the "$" command, then the cursor will be put on the last
 character of the line.
+
+If "k", "-" or CTRL-P is used with a [count] and there are less than [count]
+lines above the cursor and the 'cpo' option includes the "-" flag it is an
+error. |cpo--|.
 
 ==============================================================================
 4. Word motions						*word-motions*
@@ -372,6 +387,8 @@ w			[count] words forward.  |exclusive| motion.
 
 <C-Right>	or					*<C-Right>* *W*
 W			[count] WORDS forward.  |exclusive| motion.
+			If <C-Right> does not work, check out
+			|arrow_modifiers|.
 
 							*e*
 e			Forward to the end of word [count] |inclusive|.
@@ -386,6 +403,8 @@ b			[count] words backward.  |exclusive| motion.
 
 <C-Left>	or					*<C-Left>* *B*
 B			[count] WORDS backward.  |exclusive| motion.
+			If <C-Left> does not work, check out
+			|arrow_modifiers|.
 
 							*ge*
 ge			Backward to the end of word [count] |inclusive|.
@@ -409,7 +428,8 @@ a range of folded lines.  "b" and "B" move to the start of the first word or
 WORD before the fold.
 
 Special case: "cw" and "cW" are treated like "ce" and "cE" if the cursor is
-on a non-blank.  This is Vi-compatible, see |cpo-_| to change the behavior.
+on a non-blank.  This is because "cw" is interpreted as change-word, and a
+word does not include the following white space.
 
 Another special case: When using the "w" motion in combination with an
 operator and the last word moved over is at the end of a line, the end of
@@ -478,7 +498,9 @@ the macros ".IP", ".LP", etc.  (These are nroff macros, so the dot must be in
 the first column).  A section boundary is also a paragraph boundary.
 Note that a blank line (only containing white space) is NOT a paragraph
 boundary.
-Note: this does not include a '{' or '}' in the first column.
+Also note that this does not include a '{' or '}' in the first column.  When
+the '{' flag is in 'cpoptions' then '{' in the first column is used as a
+paragraph boundary |posix|.
 
 							*section*
 A section begins after a form-feed (<C-L>) in the first column and at each of
@@ -517,36 +539,36 @@ aw			"a word", select [count] words (see |word|).
 			Leading or trailing white space is included, but not
 			counted.
 			When used in Visual linewise mode "aw" switches to
-			Visual charwise mode.
+			Visual characterwise mode.
 
 							*v_iw* *iw*
 iw			"inner word", select [count] words (see |word|).
 			White space between words is counted too.
 			When used in Visual linewise mode "iw" switches to
-			Visual charwise mode.
+			Visual characterwise mode.
 
 							*v_aW* *aW*
 aW			"a WORD", select [count] WORDs (see |WORD|).
 			Leading or trailing white space is included, but not
 			counted.
 			When used in Visual linewise mode "aW" switches to
-			Visual charwise mode.
+			Visual characterwise mode.
 
 							*v_iW* *iW*
 iW			"inner WORD", select [count] WORDs (see |WORD|).
 			White space between words is counted too.
 			When used in Visual linewise mode "iW" switches to
-			Visual charwise mode.
+			Visual characterwise mode.
 
 							*v_as* *as*
 as			"a sentence", select [count] sentences (see
 			|sentence|).
-			When used in Visual mode it is made charwise.
+			When used in Visual mode it is made characterwise.
 
 							*v_is* *is*
 is			"inner sentence", select [count] sentences (see
 			|sentence|).
-			When used in Visual mode it is made charwise.
+			When used in Visual mode it is made characterwise.
 
 							*v_ap* *ap*
 ap			"a paragraph", select [count] paragraphs (see
@@ -567,14 +589,14 @@ a[			"a [] block", select [count] '[' ']' blocks.  This
 			goes backwards to the [count] unclosed '[', and finds
 			the matching ']'.  The enclosed text is selected,
 			including the '[' and ']'.
-			When used in Visual mode it is made charwise.
+			When used in Visual mode it is made characterwise.
 
 i]						*v_i]* *v_i[* *i]* *i[*
 i[			"inner [] block", select [count] '[' ']' blocks.  This
 			goes backwards to the [count] unclosed '[', and finds
 			the matching ']'.  The enclosed text is selected,
 			excluding the '[' and ']'.
-			When used in Visual mode it is made charwise.
+			When used in Visual mode it is made characterwise.
 
 a)							*v_a)* *a)* *a(*
 a(							*vab* *v_ab* *v_a(* *ab*
@@ -582,55 +604,56 @@ ab			"a block", select [count] blocks, from "[count] [(" to
 			the matching ')', including the '(' and ')' (see
 			|[(|).  Does not include white space outside of the
 			parenthesis.
-			When used in Visual mode it is made charwise.
+			When used in Visual mode it is made characterwise.
 
 i)							*v_i)* *i)* *i(*
 i(							*vib* *v_ib* *v_i(* *ib*
 ib			"inner block", select [count] blocks, from "[count] [("
 			to the matching ')', excluding the '(' and ')' (see
 			|[(|).  If the cursor is not inside a () block, then
- 			find the next "(".
-			When used in Visual mode it is made charwise.
+			find the next "(".
+			When used in Visual mode it is made characterwise.
 
 a>						*v_a>* *v_a<* *a>* *a<*
 a<			"a <> block", select [count] <> blocks, from the
 			[count]'th unmatched '<' backwards to the matching
 			'>', including the '<' and '>'.
-			When used in Visual mode it is made charwise.
+			When used in Visual mode it is made characterwise.
 
 i>						*v_i>* *v_i<* *i>* *i<*
 i<			"inner <> block", select [count] <> blocks, from
 			the [count]'th unmatched '<' backwards to the matching
 			'>', excluding the '<' and '>'.
-			When used in Visual mode it is made charwise.
+			When used in Visual mode it is made characterwise.
 
 						*v_at* *at*
 at			"a tag block", select [count] tag blocks, from the
 			[count]'th unmatched "<aaa>" backwards to the matching
 			"</aaa>", including the "<aaa>" and "</aaa>".
 			See |tag-blocks| about the details.
-			When used in Visual mode it is made charwise.
+			When used in Visual mode it is made characterwise.
+			Only available when compiled with the |+eval| feature.
 
 						*v_it* *it*
 it			"inner tag block", select [count] tag blocks, from the
 			[count]'th unmatched "<aaa>" backwards to the matching
 			"</aaa>", excluding the "<aaa>" and "</aaa>".
 			See |tag-blocks| about the details.
-			When used in Visual mode it is made charwise.
+			When used in Visual mode it is made characterwise.
 
 a}							*v_a}* *a}* *a{*
 a{							*v_aB* *v_a{* *aB*
 aB			"a Block", select [count] Blocks, from "[count] [{" to
 			the matching '}', including the '{' and '}' (see
 			|[{|).
-			When used in Visual mode it is made charwise.
+			When used in Visual mode it is made characterwise.
 
 i}							*v_i}* *i}* *i{*
 i{							*v_iB* *v_i{* *iB*
 iB			"inner Block", select [count] Blocks, from "[count] [{"
 			to the matching '}', excluding the '{' and '}' (see
 			|[{|).
-			When used in Visual mode it is made charwise.
+			When used in Visual mode it is made characterwise.
 
 a"							*v_aquote* *aquote*
 a'							*v_a'* *a'*
@@ -644,7 +667,7 @@ a`							*v_a`* *a`*
 			start of the line.
 			Any trailing white space is included, unless there is
 			none, then leading white space is included.
-			When used in Visual mode it is made charwise.
+			When used in Visual mode it is made characterwise.
 			Repeating this object in Visual mode another string is
 			included.  A count is currently not used.
 
@@ -736,11 +759,6 @@ Jumping to a mark can be done in two ways:
 2. With ' (single quote): The cursor is positioned on the first non-blank
 			  character in the line of the specified location and
 			  the motion is linewise.
-						*mark-view*
-3. Apart from the above if 'jumpoptions' contains "view", they will also try to
-restore the mark view. This is the number of lines between the cursor position
-and the window topline (first buffer line displayed in the window) when it was
-set.
 
 						*m* *mark* *Mark*
 m{a-zA-Z}		Set mark {a-zA-Z} at cursor position (does not move
@@ -771,6 +789,9 @@ m<  or  m>		Set the |'<| or |'>| mark.  Useful to change what the
 						*:k*
 :[range]k{a-zA-Z'}	Same as :mark, but the space before the mark name can
 			be omitted.
+			This command is not supported in |Vim9| script,
+			because it is too easily confused with a variable
+			name.
 
 						*'* *'a* *`* *`a*
 '{a-z}  `{a-z}		Jump to the mark {a-z} in the current buffer.
@@ -784,13 +805,15 @@ g'{mark}  g`{mark}
 			Jump to the {mark}, but don't change the jumplist when
 			jumping within the current buffer.  Example: >
 				g`"
-<			jumps to the last known position in a file.
-			See also |:keepjumps|.
+<			jumps to the last known position in a file.  See
+			$VIMRUNTIME/vimrc_example.vim.
+			Also see |:keepjumps|.
 
 						*:marks*
 :marks			List all the current marks (not a motion command).
 			The |'(|, |')|, |'{| and |'}| marks are not listed.
 			The first column has number zero.
+
 						*E283*
 :marks {arg}		List the marks that are mentioned in {arg} (not a
 			motion command).  For example: >
@@ -809,10 +832,9 @@ g'{mark}  g`{mark}
 			   :delmarks p-z      deletes marks in the range p to z
 			   :delmarks ^.[]     deletes marks ^ . [ ]
 			   :delmarks \"	      deletes mark "
-<
 
 :delm[arks]!		Delete all marks for the current buffer, but not marks
-			A-Z or 0-9.  Also clear the |changelist|.
+			A-Z or 0-9.
 
 A mark is not visible in any way.  It is just a position in the file that is
 remembered.  Do not confuse marks with named registers, they are totally
@@ -820,7 +842,7 @@ unrelated.
 
 'a - 'z		lowercase marks, valid within one file
 'A - 'Z		uppercase marks, also called file marks, valid between files
-'0 - '9		numbered marks, set from .shada file
+'0 - '9		numbered marks, set from .viminfo file
 
 Lowercase marks 'a to 'z are remembered as long as the file remains in the
 buffer list.  If you remove the file from the buffer list, all its marks are
@@ -831,18 +853,18 @@ deletes the lines from the cursor position to mark 't'.  Hint: Use mark 't' for
 Top, 'b' for Bottom, etc..  Lowercase marks are restored when using undo and
 redo.
 
-Uppercase marks 'A to 'Z include the file name.
-You can use them to jump from file to file.  You can only use an uppercase
-mark with an operator if the mark is in the current file.  The line number of
-the mark remains correct, even if you insert/delete lines or edit another file
-for a moment.  When the 'shada' option is not empty, uppercase marks are
-kept in the .shada file.  See |shada-file-marks|.
+Uppercase marks 'A to 'Z include the file name.  You can use them to jump from
+file to file.  You can only use an uppercase mark with an operator if the mark
+is in the current file.  The line number of the mark remains correct, even if
+you insert/delete lines or edit another file for a moment.  When the 'viminfo'
+option is not empty, uppercase marks are kept in the .viminfo file.  See
+|viminfo-file-marks|.
 
 Numbered marks '0 to '9 are quite different.  They can not be set directly.
-They are only present when using a shada file |shada-file|.  Basically '0
+They are only present when using a viminfo file |viminfo-file|.  Basically '0
 is the location of the cursor when you last exited Vim, '1 the last but one
-time, etc.  Use the "r" flag in 'shada' to specify files for which no
-Numbered mark should be stored.  See |shada-file-marks|.
+time, etc.  Use the "r" flag in 'viminfo' to specify files for which no
+Numbered mark should be stored.  See |viminfo-file-marks|.
 
 
 							*'[* *`[*
@@ -892,8 +914,7 @@ was made yet in the current file.
 			for each opened file.
 			Only one position is remembered per buffer, not one
 			for each window.  As long as the buffer is visible in
-			a window the position won't be changed.  Mark is also 
-			reset when |:wshada| is run.
+			a window the position won't be changed.
 
 							*'^* *`^*
 '^  `^			To the position where the cursor was the last time
@@ -1026,6 +1047,12 @@ CTRL-O			Go to [count] Older cursor position in jump list
 CTRL-I			Go to [count] newer cursor position in jump list
 			(not a motion command).
 
+			NOTE: In the GUI and in a terminal supporting
+			|modifyOtherKeys|, CTRL-I can be mapped separately
+			from <Tab>, on the condition that CTRL-I is
+			mapped before <Tab>, otherwise the mapping applies to
+			both.
+
 							*:ju* *:jumps*
 :ju[mps]		Print the jump list (not a motion command).
 
@@ -1099,63 +1126,9 @@ if you stop editing a file without writing, like with ":n!".
 
 When you split a window, the jumplist will be copied to the new window.
 
-If you have included the ' item in the 'shada' option the jumplist will be
-stored in the ShaDa file and restored when starting Vim.
+If you have included the ' item in the 'viminfo' option the jumplist will be
+stored in the viminfo file and restored when starting Vim.
 
-							*jumplist-stack*
-When jumpoptions includes "stack", the jumplist behaves like the history in a
-web browser and like the tag stack.  When jumping to a new location from the
-middle of the jumplist, the locations after the current position will be
-discarded.
-
-This behavior corresponds to the following situation in a web browser.
-Navigate to first.com, second.com, third.com, fourth.com and then fifth.com.
-Then navigate backwards twice so that third.com is displayed.  At that point,
-the history is:
-- first.com
-- second.com
-- third.com <--
-- fourth.com
-- fifth.com
-
-Finally, navigate to a different webpage, new.com.  The history is
-- first.com
-- second.com
-- third.com
-- new.com <--
-
-When the jumpoptions includes "stack", this is the behavior of Nvim as well.
-That is, given a jumplist like the following in which CTRL-O has been used to
-move back three times to location X
-
- jump line  col file/text
-   2  1260    8 src/nvim/mark.c         <-- location X-2
-   1   685    0 src/nvim/option_defs.h  <-- location X-1
->  0   462   36 src/nvim/option_defs.h  <-- location X
-   1   479   39 src/nvim/option_defs.h
-   2   213    2 src/nvim/mark.c
-   3   181    0 src/nvim/mark.c
-
-jumping to (new) location Y results in the locations after the current
-locations being removed:
-
- jump line  col file/text
-   3  1260    8 src/nvim/mark.c
-   2   685    0 src/nvim/option_defs.h
-   1   462   36 src/nvim/option_defs.h  <-- location X
-> 
-
-Then, when yet another location Z is jumped to, the new location Y appears
-directly after location X in the jumplist and location X remains in the same
-position relative to the locations (X-1, X-2, etc., ...) that had been before it
-prior to the original jump from X to Y:
-
- jump line  col file/text
-   4  1260    8 src/nvim/mark.c         <-- location X-2
-   3   685    0 src/nvim/option_defs.h  <-- location X-1
-   2   462   36 src/nvim/option_defs.h  <-- location X
-   1   100    0 src/nvim/option_defs.h  <-- location Y
-> 
 
 CHANGE LIST JUMPS			*changelist* *change-list-jumps* *E664*
 
@@ -1172,7 +1145,7 @@ g;			Go to [count] older position in change list.
 			(not a motion command)
 
 							*g,* *E663*
-g,			Go to [count] newer cursor position in change list.
+g,			Go to [count] newer position in change list.
 			Just like |g;| but in the opposite direction.
 			(not a motion command)
 
@@ -1236,8 +1209,8 @@ remembered.
 					cursor is on the # or no ([{
 					is following)
 			For other items the matchit plugin can be used, see
-			|matchit|.  This plugin also helps to skip matches in
-			comments.
+			|matchit-install|.  This plugin also helps to skip
+			matches in comments.
 
 			When 'cpoptions' contains "M" |cpo-M| backslashes
 			before parens and braces are ignored.  Without "M" the
@@ -1255,8 +1228,8 @@ remembered.
 			Perl, where single quotes are used for strings.
 
 			Nothing special is done for matches in comments.  You
-			can either use the |matchit| plugin or put quotes around
-			matches.
+			can either use the matchit plugin |matchit-install| or
+			put quotes around matches.
 
 			No count is allowed, {count}% jumps to a line {count}
 			percentage down the file |N%|.  Using '%' on
@@ -1265,15 +1238,12 @@ remembered.
 						*[(*
 [(			Go to [count] previous unmatched '('.
 			|exclusive| motion.
-
 						*[{*
 [{			Go to [count] previous unmatched '{'.
 			|exclusive| motion.
-
 						*])*
 ])			Go to [count] next unmatched ')'.
 			|exclusive| motion.
-
 						*]}*
 ]}			Go to [count] next unmatched '}'.
 			|exclusive| motion.
@@ -1309,7 +1279,7 @@ bring you back to the switch statement.
 			class.  When no '}' is found before the cursor this is
 			an error. |exclusive| motion.
 
-The above two commands assume that the file contains a class with methods.
+The above four commands assume that the file contains a class with methods.
 The class definition is surrounded in '{' and '}'.  Each method in the class
 is also surrounded with '{' and '}'.  This applies to the Java language.  The
 file looks like this: >

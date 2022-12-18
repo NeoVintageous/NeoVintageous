@@ -1,4 +1,4 @@
-*sign.txt*      Nvim
+*sign.txt*      For Vim version 9.0.  Last change: 2021 Dec 05
 
 
 		  VIM REFERENCE MANUAL    by Gordon Prieur
@@ -7,7 +7,11 @@
 
 Sign Support Features				*sign-support*
 
-                                      Type |gO| to see the table of contents.
+1. Introduction				|sign-intro|
+2. Commands				|sign-commands|
+3. Functions				|sign-functions-details|
+
+{only available when compiled with the |+signs| feature}
 
 ==============================================================================
 1. Introduction					*sign-intro* *signs*
@@ -24,8 +28,10 @@ Microsystem's dtterm does support this it's the only terminal emulator I know
 of which does).  A text sign and the highlight should be feasible in any color
 terminal emulator.
 
-Signs and highlights are not useful just for debuggers.  There are plugins
-that use signs to mark build errors or display version control status.
+Signs and highlights are not useful just for debuggers.  Sun's Visual
+WorkShop uses signs and highlights to mark build errors and SourceBrowser
+hits.  Additionally, the debugger supports 8 to 10 different signs and
+highlight colors, see |NetBeans|.
 
 There are two steps in using signs:
 
@@ -67,6 +73,10 @@ placed in the named group. The sign identifier is unique within a group. The
 sign group allows Vim plugins to use unique signs without interfering with
 other plugins using signs.
 
+To place a sign in a popup window the group name must start with "PopUp".
+Other signs will not show in a popup window.  The group name "PopUpMenu" is
+used by popup windows where 'cursorline' is set.
+
 							*sign-priority*
 Each placed sign is assigned a priority value. When multiple signs are placed
 on the same line, the attributes of the sign with the highest priority is used
@@ -80,6 +90,10 @@ displayed.
 When the line on which the sign is placed is deleted, the sign is moved to the
 next line (or the last line of the buffer, if there is no next line).  When
 the delete is undone the sign does not move back.
+
+When a sign with line highlighting and 'cursorline' highlighting are both
+present, if the priority is 100 or more then the sign highlighting takes
+precedence, otherwise the 'cursorline' highlighting.
 
 ==============================================================================
 2. Commands					*sign-commands* *:sig* *:sign*
@@ -113,9 +127,14 @@ See |sign_define()| for the equivalent Vim script function.
 		Define the file name where the bitmap can be found.  Should be
 		a full path.  The bitmap should fit in the place of two
 		characters.  This is not checked.  If the bitmap is too big it
-		will cause redraw problems.
+		will cause redraw problems.  Only GTK 2 can scale the bitmap
+		to fit the space available.
 			toolkit		supports ~
+			GTK 1		pixmap (.xpm)
+			GTK 2		many
+			Motif		pixmap (.xpm)
 			Win32		.bmp, .ico, .cur
+					pixmap (.xpm) |+xpm_w32|
 
 	linehl={group}
 		Highlighting group used for the whole line the sign is placed
@@ -324,7 +343,6 @@ See |sign_getplaced()| for the equivalent Vim script function.
 :sign place group=* file={fname}
 		List signs in all the groups placed in file {fname}.
 
-
 :sign place buffer={nr}
 		List signs placed in buffer {nr}.
 
@@ -334,8 +352,10 @@ See |sign_getplaced()| for the equivalent Vim script function.
 :sign place group=* buffer={nr}
 		List signs in all the groups placed in buffer {nr}.
 
+:sign place	List placed signs in the global group in all files.
+
 :sign place group={group}
-		List placed signs in all sign groups in all the files.
+		List placed signs with sign group {group} in all files.
 
 :sign place group=*
 		List placed signs in all sign groups in all files.
@@ -381,15 +401,14 @@ sign_define({list})
 		   icon		full path to the bitmap file for the sign.
 		   linehl	highlight group used for the whole line the
 				sign is placed in.
+		   numhl	highlight group used for the line number where
+				the sign is placed.
 		   text		text that is displayed when there is no icon
 				or the GUI is not being used.
 		   texthl	highlight group used for the text item
 		   culhl	highlight group used for the text item when
 				the cursor is on the same line as the sign and
 				'cursorline' is enabled.
-		   numhl	highlight group used for 'number' column at the
-				associated line. Overrides |hl-LineNr|,
-				|hl-CursorLineNr|.
 
 		If the sign named {name} already exists, then the attributes
 		of the sign are updated.
@@ -429,19 +448,18 @@ sign_getdefined([{name}])				*sign_getdefined()*
 		following entries:
 		   icon		full path to the bitmap file of the sign
 		   linehl	highlight group used for the whole line the
-				sign is placed in; not present if not set.
+				sign is placed in; not present if not set
 		   name		name of the sign
+		   numhl	highlight group used for the line number where
+				the sign is placed; not present if not set
 		   text		text that is displayed when there is no icon
 				or the GUI is not being used.
 		   texthl	highlight group used for the text item; not
-				present if not set.
+				present if not set
 		   culhl	highlight group used for the text item when
 				the cursor is on the same line as the sign and
 				'cursorline' is enabled; not present if not
-				set.
-		   numhl	highlight group used for 'number' column at the
-				associated line. Overrides |hl-LineNr|,
-				|hl-CursorLineNr|; not present if not set.
+				set
 
 		Returns an empty List if there are no signs and when {name} is
 		not found.
@@ -525,6 +543,7 @@ sign_jump({id}, {group}, {buf})
 		{buf} and position the cursor at sign {id} in group {group}.
 		This is similar to the |:sign-jump| command.
 
+		If {group} is an empty string, then the global group is used.
 		For the use of {buf}, see |bufname()|.
 
 		Returns the line number of the sign. Returns -1 if the
@@ -606,7 +625,7 @@ sign_placelist({list})
 				then a new unique identifier is allocated.
 				Otherwise the specified number is used. See
 				|sign-identifier| for more information.
-		    lnum	line number in the buffer {buf} where the
+		    lnum	line number in the buffer {expr} where the
 				sign is to be placed. For the accepted values,
 				see |line()|.
 		    name	name of the sign to place. See |sign_define()|
