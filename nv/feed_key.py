@@ -247,7 +247,7 @@ class FeedKeyHandler():
             if self._handle_missing_command(command):
                 return
 
-        if (get_mode(self.view) == OPERATOR_PENDING and isinstance(command, ViOperatorDef)):
+        if (isinstance(command, ViOperatorDef) and get_mode(self.view) == OPERATOR_PENDING):
 
             # TODO This should be unreachable code. The mapping resolver should
             # handle anything that can still reach this point (the first time).
@@ -372,7 +372,7 @@ class FeedKeyHandler():
         if do_eval:
             evaluate_state(self.view)
 
-    def _handle_missing_command(self, command):
+    def _handle_missing_command(self, command) -> bool:
         if isinstance(command, ViMissingCommandDef):
             if get_mode(self.view) == OPERATOR_PENDING:
                 set_mode(self.view, NORMAL)
