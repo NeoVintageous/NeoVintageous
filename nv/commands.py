@@ -144,7 +144,6 @@ from NeoVintageous.nv.utils import resolve_visual_line_target
 from NeoVintageous.nv.utils import resolve_visual_target
 from NeoVintageous.nv.utils import restore_visual_repeat_data
 from NeoVintageous.nv.utils import row_at
-from NeoVintageous.nv.utils import row_to_pt
 from NeoVintageous.nv.utils import save_previous_selection
 from NeoVintageous.nv.utils import scroll_horizontally
 from NeoVintageous.nv.utils import scroll_viewport_position
@@ -3100,7 +3099,7 @@ class nv_vi_dollar(TextCommand):
     def run(self, edit, mode=None, count=1):
         def _get_target(view, start, count):
             if count > 1:
-                start = row_to_pt(view, row_at(view, start) + (count - 1))
+                start = view.text_point(row_at(view, start) + (count - 1), 0)
 
             target = view.line(start).b
 
@@ -4174,7 +4173,7 @@ class nv_vi_gm(TextCommand):
                 return s
 
             mid_pt = line.size() // 2
-            row_start = row_to_pt(view, row_at(view, s.b))
+            row_start = view.text_point(row_at(view, s.b), 0)
 
             return Region(min(row_start + mid_pt, line.b - 1))
 

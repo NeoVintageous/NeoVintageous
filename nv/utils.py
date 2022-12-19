@@ -201,14 +201,6 @@ def row_at(view, pt: int) -> int:
     return view.rowcol(pt)[0]
 
 
-def col_at(view, pt: int) -> int:
-    return view.rowcol(pt)[1]
-
-
-def row_to_pt(view, row: int, col: int = 0) -> int:
-    return view.text_point(row, col)
-
-
 def next_non_blank(view, pt: int) -> int:
     limit = view.size()
     substr = view.substr
@@ -1191,7 +1183,7 @@ def get_visual_repeat_data(view, mode: str):
              row_at(view, first.begin()))
 
     if lines > 0:
-        chars = col_at(view, first.end())
+        chars = view.rowcol(first.end())[1]
     else:
         chars = first.size()
 
