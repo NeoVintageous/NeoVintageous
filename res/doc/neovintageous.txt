@@ -118,9 +118,8 @@ To edit settings go to `Menu > Preferences > Settings`.
                                               *'vintageous_bell_color_scheme'*
 'vintageous_bell_color_scheme'
                         string (default "dark")
-        Visual bell color scheme. Valid values are: "dark", "light", or color
-        scheme path. The color scheme path should be in the format:
-        Packages/Name/name.hidden-color-scheme
+        Visual bell color scheme. Valid values are: "dark", "light", or a
+        color scheme path e.g. "Packages/Package/Name.hidden-color-scheme".
 
                                                    *'vintageous_default_mode'*
 'vintageous_default_mode'
@@ -207,10 +206,9 @@ To edit settings go to `Menu > Preferences > Settings`.
                              *'vintageous_multi_cursor_exit_from_visual_mode'*
 'vintageous_multi_cursor_exit_from_visual_mode'
                         boolean (default off)
-        If set to false, then pressing the quit key (<Esc> or J) in Visual
-        mode will not quit and delete all existing cursors. Useful if you want
-        to go back to Normal mode, and still be able to operate on all the
-        cursors.
+        If set to false, pressing the quit key (<Esc> or J) in Visual mode
+        will not quit and delete all existing cursors. Useful if you want to
+        go to Normal mode, and still be able to operate on all the cursors.
 
                                                  *'vintageous_lsp_save'*
 'vintageous_lsp_save'
