@@ -135,7 +135,6 @@ from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import regions_transformer_indexed
 from NeoVintageous.nv.utils import regions_transformer_reversed
 from NeoVintageous.nv.utils import replace_line
-from NeoVintageous.nv.utils import replace_sel
 from NeoVintageous.nv.utils import resolve_internal_normal_target
 from NeoVintageous.nv.utils import resolve_normal_target
 from NeoVintageous.nv.utils import resolve_visual_block_begin
@@ -1708,7 +1707,7 @@ class nv_vi_greater_than(TextCommand):
 
             # Restore only the first sel.
             s = self.view.sel()[0]
-            replace_sel(self.view, s.a + 1)
+            set_selection(self.view, s.a + 1)
             enter_normal_mode(self.view, mode)
             return
 

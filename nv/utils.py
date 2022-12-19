@@ -147,14 +147,6 @@ def replace_line(view, edit, replacement: str):
     view.replace(edit, Region(pt, view.line(pt).b), replacement)
 
 
-def replace_sel(view, new_sel) -> None:
-    view.sel().clear()
-    if isinstance(new_sel, list):
-        view.sel().add_all(new_sel)
-    else:
-        view.sel().add(new_sel)
-
-
 def get_insertion_point_at_b(region: Region) -> int:
     if region.a < region.b:
         return region.b - 1
