@@ -175,7 +175,7 @@ class FeedKeyHandler():
         # (count), or " (register character), we need to skip the count handler
         # and go straight to resolving the mapping, otherwise it won't resolve.
         # See https://github.com/NeoVintageous/NeoVintageous/issues/434.
-        if not mappings_can_resolve(get_mode(self.view), get_partial_sequence(self.view) + self.key):
+        if not mappings_can_resolve(self.view, self.key):
             if self.repeat_count:
                 set_action_count(self.view, str(self.repeat_count))
 

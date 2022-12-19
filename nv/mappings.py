@@ -100,7 +100,10 @@ def mappings_is_incomplete(view) -> bool:
     return False
 
 
-def mappings_can_resolve(mode: str, sequence: str) -> bool:
+def mappings_can_resolve(view, key: str) -> bool:
+    mode = get_mode(view)
+    sequence = get_partial_sequence(view) + key
+
     full_match = _find_full_match(mode, sequence)
     if full_match:
         return True
