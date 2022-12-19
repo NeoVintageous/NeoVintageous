@@ -24,6 +24,7 @@ from NeoVintageous.nv.mappings import mappings_is_incomplete
 from NeoVintageous.nv.mappings import mappings_resolve
 from NeoVintageous.nv.settings import append_sequence
 from NeoVintageous.nv.settings import get_action_count
+from NeoVintageous.nv.settings import get_capture_register
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_motion_count
 from NeoVintageous.nv.settings import get_partial_sequence
@@ -31,11 +32,10 @@ from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.settings import get_sequence
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import is_interactive
-from NeoVintageous.nv.settings import is_must_capture_register_name
 from NeoVintageous.nv.settings import set_action_count
+from NeoVintageous.nv.settings import set_capture_register
 from NeoVintageous.nv.settings import set_mode
 from NeoVintageous.nv.settings import set_motion_count
-from NeoVintageous.nv.settings import set_must_capture_register_name
 from NeoVintageous.nv.settings import set_partial_sequence
 from NeoVintageous.nv.settings import set_register
 from NeoVintageous.nv.state import evaluate_state
@@ -96,7 +96,7 @@ class FeedKeyHandler():
 
         self._append_sequence()
 
-        if self._capture_register():
+        if self._handle_register():
             return
 
         if self._collect_input():
@@ -136,9 +136,8 @@ class FeedKeyHandler():
         append_sequence(self.view, self.key)
         update_status_line(self.view)
 
-    def _capture_register(self) -> bool:
-        if is_must_capture_register_name(self.view):
-            _log.debug('capturing register name...')
+    def _handle_register(self) -> bool:
+        if get_capture_register(self.view):
             set_register(self.view, self.key)
             set_partial_sequence(self.view, '')
 
@@ -220,7 +219,7 @@ class FeedKeyHandler():
             return
 
         if isinstance(command, ViOpenRegister):
-            set_must_capture_register_name(self.view, True)
+            set_capture_register(self.view, True)
             return
 
         if isinstance(command, Mapping):

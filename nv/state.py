@@ -33,9 +33,9 @@ from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import is_interactive
 from NeoVintageous.nv.settings import is_processing_notation
 from NeoVintageous.nv.settings import set_action_count
+from NeoVintageous.nv.settings import set_capture_register
 from NeoVintageous.nv.settings import set_mode
 from NeoVintageous.nv.settings import set_motion_count
-from NeoVintageous.nv.settings import set_must_capture_register_name
 from NeoVintageous.nv.settings import set_partial_sequence
 from NeoVintageous.nv.settings import set_register
 from NeoVintageous.nv.settings import set_repeat_data
@@ -207,7 +207,7 @@ def reset_command_data(view) -> None:
     set_sequence(view, '')
     set_partial_sequence(view, '')
     set_register(view, '"')
-    set_must_capture_register_name(view, False)
+    set_capture_register(view, False)
     reset_status_line(view, get_mode(view))
 
 
