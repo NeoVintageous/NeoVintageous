@@ -352,8 +352,8 @@ def evaluate_state(view) -> None:
     reset_command_data(view)
 
 
-def _should_reset_mode(view, current_mode: str) -> bool:
-    return current_mode == UNKNOWN or get_setting(view, 'reset_mode_when_switching_tabs')
+def _should_reset_mode(view, mode: str) -> bool:
+    return mode == UNKNOWN or get_setting(view, 'reset_mode_when_switching_tabs')
 
 
 def init_state(view) -> None:
