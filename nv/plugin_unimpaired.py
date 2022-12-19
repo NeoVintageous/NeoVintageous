@@ -23,13 +23,13 @@ from NeoVintageous.nv.options import set_option
 from NeoVintageous.nv.options import set_window_ui_element_visible
 from NeoVintageous.nv.options import toggle_option
 from NeoVintageous.nv.plugin import register
+from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.polyfill import view_find
 from NeoVintageous.nv.polyfill import view_rfind
 from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.utils import regions_transformer
-from NeoVintageous.nv.utils import set_selection
 from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef

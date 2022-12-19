@@ -39,11 +39,12 @@ from sublime import Region
 from sublime import View
 
 from NeoVintageous.nv.options import get_option
+from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
+from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import get_visual_block_direction
 from NeoVintageous.nv.settings import set_mode
-from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import set_processing_notation
 from NeoVintageous.nv.settings import set_visual_block_direction
 from NeoVintageous.nv.settings import set_xpos
@@ -177,14 +178,6 @@ def save_previous_selection(view, mode: str) -> None:
 
 def get_previous_selection(view) -> tuple:
     return (view.get_regions('visual_sel'), view.settings().get('_nv_visual_sel_mode'))
-
-
-def set_selection(view, sel) -> None:
-    view.sel().clear()
-    if isinstance(sel, list):
-        view.sel().add_all(sel)
-    else:
-        view.sel().add(sel)
 
 
 def show_if_not_visible(view, pt=None) -> None:

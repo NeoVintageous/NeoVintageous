@@ -51,6 +51,7 @@ from NeoVintageous.nv.marks import get_mark
 from NeoVintageous.nv.marks import set_mark
 from NeoVintageous.nv.paste import pad_visual_block_paste_contents
 from NeoVintageous.nv.paste import resolve_paste_items_with_view_sel
+from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.polyfill import spell_select
 from NeoVintageous.nv.polyfill import split_by_newlines
 from NeoVintageous.nv.polyfill import toggle_side_bar
@@ -149,7 +150,6 @@ from NeoVintageous.nv.utils import save_previous_selection
 from NeoVintageous.nv.utils import scroll_horizontally
 from NeoVintageous.nv.utils import scroll_viewport_position
 from NeoVintageous.nv.utils import sel_observer
-from NeoVintageous.nv.utils import set_selection
 from NeoVintageous.nv.utils import should_motion_apply_op_transformer
 from NeoVintageous.nv.utils import show_if_not_visible
 from NeoVintageous.nv.utils import spell_file_add_word

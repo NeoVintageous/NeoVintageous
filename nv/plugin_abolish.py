@@ -22,7 +22,7 @@ import re
 from sublime_plugin import TextCommand
 
 from NeoVintageous.nv.plugin import register
-from NeoVintageous.nv.utils import set_selection
+from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import RequiresOneCharMixinDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef

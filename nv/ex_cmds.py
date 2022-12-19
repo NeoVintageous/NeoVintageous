@@ -49,6 +49,7 @@ from NeoVintageous.nv.polyfill import has_dirty_buffers
 from NeoVintageous.nv.polyfill import has_newline_at_eof
 from NeoVintageous.nv.polyfill import is_file_read_only
 from NeoVintageous.nv.polyfill import is_view_read_only
+from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
 from NeoVintageous.nv.polyfill import view_find_all_in_range
@@ -77,7 +78,6 @@ from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.utils import save_view
-from NeoVintageous.nv.utils import set_selection
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING

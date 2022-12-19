@@ -23,6 +23,7 @@ from sublime_plugin import TextCommand
 
 from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.plugin import register
+from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.polyfill import view_find_all_in_range
 from NeoVintageous.nv.polyfill import view_rfind_all
 from NeoVintageous.nv.search import add_search_highlighting
@@ -39,7 +40,6 @@ from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.utils import get_insertion_point_at_b
 from NeoVintageous.nv.utils import resolve_visual_line_target
 from NeoVintageous.nv.utils import resolve_visual_target
-from NeoVintageous.nv.utils import set_selection
 from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import ViMotionDef

@@ -76,6 +76,14 @@ def has_newline_at_eof(view) -> bool:
     return view.substr(view.size() - 1) == '\n'
 
 
+def set_selection(view, sel) -> None:
+    view.sel().clear()
+    if isinstance(sel, list):
+        view.sel().add_all(sel)
+    else:
+        view.sel().add(sel)
+
+
 def is_view_read_only(view) -> bool:
     return view.is_read_only() or is_file_read_only(view.file_name())
 
