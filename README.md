@@ -13,17 +13,8 @@ NeoVintageous is an advanced Vim emulation layer for Sublime Text.
 
 * Strong defaults
 * Highly configurable
-* Plugins out-of-the-box
-    * Abolish
-    * Commentary
-    * Highlighted Yank
-    * Indent Object
-    * Multiple cursors
-    * Surround
-    * Sneak (disabled by default)
-    * Targets
-    * Unimpaired
-* Integrations: [GitGutter](https://github.com/jisaacks/GitGutter), [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter3), [Origami](https://github.com/SublimeText/Origami)
+* Plugins out-of-the-box: Abolish, Commentary, Highlighted Yank, Indent Object, Multiple cursors, Surround, Sneak (disabled by default), Targets, Unimpaired
+* Integrations: [GitGutter](https://github.com/jisaacks/GitGutter), [LSP](https://github.com/sublimelsp/LSP), [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter3), [Origami](https://github.com/SublimeText/Origami)
 * Drop-in replacement for Vintageous
 
 ## Installation
@@ -56,7 +47,7 @@ Vim's full documentation system is accessible via the `:help {subject}` command,
 
 ## Plugins
 
-A number of popular Vim plugins have been ported and are available out-of-the-box. Feature-parity is an ongoing effort and functional differences from Vim are not always documented. Please open issues to request missing features.
+Some popular Vim plugins have been ported and are available out-of-the-box. Feature-parity is an ongoing effort and functional differences are not always documented. Please open issues to request missing features.
 
 Plugin | Documentation | Original Vim Plugin
 ------ | ------------- | -------------------
@@ -65,8 +56,8 @@ Commentary | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/ma
 Highlighted Yank | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-highlightedyank](https://github.com/machakann/vim-highlightedyank)
 Indent Object | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object)
 Multiple Cursors | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors)
-Surround | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-surround](https://github.com/tpope/vim-surround)
 Sneak | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-sneak](https://github.com/justinmk/vim-sneak)
+Surround | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-surround](https://github.com/tpope/vim-surround)
 Targets | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-targets](https://github.com/wellle/targets.vim)
 Unimpaired | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-unimpaired](https://github.com/tpope/vim-unimpaired)
 
