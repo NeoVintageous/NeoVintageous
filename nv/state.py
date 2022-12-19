@@ -73,7 +73,7 @@ _log = logging.getLogger(__name__)
 def update_status_line(view) -> None:
     mode_name = mode_to_name(get_mode(view))
     if mode_name:
-        view.set_status('vim-mode', '-- {} --'.format(mode_name) if mode_name else '')
+        view.set_status('vim-mode', '-- {} --'.format(mode_name))
 
     view.set_status('vim-seq', get_sequence(view))
 
