@@ -273,11 +273,11 @@ def set_register(view, value: str) -> None:
 
 
 def get_capture_register(view) -> bool:
-    return get_session_view_value(view, 'must_capture_register_name', False)
+    return get_session_view_value(view, 'capture_register', False)
 
 
 def set_capture_register(view, value: bool) -> None:
-    set_session_view_value(view, 'must_capture_register_name', value)
+    set_session_view_value(view, 'capture_register', value)
 
 
 def get_xpos(view) -> int:

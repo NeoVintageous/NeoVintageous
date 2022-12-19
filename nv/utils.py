@@ -272,10 +272,7 @@ def last_row(view) -> int:
     return view.rowcol(view.size())[0]
 
 
-# Used for example by commands like:
-#   f{char}
-#   t{char}
-#   r{char}
+# Used for example by commands like f{char}, t{char}, r{char}
 # TODO Refactor into nv.vi.keys module
 _TRANLSATE_CHAR_MAP = {
     '<bar>': '|',
