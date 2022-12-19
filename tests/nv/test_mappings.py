@@ -255,19 +255,28 @@ class TestMappings(unittest.ViewTestCase):
         self.assertEqual(_find_full_match(unittest.NORMAL, 'bbb'), 'cde')
 
     @unittest.mock_mappings()
-    def test_is_incomplete(self):
-        self.assertFalse(mappings_is_incomplete(NORMAL, 'f'))
+    @unittest.mock.patch('NeoVintageous.nv.mappings.get_partial_sequence')
+    @unittest.mock.patch('NeoVintageous.nv.mappings.get_mode')
+    def test_is_incomplete(self, get_mode, get_partial_sequence):
+        get_mode.return_value = NORMAL
+        get_partial_sequence.return_value = 'f'
+        self.assertFalse(mappings_is_incomplete(self.view))
         mappings_add(unittest.NORMAL, 'aa', 'y')
-        self.assertEqual(mappings_is_incomplete(unittest.NORMAL, 'a'), True)
+        get_partial_sequence.return_value = 'a'
+        self.assertEqual(mappings_is_incomplete(self.view), True)
         mappings_add(unittest.NORMAL, 'b', 'y')
-        self.assertFalse(mappings_is_incomplete(unittest.NORMAL, 'b'))
+        get_partial_sequence.return_value = 'b'
+        self.assertFalse(mappings_is_incomplete(self.view))
         mappings_add(unittest.NORMAL, 'c', 'y')
         mappings_add(unittest.NORMAL, 'cc', 'y')
-        self.assertFalse(mappings_is_incomplete(unittest.NORMAL, 'c'))
+        get_partial_sequence.return_value = 'c'
+        self.assertFalse(mappings_is_incomplete(self.view))
         mappings_add(unittest.NORMAL, 'd', 'y')
         mappings_add(unittest.NORMAL, 'ddd', 'y')
-        self.assertEquals(mappings_is_incomplete(unittest.NORMAL, 'dd'), True)
-        self.assertFalse(mappings_is_incomplete(NORMAL, 'f'))
+        get_partial_sequence.return_value = 'dd'
+        self.assertEquals(mappings_is_incomplete(self.view), True)
+        get_partial_sequence.return_value = 'f'
+        self.assertFalse(mappings_is_incomplete(self.view))
 
 
 class TestResolve(unittest.ViewTestCase):

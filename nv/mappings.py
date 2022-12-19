@@ -85,7 +85,10 @@ def mappings_clear() -> None:
         _mappings[mode] = {}
 
 
-def mappings_is_incomplete(mode: str, seq: str) -> bool:
+def mappings_is_incomplete(view) -> bool:
+    mode = get_mode(view)
+    seq = get_partial_sequence(view)
+
     full_match = _find_full_match(mode, seq)
     if full_match:
         return False

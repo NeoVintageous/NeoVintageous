@@ -207,7 +207,7 @@ class FeedKeyHandler():
         set_partial_sequence(self.view, get_partial_sequence(self.view) + self.key)
 
     def _has_incomplete_user_mapping(self):
-        if self.check_user_mappings and mappings_is_incomplete(get_mode(self.view), get_partial_sequence(self.view)):
+        if self.check_user_mappings and mappings_is_incomplete(self.view):
             _log.debug('found incomplete mapping')
 
             return True
