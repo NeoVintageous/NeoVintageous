@@ -301,6 +301,8 @@ Toggle super-keys from the command palette "Toggle SUPER keys".
 
 MULTIPLE CURSORS                                         *nv-multiple-cursors*
 
+Inspired by https://github.com/terryma/vim-multiple-cursors.
+
 normal mode and visual mode
 
     start:      <C-n> or gh     Start multiple cursor.
@@ -330,7 +332,7 @@ gH                      Select all search occurrences (/, ?, *, #).
 
 WINDOW SPLITS                                               *nv-window-splits*
 
-Some window split commands require https://packagecontrol.io/packages/Origami.
+Some window features require https://packagecontrol.io/packages/Origami.
 
 CTRL-W CTRL-S
 CTRL-W s
@@ -420,33 +422,13 @@ In general if you are on X11 type systems you could directly use: >
 
 Search highlighting                                   *nv-search-highlighting*
 
-Search highlighting can be customized. The styles can be configured via
-the following settings: >
+The colors for search highlighting can be customised.
 
-    // Current search style.
-    // Valid values are: fill, outline, underline, squiggly_underline,
-    // stippled_underline.
-    "neovintageous_search_cur_style": "fill",
-
-    // Incremental search style.
-    // Valid values are: fill, outline, underline, squiggly_underline,
-    // stippled_underline.
-    "neovintageous_search_inc_style": "fill",
-
-    // Search occurrences style.
-    // Valid values are: fill, outline, underline, squiggly_underline,
-    // stippled_underline.
-    "neovintageous_search_occ_style": "fill",
-
-Configure settings via `Menu > Preferences > Settings`.
-
-To customise the colors of the styles create a color scheme override. For
-example if you're using the "Monokai" color scheme, create an override file
-named `Monokai.sublime-color-scheme` in the Sublime Text User directory: >
+For example, if you're using a color scheme named "Monokai", create an
+override file named `Monokai.sublime-color-scheme` in the User dir: >
 
     {
-        "rules":
-        [
+        "rules": [
             {
                 "scope": "neovintageous_search_inc",
                 "background": "#a1efe4",
@@ -469,14 +451,15 @@ named `Monokai.sublime-color-scheme` in the Sublime Text User directory: >
 
 HIGHLIGHTEDYANK                         *highlightedyank* *nv-highlightedyank*
 
-HighlightedYank is a plugin to highlight the yanked region. This is a pretty
-trick to make your coding more comfortable.
+Inspired by https://github.com/machakann/vim-highlightedyank.
+
+HighlightedYank is a plugin to highlight the yanked region.
 
 When new text is yanked, the old highlighting is deleted. Or when former lines
 are edited, the highlighting is deleted to prevent shifting the position, also.
 
 The highlighted duration can be configured by the 'highlightedyank_duration'
-setting and the style can be configured by the 'highlightedyank_style' setting.
+setting and the style can be configured by 'highlightedyank_style'.
 
 To customise the colors, create a color scheme override for your color scheme:
 for example if you have the default Monokai color scheme enabled, create a file
@@ -491,8 +474,7 @@ Monokai.sublime-color-scheme in the Sublime Text User directory
 "highlightedyank" scope: >
 
     {
-        "rules":
-        [
+        "rules": [
             {
                 "scope": "highlightedyank",
                 "background": "#e6db74",
@@ -500,8 +482,6 @@ Monokai.sublime-color-scheme in the Sublime Text User directory
             }
         ]
     }
-
-Inspired by https://github.com/machakann/vim-highlightedyank.
 
 ==============================================================================
 
