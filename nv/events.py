@@ -24,7 +24,7 @@ from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.session import session_on_close
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_setting
-from NeoVintageous.nv.state import init_state
+from NeoVintageous.nv.state import init_view
 from NeoVintageous.nv.utils import fix_eol_cursor
 from NeoVintageous.nv.utils import is_view
 from NeoVintageous.nv.utils import update_xpos
@@ -247,4 +247,4 @@ class NeoVintageousEvents(EventListener):
                                 enter_normal_mode(other_view, get_mode(other_view))
 
         # Initialise view.
-        init_state(view)
+        init_view(view)

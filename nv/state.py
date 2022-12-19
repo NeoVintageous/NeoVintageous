@@ -358,7 +358,7 @@ def _should_reset_mode(view, mode: str) -> bool:
     return mode == UNKNOWN or get_setting(view, 'reset_mode_when_switching_tabs')
 
 
-def init_state(view) -> None:
+def init_view(view) -> None:
     # If the view not a regular vim capable view (e.g. console, widget, panel),
     # skip the state initialisation and perform a clean routine on the view.
     # TODO is a clean routine really necessary on non-vim capable views?

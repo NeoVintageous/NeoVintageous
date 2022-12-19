@@ -41,7 +41,7 @@ from NeoVintageous.nv.settings import set_register
 from NeoVintageous.nv.state import evaluate_state
 from NeoVintageous.nv.state import get_action
 from NeoVintageous.nv.state import get_motion
-from NeoVintageous.nv.state import init_state
+from NeoVintageous.nv.state import init_view
 from NeoVintageous.nv.state import is_runnable
 from NeoVintageous.nv.state import must_collect_input
 from NeoVintageous.nv.state import reset_command_data
@@ -402,7 +402,7 @@ def _fix_malformed_selection(view, mode: str) -> str:
         # All" is pressed. In that case, multiple selections may need fixing.
         view.window().run_command('nv_enter_visual_mode', {'mode': mode})
 
-    # TODO Extract fix malformed selections specific logic from init_state()
-    init_state(view)
+    # TODO Extract fix malformed selections specific logic from init_view()
+    init_view(view)
 
     return mode

@@ -825,7 +825,7 @@ class nv_enter_normal_mode(TextCommand):
         self.view.window().run_command('hide_overlay')
 
         if ((not from_init and (mode == NORMAL) and not get_sequence(self.view)) or not is_view(self.view)):
-            # When nv_enter_normal_mode is requested from init_state, we
+            # When nv_enter_normal_mode is requested from init_view, we
             # should not hide output panels; hide them only if the user
             # pressed Esc and we're not cancelling partial state data, or if a
             # panel has the focus.
