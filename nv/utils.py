@@ -56,18 +56,6 @@ from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import is_visual_mode
 
 
-def has_dirty_buffers(window) -> bool:
-    for v in window.views():
-        if v.is_dirty():
-            return True
-
-    return False
-
-
-def has_newline_at_eof(view) -> bool:
-    return view.substr(view.size() - 1) == '\n'
-
-
 def is_view(view) -> bool:
     if not isinstance(view, View):
         return False

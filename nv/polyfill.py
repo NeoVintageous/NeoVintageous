@@ -64,6 +64,18 @@ def run_window_command(cmd: str, args: dict = None, window=None) -> None:
     window.run_command(cmd, args)
 
 
+def has_dirty_buffers(window) -> bool:
+    for v in window.views():
+        if v.is_dirty():
+            return True
+
+    return False
+
+
+def has_newline_at_eof(view) -> bool:
+    return view.substr(view.size() - 1) == '\n'
+
+
 def is_view_read_only(view) -> bool:
     return view.is_read_only() or is_file_read_only(view.file_name())
 

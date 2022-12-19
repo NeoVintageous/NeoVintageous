@@ -45,6 +45,8 @@ from NeoVintageous.nv.mappings import mappings_remove
 from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.options import set_option
 from NeoVintageous.nv.options import toggle_option
+from NeoVintageous.nv.polyfill import has_dirty_buffers
+from NeoVintageous.nv.polyfill import has_newline_at_eof
 from NeoVintageous.nv.polyfill import is_file_read_only
 from NeoVintageous.nv.polyfill import is_view_read_only
 from NeoVintageous.nv.polyfill import spell_add
@@ -71,8 +73,6 @@ from NeoVintageous.nv.settings import set_ex_substitute_last_replacement
 from NeoVintageous.nv.settings import set_setting
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import adding_regions
-from NeoVintageous.nv.utils import has_dirty_buffers
-from NeoVintageous.nv.utils import has_newline_at_eof
 from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import row_at
