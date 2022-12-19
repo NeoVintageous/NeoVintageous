@@ -89,12 +89,10 @@ def mappings_is_incomplete(view) -> bool:
     mode = get_mode(view)
     seq = get_partial_sequence(view)
 
-    full_match = _find_full_match(mode, seq)
-    if full_match:
+    if _find_full_match(mode, seq):
         return False
 
-    partial_matches = _find_partial_matches(mode, seq)
-    if partial_matches:
+    if _find_partial_matches(mode, seq):
         return True
 
     return False
@@ -104,12 +102,10 @@ def mappings_can_resolve(view, key: str) -> bool:
     mode = get_mode(view)
     sequence = get_partial_sequence(view) + key
 
-    full_match = _find_full_match(mode, sequence)
-    if full_match:
+    if _find_full_match(mode, sequence):
         return True
 
-    partial_matches = _find_partial_matches(mode, sequence)
-    if partial_matches:
+    if _find_partial_matches(mode, sequence):
         return True
 
     return False
