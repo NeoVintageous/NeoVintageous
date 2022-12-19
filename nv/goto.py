@@ -177,6 +177,7 @@ def goto_help_subject(window, subject: str = None) -> None:
         settings.set('auto_match_enabled', False)
         settings.set('draw_centered', False)
         settings.set('draw_indent_guides', False)
+        settings.set('draw_white_space', 'none')
         settings.set('line_numbers', False)
         settings.set('match_selection', False)
         settings.set('rulers', [])
