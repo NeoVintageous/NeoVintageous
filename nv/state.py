@@ -145,6 +145,12 @@ def _scroll_into_view(view, mode: str) -> None:
     view.show(target_pt, False)
 
 
+def _scroll_into_active_view() -> None:
+    view = active_window().active_view()
+    if view:
+        _scroll_into_view(view, get_mode(view))
+
+
 def _create_definition(view, name: str):
     cmd = get_session_view_value(view, name)
     if cmd:
@@ -188,9 +194,7 @@ def reset_command_data(view) -> None:
     if _should_scroll_into_view(motion, action):
         # Intentionally using the active view because the previous command
         # may have switched views and view would be the previous one.
-        active_view = active_window().active_view()
-        if active_view:
-            _scroll_into_view(active_view, get_mode(active_view))
+        _scroll_into_active_view()
 
     action and action.reset()
     set_action(view, None)
