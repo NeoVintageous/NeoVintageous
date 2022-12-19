@@ -146,9 +146,11 @@ def _scroll_into_view(view, mode: str) -> None:
 
 
 def _scroll_into_active_view() -> None:
-    view = active_window().active_view()
-    if view:
-        _scroll_into_view(view, get_mode(view))
+    window = active_window()
+    if window:
+        view = window.active_view()
+        if view:
+            _scroll_into_view(view, get_mode(view))
 
 
 def _create_definition(view, name: str):
