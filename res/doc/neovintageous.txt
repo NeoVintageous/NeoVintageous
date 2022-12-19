@@ -1,6 +1,5 @@
 *neovintageous.txt*                                        *nv* *neovintageous*
 
-
         _   __         _    ___       __
        / | / /__  ____| |  / (_)___  / /_____ _____ ____  ____  __  _______
       /  |/ / _ \/ __ \ | / / / __ \/ __/ __ `/ __ `/ _ \/ __ \/ / / / ___/
@@ -173,7 +172,6 @@ To edit settings go to `Menu > Preferences > Settings`.
                 "<C-f>": false
             }
         <
-
         By default all keys are handled.
 
         Keys can be ignored for specific modes.
@@ -185,7 +183,6 @@ To edit settings go to `Menu > Preferences > Settings`.
                 "v_<C-w>": false
             }
         <
-
         The mode prefixes are:
 
             n_ - Normal
