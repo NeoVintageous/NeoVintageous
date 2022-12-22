@@ -133,6 +133,13 @@ def _set_data(name: str, values: list, linewise: bool) -> None:
     _linewise[name] = linewise
 
 
+def _get_data_values(name: str, default=None):
+    if default is not None:
+        return _data.get(name, default)
+
+    return _data[name]
+
+
 def _shift_numbered_register(content: list, linewise: bool) -> None:
     _data['1-9'].appendleft(content)
     _linewise['1-9'].appendleft(linewise)
@@ -212,20 +219,20 @@ def _get(view, name: str = _UNNAMED):
 
     # If the expression register holds a value and we're requesting the unnamed
     # register, return the expression register and clear it aftwerwards.
-    if name == _UNNAMED and _data.get(_EXPRESSION, ''):
-        value = _data[_EXPRESSION]
+    if name == _UNNAMED and _get_data_values(_EXPRESSION, ''):
+        value = _get_data_values(_EXPRESSION)
         _clear_expression_register()
 
         return value
 
     if name.isdigit():
         if name == _LAST_YANK:
-            return _data[name]
+            return _get_data_values(name)
 
         return _get_numbered_register(name)
 
     try:
-        return _data[name.lower()]
+        return _get_data_values(name.lower())
     except KeyError:
         pass
 
@@ -308,7 +315,7 @@ def _append(view, name: str, suffixes, linewise: bool) -> None:
 
     name = name.lower()
 
-    existing_values = _data.get(name, '')
+    existing_values = _get_data_values(name, '')
     values_tmp = itertools.zip_longest(existing_values, suffixes, fillvalue='')
     values = [(prefix + suffix) for (prefix, suffix) in values_tmp]
 
