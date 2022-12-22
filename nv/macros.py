@@ -50,16 +50,20 @@ def start_recording(name: str) -> None:
 def stop_recording() -> None:
     name = _data['recording_register']
     if name:
-        if 'recorded' not in _data:
-            _data['recorded'] = {}
+        macros = _get_macros()
+        macros[name] = _get_steps()
 
-        _data['recorded'][name] = _get_steps()
+        set_session_value('macros', macros, persist=True)
 
     _data['recording'] = False
     _data['recording_steps'] = []
     _data['recording_register'] = None
 
     erase_status('vim-recorder')
+
+
+def _get_macros() -> dict:
+    return get_session_value('macros', {})
 
 
 def _get_steps() -> list:
@@ -71,7 +75,7 @@ def _get_steps() -> list:
 
 def get_recorded(name: str):
     try:
-        return _data['recorded'][name]
+        return _get_macros()[name]
     except KeyError:
         return None
 
@@ -81,7 +85,7 @@ def get_last_used_register_name() -> str:
 
 
 def set_last_used_register_name(name: str) -> None:
-    set_session_value('last_used_register_name', name)
+    set_session_value('last_used_register_name', name, persist=True)
 
 
 def add_macro_step(view, cmd: str, args: dict) -> None:

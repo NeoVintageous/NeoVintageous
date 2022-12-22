@@ -48,6 +48,7 @@ class Test_at(unittest.FunctionalTestCase):
         self.assertBell("E354: Invalid register name: '#'")
         self.assertStatusLineIsNormal()
 
+    @unittest.mock_session()
     @unittest.mock_bell()
     def test_no_previously_used_register(self):
         self.normal('fi|zz')

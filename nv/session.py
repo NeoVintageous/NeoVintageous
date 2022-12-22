@@ -37,7 +37,10 @@ def load_session() -> None:
                     accept_keys = (
                         'history',
                         'ex_substitute_last_pattern',
-                        'ex_substitute_last_replacement')
+                        'ex_substitute_last_replacement',
+                        'last_used_register_name',
+                        'macros',
+                    )
 
                     for k, v in session.items():
                         if k not in accept_keys:

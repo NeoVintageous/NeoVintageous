@@ -1179,6 +1179,25 @@ def mock_hide_panel():
     return wrapper
 
 
+def mock_session():
+    """Mock the session.
+
+    Usage:
+
+    @unittest.mock_session()
+    def test(self):
+        pass
+
+    """
+    def wrapper(f):
+        @mock.patch.dict('NeoVintageous.nv.session._session', {}, clear=True)
+        @mock.patch('NeoVintageous.nv.session.save_session', mock.Mock())
+        def wrapped(self, *args, **kwargs):
+            return f(self, *args[:-1], **kwargs)
+        return wrapped
+    return wrapper
+
+
 def mock_status_message():
     """Mock status messages.
 

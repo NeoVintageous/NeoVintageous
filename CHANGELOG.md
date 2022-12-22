@@ -4,7 +4,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.28.0 - Unreleased
 
-* Added [#833](https://github.com/NeoVintageous/NeoVintageous/issues/833): Recorded repeats (macros) are now global
+* Added [#833](https://github.com/NeoVintageous/NeoVintageous/issues/833): Persist macros on restarts
+* Added [#833](https://github.com/NeoVintageous/NeoVintageous/issues/833): Recorded macros are now global
 
 ## 1.27.4 - 2022-12-16
 

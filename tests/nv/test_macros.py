@@ -20,7 +20,8 @@ from NeoVintageous.tests import unittest
 from NeoVintageous.nv import macros
 
 
-class TestMacrosUtils(unittest.TestCase):
+@unittest.mock_session()
+class TestMacros(unittest.ViewTestCase):
 
     def test_is_readable(self):
         self.assertTrue(macros.is_readable('0'))
@@ -40,8 +41,6 @@ class TestMacrosUtils(unittest.TestCase):
         self.assertFalse(macros.is_writable('='))
         self.assertFalse(macros.is_writable('$'))
 
-
-class TestMacros(unittest.ViewTestCase):
     def test_record_macro(self):
         self.assertFalse(macros.is_recording())
         self.assertStatusLineIsNormal()
