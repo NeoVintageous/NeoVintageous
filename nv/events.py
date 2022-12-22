@@ -21,6 +21,7 @@ from sublime_plugin import EventListener
 
 from NeoVintageous.nv.modeline import do_modeline
 from NeoVintageous.nv.options import get_option
+from NeoVintageous.nv.registers import set_alternate_file_register
 from NeoVintageous.nv.session import session_on_close
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_setting
@@ -137,6 +138,8 @@ _query_contexts = {
 
 class NeoVintageousEvents(EventListener):
 
+    _last_deactivated_file_name = None
+
     def on_query_context(self, view, key: str, operator: int, operand: bool, match_all: bool):
         # Called when determining to trigger a key binding with the given context key.
         #
@@ -246,5 +249,14 @@ class NeoVintageousEvents(EventListener):
                             if len(sel) > 0 and any([not s.empty() for s in sel]):
                                 enter_normal_mode(other_view, get_mode(other_view))
 
+            if self._last_deactivated_file_name:
+                # The alternate file register is only set to the deactivating
+                # view if the activating one is a normal view. Otherwise the
+                # alternate file could be the currently active view.
+                set_alternate_file_register(self._last_deactivated_file_name)
+
         # Initialise view.
         init_view(view)
+
+    def on_deactivated(self, view):
+        self._last_deactivated_file_name = view.file_name()

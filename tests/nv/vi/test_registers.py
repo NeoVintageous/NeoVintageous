@@ -47,6 +47,7 @@ from NeoVintageous.nv.registers import _get_selected_text
 from NeoVintageous.nv.registers import _is_register_linewise
 from NeoVintageous.nv.registers import _reset
 from NeoVintageous.nv.registers import _set_unnamed
+from NeoVintageous.nv.registers import get_alternate_file_register
 from NeoVintageous.nv.registers import registers_get
 from NeoVintageous.nv.registers import registers_get_all
 from NeoVintageous.nv.registers import registers_get_for_paste
@@ -54,6 +55,7 @@ from NeoVintageous.nv.registers import registers_op_change
 from NeoVintageous.nv.registers import registers_op_delete
 from NeoVintageous.nv.registers import registers_op_yank
 from NeoVintageous.nv.registers import registers_set
+from NeoVintageous.nv.registers import set_alternate_file_register
 from NeoVintageous.nv.registers import set_expression_register
 
 
@@ -368,6 +370,13 @@ class TestRegister(RegistersTestCase):
     def test_can_get_small_delete_register(self):
         registers_set(self.view, _SMALL_DELETE, ['foo'])
         self.assertEqual(registers_get(self.view, _SMALL_DELETE), ['foo'])
+
+    def test_alternate_file_register(self):
+        self.assertIsNone(get_alternate_file_register())
+        set_alternate_file_register('fname')
+        self.assertEqual(get_alternate_file_register(), 'fname')
+        self.assertEqual(registers_get(self.view, _ALTERNATE_FILE), ['fname'])
+        self.assertEqual(registers_get_for_paste(self.view, _ALTERNATE_FILE, unittest.NORMAL), (['fname'], False))
 
 
 class Test_get_selected_text(RegistersTestCase):

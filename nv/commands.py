@@ -58,6 +58,7 @@ from NeoVintageous.nv.polyfill import toggle_side_bar
 from NeoVintageous.nv.process_notation import ProcessNotationHandler
 from NeoVintageous.nv.rc import open_rc
 from NeoVintageous.nv.rc import reload_rc
+from NeoVintageous.nv.registers import get_alternate_file_register
 from NeoVintageous.nv.registers import registers_get_for_paste
 from NeoVintageous.nv.registers import registers_op_change
 from NeoVintageous.nv.registers import registers_op_delete
@@ -248,6 +249,7 @@ __all__ = [
     'nv_vi_ctrl_e',
     'nv_vi_ctrl_f',
     'nv_vi_ctrl_g',
+    'nv_vi_ctrl_hat',
     'nv_vi_ctrl_r',
     'nv_vi_ctrl_right_square_bracket',
     'nv_vi_ctrl_u',
@@ -2028,6 +2030,17 @@ class nv_vi_g(TextCommand):
             window_open_file(self.view.window(), file_name)
         else:
             raise ValueError('unknown action')
+
+
+class nv_vi_ctrl_hat(WindowCommand):
+
+    def run(self, **kwargs):
+        alternate_file = get_alternate_file_register()
+        if not alternate_file:
+            ui_bell('E23: No alternate file')
+            return
+
+        self.window.open_file(alternate_file)
 
 
 class nv_vi_ctrl_right_square_bracket(WindowCommand):

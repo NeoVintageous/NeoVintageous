@@ -154,6 +154,16 @@ def _get_numbered_register(number: str) -> list:
     return _data['1-9'][int(number) - 1]
 
 
+def get_alternate_file_register():
+    alternate_file = _get_data_values(_ALTERNATE_FILE)
+    if alternate_file:
+        return alternate_file[0]
+
+
+def set_alternate_file_register(value: str) -> None:
+    _set_data(_ALTERNATE_FILE, [value], False)
+
+
 def set_expression_register(values: list) -> None:
     # Coerce all values into strings.
     _data[_EXPRESSION] = [str(v) for v in values]
@@ -210,7 +220,7 @@ def _get(view, name: str = _UNNAMED):
     if name in _CLIPBOARD:
         return [get_clipboard()]
 
-    if ((name not in (_UNNAMED, _SMALL_DELETE)) and (name in _SPECIAL)):
+    if ((name not in (_UNNAMED, _SMALL_DELETE, _ALTERNATE_FILE)) and (name in _SPECIAL)):
         return
 
     # Special case lumped among these --user always wants the sys clipboard
