@@ -1521,6 +1521,7 @@ _SEQ2CMD = {
     '?':            {'command': 'nv_feed_key'},  # noqa: E241
     '?aBc':         {'command': 'nv_vi_question_mark_impl', 'args': {'pattern': 'aBc'}},  # noqa: E241
     '?abc':         {'command': 'nv_vi_question_mark_impl', 'args': {'pattern': 'abc'}},  # noqa: E241
+    '@!':           {'command': 'nv_feed_key'},  # noqa: E241
     '@#':           {'command': 'nv_feed_key'},  # noqa: E241
     '@%':           {'command': 'nv_feed_key'},  # noqa: E241
     '@-':           {'command': 'nv_feed_key'},  # noqa: E241
