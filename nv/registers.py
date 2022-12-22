@@ -128,6 +128,11 @@ def _reset() -> None:
     _linewise['1-9'] = deque([False] * 9, maxlen=9)
 
 
+def _set_data(name: str, values: list, linewise: bool) -> None:
+    _data[name] = values
+    _linewise[name] = linewise
+
+
 def _shift_numbered_register(content: list, linewise: bool) -> None:
     _data['1-9'].appendleft(content)
     _linewise['1-9'].appendleft(linewise)
@@ -145,6 +150,10 @@ def _get_numbered_register(number: str) -> list:
 def set_expression_register(values: list) -> None:
     # Coerce all values into strings.
     _data[_EXPRESSION] = [str(v) for v in values]
+
+
+def _clear_expression_register() -> None:
+    _data[_EXPRESSION] = None
 
 
 def _is_register_linewise(register: str) -> list:
@@ -205,7 +214,7 @@ def _get(view, name: str = _UNNAMED):
     # register, return the expression register and clear it aftwerwards.
     if name == _UNNAMED and _data.get(_EXPRESSION, ''):
         value = _data[_EXPRESSION]
-        _data[_EXPRESSION] = None
+        _clear_expression_register()
 
         return value
 
@@ -286,8 +295,7 @@ def _set(view, name: str, values: list, linewise: bool = False) -> None:
     if name.isdigit() and name != '0':
         _set_numbered_register(name, values, linewise)
     else:
-        _data[name] = values
-        _linewise[name] = linewise
+        _set_data(name, values, linewise)
 
     if name not in (_EXPRESSION,):
         _set_unnamed(values, linewise)
@@ -309,8 +317,7 @@ def _append(view, name: str, suffixes, linewise: bool) -> None:
 
 def _set_unnamed(values: list, linewise: bool = False) -> None:
     assert isinstance(values, list)
-    _data[_UNNAMED] = [str(v) for v in values]
-    _linewise[_UNNAMED] = linewise
+    _set_data(_UNNAMED, [str(v) for v in values], linewise)
 
 
 def registers_set(view, key: str, value: list, linewise: bool = False) -> None:
