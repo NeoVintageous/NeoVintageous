@@ -41,40 +41,40 @@ from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import is_visual_mode
 
 
-# 1. The unnamed register ""
+# 1. The unnamed register
 _UNNAMED = '"'
 
-# 2. 10 numberd registers "0 to "9
+# 2. 10 numbered registers
 _LAST_YANK = '0'
 _LAST_DELETE = '1'
 _NUMBERED = tuple('0123456789')
 
-# 3 The small delete register "-
+# 3 The small delete register
 _SMALL_DELETE = '-'
 
-# 4. 26 named registers "a to "z or "A to "Z
+# 4. 26 named registers
 _NAMED = tuple('abcdefghijklmnopqrstuvwxyz')
 
-# 5. Three read-only registers ":, "., "%
+# 5. Three read-only registers
 _LAST_EXECUTED_COMMAND = ':'
 _LAST_INSERTED_TEXT = '.'
 _CURRENT_FILE_NAME = '%'
 
-# 6. Alternate buffer register "#
+# 6. Alternate buffer register
 _ALTERNATE_FILE = '#'
 
-# 7. The expression register "=
+# 7. The expression register
 _EXPRESSION = '='
 
-# 8. The selection and drop registers "*, "+, and "~
+# 8. The selection and drop registers
 _CLIPBOARD_STAR = '*'
 _CLIPBOARD_PLUS = '+'
 _CLIPBOARD_TILDA = '~'
 
-# 9. The black hole register "_
+# 9. The black hole register
 _BLACK_HOLE = '_'
 
-# 10. Last search pattern register "/
+# 10. Last search pattern register
 _LAST_SEARCH_PATTERN = '/'
 
 # Groups
@@ -218,7 +218,7 @@ def _get(view, name: str = _UNNAMED):
         return [get_clipboard()]
 
     # If the expression register holds a value and we're requesting the unnamed
-    # register, return the expression register and clear it aftwerwards.
+    # register, return the expression register and clear it afterwards.
     if name == _UNNAMED:
         expression = _get_data_values(_EXPRESSION)
         if expression:
