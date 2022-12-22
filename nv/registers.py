@@ -134,10 +134,10 @@ def _set_data(name: str, values: list, linewise: bool) -> None:
 
 
 def _get_data_values(name: str, default=None):
-    if default is not None:
-        return _data.get(name, default)
-
-    return _data[name]
+    try:
+        return _data[name]
+    except KeyError:
+        return default
 
 
 def _shift_numbered_register(content: list, linewise: bool) -> None:
@@ -219,11 +219,12 @@ def _get(view, name: str = _UNNAMED):
 
     # If the expression register holds a value and we're requesting the unnamed
     # register, return the expression register and clear it aftwerwards.
-    if name == _UNNAMED and _get_data_values(_EXPRESSION, ''):
-        value = _get_data_values(_EXPRESSION)
-        _clear_expression_register()
+    if name == _UNNAMED:
+        expression = _get_data_values(_EXPRESSION)
+        if expression:
+            _clear_expression_register()
 
-        return value
+            return expression
 
     if name.isdigit():
         if name == _LAST_YANK:
@@ -231,10 +232,7 @@ def _get(view, name: str = _UNNAMED):
 
         return _get_numbered_register(name)
 
-    try:
-        return _get_data_values(name.lower())
-    except KeyError:
-        pass
+    return _get_data_values(name.lower())
 
 
 def registers_get(view, key: str):
