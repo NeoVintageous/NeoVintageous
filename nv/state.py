@@ -87,7 +87,7 @@ def must_collect_input(view, motion: ViMotionDef, action: ViOperatorDef) -> bool
 
     # Special case: `q` should stop the macro recorder if it's running and
     # not request further input from the user.
-    if (isinstance(action, ViToggleMacroRecorder) and macros.is_recording(view.window())):
+    if (isinstance(action, ViToggleMacroRecorder) and macros.is_recording()):
         return False
 
     if (action and action.accept_input and action.input_parser and action.input_parser.is_immediate()):

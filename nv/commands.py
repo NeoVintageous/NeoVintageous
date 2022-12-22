@@ -2345,35 +2345,31 @@ class nv_vi_ctrl_y(TextCommand):
 class nv_vi_q(TextCommand):
 
     def run(self, edit, mode=None, count=1, name=None):
-        window = self.view.window()
-
-        if macros.is_recording(window):
-            macros.stop_recording(window)
+        if macros.is_recording():
+            macros.stop_recording()
         else:
-            if not macros.is_valid_writable_register(name):
+            if not macros.is_writable(name):
                 return ui_bell("E354: Invalid register name: '" + name + "'")
 
-            macros.start_recording(window, name)
+            macros.start_recording(name)
 
 
 class nv_vi_at(TextCommand):
 
     def run(self, edit, name, mode=None, count=1):
-        window = self.view.window()
-
         if name == '@':
-            name = macros.get_last_used_register_name(window)
+            name = macros.get_last_used_register_name()
             if not name:
                 return ui_bell('E748: No previously used register')
 
-        if not macros.is_valid_readable_register(name):
+        if not macros.is_readable(name):
             return ui_bell("E354: Invalid register name: '" + name + "'")
 
-        cmds = macros.get_recorded(window, name)
+        cmds = macros.get_recorded(name)
         if not cmds:
             return
 
-        macros.set_last_used_register_name(window, name)
+        macros.set_last_used_register_name(name)
 
         for i in range(count):
             for cmd, args in cmds:

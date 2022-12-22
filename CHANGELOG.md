@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.28.0 - Unreleased
+
+* Added [#833](https://github.com/NeoVintageous/NeoVintageous/issues/833): Recorded repeats (macros) are now global
+
 ## 1.27.4 - 2022-12-16
 
 * Fixed [#787](https://github.com/NeoVintageous/NeoVintageous/issues/787): Add `vintageous_lsp_save` setting to fix lsp format on save doesn't seem to work
