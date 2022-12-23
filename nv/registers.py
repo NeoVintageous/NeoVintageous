@@ -154,6 +154,17 @@ def _get_numbered_register(number: str) -> list:
     return _data['1-9'][int(number) - 1]
 
 
+def _clear_expression_register() -> None:
+    _data[_EXPRESSION] = None
+
+
+def _is_register_linewise(register: str) -> list:
+    if register in '123456789':
+        return _linewise['1-9'][int(register) - 1]
+
+    return _linewise.get(register, False)
+
+
 def get_alternate_file_register():
     alternate_file = _get_data_values(_ALTERNATE_FILE)
     if alternate_file:
@@ -165,18 +176,7 @@ def set_alternate_file_register(value: str) -> None:
 
 
 def set_expression_register(values: list) -> None:
-    _data[_EXPRESSION] = _list_values_to_str(values)
-
-
-def _clear_expression_register() -> None:
-    _data[_EXPRESSION] = None
-
-
-def _is_register_linewise(register: str) -> list:
-    if register in '123456789':
-        return _linewise['1-9'][int(register) - 1]
-
-    return _linewise.get(register, False)
+    _set_data(_EXPRESSION, _list_values_to_str(values), False)
 
 
 def _is_writable_register(register: str) -> bool:
