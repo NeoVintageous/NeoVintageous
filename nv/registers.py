@@ -204,8 +204,6 @@ def _is_writable_register(register: str) -> bool:
 def _get(view, name: str = _UNNAMED):
     name = str(name)
 
-    assert len(name) == 1, "Register names must be 1 char long."
-
     if name == _CURRENT_FILE_NAME:
         try:
             file_name = view.file_name()
@@ -317,9 +315,6 @@ def _set(view, name: str, values: list, linewise: bool = False) -> None:
 
 
 def _append(view, name: str, suffixes, linewise: bool) -> None:
-    assert len(name) == 1, "Register names must be 1 char long."
-    assert name in "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "Can only append to A-Z registers."
-
     name = name.lower()
 
     existing_values = _get_data_values(name, '')
