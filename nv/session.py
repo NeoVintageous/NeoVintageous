@@ -3,10 +3,45 @@ import json
 import os
 import traceback
 
+from sublime import version
 from sublime import packages_path
 
 _session = {}
+
 _views = defaultdict(dict)  # type: dict
+
+
+_BUILD_VERSION = int(version())
+
+
+# Saving the session on exit is only available in newer builds. Otherwise
+# sessions are saved in realtime which is a performance concern.
+if _BUILD_VERSION >= 4081:
+
+    # Saving sessions needs to use the Sublime packages path API but the API is
+    # not available when the application is shutting down and access to the
+    # packages path API is only available at import time from build 4081.
+    _PACKAGES_PATH = packages_path()
+
+    def get_packages_path() -> str:
+        return _PACKAGES_PATH
+
+    def session_on_exit() -> None:
+        save_session()
+else:
+    def get_packages_path() -> str:
+        return packages_path()
+
+    def session_on_exit() -> None:
+        pass
+
+
+def _session_file() -> str:
+    return os.path.join(
+        os.path.dirname(get_packages_path()),
+        'Local',
+        'neovintageous.session'
+    )
 
 
 def session_on_close(view) -> None:
@@ -14,10 +49,6 @@ def session_on_close(view) -> None:
         del _views[view.id()]
     except KeyError:
         pass
-
-
-def _session_file() -> str:
-    return os.path.join(os.path.dirname(packages_path()), 'Local', 'neovintageous.session')
 
 
 def _json_object_hook_dict_str_key_to_int(x):
@@ -79,7 +110,7 @@ def get_session_value(name: str, default=None):
 def set_session_value(name: str, value, persist: bool = False) -> None:
     _session[name] = value
 
-    if persist:
+    if persist and _BUILD_VERSION < 4081:
         save_session()
 
 

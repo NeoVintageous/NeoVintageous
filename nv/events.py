@@ -17,12 +17,14 @@
 
 from sublime import OP_EQUAL
 from sublime import OP_NOT_EQUAL
+from sublime import version
 from sublime_plugin import EventListener
 
 from NeoVintageous.nv.modeline import do_modeline
 from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.registers import set_alternate_file_register
 from NeoVintageous.nv.session import session_on_close
+from NeoVintageous.nv.session import session_on_exit
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.state import init_view
@@ -260,3 +262,8 @@ class NeoVintageousEvents(EventListener):
 
     def on_deactivated(self, view):
         self._last_deactivated_file_name = view.file_name()
+
+    # The on_exit() API was added in build 4050.
+    if int(version()) >= 4050:
+        def on_exit(self):
+            session_on_exit()

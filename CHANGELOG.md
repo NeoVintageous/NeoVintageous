@@ -4,6 +4,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.28.0 - Unreleased
 
+* Added [#833](https://github.com/NeoVintageous/NeoVintageous/issues/833): Sessions are now saved on exit instead of at runtime for builds >= 4081
 * Added [#74](https://github.com/NeoVintageous/NeoVintageous/issues/74): Add `#` alternate file register
 * Added [#74](https://github.com/NeoVintageous/NeoVintageous/issues/74): Add `<C-^>` (`<C-6>`) go to most recent used file
 * Added [#833](https://github.com/NeoVintageous/NeoVintageous/issues/833): Persist macros on restarts
