@@ -74,7 +74,7 @@ class RegistersTestCase(unittest.ResetRegisters, unittest.ViewTestCase):
         _reset()
 
     def assertEmptyRegisters(self):
-        self.assertEqual(_data, {'0': None, '1-9': deque([None] * 9, maxlen=9)})
+        self.assertEqual(_data, {'0': (None, False), '1-9': deque([(None, False)] * 9, maxlen=9)})
 
 
 class Test_get_for_paste(RegistersTestCase):
@@ -330,7 +330,7 @@ class TestRegister(RegistersTestCase):
         registers_set(self.view, _EXPRESSION, ['100'])
         self.set_setting('use_sys_clipboard', False)
         self.assertEqual(registers_get(self.view, _UNNAMED), ['100'])
-        self.assertEqual(registers_get(self.view, _EXPRESSION), None)
+        self.assertEqual(registers_get(self.view, _EXPRESSION), [])
 
     def test_can_get_number_register(self):
         registers_set(self.view, '4', ['foo'])

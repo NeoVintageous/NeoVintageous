@@ -45,10 +45,9 @@ from NeoVintageous.nv.options import get_option as _get_option
 from NeoVintageous.nv.options import set_option as _set_option
 from NeoVintageous.nv.polyfill import view_to_region as _view_to_region
 from NeoVintageous.nv.polyfill import view_to_str as _view_to_str
-from NeoVintageous.nv.registers import _data as _registers_data
 from NeoVintageous.nv.registers import _is_register_linewise
-from NeoVintageous.nv.registers import _linewise as _registers_linewise
 from NeoVintageous.nv.registers import _reset as _registers_reset
+from NeoVintageous.nv.registers import _set_data as _set_register_data
 from NeoVintageous.nv.registers import _set_numbered_register
 from NeoVintageous.nv.registers import registers_get as _registers_get
 from NeoVintageous.nv.settings import _set_last_buff_search_command
@@ -356,8 +355,7 @@ class ViewTestCase(unittest.TestCase):
         if name.isdigit() and name != '0':
             _set_numbered_register(name, value, linewise)
         else:
-            _registers_data[name] = value
-            _registers_linewise[name] = linewise
+            _set_register_data(name, value, linewise)
 
     def registerLinewise(self, name: str, value=None) -> None:
         self.register(name, value, linewise=True)

@@ -115,54 +115,47 @@ _SPECIAL = (
 _ALL = _SPECIAL + _NUMBERED + _NAMED
 
 
-_data = {'0': None, '1-9': deque([None] * 9, maxlen=9)}  # type: dict
-_linewise = {'0': False, '1-9': deque([False] * 9, maxlen=9)}  # type: dict
+_data = {'0': (None, False), '1-9': deque([(None, False)] * 9, maxlen=9)}  # type: dict
 
 
 def _reset() -> None:
     _data.clear()
-    _data['0'] = None
-    _data['1-9'] = deque([None] * 9, maxlen=9)
-    _linewise.clear()
-    _linewise['0'] = False
-    _linewise['1-9'] = deque([False] * 9, maxlen=9)
+    _data['0'] = (None, False)
+    _data['1-9'] = deque([(None, False)] * 9, maxlen=9)
 
 
 def _set_data(name: str, values: list, linewise: bool) -> None:
-    _data[name] = values
-    _linewise[name] = linewise
+    _data[name] = (values, linewise)
 
 
 def _get_data_values(name: str, default=None):
     try:
-        return _data[name]
+        return _data[name][0]
     except KeyError:
         return default
 
 
 def _shift_numbered_register(content: list, linewise: bool) -> None:
-    _data['1-9'].appendleft(content)
-    _linewise['1-9'].appendleft(linewise)
+    _data['1-9'].appendleft((content, linewise))
 
 
 def _set_numbered_register(number: str, values: list, linewise: bool) -> None:
-    _data['1-9'][int(number) - 1] = values
-    _linewise['1-9'][int(number) - 1] = linewise
+    _data['1-9'][int(number) - 1] = (values, linewise)
 
 
 def _get_numbered_register(number: str) -> list:
-    return _data['1-9'][int(number) - 1]
+    return _data['1-9'][int(number) - 1][0]
 
 
 def _clear_expression_register() -> None:
-    _data[_EXPRESSION] = None
+    _set_data(_EXPRESSION, [], False)
 
 
 def _is_register_linewise(register: str) -> list:
     if register in '123456789':
-        return _linewise['1-9'][int(register) - 1]
+        return _data['1-9'][int(register) - 1][1]
 
-    return _linewise.get(register, False)
+    return _data.get(register, (None, False))[1]
 
 
 def get_alternate_file_register():
