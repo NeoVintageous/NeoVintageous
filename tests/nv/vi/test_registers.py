@@ -45,6 +45,7 @@ from NeoVintageous.nv.registers import _UNNAMED
 from NeoVintageous.nv.registers import _data
 from NeoVintageous.nv.registers import _get_selected_text
 from NeoVintageous.nv.registers import _is_register_linewise
+from NeoVintageous.nv.registers import _is_register_writable
 from NeoVintageous.nv.registers import _reset
 from NeoVintageous.nv.registers import _set_unnamed_register
 from NeoVintageous.nv.registers import get_alternate_file_register
@@ -117,6 +118,21 @@ class TestConstants(unittest.TestCase):
 
     def test_readonly(self):
         self.assertEqual(_READ_ONLY, ('#', '~', '%', ':', '.'))
+
+    def test_is_writable(self):
+        self.assertFalse(_is_register_writable('#'))
+        self.assertFalse(_is_register_writable('%'))
+        self.assertFalse(_is_register_writable('.'))
+        self.assertFalse(_is_register_writable(':'))
+        self.assertFalse(_is_register_writable('~'))
+        self.assertTrue(_is_register_writable('"'))
+        self.assertTrue(_is_register_writable('*'))
+        self.assertTrue(_is_register_writable('+'))
+        self.assertTrue(_is_register_writable('-'))
+        self.assertTrue(_is_register_writable('0'))
+        self.assertTrue(_is_register_writable('1'))
+        self.assertTrue(_is_register_writable('a'))
+        self.assertTrue(_is_register_writable('b'))
 
     def test_special(self):
         self.assertTupleEqual(_SPECIAL, (

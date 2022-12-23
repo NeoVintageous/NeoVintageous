@@ -92,6 +92,12 @@ _READ_ONLY = (
     _LAST_INSERTED_TEXT
 )
 
+_WRITABLE = (
+    _UNNAMED,
+    _SMALL_DELETE,
+    _EXPRESSION,
+) + _CLIPBOARD + _NUMBERED + _NAMED
+
 _SELECTION_AND_DROP = (
     _CLIPBOARD_PLUS,
     _CLIPBOARD_STAR,
@@ -154,26 +160,8 @@ def _is_register_linewise(register: str) -> list:
     return _data.get(register, (None, False))[1]
 
 
-def _is_writable_register(register: str) -> bool:
-    if register == _UNNAMED:
-        return True
-
-    if register == _SMALL_DELETE:
-        return True
-
-    if register in _CLIPBOARD:
-        return True
-
-    if register in _NUMBERED:
-        return True
-
-    if register in _NAMED:
-        return True
-
-    if register == _EXPRESSION:
-        return True
-
-    return False
+def _is_register_writable(register: str) -> bool:
+    return register in _WRITABLE
 
 
 def _get(view, name: str = _UNNAMED):
@@ -270,7 +258,7 @@ def _set(view, name: str, values: list, linewise: bool = False) -> None:
     if name == _BLACK_HOLE:
         return
 
-    if not _is_writable_register(name):
+    if not _is_register_writable(name):
         return None  # Vim fails silently.
 
     # TODO Is this check necessary; this was an assertion which are disabled in <4000 which is good
