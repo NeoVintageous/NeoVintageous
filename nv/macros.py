@@ -33,10 +33,7 @@ def is_writable(name: str) -> bool:
 
 
 def is_recording() -> bool:
-    try:
-        return _data['recording']
-    except KeyError:
-        return False
+    return _data.get('recording', False)
 
 
 def start_recording(name: str) -> None:
@@ -48,7 +45,7 @@ def start_recording(name: str) -> None:
 
 
 def stop_recording() -> None:
-    name = _data['recording_register']
+    name = _data.get('recording_register')
     if name:
         macros = _get_macros()
         macros[name] = _get_steps()
@@ -67,17 +64,11 @@ def _get_macros() -> dict:
 
 
 def _get_steps() -> list:
-    try:
-        return _data['recording_steps']
-    except KeyError:
-        return []
+    return _data.get('recording_steps', [])
 
 
 def get_recorded(name: str):
-    try:
-        return _get_macros()[name]
-    except KeyError:
-        return None
+    return _get_macros().get(name)
 
 
 def get_last_used_register_name() -> str:
