@@ -147,29 +147,11 @@ def _get_numbered_register(number: str) -> list:
     return _data['1-9'][int(number) - 1][0]
 
 
-def _clear_expression_register() -> None:
-    _set_data(_EXPRESSION, [], False)
-
-
 def _is_register_linewise(register: str) -> list:
     if register in '123456789':
         return _data['1-9'][int(register) - 1][1]
 
     return _data.get(register, (None, False))[1]
-
-
-def get_alternate_file_register():
-    alternate_file = _get_data_values(_ALTERNATE_FILE)
-    if alternate_file:
-        return alternate_file[0]
-
-
-def set_alternate_file_register(value: str) -> None:
-    _set_data(_ALTERNATE_FILE, [value], False)
-
-
-def set_expression_register(values: list) -> None:
-    _set_data(_EXPRESSION, _list_values_to_str(values), False)
 
 
 def _is_writable_register(register: str) -> bool:
@@ -222,7 +204,7 @@ def _get(view, name: str = _UNNAMED):
     if name == _UNNAMED:
         expression = _get_data_values(_EXPRESSION)
         if expression:
-            _clear_expression_register()
+            _set_data(_EXPRESSION, [], False)
 
             return expression
 
@@ -295,7 +277,7 @@ def _set(view, name: str, values: list, linewise: bool = False) -> None:
     if not isinstance(values, list):
         raise ValueError('Register values must be inside a list')
 
-    values = [str(v) for v in values]
+    values = _list_values_to_str(values)
 
     if name.isdigit() and name != '0':
         _set_numbered_register(name, values, linewise)
@@ -315,6 +297,20 @@ def _append(view, name: str, suffixes, linewise: bool) -> None:
     values = [(prefix + suffix) for (prefix, suffix) in values_tmp]
 
     _set(view, name, values, linewise)
+
+
+def get_alternate_file_register():
+    alternate_file = _get_data_values(_ALTERNATE_FILE)
+    if alternate_file:
+        return alternate_file[0]
+
+
+def set_alternate_file_register(value: str) -> None:
+    _set_data(_ALTERNATE_FILE, [value], False)
+
+
+def set_expression_register(values: list) -> None:
+    _set_data(_EXPRESSION, _list_values_to_str(values), False)
 
 
 def _set_unnamed_register(values: list, linewise: bool = False) -> None:
