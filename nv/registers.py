@@ -165,8 +165,7 @@ def set_alternate_file_register(value: str) -> None:
 
 
 def set_expression_register(values: list) -> None:
-    # Coerce all values into strings.
-    _data[_EXPRESSION] = [str(v) for v in values]
+    _data[_EXPRESSION] = _list_values_to_str(values)
 
 
 def _clear_expression_register() -> None:
@@ -331,8 +330,11 @@ def _append(view, name: str, suffixes, linewise: bool) -> None:
 
 
 def _set_unnamed(values: list, linewise: bool = False) -> None:
-    assert isinstance(values, list)
-    _set_data(_UNNAMED, [str(v) for v in values], linewise)
+    _set_data(_UNNAMED, _list_values_to_str(values), linewise)
+
+
+def _list_values_to_str(values: list) -> list:
+    return [str(v) for v in values]
 
 
 def registers_set(view, key: str, value: list, linewise: bool = False) -> None:
