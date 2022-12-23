@@ -303,7 +303,7 @@ def _set(view, name: str, values: list, linewise: bool = False) -> None:
         _set_data(name, values, linewise)
 
     if name not in (_EXPRESSION,):
-        _set_unnamed(values, linewise)
+        _set_unnamed_register(values, linewise)
         _maybe_set_sys_clipboard(view, name, values)
 
 
@@ -317,7 +317,7 @@ def _append(view, name: str, suffixes, linewise: bool) -> None:
     _set(view, name, values, linewise)
 
 
-def _set_unnamed(values: list, linewise: bool = False) -> None:
+def _set_unnamed_register(values: list, linewise: bool = False) -> None:
     _set_data(_UNNAMED, _list_values_to_str(values), linewise)
 
 

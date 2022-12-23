@@ -46,7 +46,7 @@ from NeoVintageous.nv.registers import _data
 from NeoVintageous.nv.registers import _get_selected_text
 from NeoVintageous.nv.registers import _is_register_linewise
 from NeoVintageous.nv.registers import _reset
-from NeoVintageous.nv.registers import _set_unnamed
+from NeoVintageous.nv.registers import _set_unnamed_register
 from NeoVintageous.nv.registers import get_alternate_file_register
 from NeoVintageous.nv.registers import registers_get
 from NeoVintageous.nv.registers import registers_get_all
@@ -207,7 +207,7 @@ class TestRegister(RegistersTestCase):
         self.assertEqual(registers_get(self.view, '='), ['y'])
 
     def test_can_set_unanmed_register(self):
-        _set_unnamed(["foo"])
+        _set_unnamed_register(["foo"])
         self.assertEqual(registers_get(self.view, _UNNAMED), ["foo"])
 
     def test_setting_long_register_name_throws_assertion_error(self):
