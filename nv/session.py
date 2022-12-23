@@ -64,9 +64,9 @@ def load_session() -> None:
 
 
 def save_session() -> None:
+    content = json.dumps(_session)
     with open(_session_file(), 'w', encoding='utf-8') as f:
-        session_dump = json.dumps(_session, sort_keys=True, indent=4)
-        f.write(session_dump)
+        f.write(content)
 
 
 def get_session_value(name: str, default=None):
