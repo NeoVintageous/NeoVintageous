@@ -1186,13 +1186,38 @@ def mock_session():
 
     @unittest.mock_session()
     def test(self):
-        pass
+        self.assertSessionEmpty()
+        self.assertSessionHasNoMacros()
+        self.assertSession({'a': {'x': 'y'}, 'b': True})
 
     """
     def wrapper(f):
         @mock.patch.dict('NeoVintageous.nv.session._session', {}, clear=True)
-        @mock.patch('NeoVintageous.nv.session.save_session', mock.Mock())
+        @mock.patch('NeoVintageous.nv.session.save_session')
         def wrapped(self, *args, **kwargs):
+            def _assertSessionEqual(*args) -> None:
+                from NeoVintageous.nv import session
+                if len(args) == 1:
+                    self.assertEqual(
+                        args[0],
+                        session._session,
+                        'expects session')
+                else:
+                    self.assertEqual(
+                        args[1],
+                        session._session[args[0]],
+                        'expects session key value')
+
+            def _assertSessionEmpty() -> None:
+                _assertSessionEqual({'macros': {}})
+
+            def _assertSessionHasNoMacros() -> None:
+                _assertSessionEqual('macros', {})
+
+            self.assertSession = _assertSessionEqual
+            self.assertSessionEmpty = _assertSessionEmpty
+            self.assertSessionHasNoMacros = _assertSessionHasNoMacros
+
             return f(self, *args[:-1], **kwargs)
         return wrapped
     return wrapper

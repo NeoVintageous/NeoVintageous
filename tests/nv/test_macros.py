@@ -52,17 +52,18 @@ class TestMacros(unittest.ViewTestCase):
         self.assertStatusLineIsNormal()
 
         start_recording('a')
+
         self.assertTrue(is_recording())
         self.assertStatusLineEqual('recording @a')
 
-        add_macro_step(self.view, 'a', {'b': 'c'})
-
+        add_macro_step(self.view, 'cmd', {'arg': 'val'})
         stop_recording()
+
         self.assertFalse(is_recording())
         self.assertStatusLineIsNormal()
-
         self.assertIsNone(get_recorded('x'))
-        self.assertEqual([('a', {'b': 'c'})], get_recorded('a'))
+        self.assertEqual([('cmd', {'arg': 'val'})], get_recorded('a'))
+        self.assertSession({'macros': {'a': [('cmd', {'arg': 'val'})]}})
 
     @unittest.mock_session()
     def test_record_empty_macro(self):
@@ -70,4 +71,5 @@ class TestMacros(unittest.ViewTestCase):
         start_recording('b')
         stop_recording()
         self.assertIsNone(get_recorded('a'))
-        self.assertEqual([], get_recorded('b'))
+        self.assertIsNone(get_recorded('b'))
+        self.assertSessionEmpty()

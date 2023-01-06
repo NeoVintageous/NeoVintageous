@@ -48,7 +48,14 @@ def stop_recording() -> None:
     name = _data.get('recording_register')
     if name:
         macros = _get_macros()
-        macros[name] = _get_steps()
+        steps = _get_steps()
+        if steps:
+            macros[name] = steps
+        else:
+            try:
+                del macros[name]
+            except KeyError:
+                pass
 
         set_session_value('macros', macros, persist=True)
 

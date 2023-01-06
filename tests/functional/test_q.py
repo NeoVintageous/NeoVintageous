@@ -53,3 +53,4 @@ class Test_q(unittest.FunctionalTestCase):
         self.assertStatusLineEqual('recording @x')
         self.feed('n_q')
         self.assertStatusLineEqual('')
+        self.assertSessionEmpty()
