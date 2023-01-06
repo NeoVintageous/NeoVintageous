@@ -705,7 +705,7 @@ class ViewTestCase(unittest.TestCase):
         return (
             self.view.get_status('vim-mode') + ' ' +
             self.view.get_status('vim-seq') + ' ' +
-            self.view.get_status('vim-recorder')).strip()
+            self.view.get_status('vim-recording')).strip()
 
     def assertStatusLineEqual(self, expected, msg: str = None) -> None:
         self.assertEqual(self._statusLine(), expected, msg=msg)

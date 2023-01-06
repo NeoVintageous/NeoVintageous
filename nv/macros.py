@@ -41,7 +41,7 @@ def start_recording(name: str) -> None:
     _data['recording_steps'] = []
     _data['recording_register'] = name
 
-    set_status('vim-recorder', 'recording @%s' % name)
+    set_status('vim-recording', 'recording @%s' % name)
 
 
 def stop_recording() -> None:
@@ -56,7 +56,7 @@ def stop_recording() -> None:
     _data['recording_steps'] = []
     _data['recording_register'] = None
 
-    erase_status('vim-recorder')
+    erase_status('vim-recording')
 
 
 def _get_macros() -> dict:
@@ -81,7 +81,7 @@ def set_last_used_register_name(name: str) -> None:
 
 def add_macro_step(view, cmd: str, args: dict) -> None:
     if is_recording():
-        # don't store the ending macro step
+        # Don't store the ending macro step.
         if cmd == 'nv_vi_q':
             return
 

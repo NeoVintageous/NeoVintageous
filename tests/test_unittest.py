@@ -293,7 +293,7 @@ class TestViewTestCase(unittest.ViewTestCase):
     def test_status_line(self):
         self.view.set_status('vim-mode', 'MODE')
         self.view.set_status('vim-seq', 'SEQ')
-        self.view.set_status('vim-recorder', 'REC')
+        self.view.set_status('vim-recording', 'REC')
         self.assertStatusLineEqual('MODE SEQ REC')
         self.assertStatusLineRegex('^[A-Z]+ [A-Z]+ [A-Z]+$')
         with self.assertRaises(AssertionError):

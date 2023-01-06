@@ -17,43 +17,49 @@
 
 from NeoVintageous.tests import unittest
 
-from NeoVintageous.nv import macros
+from NeoVintageous.nv.macros import add_macro_step
+from NeoVintageous.nv.macros import get_recorded
+from NeoVintageous.nv.macros import is_readable
+from NeoVintageous.nv.macros import is_recording
+from NeoVintageous.nv.macros import is_writable
+from NeoVintageous.nv.macros import start_recording
+from NeoVintageous.nv.macros import stop_recording
 
 
 @unittest.mock_session()
 class TestMacros(unittest.ViewTestCase):
 
     def test_is_readable(self):
-        self.assertTrue(macros.is_readable('0'))
-        self.assertTrue(macros.is_readable('a'))
-        self.assertTrue(macros.is_readable('.'))
-        self.assertTrue(macros.is_readable('='))
+        self.assertTrue(is_readable('0'))
+        self.assertTrue(is_readable('a'))
+        self.assertTrue(is_readable('.'))
+        self.assertTrue(is_readable('='))
 
     def test_is_not_readable(self):
-        self.assertFalse(macros.is_readable('$'))
+        self.assertFalse(is_readable('$'))
 
     def test_is_writable(self):
-        self.assertTrue(macros.is_writable('0'))
-        self.assertTrue(macros.is_writable('a'))
+        self.assertTrue(is_writable('0'))
+        self.assertTrue(is_writable('a'))
 
     def test_is_not_writable(self):
-        self.assertFalse(macros.is_writable('.'))
-        self.assertFalse(macros.is_writable('='))
-        self.assertFalse(macros.is_writable('$'))
+        self.assertFalse(is_writable('.'))
+        self.assertFalse(is_writable('='))
+        self.assertFalse(is_writable('$'))
 
     def test_record_macro(self):
-        self.assertFalse(macros.is_recording())
+        self.assertFalse(is_recording())
         self.assertStatusLineIsNormal()
 
-        macros.start_recording('a')
-        self.assertTrue(macros.is_recording())
+        start_recording('a')
+        self.assertTrue(is_recording())
         self.assertStatusLineEqual('recording @a')
 
-        macros.add_macro_step(self.view, 'a', {'b': 'c'})
+        add_macro_step(self.view, 'a', {'b': 'c'})
 
-        macros.stop_recording()
-        self.assertFalse(macros.is_recording())
+        stop_recording()
+        self.assertFalse(is_recording())
         self.assertStatusLineIsNormal()
 
-        self.assertIsNone(macros.get_recorded('x'))
-        self.assertEqual([('a', {'b': 'c'})], macros.get_recorded('a'))
+        self.assertIsNone(get_recorded('x'))
+        self.assertEqual([('a', {'b': 'c'})], get_recorded('a'))
