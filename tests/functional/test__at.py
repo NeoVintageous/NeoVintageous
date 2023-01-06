@@ -69,6 +69,7 @@ class Test_at(unittest.FunctionalTestCase):
         self.feed('n_@a')
         self.assertStatusLineIsNormal()
 
+    @unittest.mock_session()
     @unittest.mock_bell()
     def test_empty_macro_should_do_nothing(self):
         self.normal('fi|zz')
