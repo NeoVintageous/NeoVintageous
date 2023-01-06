@@ -26,7 +26,6 @@ from NeoVintageous.nv.macros import start_recording
 from NeoVintageous.nv.macros import stop_recording
 
 
-@unittest.mock_session()
 class TestMacros(unittest.ViewTestCase):
 
     def test_is_readable(self):
@@ -47,6 +46,7 @@ class TestMacros(unittest.ViewTestCase):
         self.assertFalse(is_writable('='))
         self.assertFalse(is_writable('$'))
 
+    @unittest.mock_session()
     def test_record_macro(self):
         self.assertFalse(is_recording())
         self.assertStatusLineIsNormal()
@@ -63,3 +63,11 @@ class TestMacros(unittest.ViewTestCase):
 
         self.assertIsNone(get_recorded('x'))
         self.assertEqual([('a', {'b': 'c'})], get_recorded('a'))
+
+    @unittest.mock_session()
+    def test_record_empty_macro(self):
+        self.assertIsNone(get_recorded('b'))
+        start_recording('b')
+        stop_recording()
+        self.assertIsNone(get_recorded('a'))
+        self.assertEqual([], get_recorded('b'))
