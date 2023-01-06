@@ -179,7 +179,7 @@ class Scanner:
             # scanning while we get a scanning function.
             (next_func, items) = next_func(self.state)
             yield from items
-            if not next_func:
+            if not next_func:  # type: ignore[truthy-function]
                 break
 
 

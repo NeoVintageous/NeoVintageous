@@ -126,7 +126,7 @@ class ViewTestCase(unittest.TestCase):
         #       The second end of the region. Defaults to the same as the a end
         #       of the region. May be less that a, in which case the region is a
         #       reversed one.
-        return Region(a, b)
+        return Region(a, b)  # type: ignore[arg-type]
 
     def select(self, selections) -> None:
         # Create selection in the view.
@@ -397,8 +397,8 @@ class ViewTestCase(unittest.TestCase):
 
     def assertNotMapping(self, lhs: str, mode: int = None) -> None:
         if mode is None:
-            for mode in _MODES:
-                self.assertNotIn(lhs, _mappings[mode])
+            for m in _MODES:
+                self.assertNotIn(lhs, _mappings[m])
         else:
             self.assertNotIn(lhs, _mappings[mode])
 
@@ -406,19 +406,19 @@ class ViewTestCase(unittest.TestCase):
         self.assertEqual(self.content(), expected, msg)
 
     def commandLineOutput(self) -> str:
-        return _view_to_str(self.view.window().find_output_panel('Command-line'))
+        return _view_to_str(self.view.window().find_output_panel('Command-line'))  # type: ignore[union-attr]
 
     def assertCommandLineOutput(self, expected, msg: str = None) -> None:
-        self.view.window().focus_group(self.view.window().active_group())
+        self.view.window().focus_group(self.view.window().active_group())  # type: ignore[union-attr]
         self.assertEqual(self.commandLineOutput(), expected + "\nPress ENTER to continue", msg)
 
     def closeExPrintOutputViews(self) -> None:
-        for v in self.view.window().views():
+        for v in self.view.window().views():  # type: ignore[union-attr]
             if v.is_scratch() and v.settings().get('nv_ex_print_output'):
                 v.close()
 
-    def exPrintOutputView(self) -> str:
-        for v in self.view.window().views():
+    def exPrintOutputView(self):
+        for v in self.view.window().views():  # type: ignore[union-attr]
             if v.is_scratch() and v.settings().get('nv_ex_print_output'):
                 return v
 
@@ -426,6 +426,8 @@ class ViewTestCase(unittest.TestCase):
         v = self.exPrintOutputView()
         if v:
             return _view_to_str(v)
+
+        return ''
 
     def assertExPrintOutput(self, expected, msg: str = None) -> None:
         self.assertEqual(self.exPrintOutput(), expected, msg)
@@ -449,7 +451,7 @@ class ViewTestCase(unittest.TestCase):
         self._assertContentSelection(self.view.get_regions(key), expected, msg)
 
     def _assertView(self, expected, mode: str, msg: str) -> None:
-        self._assertContentSelection(self.view.sel(), expected, msg)
+        self._assertContentSelection(list(self.view.sel()), expected, msg)
         self._assertMode(mode)
 
     def assertSearch(self, expected: str, msg: str = None) -> None:
@@ -474,60 +476,60 @@ class ViewTestCase(unittest.TestCase):
         _set_last_buff_search_command(self.view, command)
 
     def assertInsert(self, expected, msg: str = None) -> None:
-        self._assertView(expected, INSERT, msg)
+        self._assertView(expected, INSERT, msg)  # type: ignore[arg-type]
         for sel in self.view.sel():
             self.assertTrue(sel.b == sel.a, 'failed asserting selection is a valid INSERT mode selection')
 
     def assertInternalNormal(self, expected, strict: bool = False, msg: str = None) -> None:
-        self._assertView(expected, INTERNAL_NORMAL if strict else NORMAL, msg)
+        self._assertView(expected, INTERNAL_NORMAL if strict else NORMAL, msg)  # type: ignore[arg-type]
         self.assertSelectionIsNotReversed()
 
     def assertRInternalNormal(self, expected, strict: bool = False, msg: str = None) -> None:
-        self._assertView(expected, INTERNAL_NORMAL if strict else NORMAL, msg)
+        self._assertView(expected, INTERNAL_NORMAL if strict else NORMAL, msg)  # type: ignore[arg-type]
         self.assertSelectionIsReversed()
 
     def assertNormal(self, expected, msg: str = None) -> None:
-        self._assertView(expected, NORMAL, msg)
+        self._assertView(expected, NORMAL, msg)  # type: ignore[arg-type]
         for sel in self.view.sel():
             self.assertTrue(sel.b == sel.a, 'failed asserting selection is a valid NORMAL mode selection')
 
     def assertReplace(self, expected, msg: str = None) -> None:
-        self._assertView(expected, REPLACE, msg)
+        self._assertView(expected, REPLACE, msg)  # type: ignore[arg-type]
         for sel in self.view.sel():
             self.assertTrue(sel.b == sel.a, 'failed asserting selection is a valid REPLACE mode selection')
 
     def assertVisual(self, expected, msg: str = None) -> None:
-        self._assertView(expected, VISUAL, msg)
+        self._assertView(expected, VISUAL, msg)  # type: ignore[arg-type]
         self.assertSelectionIsNotReversed()
 
     def assertRVisual(self, expected, msg: str = None) -> None:
-        self._assertView(expected, VISUAL, msg)
+        self._assertView(expected, VISUAL, msg)  # type: ignore[arg-type]
         self.assertSelectionIsReversed()
 
     def assertVselect(self, expected, msg: str = None) -> None:
-        self._assertView(expected, SELECT, msg)
+        self._assertView(expected, SELECT, msg)  # type: ignore[arg-type]
         self.assertSelectionIsNotReversed()
 
     def assertRVselect(self, expected, msg: str = None) -> None:
-        self._assertView(expected, SELECT, msg)
+        self._assertView(expected, SELECT, msg)  # type: ignore[arg-type]
         self.assertSelectionIsReversed()
 
     def assertVblock(self, expected, direction: int = DIRECTION_DOWN, msg: str = None) -> None:
-        self._assertView(expected, VISUAL_BLOCK, msg)
+        self._assertView(expected, VISUAL_BLOCK, msg)  # type: ignore[arg-type]
         self.assertSelectionIsNotReversed()
         self.assertVblockDirection(direction)
 
     def assertRVblock(self, expected, direction: int = DIRECTION_DOWN, msg: str = None) -> None:
-        self._assertView(expected, VISUAL_BLOCK, msg)
+        self._assertView(expected, VISUAL_BLOCK, msg)  # type: ignore[arg-type]
         self.assertSelectionIsReversed()
         self.assertVblockDirection(direction, msg)
 
     def assertVline(self, expected, msg: str = None) -> None:
-        self._assertView(expected, VISUAL_LINE, msg)
+        self._assertView(expected, VISUAL_LINE, msg)  # type: ignore[arg-type]
         self.assertSelectionIsNotReversed()
 
     def assertRVline(self, expected, msg: str = None) -> None:
-        self._assertView(expected, VISUAL_LINE, msg)
+        self._assertView(expected, VISUAL_LINE, msg)  # type: ignore[arg-type]
         self.assertSelectionIsReversed()
 
     def _assertMode(self, mode: str) -> None:
@@ -754,11 +756,11 @@ class ViewTestCase(unittest.TestCase):
             _mock_pattern = None
 
             def prompt(cmdline, pattern: str) -> None:
-                args = []
+                args = []  # type: list
                 if cmdline._mock_pattern is not None:
                     args.append(cmdline._mock_pattern)
 
-                cmdline._callbacks[cmdline._mock_event](*args)
+                cmdline._callbacks[cmdline._mock_event](*args)  # type: ignore[attr-defined]
                 _set_reset_during_init(self.view, True)
 
         if type == '?':
@@ -767,13 +769,13 @@ class ViewTestCase(unittest.TestCase):
             mock.SEARCH_FORWARD = '/'
 
         if pattern is not None:
-            MockCmdlineOnDone._mock_pattern = pattern
+            MockCmdlineOnDone._mock_pattern = pattern  # type: ignore[assignment]
 
-        MockCmdlineOnDone._mock_event = event
+        MockCmdlineOnDone._mock_event = event  # type: ignore[attr-defined]
         mock.side_effect = MockCmdlineOnDone
 
     # DEPRECATED Use newer APIs e.g. self.Region(), unittest.Region.
-    def _R(self, a: int, b: int = None) -> Region:
+    def _R(self, a: int, b: int = None) -> Region:  # type: ignore[valid-type]
         return _make_region(self.view, a, b)
 
     # DEPRECATED Use newer APIs e.g. assertRegion(), assertSelection(), and assertContent().
@@ -1076,8 +1078,8 @@ class ResetCommandLineOutput(FunctionalTestCase):
     def tearDown(self) -> None:
         # XXX: Ugly hack to make sure that the output panels created in these
         # tests don't hide the overall progress panel.
-        self.view.window().run_command('show_panel', {'panel': 'output.UnitTesting'})
-        self.view.window().focus_group(self.view.window().active_group())
+        self.view.window().run_command('show_panel', {'panel': 'output.UnitTesting'})  # type: ignore[union-attr]
+        self.view.window().focus_group(self.view.window().active_group())  # type: ignore[union-attr]
         super().tearDown()
 
 
@@ -1364,7 +1366,7 @@ def mock_run_commands(*methods):
             any mocked commands and runs all other commands normally.
             """
             if cmd not in methods:
-                sublime_api.view_run_command(self.id(), cmd, args)
+                sublime_api.view_run_command(self.id(), cmd, args)  # type: ignore[arg-type]
             else:
                 f._mock_run_command_calls.append((cmd, args))
 
@@ -1376,7 +1378,7 @@ def mock_run_commands(*methods):
             for any mocked commands and runs all other commands normally.
             """
             if cmd not in methods:
-                sublime_api.window_run_command(self.id(), cmd, args)
+                sublime_api.window_run_command(self.id(), cmd, args)  # type: ignore[arg-type]
             else:
                 f._mock_run_command_calls.append((cmd, args))
 
