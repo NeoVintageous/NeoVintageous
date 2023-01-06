@@ -17,6 +17,7 @@
 
 from NeoVintageous.nv.polyfill import erase_status
 from NeoVintageous.nv.polyfill import set_status
+from NeoVintageous.nv.session import do_bc_runtime_save_session
 from NeoVintageous.nv.session import get_session_value
 from NeoVintageous.nv.session import set_session_value
 from NeoVintageous.nv.settings import get_glue_until_normal_mode
@@ -57,7 +58,7 @@ def stop_recording() -> None:
             except KeyError:
                 pass
 
-        set_session_value('macros', macros, persist=True)
+        do_bc_runtime_save_session()
 
     _data['recording'] = False
     _data['recording_steps'] = []

@@ -13,7 +13,6 @@ _views = defaultdict(dict)  # type: dict
 
 _BUILD_VERSION = int(version())
 
-
 # Saving the session on exit is only available in newer builds. Otherwise
 # sessions are saved in realtime which is a performance concern.
 if _BUILD_VERSION >= 4081:
@@ -28,12 +27,19 @@ if _BUILD_VERSION >= 4081:
 
     def session_on_exit() -> None:
         save_session()
+
+    # In newer builds the session is saved when exiting Sublime.
+    def do_bc_runtime_save_session() -> None:
+        pass
 else:
     def get_packages_path() -> str:
         return packages_path()
 
     def session_on_exit() -> None:
         pass
+
+    def do_bc_runtime_save_session() -> None:
+        save_session()
 
 
 def _session_file() -> str:
@@ -103,14 +109,18 @@ def get_session_value(name: str, default=None):
     try:
         return _session[name]
     except KeyError:
-        return default
+        # Set session default value now before returning the value because it
+        # could be a mutable type e.g. dict, list, set.
+        _session[name] = default
+
+        return _session[name]
 
 
 def set_session_value(name: str, value, persist: bool = False) -> None:
     _session[name] = value
 
-    if persist and _BUILD_VERSION < 4081:
-        save_session()
+    if persist:
+        do_bc_runtime_save_session()
 
 
 def get_session_view_value(view, name: str, default=None):
