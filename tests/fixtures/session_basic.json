@@ -1,0 +1,32 @@
+{
+    "ex_substitute_last_pattern": "fizz",
+    "ex_substitute_last_replacement": "buzz",
+    "foo": "bar",
+    "history": {
+        "1": {
+            "num": 6,
+            "items": {
+                "1": "s/fizz/buzz/",
+                "2": "ls",
+                "6": "help"
+            }
+        },
+        "2": {
+            "num": 0,
+            "items": {}
+        },
+        "3": {
+            "num": 0,
+            "items": {}
+        },
+        "4": {
+            "num": 0,
+            "items": {}
+        },
+        "5": {
+            "num": 0,
+            "items": {}
+        }
+    },
+    "last_used_register_name": "w"
+}

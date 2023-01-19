@@ -11,11 +11,11 @@ _session = {}
 _views = defaultdict(dict)  # type: dict
 
 
-_BUILD_VERSION = int(version())
+_VERSION = int(version())
 
 # Saving the session on exit is only available in newer builds. Otherwise
 # sessions are saved in realtime which is a performance concern.
-if _BUILD_VERSION >= 4081:
+if _VERSION >= 4081:
 
     # Saving sessions needs to use the Sublime packages path API but the API is
     # not available when the application is shutting down and access to the
@@ -42,7 +42,7 @@ else:
         save_session()
 
 
-def _session_file() -> str:
+def _get_session_file() -> str:
     return os.path.join(
         os.path.dirname(get_packages_path()),
         'Local',
@@ -66,7 +66,7 @@ def _recursively_convert_dict_keys_to_int(value) -> dict:
 
 def load_session() -> None:
     try:
-        with open(_session_file(), 'r', encoding='utf=8', errors='replace') as f:
+        with open(_get_session_file(), 'r', encoding='utf=8', errors='replace') as f:
             content = f.read()
             if content.strip():
                 session = json.loads(content)
@@ -99,14 +99,14 @@ def load_session() -> None:
 
                         _session[k] = v
 
-    except FileNotFoundError:  # pragma: no cover
+    except FileNotFoundError:
         pass
     except Exception:  # pragma: no cover
         traceback.print_exc()
 
 
 def save_session() -> None:
-    with open(_session_file(), 'w', encoding='utf-8') as f:
+    with open(_get_session_file(), 'w', encoding='utf-8') as f:
         f.write(json.dumps(_session))
 
 

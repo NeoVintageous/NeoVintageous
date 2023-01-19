@@ -1193,8 +1193,11 @@ def mock_session():
     """
     def wrapper(f):
         @mock.patch.dict('NeoVintageous.nv.session._session', {}, clear=True)
+        @mock.patch.dict('NeoVintageous.nv.history._storage', {}, clear=True)
         @mock.patch('NeoVintageous.nv.session.save_session')
         def wrapped(self, *args, **kwargs):
+            save = args[-1]
+
             def _assertSessionEqual(*args) -> None:
                 from NeoVintageous.nv import session
                 if len(args) == 1:
@@ -1208,15 +1211,26 @@ def mock_session():
                         session._session[args[0]],
                         'expects session key value')
 
+            # The history storage needs to be refactored into the actual session.
+            def _assertHistoryEqual(*args) -> None:
+                from NeoVintageous.nv import history
+                self.assertEqual(args[0], history._storage)
+
             def _assertSessionEmpty() -> None:
                 _assertSessionEqual({'macros': {}})
 
             def _assertSessionHasNoMacros() -> None:
                 _assertSessionEqual('macros', {})
 
+            def _assertNotSaved() -> None:
+                self.assertMockNotCalled(save)
+
+            self.assertSessionNotSaved = _assertNotSaved
+            self.assertSessionSaved = save.assert_called_once_with
             self.assertSession = _assertSessionEqual
             self.assertSessionEmpty = _assertSessionEmpty
             self.assertSessionHasNoMacros = _assertSessionHasNoMacros
+            self.assertHistory = _assertHistoryEqual
 
             return f(self, *args[:-1], **kwargs)
         return wrapped
