@@ -18,7 +18,7 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_ex_registers(unittest.ResetCommandLineOutput, unittest.FunctionalTestCase):
+class Test_ex_registers(unittest.ResetRegisters, unittest.ResetCommandLineOutput, unittest.FunctionalTestCase):
 
     def test_registers(self):
         self.normal('fi|zz')
