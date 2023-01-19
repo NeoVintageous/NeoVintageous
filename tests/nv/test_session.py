@@ -91,24 +91,50 @@ class TestSession(unittest.ViewTestCase):
             'last_used_register_name': 'w'})
         self.assertHistory({
             1: {
+                'num': 6,
                 'items': {
                     1: 's/fizz/buzz/',
                     2: 'ls',
                     6: 'help'
-                },
-                'num': 6
+                }
             },
-            2: {'items': {}, 'num': 0},
-            3: {'items': {}, 'num': 0},
-            4: {'items': {}, 'num': 0},
-            5: {'items': {}, 'num': 0}})
+            2: {'num': 0, "items": {}},
+            3: {'num': 0, "items": {}},
+            4: {'num': 0, "items": {}},
+            5: {'num': 0, "items": {}}})
 
-    @unittest.mock.patch.dict('NeoVintageous.nv.session._session', {"fizz": "buzz"}, clear=True)
+    @unittest.mock.patch.dict('NeoVintageous.nv.session._session', {
+        "ex_substitute_last_pattern": "fizz",
+        "ex_substitute_last_replacement": "buzz",
+        "foo": "bar",
+        "history": {
+            1: {
+                'num': 6,
+                'items': {
+                    1: 's/fizz/buzz/',
+                    2: 'ls',
+                    6: 'help'
+                }
+            },
+            2: {'num': 0, "items": {}},
+            3: {'num': 0, "items": {}},
+            4: {'num': 0, "items": {}},
+            5: {'num': 0, "items": {}}
+        },
+        "last_used_register_name": "w",
+    }, clear=True)
     @unittest.mock.patch('NeoVintageous.nv.session._get_session_file')
     def test_save_session(self, get_session_file):
+        self.maxDiff = None
         with tempfile.TemporaryDirectory() as tmpdir:
             session_file = os.path.join(tmpdir, 'test.session')
             get_session_file.return_value = session_file
             session.save_session()
-            with open(session_file, 'r', encoding='utf=8', errors='replace') as f:
-                self.assertEqual('{"fizz": "buzz"}', f.read())
+
+            with open(session_file, 'r', encoding='utf-8', errors='replace') as f:
+                with open(self.fixturePath('session_basic.json'), 'r', encoding='utf-8') as s:
+                    self.assertEqual(f.read(), s.read().rstrip().replace(
+                        '\n', ' ').replace(
+                        '    ', '').replace(
+                        '{ ', '{').replace(
+                        ' }', '}'))
