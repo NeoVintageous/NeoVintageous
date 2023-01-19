@@ -29,7 +29,7 @@ if _VERSION >= 4081:
         save_session()
 
     # In newer builds the session is saved when exiting Sublime.
-    def do_bc_runtime_save_session() -> None:
+    def maybe_do_runtime_save_session() -> None:
         pass
 else:
     def get_packages_path() -> str:
@@ -38,7 +38,7 @@ else:
     def session_on_exit() -> None:
         pass
 
-    def do_bc_runtime_save_session() -> None:
+    def maybe_do_runtime_save_session() -> None:
         save_session()
 
 
@@ -125,7 +125,7 @@ def set_session_value(name: str, value, persist: bool = False) -> None:
     _session[name] = value
 
     if persist:
-        do_bc_runtime_save_session()
+        maybe_do_runtime_save_session()
 
 
 def get_session_view_value(view, name: str, default=None):
