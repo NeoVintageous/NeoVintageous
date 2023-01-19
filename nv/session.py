@@ -57,11 +57,11 @@ def session_on_close(view) -> None:
         pass
 
 
-def _json_object_hook_dict_str_key_to_int(x):
-    if isinstance(x, dict):
-        return {int(k) if k.isdigit() else k: v for k, v in x.items()}
+def _recursively_convert_dict_keys_to_int(value) -> dict:
+    if not isinstance(value, dict):
+        return value
 
-    return x
+    return dict((int(k) if k.isdigit() else k, _recursively_convert_dict_keys_to_int(v)) for k, v in value.items())
 
 
 def load_session() -> None:
@@ -69,7 +69,7 @@ def load_session() -> None:
         with open(_session_file(), 'r', encoding='utf=8', errors='replace') as f:
             content = f.read()
             if content.strip():
-                session = json.loads(content, object_hook=_json_object_hook_dict_str_key_to_int)
+                session = json.loads(content)
                 if session:
                     accept_keys = (
                         'history',
@@ -83,16 +83,21 @@ def load_session() -> None:
                         if k not in accept_keys:
                             continue
 
-                        # TODO The history module needs to be refactored to
-                        # store it's session data in a loadable session format
-                        # i.e. use session module functions to store data.
+                        # TODO Refactor history module to be session friendly.
                         if k == 'history':
+                            # Import inline to avoid circular reference.
                             from NeoVintageous.nv.history import _storage
                             _storage.clear()
                             for _k, _v in v.items():
-                                _storage[int(_k)] = _v
-                        else:
-                            _session[k] = v
+                                # The session is stored in JSON format and json
+                                # dump serialized dict int keys as strings. So
+                                # the keys need to be deserialized to ints.
+                                _storage[int(_k)] = _recursively_convert_dict_keys_to_int(_v)
+
+                            # history is a special case.
+                            continue
+
+                        _session[k] = v
 
     except FileNotFoundError:  # pragma: no cover
         pass
