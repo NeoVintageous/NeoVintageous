@@ -233,23 +233,11 @@ class NeoVintageousEvents(EventListener):
         session_on_close(view)
 
     def on_activated(self, view):
-
-        # Clear any visual selections in the view we are leaving. This mirrors
-        # Vim behaviour. We can't put this functionality in the
-        # view.on_deactivate() event, because that event is triggered when the
-        # user right button clicks the view with the mouse, and we don't want
-        # visual selections to be cleared on mouse right button clicks.
         if is_view(view):
-            window = view.window()
-            if window:
-                active_group = window.active_group()
-                for group in range(window.num_groups()):
-                    if group != active_group:
-                        other_view = window.active_view_in_group(group)
-                        if other_view and other_view != view:
-                            sel = other_view.sel()
-                            if len(sel) > 0 and any([not s.empty() for s in sel]):
-                                enter_normal_mode(other_view, get_mode(other_view))
+            # This mirrors Vim behaviour. We can't put this functionality in the
+            # on_deactivated event because that event is triggered when the
+            # mouse right button is clicked in a view.
+            _clear_inactive_views_visual_selections(view)
 
             if self._last_deactivated_file_name:
                 # The alternate file register is only set to the deactivating
@@ -267,3 +255,16 @@ class NeoVintageousEvents(EventListener):
     if int(version()) >= 4050:
         def on_exit(self):
             session_on_exit()
+
+
+def _clear_inactive_views_visual_selections(view) -> None:
+    window = view.window()
+    if window:
+        active_group = window.active_group()
+        for group in range(window.num_groups()):
+            if group != active_group:
+                other_view = window.active_view_in_group(group)
+                if other_view and other_view != view:
+                    sel = other_view.sel()
+                    if len(sel) > 0 and any([not s.empty() for s in sel]):
+                        enter_normal_mode(other_view, get_mode(other_view))
