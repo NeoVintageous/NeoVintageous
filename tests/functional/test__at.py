@@ -78,4 +78,4 @@ class Test_at(unittest.FunctionalTestCase):
         self.feed('n_@a')
         self.assertNormal('fi|zz')
         self.assertStatusLineIsNormal()
-        self.assertSessionHasNoMacros()
+        self.assertSessionEmpty()

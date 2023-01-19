@@ -62,7 +62,6 @@ class TestSession(unittest.ViewTestCase):
         get_session_file.return_value = self.fixturePath('session_is_empty_object.json')
         session.load_session()
         self.assertSession({})
-        self.assertHistory({})
 
     @unittest.mock_session()
     @unittest.mock.patch('NeoVintageous.nv.session._get_session_file')
@@ -70,7 +69,6 @@ class TestSession(unittest.ViewTestCase):
         get_session_file.return_value = self.fixturePath('session_is_empty.json')
         session.load_session()
         self.assertSession({})
-        self.assertHistory({})
 
     @unittest.mock_session()
     @unittest.mock.patch('NeoVintageous.nv.session._get_session_file')
@@ -78,7 +76,6 @@ class TestSession(unittest.ViewTestCase):
         get_session_file.return_value = self.fixturePath('session_does_not_exist.json')
         session.load_session()
         self.assertSession({})
-        self.assertHistory({})
 
     @unittest.mock_session()
     @unittest.mock.patch('NeoVintageous.nv.session._get_session_file')
@@ -88,20 +85,33 @@ class TestSession(unittest.ViewTestCase):
         self.assertSession({
             "ex_substitute_last_pattern": "fizz",
             "ex_substitute_last_replacement": "buzz",
-            'last_used_register_name': 'w'})
-        self.assertHistory({
-            1: {
-                'num': 6,
-                'items': {
-                    1: 's/fizz/buzz/',
-                    2: 'ls',
-                    6: 'help'
-                }
+            "history": {
+                1: {
+                    'num': 6,
+                    'items': {
+                        1: 's/fizz/buzz/',
+                        2: 'ls',
+                        6: 'help'
+                    }
+                },
+                2: {'num': 0, "items": {}},
+                3: {'num': 0, "items": {}},
+                4: {'num': 0, "items": {}},
+                5: {'num': 0, "items": {}},
             },
-            2: {'num': 0, "items": {}},
-            3: {'num': 0, "items": {}},
-            4: {'num': 0, "items": {}},
-            5: {'num': 0, "items": {}}})
+            "last_used_register_name": "w",
+            "macros": {
+                "w": [
+                    [
+                        "nv_vi_w",
+                        {
+                            "mode": "mode_normal",
+                            "count": 1
+                        }
+                    ]
+                ]
+            },
+        })
 
     @unittest.mock.patch.dict('NeoVintageous.nv.session._session', {
         "ex_substitute_last_pattern": "fizz",
@@ -122,6 +132,17 @@ class TestSession(unittest.ViewTestCase):
             5: {'num': 0, "items": {}}
         },
         "last_used_register_name": "w",
+        "macros": {
+            "w": [
+                [
+                    "nv_vi_w",
+                    {
+                        "mode": "mode_normal",
+                        "count": 1
+                    }
+                ]
+            ]
+        },
     }, clear=True)
     @unittest.mock.patch('NeoVintageous.nv.session._get_session_file')
     def test_save_session(self, get_session_file):
@@ -136,5 +157,7 @@ class TestSession(unittest.ViewTestCase):
                     self.assertEqual(f.read(), s.read().rstrip().replace(
                         '\n', ' ').replace(
                         '    ', '').replace(
+                        '[ ', '[').replace(
+                        ' ]', ']').replace(
                         '{ ', '{').replace(
                         ' }', '}'))

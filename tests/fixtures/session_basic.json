@@ -28,5 +28,16 @@
             "items": {}
         }
     },
-    "last_used_register_name": "w"
+    "last_used_register_name": "w",
+    "macros": {
+        "w": [
+            [
+                "nv_vi_w",
+                {
+                    "mode": "mode_normal",
+                    "count": 1
+                }
+            ]
+        ]
+    }
 }

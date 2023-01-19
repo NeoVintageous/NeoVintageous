@@ -1200,27 +1200,28 @@ def mock_session():
 
             def _assertSessionEqual(*args) -> None:
                 from NeoVintageous.nv import session
+                from NeoVintageous.nv import history
+
+                # TODO The history storage needs refactoring. This patches the
+                # testable session as though it already contains the history
+                # data when it's actually stored in the history module.
+                patched_session = session._session
+                if history._storage:
+                    patched_session['history'] = history._storage
+
                 if len(args) == 1:
                     self.assertEqual(
                         args[0],
-                        session._session,
+                        patched_session,
                         'expects session')
                 else:
                     self.assertEqual(
                         args[1],
-                        session._session[args[0]],
+                        patched_session[args[0]],
                         'expects session key value')
-
-            # The history storage needs to be refactored into the actual session.
-            def _assertHistoryEqual(*args) -> None:
-                from NeoVintageous.nv import history
-                self.assertEqual(args[0], history._storage)
 
             def _assertSessionEmpty() -> None:
                 _assertSessionEqual({'macros': {}})
-
-            def _assertSessionHasNoMacros() -> None:
-                _assertSessionEqual('macros', {})
 
             def _assertNotSaved() -> None:
                 self.assertMockNotCalled(save)
@@ -1229,8 +1230,6 @@ def mock_session():
             self.assertSessionSaved = save.assert_called_once_with
             self.assertSession = _assertSessionEqual
             self.assertSessionEmpty = _assertSessionEmpty
-            self.assertSessionHasNoMacros = _assertSessionHasNoMacros
-            self.assertHistory = _assertHistoryEqual
 
             return f(self, *args[:-1], **kwargs)
         return wrapped
