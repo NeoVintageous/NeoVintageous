@@ -57,11 +57,11 @@ def session_on_close(view) -> None:
         pass
 
 
-def _recursively_convert_dict_keys_to_int(value) -> dict:
+def _recursively_convert_dict_digit_keys_to_int(value) -> dict:
     if not isinstance(value, dict):
         return value
 
-    return dict((int(k) if k.isdigit() else k, _recursively_convert_dict_keys_to_int(v)) for k, v in value.items())
+    return dict((int(k) if k.isdigit() else k, _recursively_convert_dict_digit_keys_to_int(v)) for k, v in value.items())
 
 
 def load_session() -> None:
@@ -92,7 +92,7 @@ def load_session() -> None:
                                 # The session is stored in JSON format and json
                                 # dump serialized dict int keys as strings. So
                                 # the keys need to be deserialized to ints.
-                                _storage[int(_k)] = _recursively_convert_dict_keys_to_int(_v)
+                                _storage[int(_k)] = _recursively_convert_dict_digit_keys_to_int(_v)
 
                             # history is a special case.
                             continue
