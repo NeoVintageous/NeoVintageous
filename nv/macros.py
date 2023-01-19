@@ -94,7 +94,4 @@ def add_macro_step(view, cmd: str, args: dict) -> None:
             return
 
         if not get_glue_until_normal_mode(view):
-            if 'recording_steps' not in _data:
-                _data['recording_steps'] = []
-
             _data['recording_steps'].append((cmd, args))
