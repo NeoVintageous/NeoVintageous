@@ -15,6 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+import os
+import tempfile
+
 from NeoVintageous.nv import session
 from NeoVintageous.tests import unittest
 
@@ -99,3 +102,13 @@ class TestSession(unittest.ViewTestCase):
             3: {'items': {}, 'num': 0},
             4: {'items': {}, 'num': 0},
             5: {'items': {}, 'num': 0}})
+
+    @unittest.mock.patch.dict('NeoVintageous.nv.session._session', {"fizz": "buzz"}, clear=True)
+    @unittest.mock.patch('NeoVintageous.nv.session._get_session_file')
+    def test_save_session(self, get_session_file):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            session_file = os.path.join(tmpdir, 'test.session')
+            get_session_file.return_value = session_file
+            session.save_session()
+            with open(session_file, 'r', encoding='utf=8', errors='replace') as f:
+                self.assertEqual('{"fizz": "buzz"}', f.read())
