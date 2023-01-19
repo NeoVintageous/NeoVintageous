@@ -58,7 +58,7 @@ class TestSession(unittest.ViewTestCase):
 
     @unittest.mock_session()
     @unittest.mock.patch('NeoVintageous.nv.session._get_session_file')
-    def test_load_empty_session(self, get_session_file):
+    def test_load_empty_object_session(self, get_session_file):
         get_session_file.return_value = self.fixturePath('session_is_empty_object.json')
         session.load_session()
         self.assertSession({})
@@ -66,7 +66,7 @@ class TestSession(unittest.ViewTestCase):
 
     @unittest.mock_session()
     @unittest.mock.patch('NeoVintageous.nv.session._get_session_file')
-    def test_load_empty_session2(self, get_session_file):
+    def test_load_empty_session(self, get_session_file):
         get_session_file.return_value = self.fixturePath('session_is_empty.json')
         session.load_session()
         self.assertSession({})
