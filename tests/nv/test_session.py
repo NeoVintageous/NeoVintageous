@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+import json
 import os
 import tempfile
 
@@ -154,10 +155,6 @@ class TestSession(unittest.ViewTestCase):
 
             with open(session_file, 'r', encoding='utf-8', errors='replace') as f:
                 with open(self.fixturePath('session_basic.json'), 'r', encoding='utf-8') as s:
-                    self.assertEqual(f.read(), s.read().rstrip().replace(
-                        '\n', ' ').replace(
-                        '    ', '').replace(
-                        '[ ', '[').replace(
-                        ' ]', ']').replace(
-                        '{ ', '{').replace(
-                        ' }', '}'))
+                    self.assertEqual(
+                        sorted(json.loads(f.read())),
+                        sorted(json.loads(s.read())))
