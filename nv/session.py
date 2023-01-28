@@ -61,7 +61,9 @@ def _recursively_convert_dict_digit_keys_to_int(value) -> dict:
     if not isinstance(value, dict):
         return value
 
-    return dict((int(k) if k.isdigit() else k, _recursively_convert_dict_digit_keys_to_int(v)) for k, v in value.items())
+    return dict((
+        int(k) if k.isdigit() else k, _recursively_convert_dict_digit_keys_to_int(v)
+    ) for k, v in value.items())
 
 
 def load_session() -> None:
