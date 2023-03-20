@@ -145,15 +145,14 @@ def plugin_loaded():
     _init_backwards_compat_patches()
 
     loading_exeption = None
-
-    pc_event = None
+    package_control_event = None
 
     try:
         from package_control import events
         if events.install('NeoVintageous'):  # pragma: no cover
-            pc_event = 'install'
+            package_control_event = 'install'
         if events.post_upgrade('NeoVintageous'):  # pragma: no cover
-            pc_event = 'post_upgrade'
+            package_control_event = 'post_upgrade'
     except ImportError:  # pragma: no cover
         pass  # Package Control isn't available (PC is not required)
     except Exception as e:  # pragma: no cover
@@ -178,14 +177,14 @@ def plugin_loaded():
         clean_views()
 
         if isinstance(_startup_exception, ImportError) or isinstance(loading_exeption, ImportError):
-            if pc_event == 'post_upgrade':
+            if package_control_event == 'post_upgrade':
                 message = "Failed to load some modules trying to upgrade NeoVintageous. "\
                           "Please restart Sublime Text to finish the upgrade."
             else:
                 message = "Failed to load some NeoVintageous modules. "\
                           "Please restart Sublime Text."
         else:
-            if pc_event == 'post_upgrade':
+            if package_control_event == 'post_upgrade':
                 message = "An error occurred trying to upgrade NeoVintageous. "\
                           "Please restart Sublime Text to finish the upgrade."
             else:
