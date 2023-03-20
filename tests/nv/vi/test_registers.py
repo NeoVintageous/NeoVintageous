@@ -42,11 +42,13 @@ from NeoVintageous.nv.registers import _SELECTION_AND_DROP
 from NeoVintageous.nv.registers import _SMALL_DELETE
 from NeoVintageous.nv.registers import _SPECIAL
 from NeoVintageous.nv.registers import _UNNAMED
-from NeoVintageous.nv.registers import _data
+from NeoVintageous.nv.registers import _get_data
 from NeoVintageous.nv.registers import _get_selected_text
 from NeoVintageous.nv.registers import _is_register_linewise
+from NeoVintageous.nv.registers import _is_register_writable
 from NeoVintageous.nv.registers import _reset
-from NeoVintageous.nv.registers import _set_unnamed
+from NeoVintageous.nv.registers import _set_unnamed_register
+from NeoVintageous.nv.registers import get_alternate_file_register
 from NeoVintageous.nv.registers import registers_get
 from NeoVintageous.nv.registers import registers_get_all
 from NeoVintageous.nv.registers import registers_get_for_paste
@@ -54,6 +56,7 @@ from NeoVintageous.nv.registers import registers_op_change
 from NeoVintageous.nv.registers import registers_op_delete
 from NeoVintageous.nv.registers import registers_op_yank
 from NeoVintageous.nv.registers import registers_set
+from NeoVintageous.nv.registers import set_alternate_file_register
 from NeoVintageous.nv.registers import set_expression_register
 
 
@@ -72,7 +75,10 @@ class RegistersTestCase(unittest.ResetRegisters, unittest.ViewTestCase):
         _reset()
 
     def assertEmptyRegisters(self):
-        self.assertEqual(_data, {'0': None, '1-9': deque([None] * 9, maxlen=9)})
+        self.assertEqual(_get_data(), {
+            '0': (None, False),
+            '1-9': deque([(None, False)] * 9, maxlen=9)
+        })
 
 
 class Test_get_for_paste(RegistersTestCase):
@@ -115,6 +121,21 @@ class TestConstants(unittest.TestCase):
 
     def test_readonly(self):
         self.assertEqual(_READ_ONLY, ('#', '~', '%', ':', '.'))
+
+    def test_is_writable(self):
+        self.assertFalse(_is_register_writable('#'))
+        self.assertFalse(_is_register_writable('%'))
+        self.assertFalse(_is_register_writable('.'))
+        self.assertFalse(_is_register_writable(':'))
+        self.assertFalse(_is_register_writable('~'))
+        self.assertTrue(_is_register_writable('"'))
+        self.assertTrue(_is_register_writable('*'))
+        self.assertTrue(_is_register_writable('+'))
+        self.assertTrue(_is_register_writable('-'))
+        self.assertTrue(_is_register_writable('0'))
+        self.assertTrue(_is_register_writable('1'))
+        self.assertTrue(_is_register_writable('a'))
+        self.assertTrue(_is_register_writable('b'))
 
     def test_special(self):
         self.assertTupleEqual(_SPECIAL, (
@@ -205,7 +226,7 @@ class TestRegister(RegistersTestCase):
         self.assertEqual(registers_get(self.view, '='), ['y'])
 
     def test_can_set_unanmed_register(self):
-        _set_unnamed(["foo"])
+        _set_unnamed_register(["foo"])
         self.assertEqual(registers_get(self.view, _UNNAMED), ["foo"])
 
     def test_setting_long_register_name_throws_assertion_error(self):
@@ -328,7 +349,7 @@ class TestRegister(RegistersTestCase):
         registers_set(self.view, _EXPRESSION, ['100'])
         self.set_setting('use_sys_clipboard', False)
         self.assertEqual(registers_get(self.view, _UNNAMED), ['100'])
-        self.assertEqual(registers_get(self.view, _EXPRESSION), None)
+        self.assertEqual(registers_get(self.view, _EXPRESSION), [])
 
     def test_can_get_number_register(self):
         registers_set(self.view, '4', ['foo'])
@@ -368,6 +389,13 @@ class TestRegister(RegistersTestCase):
     def test_can_get_small_delete_register(self):
         registers_set(self.view, _SMALL_DELETE, ['foo'])
         self.assertEqual(registers_get(self.view, _SMALL_DELETE), ['foo'])
+
+    def test_alternate_file_register(self):
+        self.assertIsNone(get_alternate_file_register())
+        set_alternate_file_register('fname')
+        self.assertEqual(get_alternate_file_register(), 'fname')
+        self.assertEqual(registers_get(self.view, _ALTERNATE_FILE), ['fname'])
+        self.assertEqual(registers_get_for_paste(self.view, _ALTERNATE_FILE, unittest.NORMAL), (['fname'], False))
 
 
 class Test_get_selected_text(RegistersTestCase):
@@ -557,7 +585,7 @@ class Test_op_delete(RegistersTestCase):
         self.assertEqual(registers_get(self.view, '7'), ['x\n7'])
         self.assertEqual(registers_get(self.view, '8'), ['x\n8'])
         self.assertEqual(registers_get(self.view, '9'), ['x\n9'])
-        self.assertEqual(len(_data['1-9']), 9)
+        self.assertEqual(len(_get_data()['1-9']), 9)
         self.assertFalse(_is_register_linewise('"'))
         self.assertFalse(_is_register_linewise('8'))
         self.assertEqual(registers_get_for_paste(self.view, '"', unittest.INTERNAL_NORMAL), (['x\n1'], False))

@@ -21,6 +21,7 @@ from sublime import Region
 from sublime_plugin import TextCommand
 
 from NeoVintageous.nv.plugin import register
+from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.ui import ui_bell
@@ -28,7 +29,6 @@ from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import regions_transformer_reversed
 from NeoVintageous.nv.utils import row_at
-from NeoVintageous.nv.utils import set_selection
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vim import ACTION_MODES

@@ -1,4 +1,4 @@
-*usr_08.txt*	Nvim
+*usr_08.txt*	For Vim version 9.0.  Last change: 2021 May 20
 
 		     VIM USER MANUAL - by Bram Moolenaar
 
@@ -15,7 +15,7 @@ side by side.  All this is possible with split windows.
 |08.4|	Vertical splits
 |08.5|	Moving windows
 |08.6|	Commands for all windows
-|08.7|	Viewing differences with diff mode
+|08.7|	Viewing differences with vimdiff
 |08.8|	Various
 |08.9|	Tab pages
 
@@ -335,15 +335,15 @@ The "-O" argument is used to get vertically split windows.
 file in the argument list.  ":vertical all" does it with vertical splits.
 
 ==============================================================================
-*08.7*	Viewing differences with diff mode
+*08.7*	Viewing differences with vimdiff
 
-There is a special way to start Nvim, which shows the differences between two
+There is a special way to start Vim, which shows the differences between two
 files.  Let's take a file "main.c" and insert a few characters in one line.
 Write this file with the 'backup' option set, so that the backup file
 "main.c~" will contain the previous version of the file.
-Type this command in a shell to start Nvim in diff mode: >
+   Type this command in a shell (not in Vim): >
 
-	nvim -d main.c~ main.c
+	vimdiff main.c~ main.c
 
 Vim will start, with two windows side by side.  You will only see the line
 in which you added characters, and a few lines above and below it.
@@ -367,7 +367,8 @@ in which you added characters, and a few lines above and below it.
 	|					  |
 	+-----------------------------------------+
 
-(This picture doesn't show the highlighting, use "nvim -d" for that.)
+(This picture doesn't show the highlighting, use the vimdiff command for a
+better look.)
 
 The lines that were not modified have been collapsed into one line.  This is
 called a closed fold.  They are indicated in the picture with "<- fold".  Thus
@@ -471,7 +472,7 @@ Since there are no changes left now, Vim puts all text in a closed fold.
 "do" stands for "diff obtain".  "dg" would have been better, but that already
 has a different meaning ("dgg" deletes from the cursor until the first line).
 
-For details about diff mode, see |diff-mode|.
+For details about diff mode, see |vimdiff|.
 
 ==============================================================================
 *08.8*	Various
@@ -482,8 +483,6 @@ statusline:
 	0	never
 	1	only when there are split windows (the default)
 	2	always
-	3	have a global statusline at the bottom instead of one for each
-		window
 
 Many commands that edit another file have a variant that splits the window.
 For Command-line commands this is done by prepending an "s".  For example:

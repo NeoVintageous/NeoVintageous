@@ -1,4 +1,4 @@
-*tagsrch.txt*   Nvim
+*tagsrch.txt*   For Vim version 9.0.  Last change: 2020 Dec 19
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -8,7 +8,13 @@ Tags and special searches				*tags-and-searches*
 
 See section |29.1| of the user manual for an introduction.
 
-                                      Type |gO| to see the table of contents.
+1. Jump to a tag		|tag-commands|
+2. Tag stack			|tag-stack|
+3. Tag match list		|tag-matchlist|
+4. Tags details			|tag-details|
+5. Tags file format		|tags-file-format|
+6. Include file searches	|include-search|
+7. Using 'tagfunc'		|tag-function|
 
 ==============================================================================
 1. Jump to a tag					*tag-commands*
@@ -326,6 +332,7 @@ message is given.
 							*tag-preview*
 The tag match list can also be used in the preview window.  The commands are
 the same as above, with a "p" prepended.
+{not available when compiled without the |+quickfix| feature}
 
 							*:pts* *:ptselect*
 :pts[elect][!] [name]	Does ":tselect[!] [name]" and shows the new tag in a
@@ -367,11 +374,11 @@ be a bug.  If you really want the old Vi behavior, set the 't' flag in
 'cpoptions'.
 
 							*tag-binary-search*
-Vim uses binary searching in the tags file to find the desired tag quickly.
-But this only works if the tags file was sorted on ASCII byte value.
-Therefore, if no match was found, another try is done with a linear search.
-If you only want the linear search, reset the 'tagbsearch' option.  Or better:
-Sort the tags file!
+Vim uses binary searching in the tags file to find the desired tag quickly
+(when enabled at compile time |+tag_binary|).  But this only works if the
+tags file was sorted on ASCII byte value.  Therefore, if no match was found,
+another try is done with a linear search.  If you only want the linear search,
+reset the 'tagbsearch' option.  Or better: Sort the tags file!
 
 Note that the binary searching is disabled when not looking for a tag with a
 specific name.  This happens when ignoring case and when a regular expression
@@ -443,6 +450,15 @@ would otherwise go unnoticed.  Example: >
 In Vi the ":tag" command sets the last search pattern when the tag is searched
 for.  In Vim this is not done, the previous search pattern is still remembered,
 unless the 't' flag is present in 'cpoptions'.
+
+					*emacs-tags* *emacs_tags* *E430*
+Emacs style tag files are only supported if Vim was compiled with the
+|+emacs_tags| feature enabled.  Sorry, there is no explanation about Emacs tag
+files here, it is only supported for backwards compatibility :-).
+
+Lines in Emacs tags files can be very long.  Vim only deals with lines of up
+to about 510 bytes.  To see whether lines are ignored set 'verbose' to 5 or
+higher. Non-Emacs tags file lines can be any length.
 
 							*tags-option*
 The 'tags' option is a list of file names.  Each of these files is searched
@@ -518,6 +534,7 @@ exuberant ctags		This is a very good one.  It works for C, C++, Java,
 			Fortran, Eiffel and others.  It can generate tags for
 			many items.  See http://ctags.sourceforge.net.
 			No new version since 2009.
+etags			Connected to Emacs.  Supports many languages.
 JTags			For Java, in Java.  It can be found at
 			http://www.fleiner.com/jtags/.
 ptags.py		For Python, in Python.  Found in your Python source
@@ -629,8 +646,7 @@ If the command is a normal search command (it starts and ends with "/" or
 "?"), some special handling is done:
 - Searching starts on line 1 of the file.
   The direction of the search is forward for "/", backward for "?".
-  Note that 'wrapscan' does not matter, the whole file is always searched.  (Vi
-  does use 'wrapscan', which caused tags sometimes not be found.)
+  Note that 'wrapscan' does not matter, the whole file is always searched.
 - If the search fails, another try is done ignoring case.  If that fails too,
   a search is done for:
 	"^tagname[ \t]*("
@@ -666,6 +682,9 @@ These commands look for a string in the current file and in all encountered
 included files (recursively).  This can be used to find the definition of a
 variable, function or macro.  If you only want to search in the current
 buffer, use the commands listed at |pattern-searches|.
+
+These commands are not available when the |+find_in_path| feature was disabled
+at compile time.
 
 When a line is encountered that includes another file, that file is searched
 before continuing in the current buffer.  Files included by included files are
@@ -877,7 +896,8 @@ The function used for generating the taglist is specified by setting the
 		    user_data	  Custom data String, if stored in the tag
 				  stack previously by tagfunc.
 
-Note that "a:" needs to be prepended to the argument name when using it.
+Note that in a legacy function "a:" needs to be prepended to the argument name
+when using it.
 
 Currently up to three flags may be passed to the tag function:
   'c'		The function was invoked by a normal command being processed
@@ -913,7 +933,9 @@ The following fields are optional:
 If the function returns |v:null| instead of a List, a standard tag lookup will
 be performed instead.
 
-It is not allowed to change the tagstack from inside 'tagfunc'.  *E986* 
+It is not allowed to change the tagstack from inside 'tagfunc'.  *E986*
+It is not allowed to close a window or change window from inside 'tagfunc'.
+*E1299*
 
 The following is a hypothetical example of a function used for 'tagfunc'.  It
 uses the output of |taglist()| to generate the result: a list of tags in the

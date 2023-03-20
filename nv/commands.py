@@ -45,18 +45,20 @@ from NeoVintageous.nv.history import history_get
 from NeoVintageous.nv.history import history_get_type
 from NeoVintageous.nv.history import history_len
 from NeoVintageous.nv.history import history_update
-from NeoVintageous.nv.jumplist import jumplist_update
+from NeoVintageous.nv.jumplist import jumplist_updater
 from NeoVintageous.nv.macros import add_macro_step
 from NeoVintageous.nv.marks import get_mark
 from NeoVintageous.nv.marks import set_mark
 from NeoVintageous.nv.paste import pad_visual_block_paste_contents
 from NeoVintageous.nv.paste import resolve_paste_items_with_view_sel
+from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.polyfill import spell_select
 from NeoVintageous.nv.polyfill import split_by_newlines
 from NeoVintageous.nv.polyfill import toggle_side_bar
 from NeoVintageous.nv.process_notation import ProcessNotationHandler
 from NeoVintageous.nv.rc import open_rc
 from NeoVintageous.nv.rc import reload_rc
+from NeoVintageous.nv.registers import get_alternate_file_register
 from NeoVintageous.nv.registers import registers_get_for_paste
 from NeoVintageous.nv.registers import registers_op_change
 from NeoVintageous.nv.registers import registers_op_delete
@@ -134,7 +136,6 @@ from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import regions_transformer_indexed
 from NeoVintageous.nv.utils import regions_transformer_reversed
 from NeoVintageous.nv.utils import replace_line
-from NeoVintageous.nv.utils import replace_sel
 from NeoVintageous.nv.utils import resolve_internal_normal_target
 from NeoVintageous.nv.utils import resolve_normal_target
 from NeoVintageous.nv.utils import resolve_visual_block_begin
@@ -144,12 +145,10 @@ from NeoVintageous.nv.utils import resolve_visual_line_target
 from NeoVintageous.nv.utils import resolve_visual_target
 from NeoVintageous.nv.utils import restore_visual_repeat_data
 from NeoVintageous.nv.utils import row_at
-from NeoVintageous.nv.utils import row_to_pt
 from NeoVintageous.nv.utils import save_previous_selection
 from NeoVintageous.nv.utils import scroll_horizontally
 from NeoVintageous.nv.utils import scroll_viewport_position
 from NeoVintageous.nv.utils import sel_observer
-from NeoVintageous.nv.utils import set_selection
 from NeoVintageous.nv.utils import should_motion_apply_op_transformer
 from NeoVintageous.nv.utils import show_if_not_visible
 from NeoVintageous.nv.utils import spell_file_add_word
@@ -250,6 +249,7 @@ __all__ = [
     'nv_vi_ctrl_e',
     'nv_vi_ctrl_f',
     'nv_vi_ctrl_g',
+    'nv_vi_ctrl_hat',
     'nv_vi_ctrl_r',
     'nv_vi_ctrl_right_square_bracket',
     'nv_vi_ctrl_u',
@@ -825,7 +825,7 @@ class nv_enter_normal_mode(TextCommand):
         self.view.window().run_command('hide_overlay')
 
         if ((not from_init and (mode == NORMAL) and not get_sequence(self.view)) or not is_view(self.view)):
-            # When nv_enter_normal_mode is requested from init_state, we
+            # When nv_enter_normal_mode is requested from init_view, we
             # should not hide output panels; hide them only if the user
             # pressed Esc and we're not cancelling partial state data, or if a
             # panel has the focus.
@@ -1423,9 +1423,8 @@ class nv_vi_quote(TextCommand):
             view, target = target
             self.view.window().focus_view(view)
 
-        jumplist_update(self.view)
-        regions_transformer(self.view, f)
-        jumplist_update(self.view)
+        with jumplist_updater(self.view):
+            regions_transformer(self.view, f)
 
         if not self.view.visible_region().intersects(target):
             self.view.show_at_center(target)
@@ -1462,9 +1461,8 @@ class nv_vi_backtick(TextCommand):
             view, target = target
             self.view.window().focus_view(view)
 
-        jumplist_update(self.view)
-        regions_transformer(self.view, f)
-        jumplist_update(self.view)
+        with jumplist_updater(self.view):
+            regions_transformer(self.view, f)
 
 
 class nv_vi_big_d(TextCommand):
@@ -1708,7 +1706,7 @@ class nv_vi_greater_than(TextCommand):
 
             # Restore only the first sel.
             s = self.view.sel()[0]
-            replace_sel(self.view, s.a + 1)
+            set_selection(self.view, s.a + 1)
             enter_normal_mode(self.view, mode)
             return
 
@@ -2032,6 +2030,17 @@ class nv_vi_g(TextCommand):
             raise ValueError('unknown action')
 
 
+class nv_vi_ctrl_hat(WindowCommand):
+
+    def run(self, **kwargs):
+        alternate_file = get_alternate_file_register()
+        if not alternate_file:
+            ui_bell('E23: No alternate file')
+            return
+
+        self.window.open_file(alternate_file)
+
+
 class nv_vi_ctrl_right_square_bracket(WindowCommand):
 
     def run(self, mode=None, count=1):
@@ -2347,35 +2356,31 @@ class nv_vi_ctrl_y(TextCommand):
 class nv_vi_q(TextCommand):
 
     def run(self, edit, mode=None, count=1, name=None):
-        window = self.view.window()
-
-        if macros.is_recording(window):
-            macros.stop_recording(window)
+        if macros.is_recording():
+            macros.stop_recording()
         else:
-            if not macros.is_valid_writable_register(name):
+            if not macros.is_writable(name):
                 return ui_bell("E354: Invalid register name: '" + name + "'")
 
-            macros.start_recording(window, name)
+            macros.start_recording(name)
 
 
 class nv_vi_at(TextCommand):
 
     def run(self, edit, name, mode=None, count=1):
-        window = self.view.window()
-
         if name == '@':
-            name = macros.get_last_used_register_name(window)
+            name = macros.get_last_used_register_name()
             if not name:
                 return ui_bell('E748: No previously used register')
 
-        if not macros.is_valid_readable_register(name):
+        if not macros.is_readable(name):
             return ui_bell("E354: Invalid register name: '" + name + "'")
 
-        cmds = macros.get_recorded(window, name)
+        cmds = macros.get_recorded(name)
         if not cmds:
             return
 
-        macros.set_last_used_register_name(window, name)
+        macros.set_last_used_register_name(name)
 
         for i in range(count):
             for cmd, args in cmds:
@@ -3068,9 +3073,8 @@ class nv_vi_gg(TextCommand):
 
             return s
 
-        jumplist_update(self.view)
-        regions_transformer(self.view, f)
-        jumplist_update(self.view)
+        with jumplist_updater(self.view):
+            regions_transformer(self.view, f)
 
 
 class nv_vi_big_g(TextCommand):
@@ -3091,17 +3095,16 @@ class nv_vi_big_g(TextCommand):
 
             return s
 
-        jumplist_update(self.view)
-        target = self.view.size()
-        regions_transformer(self.view, f)
-        jumplist_update(self.view)
+        with jumplist_updater(self.view):
+            target = self.view.size()
+            regions_transformer(self.view, f)
 
 
 class nv_vi_dollar(TextCommand):
     def run(self, edit, mode=None, count=1):
         def _get_target(view, start, count):
             if count > 1:
-                start = row_to_pt(view, row_at(view, start) + (count - 1))
+                start = view.text_point(row_at(view, start) + (count - 1), 0)
 
             target = view.line(start).b
 
@@ -3418,9 +3421,8 @@ class nv_vi_star(TextCommand):
 
         pattern, flags = process_word_search_pattern(self.view, word)
 
-        jumplist_update(self.view)
-        regions_transformer(self.view, f)
-        jumplist_update(self.view)
+        with jumplist_updater(self.view):
+            regions_transformer(self.view, f)
 
         add_search_highlighting(self.view, find_word_search_occurrences(self.view, pattern, flags))
 
@@ -3464,9 +3466,8 @@ class nv_vi_octothorp(TextCommand):
 
         pattern, flags = process_word_search_pattern(self.view, word)
 
-        jumplist_update(self.view)
-        regions_transformer(self.view, f)
-        jumplist_update(self.view)
+        with jumplist_updater(self.view):
+            regions_transformer(self.view, f)
 
         add_search_highlighting(self.view, find_word_search_occurrences(self.view, pattern, flags))
 
@@ -4150,21 +4151,19 @@ class nv_vi_go_to_symbol(TextCommand):
             # Global symbol; simply open the file; not a motion.
             # TODO: Perhaps must be a motion if the target file happens to be
             #       the current one?
-            jumplist_update(self.view)
-            self.view.window().open_file(
-                location[0] + ':' + ':'.join([str(x) for x in location[2]]),
-                ENCODED_POSITION
-            )
-            jumplist_update(self.view)
+            with jumplist_updater(self.view):
+                self.view.window().open_file(
+                    location[0] + ':' + ':'.join([str(x) for x in location[2]]),
+                    ENCODED_POSITION
+                )
 
             return
 
         # Local symbol; select.
         location = self.view.text_point(*location)
 
-        jumplist_update(self.view)
-        regions_transformer(self.view, f)
-        jumplist_update(self.view)
+        with jumplist_updater(self.view):
+            regions_transformer(self.view, f)
 
 
 class nv_vi_gm(TextCommand):
@@ -4175,7 +4174,7 @@ class nv_vi_gm(TextCommand):
                 return s
 
             mid_pt = line.size() // 2
-            row_start = row_to_pt(view, row_at(view, s.b))
+            row_start = view.text_point(row_at(view, s.b), 0)
 
             return Region(min(row_start + mid_pt, line.b - 1))
 

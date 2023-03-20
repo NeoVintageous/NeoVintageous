@@ -1,4 +1,4 @@
-*print.txt*     Nvim
+*print.txt*     For Vim version 9.0.  Last change: 2022 Oct 01
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -6,7 +6,16 @@
 
 Printing						*printing*
 
-                                      Type |gO| to see the table of contents.
+1. Introduction				|print-intro|
+2. Print options			|print-options|
+3. PostScript Printing			|postscript-printing|
+4. PostScript Printing Encoding		|postscript-print-encoding|
+5. PostScript CJK Printing		|postscript-cjk-printing|
+6. PostScript Printing Troubleshooting	|postscript-print-trouble|
+7. PostScript Utilities			|postscript-print-util|
+8. Formfeed Characters			|printing-formfeed|
+
+{only available when compiled with the |+printer| feature}
 
 ==============================================================================
 1. Introduction						*print-intro*
@@ -44,6 +53,8 @@ Note: If you have problems printing with |:hardcopy|, an alternative is to use
 			{filename}.
 			Things like "%" are expanded |cmdline-special|
 			Careful: An existing file is silently overwritten.
+			{only available when compiled with the |+postscript|
+			feature}
 			On MS-Windows use the "print to file" feature of the
 			printer driver.
 
@@ -83,9 +94,11 @@ If the option is empty, then vim will use the system default printer for
 
 							*penc-option* *E620*
 'printencoding' 'penc'	String	(default empty, except for:
-					Windows: cp1252,
+					MS-Windows: cp1252,
 					Macintosh: mac-roman,
-					HPUX: hp-roman8)
+					VMS: dec-mcs,
+					HPUX: hp-roman8,
+					EBCDIC: ebcdic-uk)
 			global
 Sets the character encoding used when printing.  This option tells Vim which
 print character encoding file from the "print" directory in 'runtimepath' to
@@ -103,13 +116,15 @@ will use the "latin1" print character encoding file.
 
 When 'encoding' is set to a multibyte encoding, Vim will try to convert
 characters to the printing encoding for printing (if 'printencoding' is empty
-then the conversion will be to latin1). If no conversion is possible then
-printing will fail.  Any characters that cannot be converted will be replaced
-with upside down question marks.
+then the conversion will be to latin1).  Conversion to a printing encoding
+other than latin1 will require Vim to be compiled with the |+iconv| feature.
+If no conversion is possible then printing will fail.  Any characters that
+cannot be converted will be replaced with upside down question marks.
 
-Two print character encoding files are provided to support default Mac and
-HPUX character encodings and are used by default on these platforms. Code page
-1252 print character encoding is used by default on the Windows platform.
+Four print character encoding files are provided to support default Mac, VMS,
+HPUX, and EBCDIC character encodings and are used by default on these
+platforms.  Code page 1252 print character encoding is used by default on
+MS-Windows platform.
 
 							*pexpr-option*
 'printexpr' 'pexpr'	String	(default: see below)
@@ -121,30 +136,37 @@ The arguments to the ":hardcopy" command are in |v:cmdarg|.
 The expression must take care of deleting the file after printing it.
 When there is an error, the expression must return a non-zero number.
 If there is no error, return zero or an empty string.
-The default for non MS-Windows systems is to simply use "lpr" to print the
-file: >
+The default for non MS-Windows or VMS systems is to simply use "lpr" to print
+the file: >
 
-    system(['lpr']
-           + (empty(&printdevice)?[]:['-P', &printdevice])
-           + [v:fname_in])
-    .. delete(v:fname_in)
-    + v:shell_error
+    system('lpr' .. (&printdevice == '' ? '' : ' -P' .. &printdevice)
+	.. ' ' .. v:fname_in) .. delete(v:fname_in) + v:shell_error
 
-On MS-Dos and MS-Windows machines the default is to copy the file to the
+On MS-Windows machines the default is to copy the file to the currently
+specified printdevice: >
+
+    system('copy' .. ' ' .. v:fname_in .. (&printdevice == ''
+		? ' LPT1:' : (' \"' .. &printdevice .. '\"')))
+		.. delete(v:fname_in)
+
+On VMS machines the default is to send the file to either the default or
 currently specified printdevice: >
 
-    system(['copy', v:fname_in, empty(&printdevice)?'LPT1':&printdevice])
-    .. delete(v:fname_in)
+    system('print' .. (&printdevice == '' ? '' : ' /queue=' ..
+		&printdevice) .. ' ' .. v:fname_in) .. delete(v:fname_in)
 
 If you change this option, using a function is an easy way to avoid having to
 escape all the spaces.  Example: >
 
-	:set printexpr=PrintFile(v:fname_in)
-	:function PrintFile(fname)
-	:  call system("ghostview " .. a:fname)
-	:  call delete(a:fname)
+	:set printexpr=PrintFile()
+	:function PrintFile()
+	:  call system("ghostview " .. v:fname_in)
+	:  call delete(v:fname_in)
 	:  return v:shell_error
 	:endfunc
+
+It is more efficient if the option is set to just a function call,
+see |expr-option-function|.
 
 Be aware that some print programs return control before they have read the
 file.  If you delete the file too soon it will not be printed.  These programs
@@ -154,6 +176,13 @@ If evaluating the expression fails or it results in a non-zero number, you get
 an error message.  In that case Vim will delete the file.  In the default
 value for non-MS-Windows a trick is used: Adding "v:shell_error" will result
 in a non-zero number when the system() call fails.
+
+If the expression starts with s: or |<SID>|, then it is replaced with the
+script ID (|local-function|). Example: >
+		set printexpr=s:MyPrintFile()
+		set printexpr=<SID>SomePrintFile()
+Otherwise, the expression is evaluated in the context of the script where the
+option was set, thus script-local items are available.
 
 This option cannot be set from a |modeline| or in the |sandbox|, for security
 reasons.
@@ -175,7 +204,9 @@ the font.  When omitted, the point size is 10.
 'printheader' 'pheader'  string  (default "%<%f%h%m%=Page %N")
 			 global
 This defines the format of the header produced in |:hardcopy| output.  The
-option is defined in the same way as the 'statusline' option.  The same simple
+option is defined in the same way as the 'statusline' option.  If Vim has not
+been compiled with the |+statusline| feature, this option has no effect and a
+simple default header is used, which shows the page number.  The same simple
 header is used when this option is empty.
 
 							*pmbcs-option*
@@ -593,6 +624,12 @@ X11
   Copies (possibly not the most recent) can be found at:
 
     http://www.cs.wisc.edu/~ghost/gv/
+
+OpenVMS
+
+- Is apparently supported in the main code now (untested).  See:
+
+    http://wwwthep.physik.uni-mainz.de/~plass/gv/
 
 MS-Windows
 

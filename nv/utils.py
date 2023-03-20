@@ -39,11 +39,12 @@ from sublime import Region
 from sublime import View
 
 from NeoVintageous.nv.options import get_option
+from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
+from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import get_visual_block_direction
 from NeoVintageous.nv.settings import set_mode
-from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import set_processing_notation
 from NeoVintageous.nv.settings import set_visual_block_direction
 from NeoVintageous.nv.settings import set_xpos
@@ -54,18 +55,6 @@ from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import is_visual_mode
-
-
-def has_dirty_buffers(window) -> bool:
-    for v in window.views():
-        if v.is_dirty():
-            return True
-
-    return False
-
-
-def has_newline_at_eof(view) -> bool:
-    return view.substr(view.size() - 1) == '\n'
 
 
 def is_view(view) -> bool:
@@ -158,14 +147,6 @@ def replace_line(view, edit, replacement: str):
     view.replace(edit, Region(pt, view.line(pt).b), replacement)
 
 
-def replace_sel(view, new_sel) -> None:
-    view.sel().clear()
-    if isinstance(new_sel, list):
-        view.sel().add_all(new_sel)
-    else:
-        view.sel().add(new_sel)
-
-
 def get_insertion_point_at_b(region: Region) -> int:
     if region.a < region.b:
         return region.b - 1
@@ -189,14 +170,6 @@ def save_previous_selection(view, mode: str) -> None:
 
 def get_previous_selection(view) -> tuple:
     return (view.get_regions('visual_sel'), view.settings().get('_nv_visual_sel_mode'))
-
-
-def set_selection(view, sel) -> None:
-    view.sel().clear()
-    if isinstance(sel, list):
-        view.sel().add_all(sel)
-    else:
-        view.sel().add(sel)
 
 
 def show_if_not_visible(view, pt=None) -> None:
@@ -226,14 +199,6 @@ def new_inclusive_region(a: int, b: int) -> Region:
 
 def row_at(view, pt: int) -> int:
     return view.rowcol(pt)[0]
-
-
-def col_at(view, pt: int) -> int:
-    return view.rowcol(pt)[1]
-
-
-def row_to_pt(view, row: int, col: int = 0) -> int:
-    return view.text_point(row, col)
 
 
 def next_non_blank(view, pt: int) -> int:
@@ -299,10 +264,7 @@ def last_row(view) -> int:
     return view.rowcol(view.size())[0]
 
 
-# Used for example by commands like:
-#   f{char}
-#   t{char}
-#   r{char}
+# Used for example by commands like f{char}, t{char}, r{char}
 # TODO Refactor into nv.vi.keys module
 _TRANLSATE_CHAR_MAP = {
     '<bar>': '|',
@@ -1221,7 +1183,7 @@ def get_visual_repeat_data(view, mode: str):
              row_at(view, first.begin()))
 
     if lines > 0:
-        chars = col_at(view, first.end())
+        chars = view.rowcol(first.end())[1]
     else:
         chars = first.size()
 

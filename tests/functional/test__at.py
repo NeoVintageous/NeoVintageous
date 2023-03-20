@@ -49,6 +49,14 @@ class Test_at(unittest.FunctionalTestCase):
         self.assertStatusLineIsNormal()
 
     @unittest.mock_bell()
+    def test_invalid_register_name__exclaimation__(self):
+        self.normal('fi|zz')
+        self.feed('n_@!')
+        self.assertBell("E354: Invalid register name: '!'")
+        self.assertStatusLineIsNormal()
+
+    @unittest.mock_session()
+    @unittest.mock_bell()
     def test_no_previously_used_register(self):
         self.normal('fi|zz')
         self.feed('n_@@')
@@ -61,6 +69,7 @@ class Test_at(unittest.FunctionalTestCase):
         self.feed('n_@a')
         self.assertStatusLineIsNormal()
 
+    @unittest.mock_session()
     @unittest.mock_bell()
     def test_empty_macro_should_do_nothing(self):
         self.normal('fi|zz')
@@ -69,3 +78,4 @@ class Test_at(unittest.FunctionalTestCase):
         self.feed('n_@a')
         self.assertNormal('fi|zz')
         self.assertStatusLineIsNormal()
+        self.assertSessionEmpty()

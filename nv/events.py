@@ -17,14 +17,17 @@
 
 from sublime import OP_EQUAL
 from sublime import OP_NOT_EQUAL
+from sublime import version
 from sublime_plugin import EventListener
 
 from NeoVintageous.nv.modeline import do_modeline
 from NeoVintageous.nv.options import get_option
+from NeoVintageous.nv.registers import set_alternate_file_register
 from NeoVintageous.nv.session import session_on_close
+from NeoVintageous.nv.session import session_on_exit
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_setting
-from NeoVintageous.nv.state import init_state
+from NeoVintageous.nv.state import init_view
 from NeoVintageous.nv.utils import fix_eol_cursor
 from NeoVintageous.nv.utils import is_view
 from NeoVintageous.nv.utils import update_xpos
@@ -137,6 +140,8 @@ _query_contexts = {
 
 class NeoVintageousEvents(EventListener):
 
+    _last_deactivated_file_name = None
+
     def on_query_context(self, view, key: str, operator: int, operand: bool, match_all: bool):
         # Called when determining to trigger a key binding with the given context key.
         #
@@ -228,23 +233,38 @@ class NeoVintageousEvents(EventListener):
         session_on_close(view)
 
     def on_activated(self, view):
-
-        # Clear any visual selections in the view we are leaving. This mirrors
-        # Vim behaviour. We can't put this functionality in the
-        # view.on_deactivate() event, because that event is triggered when the
-        # user right button clicks the view with the mouse, and we don't want
-        # visual selections to be cleared on mouse right button clicks.
         if is_view(view):
-            window = view.window()
-            if window:
-                active_group = window.active_group()
-                for group in range(window.num_groups()):
-                    if group != active_group:
-                        other_view = window.active_view_in_group(group)
-                        if other_view and other_view != view:
-                            sel = other_view.sel()
-                            if len(sel) > 0 and any([not s.empty() for s in sel]):
-                                enter_normal_mode(other_view, get_mode(other_view))
+            # This mirrors Vim behaviour. We can't put this functionality in the
+            # on_deactivated event because that event is triggered when the
+            # mouse right button is clicked in a view.
+            _clear_inactive_views_visual_selections(view)
+
+            if self._last_deactivated_file_name:
+                # The alternate file register is only set to the deactivating
+                # view if the activating one is a normal view. Otherwise the
+                # alternate file could be the currently active view.
+                set_alternate_file_register(self._last_deactivated_file_name)
 
         # Initialise view.
-        init_state(view)
+        init_view(view)
+
+    def on_deactivated(self, view):
+        self._last_deactivated_file_name = view.file_name()
+
+    # The on_exit() API was added in build 4050.
+    if int(version()) >= 4050:
+        def on_exit(self):
+            session_on_exit()
+
+
+def _clear_inactive_views_visual_selections(view) -> None:
+    window = view.window()
+    if window:
+        active_group = window.active_group()
+        for group in range(window.num_groups()):
+            if group != active_group:
+                other_view = window.active_view_in_group(group)
+                if other_view and other_view != view:
+                    sel = other_view.sel()
+                    if len(sel) > 0 and any([not s.empty() for s in sel]):
+                        enter_normal_mode(other_view, get_mode(other_view))

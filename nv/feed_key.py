@@ -24,6 +24,7 @@ from NeoVintageous.nv.mappings import mappings_is_incomplete
 from NeoVintageous.nv.mappings import mappings_resolve
 from NeoVintageous.nv.settings import append_sequence
 from NeoVintageous.nv.settings import get_action_count
+from NeoVintageous.nv.settings import get_capture_register
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_motion_count
 from NeoVintageous.nv.settings import get_partial_sequence
@@ -31,17 +32,16 @@ from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.settings import get_sequence
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import is_interactive
-from NeoVintageous.nv.settings import is_must_capture_register_name
 from NeoVintageous.nv.settings import set_action_count
+from NeoVintageous.nv.settings import set_capture_register
 from NeoVintageous.nv.settings import set_mode
 from NeoVintageous.nv.settings import set_motion_count
-from NeoVintageous.nv.settings import set_must_capture_register_name
 from NeoVintageous.nv.settings import set_partial_sequence
 from NeoVintageous.nv.settings import set_register
 from NeoVintageous.nv.state import evaluate_state
 from NeoVintageous.nv.state import get_action
 from NeoVintageous.nv.state import get_motion
-from NeoVintageous.nv.state import init_state
+from NeoVintageous.nv.state import init_view
 from NeoVintageous.nv.state import is_runnable
 from NeoVintageous.nv.state import must_collect_input
 from NeoVintageous.nv.state import reset_command_data
@@ -96,7 +96,7 @@ class FeedKeyHandler():
 
         self._append_sequence()
 
-        if self._capture_register():
+        if self._handle_register():
             return
 
         if self._collect_input():
@@ -136,9 +136,8 @@ class FeedKeyHandler():
         append_sequence(self.view, self.key)
         update_status_line(self.view)
 
-    def _capture_register(self) -> bool:
-        if is_must_capture_register_name(self.view):
-            _log.debug('capturing register name...')
+    def _handle_register(self) -> bool:
+        if get_capture_register(self.view):
             set_register(self.view, self.key)
             set_partial_sequence(self.view, '')
 
@@ -175,7 +174,7 @@ class FeedKeyHandler():
         # (count), or " (register character), we need to skip the count handler
         # and go straight to resolving the mapping, otherwise it won't resolve.
         # See https://github.com/NeoVintageous/NeoVintageous/issues/434.
-        if not mappings_can_resolve(get_mode(self.view), get_partial_sequence(self.view) + self.key):
+        if not mappings_can_resolve(self.view, self.key):
             if self.repeat_count:
                 set_action_count(self.view, str(self.repeat_count))
 
@@ -207,9 +206,8 @@ class FeedKeyHandler():
         set_partial_sequence(self.view, get_partial_sequence(self.view) + self.key)
 
     def _has_incomplete_user_mapping(self):
-        if self.check_user_mappings and mappings_is_incomplete(get_mode(self.view), get_partial_sequence(self.view)):
+        if self.check_user_mappings and mappings_is_incomplete(self.view):
             _log.debug('found incomplete mapping')
-
             return True
 
         return False
@@ -221,72 +219,11 @@ class FeedKeyHandler():
             return
 
         if isinstance(command, ViOpenRegister):
-            set_must_capture_register_name(self.view, True)
+            set_capture_register(self.view, True)
             return
 
         if isinstance(command, Mapping):
-            # TODO Review What happens if Mapping + do_eval=False
-            if self.do_eval:
-                _log.debug('evaluating user mapping...')
-
-                # TODO Review Why does rhs of mapping need to be resequenced in OPERATOR PENDING mode?
-                rhs = command.rhs
-                if get_mode(self.view) == OPERATOR_PENDING:
-                    rhs = get_sequence(self.view)[:-len(get_partial_sequence(self.view))] + command.rhs
-
-                # TODO Review Why does state need to be reset before running user mapping?
-                reg = get_register(self.view)
-                acount = get_action_count(self.view)
-                mcount = get_motion_count(self.view)
-                reset_command_data(self.view)
-                set_register(self.view, reg)
-                set_motion_count(self.view, mcount)
-                set_action_count(self.view, acount)
-
-                _log.info('user mapping %s -> %s', command.lhs, rhs)
-
-                if ':' in rhs:
-
-                    # This hacky piece of code (needs refactoring), is to
-                    # support mappings in the format of {seq}:{ex-cmd}<CR>{seq},
-                    # where leading and trailing sequences are optional.
-                    #
-                    # Examples:
-                    #
-                    #   :
-                    #   :w
-                    #   :sort<CR>
-                    #   vi]:sort u<CR>
-                    #   vi]:sort u<CR>vi]y<Esc>
-
-                    colon_pos = rhs.find(':')
-                    leading = rhs[:colon_pos]
-                    rhs = rhs[colon_pos:]
-
-                    cr_pos = rhs.lower().find('<cr>')
-                    if cr_pos >= 0:
-                        command = rhs[:cr_pos + 4]
-                        trailing = rhs[cr_pos + 4:]
-                    else:
-                        # Example :reg
-                        command = rhs
-                        trailing = ''
-
-                    _log.debug('parsed user mapping before="%s", cmd="%s", after="%s"', leading, command, trailing)
-
-                    if leading:
-                        self.window.run_command('nv_process_notation',
-                                                {'keys': leading, 'check_user_mappings': False})
-
-                    do_ex_user_cmdline(self.window, command)
-
-                    if trailing:
-                        self.window.run_command('nv_process_notation',
-                                                {'keys': trailing, 'check_user_mappings': False})
-
-                else:
-                    self.window.run_command('nv_process_notation', {'keys': rhs, 'check_user_mappings': False})
-
+            self._handle_mapping(command)
             return
 
         if isinstance(command, ViMissingCommandDef):
@@ -309,7 +246,7 @@ class FeedKeyHandler():
             if self._handle_missing_command(command):
                 return
 
-        if (get_mode(self.view) == OPERATOR_PENDING and isinstance(command, ViOperatorDef)):
+        if (isinstance(command, ViOperatorDef) and get_mode(self.view) == OPERATOR_PENDING):
 
             # TODO This should be unreachable code. The mapping resolver should
             # handle anything that can still reach this point (the first time).
@@ -325,6 +262,76 @@ class FeedKeyHandler():
                 set_mode(self.view, NORMAL)
 
         self._handle_command(command, self.do_eval)
+
+    def _handle_mapping(self, command) -> None:
+        # TODO Review What happens if Mapping + do_eval=False
+        if self.do_eval:
+            _log.debug('evaluating user mapping...')
+
+            # TODO Review Why does rhs of mapping need to be resequenced in OPERATOR PENDING mode?
+            rhs = command.rhs
+            if get_mode(self.view) == OPERATOR_PENDING:
+                rhs = get_sequence(self.view)[:-len(get_partial_sequence(self.view))] + command.rhs
+
+            # TODO Review Why does state need to be reset before running user mapping?
+            reg = get_register(self.view)
+            acount = get_action_count(self.view)
+            mcount = get_motion_count(self.view)
+            reset_command_data(self.view)
+            set_register(self.view, reg)
+            set_motion_count(self.view, mcount)
+            set_action_count(self.view, acount)
+
+            _log.info('user mapping %s -> %s', command.lhs, rhs)
+
+            if ':' in rhs:
+
+                # This hacky piece of code (needs refactoring), is to
+                # support mappings in the format of {seq}:{ex-cmd}<CR>{seq},
+                # where leading and trailing sequences are optional.
+                #
+                # Examples:
+                #
+                #   :
+                #   :w
+                #   :sort<CR>
+                #   vi]:sort u<CR>
+                #   vi]:sort u<CR>vi]y<Esc>
+
+                colon_pos = rhs.find(':')
+                leading = rhs[:colon_pos]
+                rhs = rhs[colon_pos:]
+
+                cr_pos = rhs.lower().find('<cr>')
+                if cr_pos >= 0:
+                    command = rhs[:cr_pos + 4]
+                    trailing = rhs[cr_pos + 4:]
+                else:
+                    # Example :reg
+                    command = rhs
+                    trailing = ''
+
+                _log.debug('parsed user mapping before="%s", cmd="%s", after="%s"', leading, command, trailing)
+
+                if leading:
+                    self.window.run_command('nv_process_notation', {
+                        'keys': leading,
+                        'check_user_mappings': False,
+                    })
+
+                do_ex_user_cmdline(self.window, command)
+
+                if trailing:
+                    self.window.run_command('nv_process_notation', {
+                        'keys': trailing,
+                        'check_user_mappings': False,
+                    })
+
+            else:
+                self.window.run_command('nv_process_notation', {
+                    'keys': rhs,
+                    'check_user_mappings': False,
+                })
 
     def _handle_command(self, command: ViCommandDefBase, do_eval: bool) -> None:
         # Raises:
@@ -364,7 +371,7 @@ class FeedKeyHandler():
         if do_eval:
             evaluate_state(self.view)
 
-    def _handle_missing_command(self, command):
+    def _handle_missing_command(self, command) -> bool:
         if isinstance(command, ViMissingCommandDef):
             if get_mode(self.view) == OPERATOR_PENDING:
                 set_mode(self.view, NORMAL)
@@ -394,7 +401,7 @@ def _fix_malformed_selection(view, mode: str) -> str:
         # All" is pressed. In that case, multiple selections may need fixing.
         view.window().run_command('nv_enter_visual_mode', {'mode': mode})
 
-    # TODO Extract fix malformed selections specific logic from init_state()
-    init_state(view)
+    # TODO Extract fix malformed selections specific logic from init_view()
+    init_view(view)
 
     return mode

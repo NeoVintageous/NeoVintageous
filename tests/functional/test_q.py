@@ -38,6 +38,7 @@ class Test_q(unittest.FunctionalTestCase):
         self.assertBell("E354: Invalid register name: '@'")
         self.assertStatusLineIsNormal()
 
+    @unittest.mock_session()
     def test_recording_status_line(self):
         self.normal('fi|zz')
         self.feed('n_qa')
@@ -52,3 +53,4 @@ class Test_q(unittest.FunctionalTestCase):
         self.assertStatusLineEqual('recording @x')
         self.feed('n_q')
         self.assertStatusLineEqual('')
+        self.assertSessionEmpty()

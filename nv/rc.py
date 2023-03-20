@@ -69,7 +69,7 @@ def _load() -> None:
     try:
         from NeoVintageous.nv.ex_cmds import do_ex_cmdline
         window = sublime.active_window()
-        with builtins.open(_file_path(), 'r', encoding='utf=8', errors='replace') as f:
+        with builtins.open(_file_path(), 'r', encoding='utf-8', errors='replace') as f:
             for line in f:
                 ex_cmdline = _parse_line(line)
                 if ex_cmdline:

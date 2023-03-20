@@ -269,7 +269,15 @@ def get_register(view) -> str:
 def set_register(view, value: str) -> None:
     assert len(str(value)) == 1, '`value` must be a character'  # TODO Remove assertion
     set_session_view_value(view, 'register', value)
-    set_must_capture_register_name(view, False)
+    set_capture_register(view, False)
+
+
+def get_capture_register(view) -> bool:
+    return get_session_view_value(view, 'capture_register', False)
+
+
+def set_capture_register(view, value: bool) -> None:
+    set_session_view_value(view, 'capture_register', value)
 
 
 def get_xpos(view) -> int:
@@ -279,14 +287,6 @@ def get_xpos(view) -> int:
 def set_xpos(view, value: int) -> None:
     assert isinstance(value, int), '`value` must be an int'  # TODO Remove assertion
     set_session_view_value(view, 'xpos', value)
-
-
-def is_must_capture_register_name(view) -> bool:
-    return get_session_view_value(view, 'must_capture_register_name', False)
-
-
-def set_must_capture_register_name(view, value: bool) -> None:
-    set_session_view_value(view, 'must_capture_register_name', value)
 
 
 def set_repeat_data(view, data: tuple) -> None:

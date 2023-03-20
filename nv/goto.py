@@ -23,7 +23,8 @@ from sublime import find_resources
 from sublime import load_resource
 from sublime import version
 
-from NeoVintageous.nv.jumplist import jumplist_update
+from NeoVintageous.nv.jumplist import jumplist_updater
+from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.polyfill import view_find
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import next_non_blank
@@ -31,7 +32,6 @@ from NeoVintageous.nv.utils import regions_transform_to_normal_mode
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import resolve_visual_line_target
 from NeoVintageous.nv.utils import resolve_visual_target
-from NeoVintageous.nv.utils import set_selection
 from NeoVintageous.nv.utils import show_if_not_visible
 from NeoVintageous.nv.utils import wrapscan
 from NeoVintageous.nv.vi.text_objects import find_next_lone_bracket
@@ -177,6 +177,8 @@ def goto_help_subject(window, subject: str = None) -> None:
         settings.set('auto_match_enabled', False)
         settings.set('draw_centered', False)
         settings.set('draw_indent_guides', False)
+        settings.set('draw_white_space', 'none')
+        settings.set('highlight_line', False)
         settings.set('line_numbers', False)
         settings.set('match_selection', False)
         settings.set('rulers', [])
@@ -251,9 +253,8 @@ def goto_line(view, mode: str, line_number: int) -> None:
             return Region(s.a, view.full_line(dest).b)
         return s
 
-    jumplist_update(view)
-    regions_transformer(view, f)
-    jumplist_update(view)
+    with jumplist_updater(view):
+        regions_transformer(view, f)
     show_if_not_visible(view)
 
 

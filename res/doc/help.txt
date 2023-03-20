@@ -1,4 +1,4 @@
-*help.txt*	Nvim
+*help.txt*	For Vim version 9.0.  Last change: 2022 Dec 03
 
 			VIM - main help file
 									 k
@@ -8,7 +8,8 @@ Close this window:  Use ":q<Enter>".
    Get out of Vim:  Use ":qa!<Enter>" (careful, all changes are lost!).
 
 Jump to a subject:  Position the cursor on a tag (e.g. |bars|) and hit CTRL-].
-   With the mouse:  Double-click the left mouse button on a tag, e.g. |bars|.
+   With the mouse:  ":set mouse=a" to enable the mouse (in xterm or GUI).
+		    Double-click the left mouse button on a tag, e.g. |bars|.
 	Jump back:  Type CTRL-O.  Repeat to go further back.
 
 Get specific help:  It is possible to go directly to whatever you want help
@@ -89,19 +90,28 @@ Tuning Vim ~
 |usr_44.txt|  Your own syntax highlighted
 |usr_45.txt|  Select your language
 
+Writing Vim scripts ~
+|usr_50.txt|  Advanced Vim script writing
+|usr_51.txt|  Create a plugin
+|usr_52.txt|  Write plugins using Vim9 script
+
+Making Vim Run ~
+|usr_90.txt|  Installing Vim
 
 REFERENCE MANUAL: These files explain every detail of Vim.	*reference_toc*
 
 General subjects ~
 |intro.txt|	general introduction to Vim; notation used in help files
-|nvim.txt|	Transitioning from Vim
 |help.txt|	overview and quick reference (this file)
 |helphelp.txt|	about using the help files
 |index.txt|	alphabetical index of all commands
 |help-tags|	all the tags you can jump to (index of tags)
+|howto.txt|	how to do the most common editing tasks
 |tips.txt|	various tips on using Vim
 |message.txt|	(error) messages and explanations
-|develop.txt|	development of Nvim
+|quotes.txt|	remarks from users of Vim
+|todo.txt|	known problems and desired extensions
+|develop.txt|	development of Vim
 |debug.txt|	debugging Vim itself
 |uganda.txt|	Vim distribution conditions and what to do with your money
 
@@ -132,29 +142,32 @@ Advanced editing ~
 |eval.txt|	expression evaluation, conditional commands
 |builtin.txt|	builtin functions
 |userfunc.txt|	defining user functions
+|channel.txt|	Jobs, Channels, inter-process communication
 |fold.txt|	hide (fold) ranges of lines
-|lua.txt|	Lua API
-|api.txt|	Nvim API via RPC, Lua and VimL
 
 Special issues ~
-|testing.txt|	    testing Vim and Vim scripts
-|print.txt|	    printing
-|remote_plugin.txt|   Nvim support for remote plugins
+|testing.txt|	testing Vim and Vim scripts
+|print.txt|	printing
+|remote.txt|	using Vim as a server or client
+|term.txt|	using different terminals and mice
+|terminal.txt|	Terminal window support
+|popup.txt|	popup window support
+|vim9.txt|	using Vim9 script
+|vim9class.txt|	using Vim9 script classes
 
 Programming language support ~
-|indent.txt|       automatic indenting for C and other languages
-|lsp.txt|          Language Server Protocol (LSP)
-|treesitter.txt|   tree-sitter library for incremental parsing of buffers
-|diagnostic.txt|   Diagnostic framework
-|syntax.txt|       syntax highlighting
-|filetype.txt|     settings done specifically for a type of file
-|quickfix.txt|     commands for a quick edit-compile-fix cycle
-|provider.txt|     Built-in remote plugin hosts
-|ft_ada.txt|       Ada (the programming language) support
-|ft_ps1.txt|       Filetype plugin for Windows PowerShell
-|ft_raku.txt|      Filetype plugin for Raku
-|ft_rust.txt|      Filetype plugin for Rust
-|ft_sql.txt|       about the SQL filetype plugin
+|indent.txt|	automatic indenting for C and other languages
+|syntax.txt|	syntax highlighting
+|textprop.txt|	Attaching properties to text for highlighting or other
+|filetype.txt|	settings done specifically for a type of file
+|quickfix.txt|	commands for a quick edit-compile-fix cycle
+|ft_ada.txt|	Ada (the programming language) support
+|ft_context.txt|	Filetype plugin for ConTeXt
+|ft_mp.txt|	Filetype plugin for METAFONT and MetaPost
+|ft_ps1.txt|	Filetype plugin for Windows PowerShell
+|ft_raku.txt|	Filetype plugin for Raku
+|ft_rust.txt|	Filetype plugin for Rust
+|ft_sql.txt|	about the SQL filetype plugin
 
 Language support ~
 |digraph.txt|	list of available digraphs
@@ -162,44 +175,63 @@ Language support ~
 |mlang.txt|	non-English language support
 |rileft.txt|	right-to-left editing mode
 |arabic.txt|	Arabic language support and editing
+|farsi.txt|	Farsi (Persian) editing
 |hebrew.txt|	Hebrew language support and editing
 |russian.txt|	Russian language support and editing
+|hangulin.txt|	Hangul (Korean) input mode
 
 GUI ~
 |gui.txt|	Graphical User Interface (GUI)
+|gui_w32.txt|	Win32 GUI
+|gui_x11.txt|	X11 GUI
 
 Interfaces ~
 |if_cscop.txt|	using Cscope with Vim
+|if_lua.txt|	Lua interface
+|if_mzsch.txt|	MzScheme interface
 |if_perl.txt|	Perl interface
 |if_pyth.txt|	Python interface
+|if_tcl.txt|	Tcl interface
+|if_ole.txt|	OLE automation interface for Win32
 |if_ruby.txt|	Ruby interface
+|debugger.txt|	Interface with a debugger
+|netbeans.txt|	NetBeans External Editor interface
 |sign.txt|	debugging signs
 
 Versions ~
-|vim_diff.txt|	Main differences between Nvim and Vim
 |vi_diff.txt|	Main differences between Vim and Vi
-|deprecated.txt|  Deprecated items that have been or will be removed
-
-Other ~
-|terminal_emulator.txt|	Terminal buffers
-|term.txt|		Terminal UI
-|ui.txt|		Nvim UI protocol
-|channel.txt|		Nvim asynchronous IO
-|dev_style.txt|		Nvim style guide
-|job_control.txt|	Spawn and control multiple processes
-|luaref.txt|		Lua reference manual
-|luvref.txt|		Luv (|vim.loop|) reference manual
-
+|version4.txt|	Differences between Vim version 3.0 and 4.x
+|version5.txt|	Differences between Vim version 4.6 and 5.x
+|version6.txt|	Differences between Vim version 5.7 and 6.x
+|version7.txt|	Differences between Vim version 6.4 and 7.x
+|version8.txt|	Differences between Vim version 7.4 and 8.x
+|version9.txt|	Differences between Vim version 8.2 and 9.0
+						*sys-file-list*
+Remarks about specific systems ~
+|os_390.txt|	OS/390 Unix
+|os_amiga.txt|	Amiga
+|os_beos.txt|	BeOS and BeBox
+|os_dos.txt|	MS-DOS and MS-Windows common items
+|os_haiku.txt|	Haiku
+|os_mac.txt|	Macintosh
+|os_mint.txt|	Atari MiNT
+|os_msdos.txt|	MS-DOS (plain DOS and DOS box under Windows)
+|os_os2.txt|	OS/2
+|os_qnx.txt|	QNX
+|os_risc.txt|	RISC-OS
+|os_unix.txt|	Unix
+|os_vms.txt|	VMS
+|os_win32.txt|	MS-Windows
 						*standard-plugin-list*
 Standard plugins ~
-|matchit.txt|      Extended |%| matching
+|pi_getscript.txt| Downloading latest version of Vim scripts
 |pi_gzip.txt|      Reading and writing compressed files
-|pi_health.txt|    Healthcheck framework
-|pi_msgpack.txt|   msgpack utilities
+|pi_logipat.txt|   Logical operators on patterns
 |pi_netrw.txt|     Reading and writing files over a network
 |pi_paren.txt|     Highlight matching parens
 |pi_spec.txt|      Filetype plugin to work with rpm spec files
 |pi_tar.txt|       Tar file explorer
+|pi_vimball.txt|   Create a self-installing Vim script
 |pi_zip.txt|       Zip archive explorer
 
 LOCAL ADDITIONS:				*local-additions*
@@ -215,7 +247,7 @@ characters are hidden.  That makes it easier to read a command.
 
 Anyway, you can use CTRL-] on any word, also when it is not within |, and Vim
 will try to find help for it.  Especially for options in single quotes, e.g.
-'hlsearch'.
+'compatible'.
 
 ------------------------------------------------------------------------------
  vim:tw=78:isk=!-~,^*,^\|,^\":ts=8:noet:ft=help:norl:

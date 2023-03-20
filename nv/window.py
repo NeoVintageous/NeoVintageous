@@ -17,9 +17,9 @@
 
 import os
 
+from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.settings import get_cmdline_cwd
 from NeoVintageous.nv.settings import get_exit_when_quiting_last_window
-from NeoVintageous.nv.utils import set_selection
 from NeoVintageous.nv.vim import status_message
 
 

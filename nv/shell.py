@@ -21,7 +21,7 @@ import traceback
 from sublime import platform
 from sublime import Region
 
-from NeoVintageous.nv.utils import set_selection
+from NeoVintageous.nv.polyfill import set_selection
 
 if sys.platform.startswith('win') and platform() == 'windows':
     from NeoVintageous.nv import shell_windows as _shell

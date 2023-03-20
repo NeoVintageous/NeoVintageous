@@ -35,46 +35,48 @@ except Exception:  # pragma: no cover
     def update_clipboard_history(text: str) -> None:
         print('NeoVintageous: update_clipboard_history() noop; could not import default pakage history updater')
 
+from NeoVintageous.nv.session import get_session_value
+from NeoVintageous.nv.session import maybe_do_runtime_save_session
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import is_visual_mode
 
 
-# 1. The unnamed register ""
+# 1. The unnamed register
 _UNNAMED = '"'
 
-# 2. 10 numberd registers "0 to "9
+# 2. 10 numbered registers
 _LAST_YANK = '0'
 _LAST_DELETE = '1'
 _NUMBERED = tuple('0123456789')
 
-# 3 The small delete register "-
+# 3 The small delete register
 _SMALL_DELETE = '-'
 
-# 4. 26 named registers "a to "z or "A to "Z
+# 4. 26 named registers
 _NAMED = tuple('abcdefghijklmnopqrstuvwxyz')
 
-# 5. Three read-only registers ":, "., "%
+# 5. Three read-only registers
 _LAST_EXECUTED_COMMAND = ':'
 _LAST_INSERTED_TEXT = '.'
 _CURRENT_FILE_NAME = '%'
 
-# 6. Alternate buffer register "#
+# 6. Alternate buffer register
 _ALTERNATE_FILE = '#'
 
-# 7. The expression register "=
+# 7. The expression register
 _EXPRESSION = '='
 
-# 8. The selection and drop registers "*, "+, and "~
+# 8. The selection and drop registers
 _CLIPBOARD_STAR = '*'
 _CLIPBOARD_PLUS = '+'
 _CLIPBOARD_TILDA = '~'
 
-# 9. The black hole register "_
+# 9. The black hole register
 _BLACK_HOLE = '_'
 
-# 10. Last search pattern register "/
+# 10. Last search pattern register
 _LAST_SEARCH_PATTERN = '/'
 
 # Groups
@@ -91,6 +93,12 @@ _READ_ONLY = (
     _LAST_EXECUTED_COMMAND,
     _LAST_INSERTED_TEXT
 )
+
+_WRITABLE = (
+    _UNNAMED,
+    _SMALL_DELETE,
+    _EXPRESSION,
+) + _CLIPBOARD + _NUMBERED + _NAMED
 
 _SELECTION_AND_DROP = (
     _CLIPBOARD_PLUS,
@@ -115,71 +123,61 @@ _SPECIAL = (
 _ALL = _SPECIAL + _NUMBERED + _NAMED
 
 
-_data = {'0': None, '1-9': deque([None] * 9, maxlen=9)}  # type: dict
-_linewise = {'0': False, '1-9': deque([False] * 9, maxlen=9)}  # type: dict
-
-
 def _reset() -> None:
-    _data.clear()
-    _data['0'] = None
-    _data['1-9'] = deque([None] * 9, maxlen=9)
-    _linewise.clear()
-    _linewise['0'] = False
-    _linewise['1-9'] = deque([False] * 9, maxlen=9)
+    registers = _get_data()
+    registers.clear()
+    _init_registers(registers)
+
+
+def _init_registers(registers: dict) -> None:
+    registers['0'] = (None, False)
+    registers['1-9'] = deque([(None, False)] * 9, maxlen=9)
+
+
+def _get_data() -> dict:
+    registers = get_session_value('registers', {})
+    if not registers:
+        _init_registers(registers)
+
+    return registers
+
+
+def _set_data(name: str, values: list, linewise: bool) -> None:
+    _get_data()[name] = (values, linewise)
+
+
+def _get_data_values(name: str, default=None):
+    try:
+        return _get_data()[name][0]
+    except KeyError:
+        return default
 
 
 def _shift_numbered_register(content: list, linewise: bool) -> None:
-    _data['1-9'].appendleft(content)
-    _linewise['1-9'].appendleft(linewise)
+    _get_data()['1-9'].appendleft((content, linewise))
 
 
 def _set_numbered_register(number: str, values: list, linewise: bool) -> None:
-    _data['1-9'][int(number) - 1] = values
-    _linewise['1-9'][int(number) - 1] = linewise
+    _get_data()['1-9'][int(number) - 1] = (values, linewise)
 
 
 def _get_numbered_register(number: str) -> list:
-    return _data['1-9'][int(number) - 1]
-
-
-def set_expression_register(values: list) -> None:
-    # Coerce all values into strings.
-    _data[_EXPRESSION] = [str(v) for v in values]
+    return _get_data()['1-9'][int(number) - 1][0]
 
 
 def _is_register_linewise(register: str) -> list:
     if register in '123456789':
-        return _linewise['1-9'][int(register) - 1]
+        return _get_data()['1-9'][int(register) - 1][1]
 
-    return _linewise.get(register, False)
+    return _get_data().get(register, (None, False))[1]
 
 
-def _is_writable_register(register: str) -> bool:
-    if register == _UNNAMED:
-        return True
-
-    if register == _SMALL_DELETE:
-        return True
-
-    if register in _CLIPBOARD:
-        return True
-
-    if register in _NUMBERED:
-        return True
-
-    if register in _NAMED:
-        return True
-
-    if register == _EXPRESSION:
-        return True
-
-    return False
+def _is_register_writable(register: str) -> bool:
+    return register in _WRITABLE
 
 
 def _get(view, name: str = _UNNAMED):
     name = str(name)
-
-    assert len(name) == 1, "Register names must be 1 char long."
 
     if name == _CURRENT_FILE_NAME:
         try:
@@ -194,7 +192,7 @@ def _get(view, name: str = _UNNAMED):
     if name in _CLIPBOARD:
         return [get_clipboard()]
 
-    if ((name not in (_UNNAMED, _SMALL_DELETE)) and (name in _SPECIAL)):
+    if ((name not in (_UNNAMED, _SMALL_DELETE, _ALTERNATE_FILE)) and (name in _SPECIAL)):
         return
 
     # Special case lumped among these --user always wants the sys clipboard
@@ -202,23 +200,21 @@ def _get(view, name: str = _UNNAMED):
         return [get_clipboard()]
 
     # If the expression register holds a value and we're requesting the unnamed
-    # register, return the expression register and clear it aftwerwards.
-    if name == _UNNAMED and _data.get(_EXPRESSION, ''):
-        value = _data[_EXPRESSION]
-        _data[_EXPRESSION] = None
+    # register, return the expression register and clear it afterwards.
+    if name == _UNNAMED:
+        expression = _get_data_values(_EXPRESSION)
+        if expression:
+            _set_data(_EXPRESSION, [], False)
 
-        return value
+            return expression
 
     if name.isdigit():
         if name == _LAST_YANK:
-            return _data[name]
+            return _get_data_values(name)
 
         return _get_numbered_register(name)
 
-    try:
-        return _data[name.lower()]
-    except KeyError:
-        pass
+    return _get_data_values(name.lower())
 
 
 def registers_get(view, key: str):
@@ -274,43 +270,57 @@ def _set(view, name: str, values: list, linewise: bool = False) -> None:
     if name == _BLACK_HOLE:
         return
 
-    if not _is_writable_register(name):
+    if not _is_register_writable(name):
         return None  # Vim fails silently.
 
     # TODO Is this check necessary; this was an assertion which are disabled in <4000 which is good
     if not isinstance(values, list):
         raise ValueError('Register values must be inside a list')
 
-    values = [str(v) for v in values]
+    values = _list_values_to_str(values)
 
     if name.isdigit() and name != '0':
         _set_numbered_register(name, values, linewise)
     else:
-        _data[name] = values
-        _linewise[name] = linewise
+        _set_data(name, values, linewise)
 
     if name not in (_EXPRESSION,):
-        _set_unnamed(values, linewise)
+        _set_unnamed_register(values, linewise)
         _maybe_set_sys_clipboard(view, name, values)
 
 
 def _append(view, name: str, suffixes, linewise: bool) -> None:
-    assert len(name) == 1, "Register names must be 1 char long."
-    assert name in "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "Can only append to A-Z registers."
-
     name = name.lower()
 
-    existing_values = _data.get(name, '')
+    existing_values = _get_data_values(name, '')
     values_tmp = itertools.zip_longest(existing_values, suffixes, fillvalue='')
     values = [(prefix + suffix) for (prefix, suffix) in values_tmp]
 
     _set(view, name, values, linewise)
 
 
-def _set_unnamed(values: list, linewise: bool = False) -> None:
-    assert isinstance(values, list)
-    _data[_UNNAMED] = [str(v) for v in values]
-    _linewise[_UNNAMED] = linewise
+def get_alternate_file_register():
+    alternate_file = _get_data_values(_ALTERNATE_FILE)
+    if alternate_file:
+        return alternate_file[0]
+
+
+def set_alternate_file_register(value: str) -> None:
+    _set_data(_ALTERNATE_FILE, [value], False)
+    maybe_do_runtime_save_session()
+
+
+def set_expression_register(values: list) -> None:
+    _set_data(_EXPRESSION, _list_values_to_str(values), False)
+    maybe_do_runtime_save_session()
+
+
+def _set_unnamed_register(values: list, linewise: bool = False) -> None:
+    _set_data(_UNNAMED, _list_values_to_str(values), linewise)
+
+
+def _list_values_to_str(values: list) -> list:
+    return [str(v) for v in values]
 
 
 def registers_set(view, key: str, value: list, linewise: bool = False) -> None:
@@ -322,6 +332,8 @@ def registers_set(view, key: str, value: list, linewise: bool = False) -> None:
     except AttributeError:
         # TODO [review] Looks like a bug: If set() above raises AttributeError so will this.
         _set(view, key, value, linewise)
+
+    maybe_do_runtime_save_session()
 
 
 def _maybe_set_sys_clipboard(view, name: str, values: list) -> None:
@@ -390,12 +402,15 @@ def _op(view, operation: str, register: str = None, linewise=False) -> None:
             if linewise or multiline:
                 _shift_numbered_register(selected_text, linewise)
 
+        maybe_do_runtime_save_session()
+
     # The small delete register.
     if operation in ('change', 'delete') and not multiline:
         # TODO Improve small delete register implementation.
         is_same_line = (lambda r: view.line(r.begin()) == view.line(r.end() - 1))
         if all(is_same_line(x) for x in list(view.sel())):
             _set(view, _SMALL_DELETE, selected_text, linewise)
+            maybe_do_runtime_save_session()
 
 
 def registers_op_change(view, register: str = None, linewise=False) -> None:

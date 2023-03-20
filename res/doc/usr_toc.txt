@@ -1,4 +1,4 @@
-*usr_toc.txt*	Nvim
+*usr_toc.txt*	For Vim version 9.0.  Last change: 2022 Jun 20
 
 		     VIM USER MANUAL - by Bram Moolenaar
 
@@ -7,7 +7,7 @@
 ==============================================================================
 Overview ~
 
-Getting Started
+Getting Started ~
 |usr_01.txt|  About the manuals
 |usr_02.txt|  The first steps in Vim
 |usr_03.txt|  Moving around
@@ -21,7 +21,7 @@ Getting Started
 |usr_11.txt|  Recovering from a crash
 |usr_12.txt|  Clever tricks
 
-Editing Effectively
+Editing Effectively ~
 |usr_20.txt|  Typing command-line commands quickly
 |usr_21.txt|  Go away and come back
 |usr_22.txt|  Finding the file to edit
@@ -36,7 +36,7 @@ Editing Effectively
 |usr_31.txt|  Exploiting the GUI
 |usr_32.txt|  The undo tree
 
-Tuning Vim
+Tuning Vim ~
 |usr_40.txt|  Make new commands
 |usr_41.txt|  Write a Vim script
 |usr_42.txt|  Add new menus
@@ -44,12 +44,21 @@ Tuning Vim
 |usr_44.txt|  Your own syntax highlighted
 |usr_45.txt|  Select your language (locale)
 
+Writing Vim script ~
+|usr_50.txt|  Advanced Vim script writing
+|usr_51.txt|  Write plugins
+|usr_52.txt|  Write larger plugins
 
-Reference manual
+Making Vim Run ~
+|usr_90.txt|  Installing Vim
+
+
+Reference manual ~
 |reference_toc|     More detailed information for all commands
 
-The user manual is online:
-	https://neovim.io/doc/user
+The user manual (an older version) is available as a single, ready to print
+HTML and PDF file here:
+	http://vimdoc.sf.net
 
 ==============================================================================
 Getting Started ~
@@ -99,12 +108,13 @@ Read this from start to end to learn the essential commands.
 |usr_05.txt|  Set your settings
 		|05.1|	The vimrc file
 		|05.2|	The example vimrc file explained
-		|05.3|	Simple mappings
-		|05.4|	Adding a package
-		|05.5|	Adding a plugin
-		|05.6|	Adding a help file
-		|05.7|	The option window
-		|05.8|	Often used options
+		|05.3|	The defaults.vim file explained
+		|05.4|	Simple mappings
+		|05.5|	Adding a package
+		|05.6|	Adding a plugin
+		|05.7|	Adding a help file
+		|05.8|	The option window
+		|05.9|	Often used options
 
 |usr_06.txt|  Using syntax highlighting
 		|06.1|	Switching it on
@@ -130,7 +140,7 @@ Read this from start to end to learn the essential commands.
 		|08.4|	Vertical splits
 		|08.5|	Moving windows
 		|08.6|	Commands for all windows
-		|08.7|	Viewing differences with diff mode
+		|08.7|	Viewing differences with vimdiff
 		|08.8|	Various
 
 |usr_09.txt|  Using the GUI
@@ -181,7 +191,7 @@ Subjects that can be read independently.
 |usr_21.txt|  Go away and come back
 		|21.1|	Suspend and resume
 		|21.2|	Executing shell commands
-		|21.3|	Remembering information; ShaDa
+		|21.3|	Remembering information; viminfo
 		|21.4|	Sessions
 		|21.5|	Views
 		|21.6|	Modelines
@@ -195,8 +205,9 @@ Subjects that can be read independently.
 |usr_23.txt|  Editing other files
 		|23.1|	DOS, Mac and Unix files
 		|23.2|	Files on the internet
-		|23.3|	Binary files
-		|23.4|	Compressed files
+		|23.3|	Encryption
+		|23.4|	Binary files
+		|23.5|	Compressed files
 
 |usr_24.txt|  Inserting quickly
 		|24.1|	Making corrections
@@ -293,14 +304,10 @@ Make Vim work as you like it.
 		|41.6|	Using functions
 		|41.7|	Defining a function
 		|41.8|	Lists and Dictionaries
-		|41.9|	Exceptions
-		|41.10|	Various remarks
-		|41.11|	Writing a plugin
-		|41.12|	Writing a filetype plugin
-		|41.13|	Writing a compiler plugin
-		|41.14|	Writing a plugin that loads quickly
-		|41.15|	Writing library scripts
-		|41.16|	Distributing Vim scripts
+		|41.9|	White space
+		|41.10|	Line continuation
+		|41.11|	Comments
+		|41.12|	Fileformat
 
 |usr_42.txt|  Add new menus
 		|42.1|	Introduction
@@ -332,6 +339,39 @@ Make Vim work as you like it.
 		|45.3|	Using another encoding
 		|45.4|	Editing files with a different encoding
 		|45.5|	Entering language text
+
+==============================================================================
+Writing Vim script ~
+
+|usr_50.txt|  Advanced Vim script writing
+		|50.1|	Exceptions
+		|50.2|	Function with variable number of arguments
+		|50.3|	Restoring the view
+
+|usr_51.txt|  Write plugins
+		|51.1|	Writing a generic plugin
+		|51.2|	Writing a filetype plugin
+		|51.3|	Writing a compiler plugin
+		|51.4|	Distributing Vim scripts
+
+|usr_52.txt|  Write larger plugins
+		|52.1|	Export and import
+		|52.2|	Autoloading
+		|52.3|	Autoloading without import/export
+		|52.4|	Other mechanisms to use
+		|52.5|	Using a Vim9 script from legacy script
+
+==============================================================================
+Making Vim Run ~
+
+Before you can use Vim.
+
+|usr_90.txt|  Installing Vim
+		|90.1|	Unix
+		|90.2|	MS-Windows
+		|90.3|	Upgrading
+		|90.4|	Common installation issues
+		|90.5|	Uninstalling Vim
 
 ==============================================================================
 

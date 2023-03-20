@@ -1,4 +1,4 @@
-*usr_06.txt*	Nvim
+*usr_06.txt*	For Vim version 9.0.  Last change: 2021 Nov 07
 
 		     VIM USER MANUAL - by Bram Moolenaar
 
@@ -24,8 +24,28 @@ Table of contents: |usr_toc.txt|
 ==============================================================================
 *06.1*	Switching it on
 
-Syntax highlighting is enabled by default.  Nvim will automagically detect the
-type of file and load the right syntax highlighting.
+It all starts with one simple command: >
+
+	:syntax enable
+
+That should work in most situations to get color in your files.  Vim will
+automagically detect the type of file and load the right syntax highlighting.
+Suddenly comments are blue, keywords brown and strings red.  This makes it
+easy to overview the file.  After a while you will find that black&white text
+slows you down!
+
+If you always want to use syntax highlighting, put the ":syntax enable"
+command in your |vimrc| file.
+
+If you want syntax highlighting only when the terminal supports colors, you
+can put this in your |vimrc| file: >
+
+	if &t_Co > 1
+	   syntax enable
+	endif
+
+If you want syntax highlighting only in the GUI version, put the ":syntax
+enable" command in your |gvimrc| file.
 
 ==============================================================================
 *06.2*	No or wrong colors?
@@ -35,7 +55,8 @@ There can be a number of reasons why you don't see colors:
 - Your terminal does not support colors.
 	Vim will use bold, italic and underlined text, but this doesn't look
 	very nice.  You probably will want to try to get a terminal with
-	colors.
+	colors.  For Unix, I recommend the xterm from the XFree86 project:
+	|xfree-xterm|.
 
 - Your terminal does support colors, but Vim doesn't know this.
 	Make sure your $TERM setting is correct.  For example, when using an
@@ -47,7 +68,9 @@ There can be a number of reasons why you don't see colors:
 
 		TERM=xterm-color; export TERM
 
-<	The terminal name must match the terminal you are using.
+<	The terminal name must match the terminal you are using.  If it
+	still doesn't work, have a look at |xterm-color|, which shows a few
+	ways to make Vim display colors (not only for an xterm).
 
 - The file type is not recognized.
 	Vim doesn't know all file types, and sometimes it's near to impossible
@@ -121,20 +144,21 @@ the GUI use the Edit/Color Scheme menu.  You can also type the command: >
 want to try out.  Look in the directory $VIMRUNTIME/colors.
 
 When you found the color scheme that you like, add the ":colorscheme" command
-to your |init.vim| file.
+to your |vimrc| file.
 
 You could also write your own color scheme.  This is how you do it:
 
 1. Select a color scheme that comes close.  Copy this file to your own Vim
    directory.  For Unix, this should work: >
 
-	!mkdir -p ~/.config/nvim/colors
-	!cp $VIMRUNTIME/colors/morning.vim ~/.config/nvim/colors/mine.vim
+	!mkdir ~/.vim/colors
+	!cp $VIMRUNTIME/colors/morning.vim ~/.vim/colors/mine.vim
 <
    This is done from Vim, because it knows the value of $VIMRUNTIME.
 
 2. Edit the color scheme file.  These entries are useful:
 
+	term		attributes in a B&W terminal
 	cterm		attributes in a color terminal
 	ctermfg		foreground color in a color terminal
 	ctermbg		background color in a color terminal
@@ -160,7 +184,30 @@ this command: >
 	:runtime syntax/colortest.vim
 
 You will see text in various color combinations.  You can check which ones are
-readable and look nice.
+readable and look nice. These aren't the only colors available to you though.
+You can specify #rrggbb hex colors and you can define new names for hex
+colors in |v:colornames| like so: >
+
+	let v:colornames['mine_red'] = '#aa0000'
+
+If you are authoring a color scheme for others to use, it is important
+to define these colors only when they do not exist: >
+
+	call extend(v:colornames, {'mine_red': '#aa0000'}, 'keep')
+
+This allows users of the color scheme to override the precise definition of
+that color prior to loading your color scheme. For example, in a |.vimrc|
+file: >
+
+	runtime colors/lists/css_colors.vim
+	let v:colornames['your_red'] = v:colornames['css_red']
+	colorscheme yourscheme
+
+As a color scheme author, you should be able to rely on some color names for
+GUI colors. These are defined in `colors/lists/default.vim`. All such files
+found on the |'runtimepath'| are loaded each time the colorscheme command is
+run. A canonical list is provided by the vim distribution, which should
+include all X11 colors (previously defined in rgb.txt).
 
 ==============================================================================
 *06.4*	With colors or without colors

@@ -1133,6 +1133,20 @@ class ViMoveCurrentWindowToVeryBottom(ViOperatorDef):
         }
 
 
+@assign(seqs.CTRL_6, ACTION_MODES)
+@assign(seqs.CTRL_HAT, ACTION_MODES)
+class ViGotoAlternateFile(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.scroll_into_view = True
+
+    def translate(self, view):
+        return {
+            'action': 'nv_vi_ctrl_hat',
+            'action_args': {}
+        }
+
+
 @assign(seqs.CTRL_W_BIG_L, ACTION_MODES)
 class ViMoveCurrentWindowToFarRight(ViOperatorDef):
     def __init__(self, *args, **kwargs):

@@ -15,100 +15,83 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from NeoVintageous.nv.polyfill import erase_window_status
-from NeoVintageous.nv.polyfill import set_window_status
+from NeoVintageous.nv.polyfill import erase_status
+from NeoVintageous.nv.polyfill import set_status
+from NeoVintageous.nv.session import get_session_value
+from NeoVintageous.nv.session import maybe_do_runtime_save_session
+from NeoVintageous.nv.session import set_session_value
 from NeoVintageous.nv.settings import get_glue_until_normal_mode
 
 _data = {}  # type: dict
 
 
-def _get(window, key: str = None, default=None):
-    try:
-        macro = _data[window.id()]
-    except KeyError:
-        macro = _data[window.id()] = {}
-
-    if key is None:
-        return macro
-
-    try:
-        return macro[key]
-    except KeyError:
-        return default
-
-
-def is_valid_writable_register(name: str) -> bool:
-    return name in tuple('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"')
-
-
-def is_valid_readable_register(name: str) -> bool:
+def is_readable(name: str) -> bool:
     return name in tuple('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".=*+@')
 
 
-def is_recording(window) -> bool:
-    return _get(window, 'recording', False)
+def is_writable(name: str) -> bool:
+    return name in tuple('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"')
 
 
-def start_recording(window, register_name: str) -> None:
-    macro = _get(window)
-    macro['recording'] = True
-    macro['recording_steps'] = []
-    macro['recording_register_name'] = register_name
-
-    set_window_status(window, 'vim-recorder', 'recording @%s' % register_name)
+def is_recording() -> bool:
+    return _data.get('recording', False)
 
 
-def stop_recording(window) -> None:
-    macro = _get(window)
+def start_recording(name: str) -> None:
+    _data['recording'] = True
+    _data['recording_steps'] = []
+    _data['recording_register'] = name
 
-    name = _get(window, 'recording_register_name')
+    set_status('vim-recording', 'recording @%s' % name)
+
+
+def stop_recording() -> None:
+    name = _data.get('recording_register')
     if name:
-        if 'recorded' not in macro:
-            macro['recorded'] = {}
+        macros = _get_macros()
+        steps = _get_steps()
+        if steps:
+            macros[name] = steps
+        else:
+            try:
+                del macros[name]
+            except KeyError:
+                pass
 
-        macro['recorded'][name] = _get_steps(window)
+        maybe_do_runtime_save_session()
 
-    macro['recording'] = False
-    macro['recording_steps'] = []
-    macro['recording_register_name'] = None
+    _data['recording'] = False
+    _data['recording_steps'] = []
+    _data['recording_register'] = None
 
-    erase_window_status(window, 'vim-recorder')
-
-
-def get_recorded(window, name: str):
-    macro = _get(window)
-
-    try:
-        return macro['recorded'][name]
-    except KeyError:
-        return None
+    erase_status('vim-recording')
 
 
-def get_last_used_register_name(window) -> str:
-    return _get(window, 'last_used_register_name')
+def _get_macros() -> dict:
+    return get_session_value('macros', {})
 
 
-def set_last_used_register_name(window, name: str) -> None:
-    macro = _get(window)
-    macro['last_used_register_name'] = name
+def _get_steps() -> list:
+    return _data.get('recording_steps', [])
+
+
+def get_recorded(name: str):
+    return _get_macros().get(name)
+
+
+def get_last_used_register_name() -> str:
+    return get_session_value('last_used_register_name')
+
+
+def set_last_used_register_name(name: str) -> None:
+    set_session_value('last_used_register_name', name, persist=True)
 
 
 def add_macro_step(view, cmd: str, args: dict) -> None:
-    window = view.window()
-
-    if is_recording(window):
-        # don't store the ending macro step
+    if is_recording():
+        # Don't store the ending macro step.
         if cmd == 'nv_vi_q':
             return
 
         if not get_glue_until_normal_mode(view):
-            macro = _get(window)
-
-            if 'recording_steps' not in macro:
-                macro['recording_steps'] = []
-
-            macro['recording_steps'].append((cmd, args))
-
-
-def _get_steps(window) -> list:
-    return list(_get(window, 'recording_steps', []))
+            _data['recording_steps'].append((cmd, args))

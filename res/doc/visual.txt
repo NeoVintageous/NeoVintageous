@@ -1,4 +1,4 @@
-*visual.txt*    Nvim
+*visual.txt*    For Vim version 9.0.  Last change: 2022 Dec 04
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -11,7 +11,16 @@ operator.  It is the only way to select a block of text.
 
 This is introduced in section |04.4| of the user manual.
 
-                                      Type |gO| to see the table of contents.
+1. Using Visual mode			|visual-use|
+2. Starting and stopping Visual mode	|visual-start|
+3. Changing the Visual area		|visual-change|
+4. Operating on the Visual area		|visual-operators|
+5. Blockwise operators			|blockwise-operators|
+6. Repeating				|visual-repeat|
+7. Examples				|visual-examples|
+8. Select mode				|Select-mode|
+
+{Since Vim 7.4.200 the |+visual| feature is always included}
 
 ==============================================================================
 1. Using Visual mode					*visual-use*
@@ -25,7 +34,8 @@ Using Visual mode consists of three parts:
 3. Type an operator command.
    The highlighted characters will be operated upon.
 
-The |hl-Visual| group determines the highlighting of the visual selection.
+The 'highlight' option can be used to set the display mode to use for
+highlighting in Visual mode.
 The 'virtualedit' option can be used to allow positioning the cursor to
 positions where there is no actual character.
 
@@ -48,7 +58,7 @@ position.
 ==============================================================================
 2. Starting and stopping Visual mode			*visual-start*
 
-						*v* *charwise-visual*
+						*v* *characterwise-visual*
 [count]v		Start Visual mode per character.
 			With [count] select the same number of characters or
 			lines as used for the last Visual operation, but at
@@ -70,11 +80,14 @@ position.
 			selected.
 
 						*CTRL-V* *blockwise-visual*
-[count]CTRL-V		Start Visual mode blockwise.
+[count]CTRL-V		Start Visual mode blockwise.  Note: Under Windows
+			CTRL-V could be mapped to paste text, it doesn't work
+			to start Visual mode then, see |CTRL-V-alternative|.
+			[count] is used as with `v` above.
 
 If you use <Esc>, click the left mouse button or use any command that
 does a jump to another buffer while in Visual mode, the highlighting stops
-and no text is affected.  Also when you hit "v" in charwise Visual mode,
+and no text is affected.  Also when you hit "v" in characterwise Visual mode,
 "CTRL-V" in blockwise Visual mode or "V" in linewise Visual mode.  If you hit
 CTRL-Z the highlighting stops and the editor is suspended or a new shell is
 started |CTRL-Z|.
@@ -103,7 +116,7 @@ gn			Search forward for the last used search pattern, like
 			E.g., "dgn" deletes the text of the next match.
 			If Visual mode is active, extends the selection
 			until the end of the next match.
-			'wrapscan' applies
+			'wrapscan' applies.
 			Note: Unlike `n` the search direction does not depend
 			on the previous search command.
 
@@ -139,6 +152,11 @@ gN			Like |gn| but searches backward, like with `N`.
 			environment variable or the -display argument).  Only
 			when 'mouse' option contains 'n' or 'a'.
 
+<LeftMouseNM>		Internal mouse code, used for clicking on the status
+<LeftReleaseNM>		line to focus a window.  NM stands for non-mappable.
+			You cannot use these, but they might show up in some
+			places.
+
 If Visual mode is not active and the "v", "V" or CTRL-V is preceded with a
 count, the size of the previously highlighted area is used for a start.  You
 can then move the end of the highlighted area and give an operator.  The type
@@ -160,10 +178,6 @@ If you want to highlight exactly the same area as the last time, you can use
 
 							*v_<Esc>*
 <Esc>			In Visual mode: Stop Visual mode.
-						*v_META* *v_ALT*
-		ALT (|META|) may act like <Esc> if the chord is not mapped.
-		For example <A-x> acts like <Esc>x if <A-x> does not have a
-		visual-mode mapping.
 
 							*v_CTRL-C*
 CTRL-C			In Visual mode: Stop Visual mode.  When insert mode is
@@ -275,7 +289,7 @@ mode.  For example, if you would like the "/" command not to extend the Visual
 area, but instead take the highlighted text and search for that: >
 	:vmap / y/<C-R>"<CR>
 (In the <> notation |<>|, when typing it you should type it literally; you
-need to remove the 'B' flag from 'cpoptions'.)
+need to remove the 'B' and '<' flags from 'cpoptions'.)
 
 If you want to give a register name using the """ command, do this just before
 typing the operator character: "v{move-around}"xd".
@@ -299,7 +313,7 @@ mode.
 5. Blockwise operators					*blockwise-operators*
 
 Reminder: Use 'virtualedit' to be able to select blocks that start or end
-after the end of a line or halfway through a tab.
+after the end of a line or halfway a tab.
 
 Visual-block Insert						*v_b_I*
 With a blockwise selection, I{string}<ESC> will insert {string} at the start
@@ -379,7 +393,7 @@ Here is an example, to replace the selected text with the output of "date": >
 	:vmap _a <Esc>`>a<CR><Esc>`<i<CR><Esc>!!date<CR>kJJ
 
 (In the <> notation |<>|, when typing it you should type it literally; you
-need to remove the 'B' flag from 'cpoptions')
+need to remove the 'B' and '<' flags from 'cpoptions')
 
 What this does is:
 <Esc>		stop Visual mode
@@ -396,7 +410,7 @@ selected text: >
 	:vmap X y/<C-R>"<CR>
 
 (In the <> notation |<>|, when typing it you should type it literally; you
-need to remove the 'B' flag from 'cpoptions')
+need to remove the 'B' and '<' flags from 'cpoptions')
 
 Note that special characters (like '.' and '*') will cause problems.
 
@@ -485,12 +499,12 @@ Commands in Select mode:
   Unless you specify the "_" (black hole) register, the unnamed register is
   also overwritten.
 
+
 Otherwise, typed characters are handled as in Visual mode.
 
 When using an operator in Select mode, and the selection is linewise, the
-selected lines are operated upon, but like in charwise selection.  For
-example, when a whole line is deleted, it can later be pasted in the middle of
-a line.
+selected lines are operated upon, but like in characterwise selection.  For
+example, when a whole line is deleted, it can later be pasted halfway a line.
 
 
 Mappings and menus in Select mode.			*Select-mode-mapping*
@@ -501,11 +515,11 @@ mode Vim automatically switches to Visual mode, so that the same behavior as
 in Visual mode is effective.  If you don't want this use |:xmap| or |:smap|.
 
 One particular edge case: >
-  	:vnoremap <C-K> <Esc>
+	:vnoremap <C-K> <Esc>
 This ends Visual mode when in Visual mode, but in Select mode it does not
 work, because Select mode is restored after executing the mapped keys.  You
 need to use: >
-  	:snoremap <C-K> <Esc>
+	:snoremap <C-K> <Esc>
 <
 Users will expect printable characters to replace the selected area.
 Therefore avoid mapping printable characters in Select mode.  Or use
@@ -528,7 +542,7 @@ gV			Avoid the automatic reselection of the Visual area
 			selection.
 
 							*gh*
-gh			Start Select mode, charwise.  This is like "v",
+gh			Start Select mode, characterwise.  This is like "v",
 			but starts Select mode instead of Visual mode.
 			Mnemonic: "get highlighted".
 

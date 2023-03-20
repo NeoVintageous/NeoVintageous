@@ -33,9 +33,9 @@ from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import is_interactive
 from NeoVintageous.nv.settings import is_processing_notation
 from NeoVintageous.nv.settings import set_action_count
+from NeoVintageous.nv.settings import set_capture_register
 from NeoVintageous.nv.settings import set_mode
 from NeoVintageous.nv.settings import set_motion_count
-from NeoVintageous.nv.settings import set_must_capture_register_name
 from NeoVintageous.nv.settings import set_partial_sequence
 from NeoVintageous.nv.settings import set_register
 from NeoVintageous.nv.settings import set_repeat_data
@@ -73,7 +73,7 @@ _log = logging.getLogger(__name__)
 def update_status_line(view) -> None:
     mode_name = mode_to_name(get_mode(view))
     if mode_name:
-        view.set_status('vim-mode', '-- {} --'.format(mode_name) if mode_name else '')
+        view.set_status('vim-mode', '-- {} --'.format(mode_name))
 
     view.set_status('vim-seq', get_sequence(view))
 
@@ -87,7 +87,7 @@ def must_collect_input(view, motion: ViMotionDef, action: ViOperatorDef) -> bool
 
     # Special case: `q` should stop the macro recorder if it's running and
     # not request further input from the user.
-    if (isinstance(action, ViToggleMacroRecorder) and macros.is_recording(view.window())):
+    if (isinstance(action, ViToggleMacroRecorder) and macros.is_recording()):
         return False
 
     if (action and action.accept_input and action.input_parser and action.input_parser.is_immediate()):
@@ -145,6 +145,14 @@ def _scroll_into_view(view, mode: str) -> None:
     view.show(target_pt, False)
 
 
+def _scroll_into_active_view() -> None:
+    window = active_window()
+    if window:
+        view = window.active_view()
+        if view:
+            _scroll_into_view(view, get_mode(view))
+
+
 def _create_definition(view, name: str):
     cmd = get_session_view_value(view, name)
     if cmd:
@@ -188,9 +196,7 @@ def reset_command_data(view) -> None:
     if _should_scroll_into_view(motion, action):
         # Intentionally using the active view because the previous command
         # may have switched views and view would be the previous one.
-        active_view = active_window().active_view()
-        if active_view:
-            _scroll_into_view(active_view, get_mode(active_view))
+        _scroll_into_active_view()
 
     action and action.reset()
     set_action(view, None)
@@ -201,7 +207,7 @@ def reset_command_data(view) -> None:
     set_sequence(view, '')
     set_partial_sequence(view, '')
     set_register(view, '"')
-    set_must_capture_register_name(view, False)
+    set_capture_register(view, False)
     reset_status_line(view, get_mode(view))
 
 
@@ -348,11 +354,11 @@ def evaluate_state(view) -> None:
     reset_command_data(view)
 
 
-def _should_reset_mode(view, current_mode: str) -> bool:
-    return current_mode == UNKNOWN or get_setting(view, 'reset_mode_when_switching_tabs')
+def _should_reset_mode(view, mode: str) -> bool:
+    return mode == UNKNOWN or get_setting(view, 'reset_mode_when_switching_tabs')
 
 
-def init_state(view) -> None:
+def init_view(view) -> None:
     # If the view not a regular vim capable view (e.g. console, widget, panel),
     # skip the state initialisation and perform a clean routine on the view.
     # TODO is a clean routine really necessary on non-vim capable views?

@@ -20,6 +20,7 @@ from NeoVintageous.tests import unittest
 from NeoVintageous.nv.feed_key import FeedKeyHandler
 from NeoVintageous.nv.settings import append_sequence
 from NeoVintageous.nv.settings import get_action_count
+from NeoVintageous.nv.settings import get_capture_register
 from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_glue_until_normal_mode
 from NeoVintageous.nv.settings import get_last_buff_search_pattern
@@ -32,18 +33,17 @@ from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.settings import get_reset_during_init
 from NeoVintageous.nv.settings import get_sequence
 from NeoVintageous.nv.settings import is_interactive
-from NeoVintageous.nv.settings import is_must_capture_register_name
 from NeoVintageous.nv.settings import is_processing_notation
 from NeoVintageous.nv.settings import set_action_count
+from NeoVintageous.nv.settings import set_capture_register
 from NeoVintageous.nv.settings import set_mode
 from NeoVintageous.nv.settings import set_motion_count
-from NeoVintageous.nv.settings import set_must_capture_register_name
 from NeoVintageous.nv.settings import set_partial_sequence
 from NeoVintageous.nv.settings import set_register
 from NeoVintageous.nv.state import _should_scroll_into_view
 from NeoVintageous.nv.state import get_action
 from NeoVintageous.nv.state import get_motion
-from NeoVintageous.nv.state import init_state
+from NeoVintageous.nv.state import init_view
 from NeoVintageous.nv.state import is_runnable
 from NeoVintageous.nv.state import reset_command_data
 from NeoVintageous.nv.state import set_action
@@ -54,13 +54,13 @@ from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
 
 class TestState(unittest.ViewTestCase):
 
-    def test_init_state_on_invalid_view(self):
+    def test_init_view_on_invalid_view(self):
         panel = self.view.window().create_output_panel('test_invalid_state', unlisted=True)
         panel.settings().set('is_widget', True)
         panel.settings().set('command_mode', True)
         panel.settings().set('inverse_caret_state', True)
         panel.settings().set('vintage', True)
-        init_state(panel)
+        init_view(panel)
         self.assertIsNone(panel.settings().get('command_mode'))
         self.assertIsNone(panel.settings().get('inverse_caret_state'))
         self.assertIsNone(panel.settings().get('vintage'))
@@ -114,7 +114,7 @@ class TestState(unittest.ViewTestCase):
         self.assertEqual(get_last_char_search_character(self.view), '')
         self.assertEqual(get_last_char_search_command(self.view), 'vi_f')
         self.assertEqual(is_interactive(self.view), True)
-        self.assertEqual(is_must_capture_register_name(self.view), False)
+        self.assertEqual(get_capture_register(self.view), False)
         self.assertEqual(get_last_buff_search_pattern(self.view), '')
         self.assertEqual(get_reset_during_init(self.view), True)
 
@@ -136,7 +136,7 @@ class TestStateResettingState(unittest.ViewTestCase):
         set_action_count(self.view, '10')
         set_motion_count(self.view, '100')
         set_register(self.view, 'a')
-        set_must_capture_register_name(self.view, True)
+        set_capture_register(self.view, True)
 
         reset_command_data(self.view)
 
@@ -148,7 +148,7 @@ class TestStateResettingState(unittest.ViewTestCase):
         self.assertEqual(get_sequence(self.view), '')
         self.assertEqual(get_partial_sequence(self.view), '')
         self.assertEqual(get_register(self.view), '"')
-        self.assertEqual(is_must_capture_register_name(self.view), False)
+        self.assertEqual(get_capture_register(self.view), False)
 
 
 class TestStateCounts(unittest.ViewTestCase):

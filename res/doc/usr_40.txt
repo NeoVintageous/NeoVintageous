@@ -1,4 +1,4 @@
-*usr_40.txt*	Nvim
+*usr_40.txt*	For Vim version 9.0.  Last change: 2022 Jun 23
 
 		     VIM USER MANUAL - by Bram Moolenaar
 
@@ -20,7 +20,7 @@ Table of contents: |usr_toc.txt|
 ==============================================================================
 *40.1*	Key mapping
 
-A simple mapping was explained in section |05.3|.  The principle is that one
+A simple mapping was explained in section |05.4|.  The principle is that one
 sequence of key strokes is translated into another sequence of key strokes.
 This is a simple, yet powerful mechanism.
    The simplest form is that one key is mapped to a sequence of keys.  Since
@@ -290,8 +290,8 @@ deletes the first line.
 
 	Note:
 	User-defined commands must start with a capital letter.  You cannot
-	use ":Next".  The underscore cannot be used!  You can use digits, but
-	this is discouraged.
+	use ":X", ":Next" and ":Print".  The underscore cannot be used!  You
+	can use digits, but this is discouraged.
 
 To list the user-defined commands, execute the following command: >
 
@@ -489,7 +489,7 @@ for you.  This triggers the Filetype event.  Use this to do something when a
 certain type of file is edited.  For example, to load a list of abbreviations
 for text files: >
 
-	:autocmd Filetype text  source ~/.config/nvim/abbrevs.vim
+	:autocmd Filetype text  source ~/.vim/abbrevs.vim
 
 When starting to edit a new file, you could make Vim insert a skeleton: >
 
@@ -587,7 +587,7 @@ NESTING
 Generally, commands executed as the result of an autocommand event will not
 trigger any new events.  If you read a file in response to a FileChangedShell
 event, it will not trigger the autocommands that would set the syntax, for
-example.  To make the events triggered, add the "++nested" flag: >
+example.  To make the events triggered, add the "nested" argument: >
 
 	:autocmd FileChangedShell * ++nested  edit
 

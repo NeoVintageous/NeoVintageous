@@ -61,7 +61,6 @@ class StFocusSideBar(ViOperatorDef):
 @register(seqs.CTRL_3, ACTION_MODES, group=2)
 @register(seqs.CTRL_4, ACTION_MODES, group=3)
 @register(seqs.CTRL_5, ACTION_MODES, group=4)
-@register(seqs.CTRL_6, ACTION_MODES, group=5)
 @register(seqs.CTRL_7, ACTION_MODES, group=6)
 @register(seqs.CTRL_8, ACTION_MODES, group=7)
 @register(seqs.CTRL_9, ACTION_MODES, group=8)

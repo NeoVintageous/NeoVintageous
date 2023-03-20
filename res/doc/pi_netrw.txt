@@ -1,4 +1,4 @@
-*pi_netrw.txt*  For Vim version 8.2.  Last change: 2020 Aug 15
+*pi_netrw.txt*  For Vim version 9.0.  Last change: 2022 Apr 06
 
 	    ------------------------------------------------
 	    NETRW REFERENCE MANUAL    by Charles E. Campbell
@@ -2781,8 +2781,9 @@ your browsing preferences.  (see also: |netrw-settings|)
   *g:netrw_home*		The home directory for where bookmarks and
 				history are saved (as .netrwbook and
 				.netrwhist).
-				Netrw uses |expand()| on the string.
-				 default: stdpath('data') (see |stdpath()|)
+				Netrw uses |expand()|on the string.
+				 default: the first directory on the
+				         |'runtimepath'|
 
   *g:netrw_keepdir*		=1 (default) keep current directory immune from
 				   the browsing directory.
@@ -3215,8 +3216,8 @@ window, then the one window will be horizontally split (by default).
 If there's more than one window, the previous window will be re-used on
 the selected file/directory.  If the previous window's associated buffer
 has been modified, and there's only one window with that buffer, then
-the user will be asked if they wish to save the buffer first (yes, no, or
-cancel).
+the user will be asked if s/he wishes to save the buffer first (yes,
+no, or cancel).
 
 Related Actions |netrw-cr| |netrw-o| |netrw-t| |netrw-v|
 Associated setting variables:

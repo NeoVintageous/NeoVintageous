@@ -1,4 +1,4 @@
-*quickfix.txt*  Nvim
+*quickfix.txt*  For Vim version 9.0.  Last change: 2022 Sep 26
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -6,7 +6,19 @@
 
 This subject is introduced in section |30.1| of the user manual.
 
-                                      Type |gO| to see the table of contents.
+1. Using QuickFix commands		|quickfix|
+2. The error window			|quickfix-window|
+3. Using more than one list of errors	|quickfix-error-lists|
+4. Using :make				|:make_makeprg|
+5. Using :grep				|grep|
+6. Selecting a compiler			|compiler-select|
+7. The error format			|error-file-format|
+8. The directory stack			|quickfix-directory-stack|
+9. Specific error file formats		|errorformats|
+10. Customizing the quickfix window	|quickfix-window-function|
+
+The quickfix commands are not available when the |+quickfix| feature was
+disabled at compile time.
 
 =============================================================================
 1. Using QuickFix commands			*quickfix* *Quickfix* *E42*
@@ -228,9 +240,9 @@ processing a quickfix or location list command, it will be aborted.
 			execute the command, etc.
 			{N} can also be zero, in which case Vim exits
 			normally.
-			WARNING: All changes in files are lost.  It works like
-			":qall!" |:qall|, except that Nvim exits non-zero or
-			[count].
+			WARNING: All changes in files are lost!  Also when the
+			[!] is not used.  It works like ":qall!" |:qall|,
+			except that Vim returns a non-zero exit code.
 
 							*:cf* *:cfi* *:cfile*
 :cf[ile][!] [errorfile]	Read the error file and jump to the first error.
@@ -368,10 +380,10 @@ processing a quickfix or location list command, it will be aborted.
 			List all errors.
 
 :cl[ist]! +{count}	List the current and next {count} error lines.  This
-			is useful to see unrecognized lines after the current
+                        is useful to see unrecognized lines after the current
 			one.  For example, if ":clist" shows:
         8384 testje.java:252: error: cannot find symbol ~
-			Then using ":cl! +3" shows the reason:
+                        Then using ":cl! +3" shows the reason:
         8384 testje.java:252: error: cannot find symbol ~
         8385:   ZexitCode = Fmainx(); ~
         8386:               ^ ~
@@ -466,7 +478,7 @@ You can parse a list of lines using 'errorformat' without creating or
 modifying a quickfix list using the |getqflist()| function. Examples: >
 	echo getqflist({'lines' : ["F1:10:Line10", "F2:20:Line20"]})
 	echo getqflist({'lines' : systemlist('grep -Hn quickfix *')})
-This returns a dictionary where the 'items' key contains the list of quickfix
+This returns a dictionary where the "items" key contains the list of quickfix
 entries parsed from lines. The following shows how to use a custom
 'errorformat' to parse the lines without modifying the 'errorformat' option: >
 	echo getqflist({'efm' : '%f#%l#%m', 'lines' : ['F1#10#Line']})
@@ -585,7 +597,7 @@ can go back to the unfiltered list using the |:colder|/|:lolder| command.
 			quickfix command or function, the |b:changedtick|
 			variable is incremented.  You can get the number of
 			this buffer using the getqflist() and getloclist()
-			functions by passing the 'qfbufnr' item. For a
+			functions by passing the "qfbufnr" item. For a
 			location list, this buffer is wiped out when the
 			location list is removed.
 
@@ -916,7 +928,7 @@ To get the number of the current list in the stack: >
 			   screen).
 			5. The errorfile is read using 'errorformat'.
 			6. All relevant |QuickFixCmdPost| autocommands are
-			   executed. See example below.
+			   executed.  See example below.
 			7. If [!] is not given the first error is jumped to.
 			8. The errorfile is deleted.
 			9. You can now move through the errors with commands
@@ -958,14 +970,14 @@ or simpler >
 "$*" can be given multiple times, for example: >
    :set makeprg=gcc\ -o\ $*\ $*
 
-The 'shellpipe' option defaults to ">%s 2>&1" for Win32.
+The 'shellpipe' option defaults to ">" for the Amiga and ">%s 2>&1" for Win32.
 This means that the output of the compiler is saved in a file and not shown on
 the screen directly.  For Unix "| tee" is used.  The compiler output is shown
 on the screen and saved in a file the same time.  Depending on the shell used
 "|& tee" or "2>&1| tee" is the default, so stderr output will be included.
 
 If 'shellpipe' is empty, the {errorfile} part will be omitted.  This is useful
-for compilers that write to an errorfile themselves.
+for compilers that write to an errorfile themselves (e.g., Manx's Amiga C).
 
 
 Using QuickFixCmdPost to fix the encoding ~
@@ -1236,6 +1248,8 @@ need to write down a "todo" list.
 				If you use ":compiler foo" in "file.foo" and
 				then ":compiler! bar" in another buffer, Vim
 				will keep on using "foo" in "file.foo".
+				{not available when compiled without the
+				|+eval| feature}
 
 
 The Vim plugins in the "compiler" directory will set options to use the
@@ -1248,8 +1262,8 @@ not "b:current_compiler".  What the command actually does is the following:
 - Delete the "current_compiler" and "b:current_compiler" variables.
 - Define the "CompilerSet" user command.  With "!" it does ":set", without "!"
   it does ":setlocal".
-- Execute ":runtime! compiler/{name}.(vim|lua)".  The plugins are expected to
-  set options with "CompilerSet" and set the "current_compiler" variable to the
+- Execute ":runtime! compiler/{name}.vim".  The plugins are expected to set
+  options with "CompilerSet" and set the "current_compiler" variable to the
   name of the compiler.
 - Delete the "CompilerSet" user command.
 - Set "b:current_compiler" to the value of "current_compiler".
@@ -1258,6 +1272,21 @@ not "b:current_compiler".  What the command actually does is the following:
 
 For writing a compiler plugin, see |write-compiler-plugin|.
 
+
+DOTNET							*compiler-dotnet*
+
+The .NET CLI compiler outputs both errors and warnings by default. The output
+may be limited to include only errors, by setting the g:dotnet_errors_only
+variable to |v:true|.
+
+The associated project name is included in each error and warning. To supress
+the project name, set the g:dotnet_show_project_file variable to |v:false|.
+
+Example: limit output to only display errors, and suppress the project name: >
+	let dotnet_errors_only = v:true
+	let dotnet_show_project_file = v:false
+	compiler dotnet
+<
 
 GCC					*quickfix-gcc*	*compiler-gcc*
 
@@ -1268,6 +1297,31 @@ g:compiler_gcc_ignore_unmatched_lines
 				defined for GCC.  Useful if output from
 				commands run from make are generating false
 				positives.
+
+
+MANX AZTEC C				*quickfix-manx* *compiler-manx*
+
+To use Vim with Manx's Aztec C compiler on the Amiga you should do the
+following:
+- Set the CCEDIT environment variable with the command: >
+	mset "CCEDIT=vim -q"
+- Compile with the -qf option.  If the compiler finds any errors, Vim is
+  started and the cursor is positioned on the first error.  The error message
+  will be displayed on the last line.  You can go to other errors with the
+  commands mentioned above.  You can fix the errors and write the file(s).
+- If you exit Vim normally the compiler will re-compile the same file.  If you
+  exit with the :cq command, the compiler will terminate.  Do this if you
+  cannot fix the error, or if another file needs to be compiled first.
+
+There are some restrictions to the Quickfix mode on the Amiga.  The
+compiler only writes the first 25 errors to the errorfile (Manx's
+documentation does not say how to get more).  If you want to find the others,
+you will have to fix a few errors and exit the editor.  After recompiling,
+up to 25 remaining errors will be found.
+
+If Vim was started from the compiler, the :sh and some :!  commands will not
+work, because Vim is then running in the same process as the compiler and
+stdin (standard input) will not be interactive.
 
 
 PERL					*quickfix-perl* *compiler-perl*
@@ -1405,7 +1459,7 @@ normally happens by matching following characters and items.  When nothing is
 following the rest of the line is matched.  If "%f" is followed by a '%' or a
 backslash, it will look for a sequence of 'isfname' characters.
 
-On Windows a leading "C:" will be included in "%f", even when using "%f:".
+On MS-Windows a leading "C:" will be included in "%f", even when using "%f:".
 This means that a file name which is a single alphabetical letter will not be
 detected.
 
@@ -1491,7 +1545,7 @@ error message (line numbers are not part of the actual output):
      4	Traceback (most recent call last):
      5	  File "unittests/dbfacadeTest.py", line 89, in testFoo
      6	    self.assertEquals(34, dtid)
-     7	  File "/usr/lib/python3.8/unittest.py", line 286, in
+     7	  File "/usr/lib/python2.2/unittest.py", line 286, in
      8	 failUnlessEqual
      9	    raise self.failureException, \
     10	AssertionError: 34 != 33
@@ -1644,7 +1698,9 @@ If the error format does not contain a file name Vim cannot switch to the
 correct file.  You will have to do this by hand.
 
 
-For example, the format of the output from the Amiga Aztec compiler is:
+Examples
+
+The format of the file from the Amiga Aztec compiler is:
 
 	filename>linenumber:columnnumber:errortype:errornumber:errormessage
 
@@ -1783,7 +1839,7 @@ Jikes(TM), a source-to-bytecode Java compiler published by IBM Research,
 produces simple multi-line error messages.
 
 An 'errorformat' string matching the produced messages is shown below.
-The following lines can be placed in the user's |init.vim| to overwrite Vim's
+The following lines can be placed in the user's |vimrc| to overwrite Vim's
 recognized default formats, or see |:set+=| how to install this format
 additionally to the default. >
 
@@ -1927,6 +1983,11 @@ However, to properly parse such a complex file, an external filter should
 be used.  See the description further above how to make such a filter known
 by Vim.
 
+						*errorformat-Perl*
+In $VIMRUNTIME/tools you can find the efm_perl.pl script, which filters Perl
+error messages into a format that quickfix mode will understand.  See the
+start of the file about how to use it.  (This script is deprecated, see
+|compiler-perl|.)
 
 =============================================================================
 10. Customizing the quickfix window		*quickfix-window-function*
@@ -1939,7 +2000,7 @@ list window is:
 The values displayed in each line correspond to the "bufnr", "lnum", "col" and
 "text" fields returned by the |getqflist()| function.
 
-For some quickfix/location lists, the displayed text need to be customized.
+For some quickfix/location lists, the displayed text needs to be customized.
 For example, if only the filename is present for a quickfix entry, then the
 two "|" field separator characters after the filename are not needed.  Another
 use case is to customize the path displayed for a filename. By default, the
@@ -1965,7 +2026,7 @@ The function should return a single line of text to display in the quickfix
 window for each entry from start_idx to end_idx. The function can obtain
 information about the entries using the |getqflist()| function and specifying
 the quickfix list identifier "id". For a location list, getloclist() function
-can be used with the 'winid' argument. If an empty list is returned, then the
+can be used with the "winid" argument. If an empty list is returned, then the
 default format is used to display all the entries. If an item in the returned
 list is an empty string, then the default format is used to display the
 corresponding entry.

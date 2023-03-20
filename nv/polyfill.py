@@ -26,6 +26,7 @@ from sublime import active_window as _active_window
 from sublime import load_settings
 from sublime import save_settings
 from sublime import status_message as _status_message
+from sublime import windows as _windows
 
 
 def is_py38() -> bool:
@@ -43,18 +44,34 @@ def _format_message(msg: str, *args) -> str:
     return msg
 
 
-# There's no Sublime API to set a window status.
+# There is no API to set a window status.
 # https://github.com/SublimeTextIssues/Core/issues/627
 def set_window_status(window, key: str, value) -> None:
     for view in window.views():
         view.set_status(key, value)
 
 
-# There's no Sublime API to erase a window status.
+# There is no API to erase a window status.
 # https://github.com/SublimeTextIssues/Core/issues/627
 def erase_window_status(window, key: str) -> None:
     for view in window.views():
         view.erase_status(key)
+
+
+# There is no API to set an application status.
+# https://github.com/SublimeTextIssues/Core/issues/627
+def set_status(key: str, value) -> None:
+    for window in _windows():
+        for view in window.views():
+            view.set_status(key, value)
+
+
+# There is no API to erase an application status.
+# https://github.com/SublimeTextIssues/Core/issues/627
+def erase_status(key: str) -> None:
+    for window in _windows():
+        for view in window.views():
+            view.erase_status(key)
 
 
 def run_window_command(cmd: str, args: dict = None, window=None) -> None:
@@ -62,6 +79,26 @@ def run_window_command(cmd: str, args: dict = None, window=None) -> None:
         window = _active_window()
 
     window.run_command(cmd, args)
+
+
+def has_dirty_buffers(window) -> bool:
+    for v in window.views():
+        if v.is_dirty():
+            return True
+
+    return False
+
+
+def has_newline_at_eof(view) -> bool:
+    return view.substr(view.size() - 1) == '\n'
+
+
+def set_selection(view, sel) -> None:
+    view.sel().clear()
+    if isinstance(sel, list):
+        view.sel().add_all(sel)
+    else:
+        view.sel().add(sel)
 
 
 def is_view_read_only(view) -> bool:

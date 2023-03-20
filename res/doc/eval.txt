@@ -1,38 +1,63 @@
-*eval.txt*	Nvim
+*eval.txt*	For Vim version 9.0.  Last change: 2022 Dec 11
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
 
 
 Expression evaluation			*expression* *expr* *E15* *eval*
-
+							*E1002*
 Using expressions is introduced in chapter 41 of the user manual |usr_41.txt|.
 
-				      Type |gO| to see the table of contents.
+Note: Expression evaluation can be disabled at compile time.  If this has been
+done, the features in this document are not available.  See |+eval| and
+|no-eval-feature|.
+
+This file is mainly about the backwards compatible (legacy) Vim script.  For
+specifics of Vim9 script, which can execute much faster, supports type
+checking and much more, see |vim9.txt|.  Where the syntax or semantics differ
+a remark is given.
+
+1.  Variables			|variables|
+    1.1 Variable types
+    1.2 Function references		|Funcref|
+    1.3 Lists				|Lists|
+    1.4 Dictionaries			|Dictionaries|
+    1.5 Blobs				|Blobs|
+    1.6 More about variables		|more-variables|
+2.  Expression syntax		|expression-syntax|
+3.  Internal variable		|internal-variables|
+4.  Builtin Functions		|functions|
+5.  Defining functions		|user-functions|
+6.  Curly braces names		|curly-braces-names|
+7.  Commands			|expression-commands|
+8.  Exception handling		|exception-handling|
+9.  Examples			|eval-examples|
+10. Vim script version		|vimscript-version|
+11. No +eval feature		|no-eval-feature|
+12. The sandbox			|eval-sandbox|
+13. Textlock			|textlock|
+
+Testing support is documented in |testing.txt|.
+Profiling is documented at |profiling|.
 
 ==============================================================================
 1. Variables						*variables*
 
 1.1 Variable types ~
-						*E712* *E896* *E897* *E899*
-There are seven types of variables:
+					*E712* *E896* *E897* *E899* *E1098*
+					*E1107* *E1135* *E1138*
+There are ten types of variables:
 
 							*Number* *Integer*
 Number		A 32 or 64 bit signed number.  |expr-number|
 		The number of bits is available in |v:numbersize|.
-		Examples:  -123  0x10  0177  0o177  0b1011
+		Examples:  -123  0x10  0177  0o177 0b1011
 
 Float		A floating point number. |floating-point-format| *Float*
 		Examples: 123.456  1.15e-6  -1.1e3
 
 String		A NUL terminated string of 8-bit unsigned characters (bytes).
 		|expr-string| Examples: "ab\txx\"--"  'x-z''a,c'
-
-Funcref		A reference to a function |Funcref|.
-		Example: function("strlen")
-		It can be bound to a dictionary and arguments, it then works
-		like a Partial.
-		Example: function("Callback", [arg], myDict)
 
 List		An ordered sequence of items, see |List| for details.
 		Example: [1, 2, ['a', 'b']]
@@ -43,8 +68,20 @@ Dictionary	An associative, unordered array: Each entry has a key and a
 			{'blue': "#0000ff", 'red': "#ff0000"}
 			#{blue: "#0000ff", red: "#ff0000"}
 
+Funcref		A reference to a function |Funcref|.
+		Example: function("strlen")
+		It can be bound to a dictionary and arguments, it then works
+		like a Partial.
+		Example: function("Callback", [arg], myDict)
+
+Special		|v:false|, |v:true|, |v:none| and |v:null|.  *Special*
+
+Job		Used for a job, see |job_start()|. *Job* *Jobs*
+
+Channel		Used for a channel, see |ch_open()|. *Channel* *Channels*
+
 Blob		Binary Large Object. Stores any sequence of bytes.  See |Blob|
-		for details.
+		for details
 		Example: 0zFF00ED015DAF
 		0z is an empty Blob.
 
@@ -57,10 +94,14 @@ the Number.  Examples:
 	Number 0	-->	String "0" ~
 	Number -1	-->	String "-1" ~
 							*octal*
-Conversion from a String to a Number is done by converting the first digits to
-a number.  Hexadecimal "0xf9", Octal "017" or "0o17", and Binary "0b10"
-numbers are recognized.  If the String doesn't start with digits, the result
-is zero. Examples:
+Conversion from a String to a Number only happens in legacy Vim script, not in
+Vim9 script.  It is done by converting the first digits to a number.
+Hexadecimal "0xf9", Octal "017" or "0o17", and Binary "0b10"
+numbers are recognized
+NOTE: when using |Vim9| script or |scriptversion-4| octal with a leading "0"
+is not recognized.  The 0o notation requires patch 8.2.0886.
+If the String doesn't start with digits, the result is zero.
+Examples:
 	String "456"	-->	Number 456 ~
 	String "6bar"	-->	Number 6 ~
 	String "foo"	-->	Number 0 ~
@@ -80,7 +121,7 @@ base, use |str2nr()|.
 
 						*TRUE* *FALSE* *Boolean*
 For boolean operators Numbers are used.  Zero is FALSE, non-zero is TRUE.
-You can also use |v:false| and |v:true|.
+You can also use |v:false| and |v:true|, in Vim9 script |false| and |true|.
 When TRUE is returned from a function it is the Number one, FALSE is the
 number zero.
 
@@ -93,7 +134,27 @@ non-zero number it means TRUE: >
 	:" executed
 To test for a non-empty string, use empty(): >
 	:if !empty("foo")
-<
+
+<						*falsy* *truthy*
+An expression can be used as a condition, ignoring the type and only using
+whether the value is "sort of true" or "sort of false".  Falsy is:
+	the number zero
+	empty string, blob, list or dictionary
+Other values are truthy.  Examples:
+	0	falsy
+	1	truthy
+	-1	truthy
+	0.0	falsy
+	0.1	truthy
+	''	falsy
+	'x'	truthy
+	[]	falsy
+	[0]	truthy
+	{}	falsy
+	#{x: 1} truthy
+	0z	falsy
+	0z00	truthy
+
 							*non-zero-arg*
 Function arguments often behave slightly different from |TRUE|: If the
 argument is present and it evaluates to a non-zero Number, |v:true| or a
@@ -101,30 +162,36 @@ non-empty String, then the value is considered to be TRUE.
 Note that " " and "0" are also non-empty strings, thus considered to be TRUE.
 A List, Dictionary or Float is not a Number or String, thus evaluate to FALSE.
 
-				*E745* *E728* *E703* *E729* *E730* *E731*
-				*E974* *E975* *E976*
-|List|, |Dictionary|, |Funcref|, and |Blob| types are not automatically
-converted.
+		*E611* *E745* *E728* *E703* *E729* *E730* *E731* *E908* *E910*
+		*E913* *E974* *E975* *E976* *E1319* *E1320* *E1321* *E1322*
+		*E1323* *E1324*
+|List|, |Dictionary|, |Funcref|, |Job|, |Channel|, |Blob|, |Class| and
+|object| types are not automatically converted.
 
 							*E805* *E806* *E808*
 When mixing Number and Float the Number is converted to Float.  Otherwise
 there is no automatic conversion of Float.  You can use str2float() for String
 to Float, printf() for Float to String and float2nr() for Float to Number.
 
-					*E362* *E891* *E892* *E893* *E894* *E907*
+			*E362* *E891* *E892* *E893* *E894* *E907* *E911* *E914*
 When expecting a Float a Number can also be used, but nothing else.
 
-					*no-type-checking*
+						*no-type-checking*
 You will not get an error if you try to change the type of a variable.
 
 
 1.2 Function references ~
-							*Funcref* *E695* *E718*
+					*Funcref* *E695* *E718* *E1192*
 A Funcref variable is obtained with the |function()| function, the |funcref()|
-function or created with the lambda expression |expr-lambda|.  It can be used
-in an expression in the place of a function name, before the parenthesis
-around the arguments, to invoke the function it refers to.  Example: >
+function, (in |Vim9| script) the name of a function, or created with the
+lambda expression |expr-lambda|.  It can be used in an expression in the place
+of a function name, before the parenthesis around the arguments, to invoke the
+function it refers to.  Example in |Vim9| script: >
 
+	:var Fn = MyFunc
+	:echo Fn()
+
+Legacy script: >
 	:let Fn = function("MyFunc")
 	:echo Fn()
 <							*E704* *E705* *E707*
@@ -164,6 +231,9 @@ arguments will be passed to the function.  Example: >
 This will invoke the function as if using: >
 	call myDict.Callback('foo', 'bar')
 
+This is very useful when passing a function around, e.g. in the arguments of
+|ch_open()|.
+
 Note that binding a function to a Dictionary also happens when the function is
 a member of the Dictionary: >
 
@@ -171,8 +241,8 @@ a member of the Dictionary: >
 	call myDict.myFunction()
 
 Here MyFunction() will get myDict passed as "self".  This happens when the
-"myFunction" member is accessed.  When assigning "myFunction" to otherDict
-and calling it, it will be bound to otherDict: >
+"myFunction" member is accessed.  When making assigning "myFunction" to
+otherDict and calling it, it will be bound to otherDict: >
 
 	let otherDict.myFunction = myDict.myFunction
 	call otherDict.myFunction()
@@ -229,13 +299,13 @@ is not available it returns zero or the default value you specify: >
 
 
 List concatenation ~
-
+							*list-concatenation*
 Two lists can be concatenated with the "+" operator: >
 	:let longlist = mylist + [5, 6]
 	:let mylist += [7, 8]
 
-To prepend or append an item turn the item into a list by putting [] around
-it.  To change a list in-place see |list-modification| below.
+To prepend or append an item, turn the item into a list by putting [] around
+it.  To change a list in-place, refer to |list-modification| below.
 
 
 Sublist ~
@@ -249,6 +319,9 @@ similar to -1. >
 	:let endlist = mylist[2:]	" from item 2 to the end: [3, "four"]
 	:let shortlist = mylist[2:2]	" List with one item: [3]
 	:let otherlist = mylist[:]	" make a copy of the List
+
+Notice that the last index is inclusive.  If you prefer using an exclusive
+index use the |slice()| method.
 
 If the first index is beyond the last item of the List or the second item is
 before the first item, the result is an empty list.  There is no error
@@ -372,7 +445,7 @@ Changing the order of items in a list: >
 
 For loop ~
 
-The |:for| loop executes commands for each item in a |List|, |String| or |Blob|.
+The |:for| loop executes commands for each item in a List, String or Blob.
 A variable is set to each item in sequence.  Example with a List: >
 	:for item in mylist
 	:   call Doit(item)
@@ -438,7 +511,7 @@ example, to add up all the numbers in a list: >
 
 
 1.4 Dictionaries ~
-				 *Dict* *dict* *Dictionaries* *Dictionary*
+				*dict* *Dict* *Dictionaries* *Dictionary*
 A Dictionary is an associative array: Each entry has a key and a value.  The
 entry can be located with the key.  The entries are stored without a specific
 ordering.
@@ -457,12 +530,17 @@ String automatically.  Thus the String '4' and the number 4 will find the same
 entry.  Note that the String '04' and the Number 04 are different, since the
 Number will be converted to the String '4', leading zeros are dropped.  The
 empty string can also be used as a key.
-						*literal-Dict*
-To avoid having to put quotes around every key the #{} form can be used.  This
-does require the key to consist only of ASCII letters, digits, '-' and '_'.
-Example: >
+
+In |Vim9| script a literal key can be used if it consists only of alphanumeric
+characters, underscore and dash, see |vim9-literal-dict|.
+						*literal-Dict* *#{}*
+To avoid having to put quotes around every key the #{} form can be used in
+legacy script.  This does require the key to consist only of ASCII letters,
+digits, '-' and '_'.  Example: >
 	:let mydict = #{zero: 0, one_key: 1, two-key: 2, 333: 3}
 Note that 333 here is the string "333".  Empty keys are not possible with #{}.
+In |Vim9| script the #{} form cannot be used because it can be confused with
+the start of a comment.
 
 A value can be any expression.  Using a Dictionary for a value creates a
 nested Dictionary: >
@@ -556,6 +634,10 @@ This removes all entries from "dict" with a value not matching 'x'.
 This can also be used to remove all entries: >
 	call filter(dict, 0)
 
+In some situations it is not allowed to remove or add entries to a Dictionary.
+Especially when iterating over all the entries.  You will get *E1313* or
+another error in that case.
+
 
 Dictionary function ~
 				*Dictionary-function* *self* *E725* *E862*
@@ -569,7 +651,8 @@ special way with a dictionary.  Example: >
 
 This is like a method in object oriented programming.  The entry in the
 Dictionary is a |Funcref|.  The local variable "self" refers to the dictionary
-the function was invoked from.
+the function was invoked from.  When using |Vim9| script you can use classes
+and objects, see `:class`.
 
 It is also possible to add a function without the "dict" attribute as a
 Funcref to a Dictionary, but the "self" variable is not available then.
@@ -629,6 +712,8 @@ A blob can be read from a file with |readfile()| passing the {type} argument
 set to "B", for example: >
 	:let b = readfile('image.png', 'B')
 
+A blob can be read from a channel with the |ch_readblob()| function.
+
 
 Blob index ~
 							*blob-index* *E979*
@@ -681,17 +766,17 @@ similar to -1. >
 	:let shortblob = myblob[2:2]	" Blob with one byte: 0z22
 	:let otherblob = myblob[:]	" make a copy of the Blob
 
-If the first index is beyond the last byte of the Blob or the second byte is
+If the first index is beyond the last byte of the Blob or the second index is
 before the first index, the result is an empty Blob.  There is no error
 message.
 
-If the second index is equal to or greater than the length of the Blob the
+If the second index is equal to or greater than the length of the list the
 length minus one is used: >
 	:echo myblob[2:8]		" result: 0z2233
 
 
 Blob modification ~
-							*blob-modification*
+					*blob-modification* *E1182* *E1184*
 To change a specific byte of a blob use |:let| this way: >
 	:let blob[4] = 0x44
 
@@ -704,8 +789,8 @@ The length of the replaced bytes must be exactly the same as the value
 provided. *E972*
 
 To change part of a blob you can specify the first and last byte to be
-modified.  The value must at least have the number of bytes in the range: >
-	:let blob[3:5] = [3, 4, 5]
+modified.  The value must have the same number of bytes in the range: >
+	:let blob[3:5] = 0z334455
 
 You can also use the functions |add()|, |remove()| and |insert()|.
 
@@ -743,9 +828,9 @@ works, as explained above.
 If you need to know the type of a variable or expression, use the |type()|
 function.
 
-When the '!' flag is included in the 'shada' option, global variables that
+When the '!' flag is included in the 'viminfo' option, global variables that
 start with an uppercase letter, and don't contain a lowercase letter, are
-stored in the shada file |shada-file|.
+stored in the viminfo file |viminfo-file|.
 
 When the 'sessionoptions' option contains "global", global variables that
 start with an uppercase letter and contain at least one lowercase letter are
@@ -754,15 +839,15 @@ stored in the session file |session-file|.
 variable name		can be stored where ~
 my_var_6		not
 My_Var_6		session file
-MY_VAR_6		shada file
+MY_VAR_6		viminfo file
 
 
-It's possible to form a variable name with curly braces, see
+In legacy script it is possible to form a variable name with curly braces, see
 |curly-braces-names|.
 
 ==============================================================================
 2. Expression syntax					*expression-syntax*
-
+							*E1143*
 Expression syntax summary, from least to most significant:
 
 |expr1|	expr2
@@ -793,35 +878,41 @@ Expression syntax summary, from least to most significant:
 	expr5 isnot expr5	different |List|, |Dictionary| or |Blob|
 				instance
 
-|expr5|	expr6
-	expr6 +	 expr6 ...	number addition, list or blob concatenation
-	expr6 -	 expr6 ...	number subtraction
-	expr6 .	 expr6 ...	string concatenation
-	expr6 .. expr6 ...	string concatenation
+|expr5|	expr6 << expr6		bitwise left shift
+	expr6 >> expr6		bitwise right shift
 
 |expr6|	expr7
-	expr7 *	 expr7 ...	number multiplication
-	expr7 /	 expr7 ...	number division
-	expr7 %	 expr7 ...	number modulo
+	expr7 +	 expr7 ...	number addition, list or blob concatenation
+	expr7 -	 expr7 ...	number subtraction
+	expr7 .	 expr7 ...	string concatenation
+	expr7 .. expr7 ...	string concatenation
 
 |expr7|	expr8
-	! expr7			logical NOT
-	- expr7			unary minus
-	+ expr7			unary plus
+	expr8 *	 expr8 ...	number multiplication
+	expr8 /	 expr8 ...	number division
+	expr8 %	 expr8 ...	number modulo
 
 |expr8|	expr9
-	expr8[expr1]		byte of a String or item of a |List|
-	expr8[expr1 : expr1]	substring of a String or sublist of a |List|
-	expr8.name		entry in a |Dictionary|
-	expr8(expr1, ...)	function call with |Funcref| variable
-	expr8->name(expr1, ...)	|method| call
+	<type>expr9		type check and conversion (|Vim9| only)
 
-|expr9|	number			number constant
+|expr9|	expr10
+	! expr9			logical NOT
+	- expr9			unary minus
+	+ expr9			unary plus
+
+|expr10|  expr11
+	expr10[expr1]		byte of a String or item of a |List|
+	expr10[expr1 : expr1]	substring of a String or sublist of a |List|
+	expr10.name		entry in a |Dictionary|
+	expr10(expr1, ...)	function call with |Funcref| variable
+	expr10->name(expr1, ...)	|method| call
+
+|expr11|  number		number constant
 	"string"		string constant, backslash is special
 	'string'		string constant, ' is doubled
 	[expr1, ...]		|List|
 	{expr1: expr1, ...}	|Dictionary|
-	#{key: expr1, ...}	|Dictionary|
+	#{key: expr1, ...}	legacy |Dictionary|
 	&option			option value
 	(expr1)			nested expression
 	variable		internal variable
@@ -830,7 +921,8 @@ Expression syntax summary, from least to most significant:
 	@r			contents of register 'r'
 	function(expr1, ...)	function call
 	func{ti}on(expr1, ...)	function call with curly braces
-	{args -> expr1}		lambda expression
+	{args -> expr1}		legacy lambda expression
+	(args) => expr1		Vim9 lambda expression
 
 
 "..." indicates that the operations in this level can be concatenated.
@@ -839,15 +931,26 @@ Example: >
 
 All expressions within one level are parsed from left to right.
 
+Expression nesting is limited to 1000 levels deep (300 when build with MSVC)
+to avoid running out of stack and crashing. *E1169*
 
-expr1							*expr1* *ternary* *E109*
+
+expr1				*expr1* *ternary* *falsy-operator* *??* *E109*
 -----
 
-expr2 ? expr1 : expr1
+The ternary operator: expr2 ? expr1 : expr1
+The falsy operator:   expr2 ?? expr1
 
-The expression before the '?' is evaluated to a number.  If it evaluates to
-|TRUE|, the result is the value of the expression between the '?' and ':',
-otherwise the result is the value of the expression after the ':'.
+Ternary operator ~
+
+In legacy script the expression before the '?' is evaluated to a number.  If
+it evaluates to |TRUE|, the result is the value of the expression between the
+'?' and ':', otherwise the result is the value of the expression after the
+':'.
+
+In |Vim9| script the first expression must evaluate to a boolean, see
+|vim9-boolean|.
+
 Example: >
 	:echo lnum == 1 ? "top" : lnum
 
@@ -866,6 +969,24 @@ To keep this readable, using |line-continuation| is suggested: >
 You should always put a space before the ':', otherwise it can be mistaken for
 use in a variable such as "a:1".
 
+Falsy operator ~
+
+This is also known as the "null coalescing operator", but that's too
+complicated, thus we just call it the falsy operator.
+
+The expression before the '??' is evaluated.  If it evaluates to
+|truthy|, this is used as the result.  Otherwise the expression after the '??'
+is evaluated and used as the result.  This is most useful to have a default
+value for an expression that may result in zero or empty: >
+	echo theList ?? 'list is empty'
+	echo GetName() ?? 'unknown'
+
+These are similar, but not equal: >
+	expr2 ?? expr1
+	expr2 ? expr2 : expr1
+In the second line "expr2" is evaluated twice.  And in |Vim9| script the type
+of expr2 before "?" must be a boolean.
+
 
 expr2 and expr3						*expr2* *expr3*
 ---------------
@@ -873,9 +994,14 @@ expr2 and expr3						*expr2* *expr3*
 expr3 || expr3 ..	logical OR		*expr-barbar*
 expr4 && expr4 ..	logical AND		*expr-&&*
 
-The "||" and "&&" operators take one argument on each side.  The arguments
-are (converted to) Numbers.  The result is:
+The "||" and "&&" operators take one argument on each side.
 
+In legacy script the arguments are (converted to) Numbers.
+
+In |Vim9| script the values must be boolean, see |vim9-boolean|.  Use "!!" to
+convert any type to a boolean.
+
+The result is:
     input			 output ~
 n1	n2		n1 || n2	n1 && n2 ~
 |FALSE|	|FALSE|		|FALSE|		|FALSE|
@@ -906,13 +1032,14 @@ This is valid whether "b" has been defined or not.  The second clause will
 only be evaluated if "b" has been defined.
 
 
-expr4							*expr4*
+expr4							*expr4* *E1153*
 -----
 
 expr5 {cmp} expr5
 
-Compare two expr5 expressions, resulting in a 0 if it evaluates to false, or 1
-if it evaluates to true.
+Compare two expr5 expressions.  In legacy script the result is a 0 if it
+evaluates to false, or 1 if it evaluates to true.  In |Vim9| script the result
+is |true| or |false|.
 
 			*expr-==*  *expr-!=*  *expr->*	 *expr->=*
 			*expr-<*   *expr-<=*  *expr-=~*  *expr-!~*
@@ -921,7 +1048,7 @@ if it evaluates to true.
 			*expr-==?* *expr-!=?* *expr->?*  *expr->=?*
 			*expr-<?*  *expr-<=?* *expr-=~?* *expr-!~?*
 			*expr-is* *expr-isnot* *expr-is#* *expr-isnot#*
-			*expr-is?* *expr-isnot?*
+			*expr-is?* *expr-isnot?* *E1072*
 		use 'ignorecase'    match case	   ignore case ~
 equal			==		==#		==?
 not equal		!=		!=#		!=?
@@ -938,6 +1065,7 @@ Examples:
 "abc" ==# "Abc"	  evaluates to 0
 "abc" ==? "Abc"	  evaluates to 1
 "abc" == "Abc"	  evaluates to 1 if 'ignorecase' is set, 0 otherwise
+NOTE: In |Vim9| script 'ignorecase' is not used.
 
 							*E691* *E692*
 A |List| can only be compared with a |List| and only "equal", "not equal",
@@ -961,12 +1089,12 @@ To compare Funcrefs to see if they refer to the same function, ignoring bound
 Dictionary and arguments, use |get()| to get the function name: >
 	if get(Part1, 'name') == get(Part2, 'name')
 	   " Part1 and Part2 refer to the same function
-
+<							*E1037*
 Using "is" or "isnot" with a |List|, |Dictionary| or |Blob| checks whether
 the expressions are referring to the same |List|, |Dictionary| or |Blob|
 instance.  A copy of a |List| is different from the original |List|.  When
 using "is" without a |List|, |Dictionary| or |Blob|, it is equivalent to
-using "equal", using "isnot" is equivalent to using "not equal".  Except that
+using "equal", using "isnot" equivalent to using "not equal".  Except that
 a different type means the values are different: >
 	echo 4 == '4'
 	1
@@ -975,15 +1103,19 @@ a different type means the values are different: >
 	echo 0 is []
 	0
 "is#"/"isnot#" and "is?"/"isnot?" can be used to match and ignore case.
+In |Vim9| script this doesn't work, two strings are never identical.
 
-When comparing a String with a Number, the String is converted to a Number,
-and the comparison is done on Numbers.  This means that: >
+In legacy script, when comparing a String with a Number, the String is
+converted to a Number, and the comparison is done on Numbers.  This means
+that: >
 	echo 0 == 'x'
 	1
 because 'x' converted to a Number is zero.  However: >
 	echo [0] == ['x']
 	0
 Inside a List or Dictionary this conversion is not used.
+
+In |Vim9| script the types must match.
 
 When comparing two Strings, this is done with strcmp() or stricmp().  This
 results in the mathematical difference (comparing byte values), not
@@ -1010,40 +1142,61 @@ can be matched like an ordinary character.  Examples:
 	"foo\nbar" =~ "\\n"	evaluates to 0
 
 
-expr5 and expr6						*expr5* *expr6*
----------------
-expr6 + expr6   Number addition, |List| or |Blob| concatenation	*expr-+*
-expr6 - expr6   Number subtraction				*expr--*
-expr6 . expr6   String concatenation				*expr-.*
-expr6 .. expr6  String concatenation				*expr-..*
+expr5						*expr5* *bitwise-shift*
+-----
+expr6 << expr6	bitwise left shift				*expr-<<*
+expr6 >> expr6	bitwise right shift				*expr->>*
+							*E1282* *E1283*
+The "<<" and ">>" operators can be used to perform bitwise left or right shift
+of the left operand by the number of bits specified by the right operand.  The
+operands are used as positive numbers.  When shifting right with ">>" the
+topmost bit (sometimes called the sign bit) is cleared.  If the right operand
+(shift amount) is more than the maximum number of bits in a number
+(|v:numbersize|) the result is zero.
 
-For |Lists| only "+" is possible and then both expr6 must be a list.  The
+
+expr6 and expr7				*expr6* *expr7* *E1036* *E1051*
+---------------
+expr7 + expr7   Number addition, |List| or |Blob| concatenation	*expr-+*
+expr7 - expr7   Number subtraction				*expr--*
+expr7 . expr7   String concatenation				*expr-.*
+expr7 .. expr7  String concatenation				*expr-..*
+
+For |Lists| only "+" is possible and then both expr7 must be a list.  The
 result is a new list with the two lists Concatenated.
 
 For String concatenation ".." is preferred, since "." is ambiguous, it is also
 used for |Dict| member access and floating point numbers.
+In |Vim9| script and when |vimscript-version| is 2 or higher, using "." is not
+allowed.
 
-expr7 * expr7  Number multiplication				*expr-star*
-expr7 / expr7  Number division					*expr-/*
-expr7 % expr7  Number modulo					*expr-%*
+In |Vim9| script the arguments of ".." are converted to String for simple
+types: Number, Float, Special and Bool.  For other types |string()| should be
+used.
 
-For all, except "." and "..", Strings are converted to Numbers.
+expr8 * expr8  Number multiplication				*expr-star*
+expr8 / expr8  Number division					*expr-/*
+expr8 % expr8  Number modulo					*expr-%*
+
+In legacy script, for all operators except "." and "..", Strings are converted
+to Numbers.
+
 For bitwise operators see |and()|, |or()| and |xor()|.
 
-Note the difference between "+" and ".":
+Note the difference between "+" and ".." in legacy script:
 	"123" + "456" = 579
-	"123" . "456" = "123456"
+	"123" .. "456" = "123456"
 
-Since '.' has the same precedence as '+' and '-', you need to read: >
-	1 . 90 + 90.0
+Since '..' has the same precedence as '+' and '-', you need to read: >
+	1 .. 90 + 90.0
 As: >
-	(1 . 90) + 90.0
-That works, since the String "190" is automatically converted to the Number
-190, which can be added to the Float 90.0.  However: >
-	1 . 90 * 90.0
+	(1 .. 90) + 90.0
+That works in legacy script, since the String "190" is automatically converted
+to the Number 190, which can be added to the Float 90.0.  However: >
+	1 .. 90 * 90.0
 Should be read as: >
-	1 . (90 * 90.0)
-Since '.' has lower precedence than '*'.  This does NOT work, since this
+	1 .. (90 * 90.0)
+Since '..' has lower precedence than '*'.  This does NOT work, since this
 attempts to concatenate a Float and a String.
 
 When dividing a Number by zero the result depends on the value:
@@ -1051,6 +1204,7 @@ When dividing a Number by zero the result depends on the value:
 	 >0 / 0  =  0x7fffffff	(like positive infinity)
 	 <0 / 0  = -0x7fffffff	(like negative infinity)
 	(before Vim 7.2 it was always 0x7fffffff)
+In |Vim9| script dividing a number by zero is an error.	*E1154*
 
 When 64-bit Number support is enabled:
 	  0 / 0  = -0x8000000000000000	(like NaN for Float)
@@ -1061,20 +1215,35 @@ When the righthand side of '%' is zero, the result is 0.
 
 None of these work for |Funcref|s.
 
-. and % do not work for Float. *E804*
+".", ".." and "%" do not work for Float. *E804* *E1035*
 
 
-expr7							*expr7*
+expr8							*expr8*
 -----
-! expr7			logical NOT		*expr-!*
-- expr7			unary minus		*expr-unary--*
-+ expr7			unary plus		*expr-unary-+*
+<type>expr9
+
+This is only available in |Vim9| script, see |type-casting|.
+
+
+expr9							*expr9*
+-----
+! expr9			logical NOT		*expr-!*
+- expr9			unary minus		*expr-unary--*
++ expr9			unary plus		*expr-unary-+*
 
 For '!' |TRUE| becomes |FALSE|, |FALSE| becomes |TRUE| (one).
 For '-' the sign of the number is changed.
 For '+' the number is unchanged.  Note: "++" has no effect.
 
-A String will be converted to a Number first.
+In legacy script a String will be converted to a Number first.  Note that if
+the string does not start with a digit you likely don't get what you expect.
+
+In |Vim9| script an error is given when "-" or "+" is used and the type is not
+a number.
+
+In |Vim9| script "!" can be used for any type and the result is always a
+boolean.  Use "!!" to convert any type to a boolean, according to whether the
+value is |falsy|.
 
 These three can be repeated and mixed.  Examples:
 	!-1	    == 0
@@ -1082,38 +1251,41 @@ These three can be repeated and mixed.  Examples:
 	--9	    == 9
 
 
-expr8							*expr8*
------
-This expression is either |expr9| or a sequence of the alternatives below,
+expr10							*expr10*
+------
+This expression is either |expr11| or a sequence of the alternatives below,
 in any order.  E.g., these are all possible:
-	expr8[expr1].name
-	expr8.name[expr1]
-	expr8(expr1, ...)[expr1].name
-	expr8->(expr1, ...)[expr1]
+	expr10[expr1].name
+	expr10.name[expr1]
+	expr10(expr1, ...)[expr1].name
+	expr10->(expr1, ...)[expr1]
 Evaluation is always from left to right.
 
-
-expr8[expr1]		item of String or |List|	*expr-[]* *E111*
-							*subscript*
+expr10[expr1]		item of String or |List|	*expr-[]* *E111*
+						*E909* *subscript* *E1062*
 In legacy Vim script:
-If expr8 is a Number or String this results in a String that contains the
-expr1'th single byte from expr8.  expr8 is used as a String (a number is
+If expr10 is a Number or String this results in a String that contains the
+expr1'th single byte from expr10.  expr10 is used as a String (a number is
 automatically converted to a String), expr1 as a Number.  This doesn't
 recognize multibyte encodings, see `byteidx()` for an alternative, or use
 `split()` to turn the string into a list of characters.  Example, to get the
 byte under the cursor: >
 	:let c = getline(".")[col(".") - 1]
 
-Index zero gives the first byte.  This is like it works in C.  Careful:
-text column numbers start with one!  Example, to get the byte under the
-cursor: >
-	:let c = getline(".")[col(".") - 1]
+In |Vim9| script:					*E1147* *E1148*
+If expr10 is a String this results in a String that contains the expr1'th
+single character (including any composing characters) from expr10.  To use byte
+indexes use |strpart()|.
+
+Index zero gives the first byte or character.  Careful: text column numbers
+start with one!
 
 If the length of the String is less than the index, the result is an empty
 String.  A negative index always results in an empty string (reason: backward
-compatibility).  Use [-1:] to get the last byte.
+compatibility).  Use [-1:] to get the last byte or character.
+In Vim9 script a negative index is used like with a list: count from the end.
 
-If expr8 is a |List| then it results the item at index expr1.  See |list-index|
+If expr10 is a |List| then it results the item at index expr1.  See |list-index|
 for possible index values.  If the index is out of range this results in an
 error.  Example: >
 	:let item = mylist[-1]		" get last item
@@ -1123,15 +1295,22 @@ Generally, if a |List| index is equal to or higher than the length of the
 error.
 
 
-expr8[expr1a : expr1b]	substring or |sublist|		*expr-[:]* *substring*
+expr10[expr1a : expr1b]	substring or |sublist|		*expr-[:]* *substring*
 
-If expr8 is a String this results in the substring with the bytes or
-characters from expr1a to and including expr1b.  expr8 is used as a String,
+If expr10 is a String this results in the substring with the bytes or
+characters from expr1a to and including expr1b.  expr10 is used as a String,
 expr1a and expr1b are used as a Number.
 
 In legacy Vim script the indexes are byte indexes.  This doesn't recognize
-multibyte encodings, see |byteidx()| for computing the indexes.  If expr8 is
+multibyte encodings, see |byteidx()| for computing the indexes.  If expr10 is
 a Number it is first converted to a String.
+
+In Vim9 script the indexes are character indexes and include composing
+characters.  To use byte indexes use |strpart()|.  To use character indexes
+without including composing characters use |strcharpart()|.
+
+The item at index expr1b is included, it is inclusive.  For an exclusive index
+use the |slice()| function.
 
 If expr1a is omitted zero is used.  If expr1b is omitted the length of the
 string minus one is used.
@@ -1150,20 +1329,20 @@ Examples: >
 	:let s = s[:-3]			" remove last two bytes
 <
 							*slice*
-If expr8 is a |List| this results in a new |List| with the items indicated by
+If expr10 is a |List| this results in a new |List| with the items indicated by
 the indexes expr1a and expr1b.  This works like with a String, as explained
 just above. Also see |sublist| below.  Examples: >
 	:let l = mylist[:3]		" first four items
 	:let l = mylist[4:4]		" List with one item
 	:let l = mylist[:]		" shallow copy of a List
 
-If expr8 is a |Blob| this results in a new |Blob| with the bytes in the
+If expr10 is a |Blob| this results in a new |Blob| with the bytes in the
 indexes expr1a and expr1b, inclusive.  Examples: >
 	:let b = 0zDEADBEEF
 	:let bs = b[1:2]		" 0zADBE
-	:let bs = b[]			" copy of 0zDEADBEEF
+	:let bs = b[:]			" copy of 0zDEADBEEF
 
-Using expr8[expr1] or expr8[expr1a : expr1b] on a |Funcref| results in an
+Using expr10[expr1] or expr10[expr1a : expr1b] on a |Funcref| results in an
 error.
 
 Watch out for confusion between a namespace and a variable followed by a colon
@@ -1172,11 +1351,11 @@ for a sublist: >
 	mylist[s:]     " uses namespace s:, error!
 
 
-expr8.name		entry in a |Dictionary|		*expr-entry*
-
-If expr8 is a |Dictionary| and it is followed by a dot, then the following
+expr10.name		entry in a |Dictionary|		*expr-entry*
+							*E1203* *E1229*
+If expr10 is a |Dictionary| and it is followed by a dot, then the following
 name will be used as a key in the |Dictionary|.  This is just like:
-expr8[name].
+expr10[name].
 
 The name must consist of alphanumeric characters, just like a variable name,
 but it may start with a number.  Curly braces cannot be used.
@@ -1193,18 +1372,17 @@ Note that the dot is also used for String concatenation.  To avoid confusion
 always put spaces around the dot for String concatenation.
 
 
-expr8(expr1, ...)	|Funcref| function call
+expr10(expr1, ...)	|Funcref| function call  	*E1085*
 
-When expr8 is a |Funcref| type variable, invoke the function it refers to.
+When expr10 is a |Funcref| type variable, invoke the function it refers to.
 
 
-expr8->name([args])	method call			*method* *->*
-expr8->{lambda}([args])
-
-							*E260* *E276*
+expr10->name([args])	method call			*method* *->*
+expr10->{lambda}([args])
+							*E260* *E276* *E1265*
 For methods that are also available as global functions this is the same as: >
-	name(expr8 [, args])
-There can also be methods specifically for the type of "expr8".
+	name(expr10 [, args])
+There can also be methods specifically for the type of "expr10".
 
 This allows for chaining, passing the value that one method returns to the
 next method: >
@@ -1213,13 +1391,22 @@ next method: >
 Example of using a lambda: >
 	GetPercentage()->{x -> x * 100}()->printf('%d%%')
 <
-When using -> the |expr7| operators will be applied first, thus: >
+When using -> the |expr9| operators will be applied first, thus: >
 	-1.234->string()
 Is equivalent to: >
 	(-1.234)->string()
 And NOT: >
 	-(1.234->string())
-<
+
+What comes after "->" can be a name, a simple expression (not containing any
+parenthesis), or any expression in parentheses: >
+	base->name(args)
+	base->some.name(args)
+	base->alist[idx](args)
+	base->(getFuncRef())(args)
+Note that in the last call the base is passed to the function resulting from
+"(getFuncRef())", inserted before "args".  *E1275*
+
 							*E274*
 "->name(" must not contain white space.  There can be white space before the
 "->" and after the "(", thus you can split the lines like this: >
@@ -1228,9 +1415,12 @@ And NOT: >
 	\ ->map(mapexpr)
 	\ ->sort()
 	\ ->join()
-<
 
-							*expr9*
+When using the lambda form there must be no white space between the } and the
+(.
+
+
+							*expr11*
 number
 ------
 number			number constant			*expr-number*
@@ -1239,6 +1429,10 @@ number			number constant			*expr-number*
 Decimal, Hexadecimal (starting with 0x or 0X), Binary (starting with 0b or 0B)
 and Octal (starting with 0, 0o or 0O).
 
+Assuming 64 bit numbers are used (see |v:numbersize|) an unsigned number is
+truncated to 0x7fffffffffffffff or 9223372036854775807.  You can use -1 to get
+0xffffffffffffffff.
+
 						*floating-point-format*
 Floating point numbers can be written in two forms:
 
@@ -1246,7 +1440,8 @@ Floating point numbers can be written in two forms:
 	[-+]{N}.{M}[eE][-+]{exp}
 
 {N} and {M} are numbers.  Both {N} and {M} must be present and can only
-contain digits.
+contain digits, except that in |Vim9| script in {N} single quotes between
+digits are ignored.
 [-+] means there is an optional plus or minus sign.
 {exp} is the exponent, power of 10.
 Only a decimal point is accepted, not a comma.  No matter what the current
@@ -1309,8 +1504,8 @@ A string constant accepts these special characters:
 \x.	byte specified with one hex number (must be followed by non-hex char)
 \X..	same as \x..
 \X.	same as \x.
-\u....	character specified with up to 4 hex numbers, stored as UTF-8
-	(e.g., "\u02a4")
+\u....	character specified with up to 4 hex numbers, stored according to the
+	current value of 'encoding' (e.g., "\u02a4")
 \U....	same as \u but allows up to 8 hex numbers.
 \b	backspace <BS>
 \e	escape <Esc>
@@ -1330,7 +1525,8 @@ A string constant accepts these special characters:
 	bytes: 3 for the CTRL modifier and then character "W".
 
 Note that "\xff" is stored as the byte 255, which may be invalid in some
-encodings.  Use "\u00ff" to store character 255 correctly as UTF-8.
+encodings.  Use "\u00ff" to store character 255 according to the current value
+of 'encoding'.
 
 Note that "\000" and "\x00" force the end of the string.
 
@@ -1358,6 +1554,33 @@ to be doubled.  These two commands are equivalent: >
 	if a =~ '\s*'
 
 
+interpolated-string				*$quote* *interpolated-string*
+--------------------
+$"string"		interpolated string constant		*expr-$quote*
+$'string'		interpolated literal string constant	*expr-$'*
+
+Interpolated strings are an extension of the |string| and |literal-string|,
+allowing the inclusion of Vim script expressions (see |expr1|).  Any
+expression returning a value can be enclosed between curly braces.  The value
+is converted to a string.  All the text and results of the expressions
+are concatenated to make a new string.
+							*E1278* *E1279*
+To include an opening brace '{' or closing brace '}' in the string content
+double it.  For double quoted strings using a backslash also works.  A single
+closing brace '}' will result in an error.
+
+Examples: >
+	let your_name = input("What's your name? ")
+<	What's your name?  Peter ~
+>
+	echo
+	echo $"Hello, {your_name}!"
+<	Hello, Peter! ~
+>
+	echo $"The square root of {{9}} is {sqrt(9)}"
+<	The square root of {9} is 3.0 ~
+
+
 option						*expr-option* *E112* *E113*
 ------
 &option			option value, local value if possible
@@ -1366,7 +1589,7 @@ option						*expr-option* *E112* *E113*
 
 Examples: >
 	echo "tabstop is " .. &tabstop
-	if &expandtab
+	if &insertmode
 
 Any option name can be used here.  See |options|.  When using the local value
 and there is no buffer-local or window-local value, the global value is used
@@ -1386,7 +1609,7 @@ When using the '=' register you get the expression itself, not what it
 evaluates to.  Use |eval()| to evaluate it.
 
 
-nesting							*expr-nesting* *E110*
+nesting						*expr-nesting* *E110*
 -------
 (expr1)			nested expression
 
@@ -1417,7 +1640,7 @@ The first one probably doesn't echo anything, the second echoes the $shell
 variable (if your shell supports it).
 
 
-internal variable					*expr-variable*
+internal variable			*expr-variable* *E1015* *E1089*
 -----------------
 variable		internal variable
 See below |internal-variables|.
@@ -1431,10 +1654,11 @@ See below |functions|.
 
 lambda expression				*expr-lambda* *lambda*
 -----------------
-{args -> expr1}		lambda expression
+{args -> expr1}		legacy lambda expression 		*E451*
+(args) => expr1		|Vim9| lambda expression
 
 A lambda expression creates a new unnamed function which returns the result of
-evaluating |expr1|.  Lambda expressions differ from |user-function|s in
+evaluating |expr1|.  Lambda expressions differ from |user-functions| in
 the following ways:
 
 1. The body of the lambda expression is an |expr1| and not a sequence of |Ex|
@@ -1448,6 +1672,10 @@ The arguments are optional.  Example: >
 	:let F = {-> 'error function'}
 	:echo F('ignored')
 <	error function
+
+The |Vim9| lambda does not only use a different syntax, it also adds type
+checking and can be split over multiple lines, see |vim9-lambda|.
+
 							*closure*
 Lambda expressions can access outer scope variables and arguments.  This is
 often called a closure.  Example where "i" and "a:arg" are used in a lambda
@@ -1460,6 +1688,7 @@ the function returns: >
 	:let Bar = Foo(4)
 	:echo Bar(6)
 <	5
+
 Note that the variables must exist in the outer scope before the lambda is
 defined for this to work.  See also |:func-closure|.
 
@@ -1472,7 +1701,7 @@ Examples for using a lambda expression with |sort()|, |map()| and |filter()|: >
 	:echo sort([3,7,2,1,4], {a, b -> a - b})
 <	[1, 2, 3, 4, 7]
 
-The lambda expression is also useful for jobs and timers: >
+The lambda expression is also useful for Channel, Job and timer: >
 	:let timer = timer_start(500,
 			\ {-> execute("echo 'Handler called'", "")},
 			\ {'repeat': 3})
@@ -1491,7 +1720,10 @@ refers to the closure.  This cycle results in the memory not being freed.
 Recommendation: don't do this.
 
 Notice how execute() is used to execute an Ex command.  That's ugly though.
+In Vim9 script you can use a command block, see |inline-function|.
 
+Although you can use the loop variable of a `for` command, it must still exist
+when the closure is called, otherwise you get an error.  *E1302*
 
 Lambda expressions have internal names like '<lambda>42'.  If you get an error
 for a lambda expression, you can find what it is with the following command: >
@@ -1499,30 +1731,34 @@ for a lambda expression, you can find what it is with the following command: >
 See also: |numbered-function|
 
 ==============================================================================
-3. Internal variable				*internal-variables* *E461*
+3. Internal variable			*internal-variables* *E461* *E1001*
 
 An internal variable name can be made up of letters, digits and '_'.  But it
-cannot start with a digit.  It's also possible to use curly braces, see
-|curly-braces-names|.
+cannot start with a digit.  In legacy script it is also possible to use curly
+braces, see |curly-braces-names|.
 
-An internal variable is created with the ":let" command |:let|.
-An internal variable is explicitly destroyed with the ":unlet" command
-|:unlet|.
+In legacy script an internal variable is created with the ":let" command
+|:let|.  An internal variable is explicitly destroyed with the ":unlet"
+command |:unlet|.
 Using a name that is not an internal variable or refers to a variable that has
 been destroyed results in an error.
+
+In |Vim9| script `:let` is not used and variables work differently, see |:var|.
 
 						*variable-scope*
 There are several name spaces for variables.  Which one is to be used is
 specified by what is prepended:
 
-		(nothing) In a function: local to a function; otherwise: global
+		(nothing) In a function: local to the function;
+			  in a legacy script: global;
+			  in a |Vim9|  script: local to the script
 |buffer-variable|    b:	  Local to the current buffer.
 |window-variable|    w:	  Local to the current window.
 |tabpage-variable|   t:	  Local to the current tab page.
 |global-variable|    g:	  Global.
-|local-variable|     l:	  Local to a function.
+|local-variable|     l:	  Local to a function (only in a legacy function)
 |script-variable|    s:	  Local to a |:source|'ed Vim script.
-|function-argument|  a:	  Function argument (only inside a function).
+|function-argument|  a:	  Function argument (only in a legacy function).
 |vim-variable|       v:	  Global, predefined by Vim.
 
 The scope name by itself can be used as a |Dictionary|.  For example, to
@@ -1530,7 +1766,9 @@ delete all script-local variables: >
 	:for k in keys(s:)
 	:    unlet s:[k]
 	:endfor
-<
+
+Note: in Vim9 script variables can also be local to a block of commands, see
+|vim9-scopes|.
 						*buffer-variable* *b:var* *b:*
 A variable name that is preceded with "b:" is local to the current buffer.
 Thus you can have several "b:foo" variables, one for each buffer.
@@ -1557,12 +1795,13 @@ is deleted when the window is closed.
 
 						*tabpage-variable* *t:var* *t:*
 A variable name that is preceded with "t:" is local to the current tab page,
-It is deleted when the tab page is closed.
+It is deleted when the tab page is closed. {not available when compiled
+without the |+windows| feature}
 
 						*global-variable* *g:var* *g:*
-Inside functions global variables are accessed with "g:".  Omitting this will
-access a variable local to a function.  But "g:" can also be used in any other
-place if you like.
+Inside functions and in |Vim9| script global variables are accessed with "g:".
+Omitting this will access a variable local to a function or script.  "g:"
+can also be used in any other place if you like.
 
 						*local-variable* *l:var* *l:*
 Inside functions local variables are accessed without prepending anything.
@@ -1572,8 +1811,10 @@ refers to "v:count".  Using "l:count" you can have a local variable with the
 same name.
 
 						*script-variable* *s:var*
-In a Vim script variables starting with "s:" can be used.  They cannot be
-accessed from outside of the scripts, thus are local to the script.
+In a legacy Vim script variables starting with "s:" can be used.  They cannot
+be accessed from outside of the scripts, thus are local to the script.
+In |Vim9| script the "s:" prefix can be omitted, variables are script-local by
+default.
 
 They can be used in:
 - commands executed while the script is sourced
@@ -1648,7 +1889,7 @@ variables for each buffer.  Use local buffer variables instead |b:var|.
 
 
 PREDEFINED VIM VARIABLES			*vim-variable* *v:var* *v:*
-								*E963*
+							*E963* *E1063*
 Some variables can be set by the user, but the type cannot be changed.
 
 					*v:argv* *argv-variable*
@@ -1716,6 +1957,11 @@ v:cmdarg	This variable is used for two purposes:
 		   the argument for the ":hardcopy" command.  This can be used
 		   in 'printexpr'.
 
+					*v:cmdbang* *cmdbang-variable*
+v:cmdbang	Set like v:cmdarg for a file read/write command.  When a "!"
+		was used the value is 1, otherwise it is 0.  Note that this
+		can only be used in autocommands.  For user commands |<bang>|
+		can be used.
 						*v:collate* *collate-variable*
 v:collate	The current locale setting for collation order of the runtime
 		environment.  This allows Vim scripts to be aware of the
@@ -1725,17 +1971,48 @@ v:collate	The current locale setting for collation order of the runtime
 		command.
 		See |multi-lang|.
 
-					*v:cmdbang* *cmdbang-variable*
-v:cmdbang	Set like v:cmdarg for a file read/write command.  When a "!"
-		was used the value is 1, otherwise it is 0.  Note that this
-		can only be used in autocommands.  For user commands |<bang>|
-		can be used.
+								*v:colornames*
+v:colornames    A dictionary that maps color names to hex color strings. These
+		color names can be used with the |highlight-guifg|,
+		|highlight-guibg|, and |highlight-guisp| parameters. Updating
+		an entry in v:colornames has no immediate effect on the syntax
+		highlighting. The highlight commands (probably in a
+		colorscheme script) need to be re-evaluated in order to use
+		the updated color values. For example: >
+
+		    :let v:colornames['fuscia'] = '#cf3ab4'
+		    :let v:colornames['mauve'] = '#915f6d'
+		    :highlight Normal guifg=fuscia guibg=mauve
+<
+		This cannot be used to override the |cterm-colors| but it can
+		be used to override other colors. For example, the X11 colors
+		defined in the `colors/lists/default.vim` (previously defined
+		in |rgb.txt|). When defining new color names in a plugin, the
+		recommended practice is to set a color entry only when it does
+		not already exist. For example: >
+
+		    :call extend(v:colornames, {
+			\ 'fuscia': '#cf3ab4',
+			\ 'mauve': '#915f6d,
+			\ }, 'keep')
+<
+		Using |extend()| with the 'keep' option updates each color only
+		if it did not exist in |v:colornames|. Doing so allows the
+		user to choose the precise color value for a common name
+		by setting it in their |.vimrc|.
+
+		It is possible to remove entries from this dictionary but
+		doing so is NOT recommended, because it is disruptive to
+		other scripts. It is also unlikely to achieve the desired
+		result because the |:colorscheme| and |:highlight| commands will
+		both automatically load all `colors/lists/default.vim` color
+		scripts.
 
 				*v:completed_item* *completed_item-variable*
 v:completed_item
-		Dictionary containing the most recent |complete-items| after
-		|CompleteDone|.  Empty if the completion failed, or after
-		leaving and re-entering insert mode.
+		|Dictionary| containing the |complete-items| for the most
+		recently completed word after |CompleteDone|.  The
+		|Dictionary| is empty if the completion failed.
 		Note: Plugins can modify the value to emulate the builtin
 		|CompleteDone| event behavior.
 
@@ -1748,6 +2025,8 @@ v:count		The count given for the last Normal mode command.  Can be used
 		When there are two counts, as in "3d2w", they are multiplied,
 		just like what happens in the command, "d6w" for the example.
 		Also used for evaluating the 'formatexpr' option.
+		"count" also works, for backwards compatibility, unless
+		|scriptversion| is 3 or higher.
 
 					*v:count1* *count1-variable*
 v:count1	Just like "v:count", but defaults to one when no count is
@@ -1773,11 +2052,12 @@ v:dying		Normally zero.  When a deadly signal is caught it's set to
 		VimLeave autocommands will not be executed.
 
 					*v:exiting* *exiting-variable*
-v:exiting	Exit code, or |v:null| before invoking the |VimLeavePre|
+v:exiting	Vim exit code.  Normally zero, non-zero when something went
+		wrong.  The value is v:null before invoking the |VimLeavePre|
 		and |VimLeave| autocmds.  See |:q|, |:x| and |:cquit|.
 		Example: >
 			:au VimLeave * echo "Exit value is " .. v:exiting
-
+<
 					*v:echospace* *echospace-variable*
 v:echospace	Number of screen cells that can be used for an `:echo` message
 		in the last screen line before causing the |hit-enter-prompt|.
@@ -1786,14 +2066,15 @@ v:echospace	Number of screen cells that can be used for an `:echo` message
 		available above the last line.
 
 					*v:errmsg* *errmsg-variable*
-v:errmsg	Last given error message.
-		Modifiable (can be set).
+v:errmsg	Last given error message.  It's allowed to set this variable.
 		Example: >
 	:let v:errmsg = ""
 	:silent! next
 	:if v:errmsg != ""
 	:  ... handle error
-<
+<		"errmsg" also works, for backwards compatibility, unless
+		|scriptversion| is 3 or higher.
+
 				*v:errors* *errors-variable* *assert-return*
 v:errors	Errors found by assert functions, such as |assert_true()|.
 		This is a list of strings.
@@ -1806,53 +2087,15 @@ v:errors	Errors found by assert functions, such as |assert_true()|.
 		list by the assert function.
 
 					*v:event* *event-variable*
-v:event		Dictionary of event data for the current |autocommand|.  Valid
-		only during the event lifetime; storing or passing v:event is
-		invalid!  Copy it instead: >
+v:event		Dictionary containing information about the current
+		|autocommand|.  See the specific event for what it puts in
+		this dictionary.
+		The dictionary is emptied when the |autocommand| finishes,
+		please refer to |dict-identity| for how to get an independent
+		copy of it.  Use |deepcopy()| if you want to keep the
+		information after the event triggers.  Example: >
 			au TextYankPost * let g:foo = deepcopy(v:event)
-<		Keys vary by event; see the documentation for the specific
-		event, e.g. |DirChanged| or |TextYankPost|.
-			KEY		DESCRIPTION ~
-			abort		Whether the event triggered during
-					an aborting condition (e.g. |c_Esc| or
-					|c_CTRL-C| for |CmdlineLeave|).
-			chan		|channel-id| or 0 for "internal".
-			cmdlevel	Level of cmdline.
-			cmdtype		Type of cmdline, |cmdline-char|.
-			cwd		Current working directory.
-			inclusive	Motion is |inclusive|, else exclusive.
-			scope		Event-specific scope name.
-			operator	Current |operator|.  Also set for Ex
-					commands (unlike |v:operator|). For
-					example if |TextYankPost| is triggered
-					by the |:yank| Ex command then
-					`v:event.operator` is "y".
-			regcontents	Text stored in the register as a
-					|readfile()|-style list of lines.
-			regname		Requested register (e.g "x" for "xyy)
-					or the empty string for an unnamed
-					operation.
-			regtype		Type of register as returned by
-					|getregtype()|.
-			visual		Selection is visual (as opposed to,
-					e.g., via motion).
-			completed_item    Current selected complete item on
-					|CompleteChanged|, Is `{}` when no complete
-					item selected.
-			height 		Height of popup menu on |CompleteChanged|
-			width   	width of popup menu on |CompleteChanged|
-			row  	 	Row count of popup menu on |CompleteChanged|,
-					relative to screen.
-			col  	 	Col count of popup menu on |CompleteChanged|,
-					relative to screen.
-			size 		Total number of completion items on
-					|CompleteChanged|.
-			scrollbar 	Is |v:true| if popup menu have scrollbar, or
-					|v:false| if not.
-			changed_window 	Is |v:true| if the the event fired
-					while changing window (or tab) on |DirChanged|.
-			status		Job status or exit code, -1 means "unknown". |TermClose|
-
+<
 					*v:exception* *exception-variable*
 v:exception	The value of the exception most recently caught and not
 		finished.  See also |v:throwpoint| and |throw-variables|.
@@ -1865,11 +2108,14 @@ v:exception	The value of the exception most recently caught and not
 <		Output: "caught oops".
 
 					*v:false* *false-variable*
-v:false		Special value used to put "false" in JSON and msgpack.  See
-		|json_encode()|.  This value is converted to "v:false" when used
-		as a String (e.g. in |expr5| with string concatenation
-		operator) and to zero when used as a Number (e.g. in |expr5|
-		or |expr7| when used with numeric operators). Read-only.
+v:false		A Number with value zero. Used to put "false" in JSON.  See
+		|json_encode()|.
+		When used as a string this evaluates to "v:false". >
+			echo v:false
+<			v:false ~
+		That is so that eval() can parse the string back to the same
+		value.  Read-only.
+		In |Vim9| script "false" can be used which has a boolean type.
 
 					*v:fcs_reason* *fcs_reason-variable*
 v:fcs_reason	The reason why the |FileChangedShell| event was triggered.
@@ -1954,9 +2200,9 @@ v:foldstart	Used for 'foldtext': first line of closed fold.
 
 					*v:hlsearch* *hlsearch-variable*
 v:hlsearch	Variable that indicates whether search highlighting is on.
-		Setting it makes sense only if 'hlsearch' is enabled. Setting
-		this variable to zero acts like the |:nohlsearch| command,
-		setting it to one acts like >
+		Setting it makes sense only if 'hlsearch' is enabled which
+		requires |+extra_search|. Setting this variable to zero acts
+		like the |:nohlsearch| command, setting it to one acts like >
 			let &hlsearch = &hlsearch
 <		Note that the value is restored when returning from a
 		function. |function-search-undo|.
@@ -1998,9 +2244,10 @@ v:lnum		Line number for the 'foldexpr' |fold-expr|, 'formatexpr' and
 		expressions is being evaluated.  Read-only when in the
 		|sandbox|.
 
-						*v:lua* *lua-variable*
-v:lua		Prefix for calling Lua functions from expressions.
-		See |v:lua-call| for more information.
+						*v:maxcol* *maxcol-variable*
+v:maxcol	Maximum line length.  Depending on where it is used it can be
+		screen columns, characters or bytes.  The value currently is
+		2147483647 on all systems.
 
 					*v:mouse_win* *mouse_win-variable*
 v:mouse_win	Window number for a mouse click obtained with |getchar()|.
@@ -2008,7 +2255,7 @@ v:mouse_win	Window number for a mouse click obtained with |getchar()|.
 		zero when there was no mouse button click.
 
 					*v:mouse_winid* *mouse_winid-variable*
-v:mouse_winid	|window-ID| for a mouse click obtained with |getchar()|.
+v:mouse_winid	Window ID for a mouse click obtained with |getchar()|.
 		The value is zero when there was no mouse button click.
 
 					*v:mouse_lnum* *mouse_lnum-variable*
@@ -2021,21 +2268,33 @@ v:mouse_col	Column number for a mouse click obtained with |getchar()|.
 		This is the screen column number, like with |virtcol()|.  The
 		value is zero when there was no mouse button click.
 
-				*v:msgpack_types* *msgpack_types-variable*
-v:msgpack_types	Dictionary containing msgpack types used by |msgpackparse()|
-		and |msgpackdump()|. All types inside dictionary are fixed
-		(not editable) empty lists. To check whether some list is one
-		of msgpack types, use |is| operator.
+					*v:none* *none-variable* *None*
+v:none		An empty String. Used to put an empty item in JSON.  See
+		|json_encode()|.
+		This can also be used as a function argument to use the
+		default value, see |none-function_argument|.
+		When used as a number this evaluates to zero.
+		When used as a string this evaluates to "v:none". >
+			echo v:none
+<			v:none ~
+		That is so that eval() can parse the string back to the same
+		value.  Read-only.
+		Note that using `== v:none` and `!= v:none`  will often give
+		an error.  Instead, use `is v:none` and `isnot v:none` .
 
 					*v:null* *null-variable*
-v:null		Special value used to put "null" in JSON and NIL in msgpack.
-		See |json_encode()|.  This value is converted to "v:null" when
-		used as a String (e.g. in |expr5| with string concatenation
-		operator) and to zero when used as a Number (e.g. in |expr5|
-		or |expr7| when used with numeric operators). Read-only.
-		In some places `v:null` can be used for a List, Dict, etc.
-		that is not set.  That is slightly different than an empty
-		List, Dict, etc.
+v:null		An empty String. Used to put "null" in JSON.  See
+		|json_encode()|.
+		When used as a number this evaluates to zero.
+		When used as a string this evaluates to "v:null". >
+			echo v:null
+<			v:null ~
+		That is so that eval() can parse the string back to the same
+		value.  Read-only.
+		In |Vim9| script `null` can be used without "v:".
+		In some places `v:null` and `null` can be used for a List,
+		Dict, Job, etc. that is not set.  That is slightly different
+		than an empty List, Dict, etc.
 
 					*v:numbermax* *numbermax-variable*
 v:numbermax	Maximum value of a number.
@@ -2048,15 +2307,16 @@ v:numbersize	Number of bits in a Number.  This is normally 64, but on some
 		systems it may be 32.
 
 					*v:oldfiles* *oldfiles-variable*
-v:oldfiles	List of file names that is loaded from the |shada| file on
+v:oldfiles	List of file names that is loaded from the |viminfo| file on
 		startup.  These are the files that Vim remembers marks for.
 		The length of the List is limited by the ' argument of the
-		'shada' option (default is 100).
-		When the |shada| file is not used the List is empty.
+		'viminfo' option (default is 100).
+		When the |viminfo| file is not used the List is empty.
 		Also see |:oldfiles| and |c_#<|.
 		The List can be modified, but this has no effect on what is
-		stored in the |shada| file later.  If you use values other
+		stored in the |viminfo| file later.  If you use values other
 		than String this will cause trouble.
+		{only when compiled with the |+viminfo| feature}
 
 						    *v:option_new*
 v:option_new    New value of the option. Valid while executing an |OptionSet|
@@ -2112,11 +2372,27 @@ v:profiling	Normally zero.  Set to one after using ":profile start".
 		See |profiling|.
 
 					*v:progname* *progname-variable*
-v:progname	The name by which Nvim was invoked (with path removed).
+v:progname	Contains the name (with path removed) with which Vim was
+		invoked.  Allows you to do special initialisations for |view|,
+		|evim| etc., or any other name you might symlink to Vim.
 		Read-only.
 
 					*v:progpath* *progpath-variable*
-v:progpath	Absolute path to the current running Nvim.
+v:progpath	Contains the command with which Vim was invoked, in a form
+		that when passed to the shell will run the same Vim executable
+		as the current one (if $PATH remains unchanged).
+		Useful if you want to message a Vim server using a
+		|--remote-expr|.
+		To get the full path use: >
+			echo exepath(v:progpath)
+<		If the command has a relative path it will be expanded to the
+		full path, so that it still works after `:cd`. Thus starting
+		"./vim" results in "/home/user/path/to/vim/src/vim".
+		On Linux and other systems it will always be the full path.
+		On Mac it may just be "vim" and using exepath() as mentioned
+		above should be used to get the full path.
+		On MS-Windows the executable may be called "vim.exe", but the
+		".exe" is not added to v:progpath.
 		Read-only.
 
 					*v:register* *register-variable*
@@ -2138,21 +2414,9 @@ v:scrollstart	String describing the script or function that caused the
 		hit-enter prompt.
 
 					*v:servername* *servername-variable*
-v:servername	Primary listen-address of the current Nvim instance, the first
-		item returned by |serverlist()|.  Can be set by |--listen| or
-		|$NVIM_LISTEN_ADDRESS| (deprecated) at startup.
-		See also |serverstart()| |serverstop()|.
+v:servername	The resulting registered |client-server-name| if any.
 		Read-only.
 
-								       *$NVIM*
-		$NVIM is set by |terminal| and |jobstart()|, and is thus
-		a hint that the current environment is a subprocess of Nvim.
-		Example: >
-		    if $NVIM
-		      echo nvim_get_chan_info(v:parent)
-		    endif
-
-<		Note the contents of $NVIM may change in the future.
 
 v:searchforward			*v:searchforward* *searchforward-variable*
 		Search direction:  1 after a forward search, 0 after a
@@ -2173,18 +2437,27 @@ v:shell_error	Result of the last shell command.  When non-zero, the last
 	:if v:shell_error
 	:  echo 'could not rename "foo" to "bar"!'
 	:endif
-<
-					*v:statusmsg* *statusmsg-variable*
-v:statusmsg	Last given status message.
-		Modifiable (can be set).
+<		"shell_error" also works, for backwards compatibility, unless
+		|scriptversion| is 3 or higher.
 
-					*v:stderr* *stderr-variable*
-v:stderr	|channel-id| corresponding to stderr. The value is always 2;
-		use this variable to make your code more descriptive.
-		Unlike stdin and stdout (see |stdioopen()|), stderr is always
-		open for writing. Example: >
-			:call chansend(v:stderr, "error: toaster empty\n")
-<
+					*v:sizeofint* *sizeofint-variable*
+v:sizeofint	Number of bytes in an int.  Depends on how Vim was compiled.
+		This is only useful for deciding whether a test will give the
+		expected result.
+
+					*v:sizeoflong* *sizeoflong-variable*
+v:sizeoflong	Number of bytes in a long.  Depends on how Vim was compiled.
+		This is only useful for deciding whether a test will give the
+		expected result.
+
+				*v:sizeofpointer* *sizeofpointer-variable*
+v:sizeofpointer	Number of bytes in a pointer.  Depends on how Vim was compiled.
+		This is only useful for deciding whether a test will give the
+		expected result.
+
+					*v:statusmsg* *statusmsg-variable*
+v:statusmsg	Last given status message.  It's allowed to set this variable.
+
 					*v:swapname* *swapname-variable*
 v:swapname	Only valid when executing |SwapExists| autocommands: Name of
 		the swap file found.  Read-only.
@@ -2211,14 +2484,20 @@ v:swapcommand	Normal mode command to be executed after a file has been
 
 				*v:t_TYPE* *v:t_bool* *t_bool-variable*
 v:t_bool	Value of |Boolean| type.  Read-only.  See: |type()|
+					*v:t_channel* *t_channel-variable*
+v:t_channel	Value of |Channel| type.  Read-only.  See: |type()|
 					*v:t_dict* *t_dict-variable*
 v:t_dict	Value of |Dictionary| type.  Read-only.  See: |type()|
 					*v:t_float* *t_float-variable*
 v:t_float	Value of |Float| type.  Read-only.  See: |type()|
 					*v:t_func* *t_func-variable*
 v:t_func	Value of |Funcref| type.  Read-only.  See: |type()|
+					*v:t_job* *t_job-variable*
+v:t_job		Value of |Job| type.  Read-only.  See: |type()|
 					*v:t_list* *t_list-variable*
 v:t_list	Value of |List| type.  Read-only.  See: |type()|
+					*v:t_none* *t_none-variable*
+v:t_none	Value of |None| type.  Read-only.  See: |type()|
 					*v:t_number* *t_number-variable*
 v:t_number	Value of |Number| type.  Read-only.  See: |type()|
 					*v:t_string* *t_string-variable*
@@ -2227,26 +2506,58 @@ v:t_string	Value of |String| type.  Read-only.  See: |type()|
 v:t_blob	Value of |Blob| type.  Read-only.  See: |type()|
 
 				*v:termresponse* *termresponse-variable*
-v:termresponse	The escape sequence returned by the terminal for the DA
-		(request primary device attributes) control sequence.  It is
-		set when Vim receives an escape sequence that starts with ESC
-		[ or CSI and ends in a 'c', with only digits, ';' and '.' in
-		between.
+v:termresponse	The escape sequence returned by the terminal for the |t_RV|
+		termcap entry.  It is set when Vim receives an escape sequence
+		that starts with ESC [ or CSI, then '>' or '?' and ends in a
+		'c', with only digits and ';' in between.
 		When this option is set, the TermResponse autocommand event is
 		fired, so that you can react to the response from the
-		terminal.
-		The response from a new xterm is: "<Esc>[ Pp ; Pv ; Pc c".  Pp
+		terminal.  You can use |terminalprops()| to see what Vim
+		figured out about the terminal.
+		The response from a new xterm is: "<Esc>[> Pp ; Pv ; Pc c".  Pp
 		is the terminal type: 0 for vt100 and 1 for vt220.  Pv is the
 		patch level (since this was introduced in patch 95, it's
-		always 95 or bigger).  Pc is always zero.
+		always 95 or higher).  Pc is always zero.
+		If Pv is 141 or higher then Vim will try to request terminal
+		codes.  This only works with xterm |xterm-codes|.
+		{only when compiled with |+termresponse| feature}
+
+						*v:termblinkresp*
+v:termblinkresp	The escape sequence returned by the terminal for the |t_RC|
+		termcap entry.  This is used to find out whether the terminal
+		cursor is blinking. This is used by |term_getcursor()|.
+
+						*v:termstyleresp*
+v:termstyleresp	The escape sequence returned by the terminal for the |t_RS|
+		termcap entry.  This is used to find out what the shape of the
+		cursor is.  This is used by |term_getcursor()|.
+
+						*v:termrbgresp*
+v:termrbgresp	The escape sequence returned by the terminal for the |t_RB|
+		termcap entry.  This is used to find out what the terminal
+		background color is, see 'background'.
+
+						*v:termrfgresp*
+v:termrfgresp	The escape sequence returned by the terminal for the |t_RF|
+		termcap entry.  This is used to find out what the terminal
+		foreground color is.
+
+						*v:termu7resp*
+v:termu7resp	The escape sequence returned by the terminal for the |t_u7|
+		termcap entry.  This is used to find out what the terminal
+		does with ambiguous width characters, see 'ambiwidth'.
 
 					*v:testing* *testing-variable*
 v:testing	Must be set before using `test_garbagecollect_now()`.
+		Also, when set certain error messages won't be shown for 2
+		seconds. (e.g. "'dictionary' option is empty")
 
 				*v:this_session* *this_session-variable*
-v:this_session	Full filename of the last loaded or saved session file.
-		Empty when no session file has been saved.  See |:mksession|.
-		Modifiable (can be set).
+v:this_session	Full filename of the last loaded or saved session file.  See
+		|:mksession|.  It is allowed to set this variable.  When no
+		session file has been saved, this variable is empty.
+		"this_session" also works, for backwards compatibility, unless
+		|scriptversion| is 3 or higher
 
 					*v:throwpoint* *throwpoint-variable*
 v:throwpoint	The point where the exception most recently caught and not
@@ -2260,59 +2571,77 @@ v:throwpoint	The point where the exception most recently caught and not
 	:endtry
 <		Output: "Exception from test.vim, line 2"
 
-					*v:true* *true-variable*
-v:true		Special value used to put "true" in JSON and msgpack.  See
-		|json_encode()|.  This value is converted to "v:true" when used
-		as a String (e.g. in |expr5| with string concatenation
-		operator) and to one when used as a Number (e.g. in |expr5| or
-		|expr7| when used with numeric operators). Read-only.
-
+						*v:true* *true-variable*
+v:true		A Number with value one. Used to put "true" in JSON.  See
+		|json_encode()|.
+		When used as a string this evaluates to "v:true". >
+			echo v:true
+<			v:true ~
+		That is so that eval() can parse the string back to the same
+		value.  Read-only.
+		In |Vim9| script "true" can be used which has a boolean type.
 						*v:val* *val-variable*
 v:val		Value of the current item of a |List| or |Dictionary|.  Only
 		valid while evaluating the expression used with |map()| and
 		|filter()|.  Read-only.
 
 					*v:version* *version-variable*
-v:version	Vim version number: major version times 100 plus minor
-		version.  Vim 5.0 is 500, Vim 5.1 is 501.
-		Read-only.
-		Use |has()| to check the Nvim (not Vim) version: >
-			:if has("nvim-0.2.1")
-<
+v:version	Version number of Vim: Major version number times 100 plus
+		minor version number.  Version 5.0 is 500.  Version 5.1
+		is 501.  Read-only.  "version" also works, for backwards
+		compatibility, unless |scriptversion| is 3 or higher.
+		Use |has()| to check if a certain patch was included, e.g.: >
+			if has("patch-7.4.123")
+<		Note that patch numbers are specific to the version, thus both
+		version 5.0 and 5.1 may have a patch 123, but these are
+		completely different.
+
+					*v:versionlong* *versionlong-variable*
+v:versionlong	Like v:version, but also including the patchlevel in the last
+		four digits.  Version 8.1 with patch 123 has value 8010123.
+		This can be used like this: >
+			if v:versionlong >= 8010123
+<		However, if there are gaps in the list of patches included
+		this will not work well.  This can happen if a recent patch
+		was included into an older version, e.g. for a security fix.
+		Use the has() function to make sure the patch is actually
+		included.
 
 				*v:vim_did_enter* *vim_did_enter-variable*
-v:vim_did_enter	0 during startup, 1 just before |VimEnter|.
-		Read-only.
+v:vim_did_enter	Zero until most of startup is done.  It is set to one just
+		before |VimEnter| autocommands are triggered.
 
 					*v:warningmsg* *warningmsg-variable*
-v:warningmsg	Last given warning message.
-		Modifiable (can be set).
+v:warningmsg	Last given warning message.  It's allowed to set this variable.
 
 					*v:windowid* *windowid-variable*
-v:windowid	Application-specific window "handle" which may be set by any
-		attached UI. Defaults to zero.
-		Note: For Nvim |windows| use |winnr()| or |win_getid()|, see
-		|window-ID|.
+v:windowid	When any X11 based GUI is running or when running in a
+		terminal and Vim connects to the X server (|-X|) this will be
+		set to the window ID.
+		When an MS-Windows GUI is running this will be set to the
+		window handle.
+		Otherwise the value is zero.
+		Note: for windows inside Vim use |winnr()| or |win_getid()|,
+		see |window-ID|.
 
 ==============================================================================
-4. Builtin Functions				*vim-function* *functions*
+4. Builtin Functions					*functions*
 
-The Vimscript subsystem (referred to as "eval" internally) provides builtin
-functions.  Scripts can also define |user-function|s.
-
-See |function-list| to browse functions by topic.
+See |function-list| for a list grouped by what the function is used for.
 
 The alphabetic list of all builtin functions and details are in a separate
 help file: |builtin-functions|.
 
 ==============================================================================
-5. Defining functions					*user-function*
+5. Defining functions					*user-functions*
 
 New functions can be defined.  These can be called just like builtin
 functions.  The function takes arguments, executes a sequence of Ex commands
 and can return a value.
 
 You can find most information about defining functions in |userfunc.txt|.
+For Vim9 functions, which execute much faster, support type checking and more,
+see |vim9.txt|.
 
 ==============================================================================
 6. Curly braces names					*curly-braces-names*
@@ -2321,6 +2650,8 @@ In most places where you can use a variable, you can use a "curly braces name"
 variable.  This is a regular variable name with one or more expressions
 wrapped in braces {} like this: >
 	my_{adjective}_variable
+
+This only works in legacy Vim script, not in |Vim9| script.
 
 When Vim encounters this, it evaluates the expression inside the braces, puts
 that in place of the expression, and re-interprets the whole as a variable
@@ -2363,13 +2694,16 @@ This does NOT work: >
 ==============================================================================
 7. Commands						*expression-commands*
 
+Note: in |Vim9| script `:let` is not used.  `:var` is used for variable
+declarations and assignments do not use a command.  |vim9-declaration|
+
 :let {var-name} = {expr1}				*:let* *E18*
 			Set internal variable {var-name} to the result of the
 			expression {expr1}.  The variable will get the type
 			from the {expr}.  If {var-name} didn't exist yet, it
 			is created.
 
-:let {var-name}[{idx}] = {expr1}			*E689*
+:let {var-name}[{idx}] = {expr1}			*E689* *E1141*
 			Set a list item to the result of the expression
 			{expr1}.  {var-name} must refer to a list and {idx}
 			must be a valid index in that list.  For nested list
@@ -2382,7 +2716,7 @@ This does NOT work: >
 			length of the blob, in which case one byte is
 			appended.
 
-							*E711* *E719*
+					*E711* *E719* *E1165* *E1166* *E1183*
 :let {var-name}[{idx1}:{idx2}] = {expr1}		*E708* *E709* *E710*
 			Set a sequence of items in a |List| to the result of
 			the expression {expr1}, which must be a list with the
@@ -2392,8 +2726,8 @@ This does NOT work: >
 			When the selected range of items is partly past the
 			end of the list, items will be added.
 
-			*:let+=* *:let-=* *:letstar=*
-			*:let/=* *:let%=* *:let.=* *:let..=* *E734*
+			*:let+=* *:let-=* *:letstar=* *:let/=*  *:let%=*
+			*:let.=* *:let..=* *E734* *E985* *E1019*
 :let {var} += {expr1}	Like ":let {var} = {var} + {expr1}".
 :let {var} -= {expr1}	Like ":let {var} = {var} - {expr1}".
 :let {var} *= {expr1}	Like ":let {var} = {var} * {expr1}".
@@ -2403,11 +2737,19 @@ This does NOT work: >
 :let {var} ..= {expr1}	Like ":let {var} = {var} .. {expr1}".
 			These fail if {var} was not set yet and when the type
 			of {var} and {expr1} don't fit the operator.
+			`.=` is not supported with Vim script version 2 and
+			later, see |vimscript-version|.
 
 
 :let ${env-name} = {expr1}			*:let-environment* *:let-$*
 			Set environment variable {env-name} to the result of
 			the expression {expr1}.  The type is always String.
+
+			On some systems making an environment variable empty
+			causes it to be deleted.  Many systems do not make a
+			difference between an environment variable that is not
+			set and an environment variable that is empty.
+
 :let ${env-name} .= {expr1}
 			Append {expr1} to the environment variable {env-name}.
 			If the environment variable didn't exist yet this
@@ -2421,7 +2763,7 @@ This does NOT work: >
 			register, "@/" for the search pattern.
 			If the result of {expr1} ends in a <CR> or <NL>, the
 			register will be linewise, otherwise it will be set to
-			charwise.
+			characterwise.
 			This can be used to clear the last search pattern: >
 				:let @/ = ""
 <			This is different from searching for an empty string,
@@ -2440,6 +2782,11 @@ This does NOT work: >
 			value and the global value are changed.
 			Example: >
 				:let &path = &path .. ',/usr/local/include'
+<			This also works for terminal codes in the form t_xx.
+			But only for alphanumerical names.  Example: >
+				:let &t_k1 = "\<Esc>[234;"
+<			When the code does not exist yet it will be created as
+			a terminal key code, there is no error.
 
 :let &{option-name} .= {expr1}
 			For a string option: Append {expr1} to the value.
@@ -2463,7 +2810,7 @@ This does NOT work: >
 :let &g:{option-name} -= {expr1}
 			Like above, but only set the global value of an option
 			(if there is one).  Works like |:setglobal|.
-
+								*E1093*
 :let [{name1}, {name2}, ...] = {expr1}		*:let-unpack* *E687* *E688*
 			{expr1} must evaluate to a |List|.  The first item in
 			the list is assigned to {name1}, the second item to
@@ -2504,15 +2851,31 @@ This does NOT work: >
 			|List| item.
 
 						*:let=<<* *:let-heredoc*
-						*E990* *E991* *E172* *E221*
-:let {var-name} =<< [trim] {endmarker}
+					*E990* *E991* *E172* *E221* *E1145*
+:let {var-name} =<< [trim] [eval] {endmarker}
 text...
 text...
 {endmarker}
 			Set internal variable {var-name} to a |List|
 			containing the lines of text bounded by the string
-			{endmarker}. The lines of text is used as a
-			|literal-string|.
+			{endmarker}.
+
+			If "eval" is not specified, then each line of text is
+			used as a |literal-string|, except that single quotes
+			does not need to be doubled.
+			If "eval" is specified, then any Vim expression in the
+			form {expr} is evaluated and the result replaces the
+			expression, like with |interpolated-string|.
+			Example where $HOME is expanded: >
+				let lines =<< trim eval END
+				  some text
+				  See the file {$HOME}/.vimrc
+				  more text
+				END
+<			There can be multiple Vim expressions in a single line
+			but an expression cannot span multiple lines.  If any
+			expression evaluation fails, then the assignment fails.
+
 			{endmarker} must not contain white space.
 			{endmarker} cannot start with a lower case character.
 			The last line should end only with the {endmarker}
@@ -2562,6 +2925,13 @@ text...
 					1 2 3 4
 					5 6 7 8
 				DATA
+
+				let code =<< trim eval CODE
+				   let v = {10 + 20}
+				   let h = "{$HOME}"
+				   let s = "{Str1()} abc {Str2()}"
+				   let n = {MyFunc(3, 4)}
+				CODE
 <
 								*E121*
 :let {var-name}	..	List the value of variable {var-name}.  Multiple
@@ -2574,15 +2944,16 @@ text...
 			  s:	script-local variables
 			  l:	local function variables
 			  v:	Vim variables.
+			This does not work in Vim9 script. |vim9-declaration|
 
 :let			List the values of all variables.  The type of the
 			variable is indicated before the value:
 			    <nothing>	String
 				#	Number
 				*	Funcref
+			This does not work in Vim9 script. |vim9-declaration|
 
-
-:unl[et][!] {name} ...				*:unlet* *:unl* *E108* *E795*
+:unl[et][!] {name} ...			*:unlet* *:unl* *E108* *E795* *E1081*
 			Remove the internal variable {name}.  Several variable
 			names can be given, they are all removed.  The name
 			may also be a |List| or |Dictionary| item.
@@ -2608,10 +2979,14 @@ text...
 			If the system does not support deleting an environment
 			variable, it is made empty.
 
-						*:cons* *:const*
+						*:cons* *:const* *E1018*
 :cons[t] {var-name} = {expr1}
 :cons[t] [{name1}, {name2}, ...] = {expr1}
 :cons[t] [{name}, ..., ; {lastname}] = {expr1}
+:cons[t] {var-name} =<< [trim] {marker}
+text...
+text...
+{marker}
 			Similar to |:let|, but additionally lock the variable
 			after setting the value.  This is the same as locking
 			the variable with |:lockvar| just after |:let|, thus: >
@@ -2619,7 +2994,9 @@ text...
 <			is equivalent to: >
 				:let x = 1
 				:lockvar! x
-<			This is useful if you want to make sure the variable
+<			NOTE: in Vim9 script `:const` works differently, see
+			|vim9-const|
+			This is useful if you want to make sure the variable
 			is not modified.  If the value is a List or Dictionary
 			literal then the items also cannot be changed: >
 				const ll = [1, 2, 3]
@@ -2630,7 +3007,7 @@ text...
 				let lconst[0] = 2  " Error!
 				let lconst[1][0] = 'b'  " OK
 <							*E995*
-			|:const| does not allow to for changing a variable. >
+			|:const| does not allow to for changing a variable: >
 				:let x = 1
 				:const x = 2  " Error!
 <							*E996*
@@ -2650,15 +3027,17 @@ text...
 				:lockvar v
 				:let v = 'asdf'	  " fails!
 				:unlet v	  " works
-<							*E741* *E940*
+<			*E741* *E940* *E1118* *E1119* *E1120* *E1121* *E1122*
 			If you try to change a locked variable you get an
 			error message: "E741: Value is locked: {name}".
 			If you try to lock or unlock a built-in variable you
-			will get an error message "E940: Cannot lock or unlock
+			get an error message: "E940: Cannot lock or unlock
 			variable {name}".
 
 			[depth] is relevant when locking a |List| or
 			|Dictionary|.  It specifies how deep the locking goes:
+				0	Lock the variable {name} but not its
+					value.
 				1	Lock the |List| or |Dictionary| itself,
 					cannot add or remove items, but can
 					still change their values.
@@ -2672,7 +3051,14 @@ text...
 					|Dictionary|, one level deeper.
 			The default [depth] is 2, thus when {name} is a |List|
 			or |Dictionary| the values cannot be changed.
-								*E743*
+
+			Example with [depth] 0: >
+				let mylist = [1, 2, 3]
+				lockvar 0 mylist
+				let mylist[0] = 77	" OK
+				call add(mylist, 4]	" OK
+				let mylist = [7, 8, 9]  " Error!
+<								*E743*
 			For unlimited depth use [!] and omit [depth].
 			However, there is a maximum depth of 100 to catch
 			loops.
@@ -2689,9 +3075,13 @@ text...
 			See |deepcopy()|.
 
 
-:unlo[ckvar][!] [depth] {name} ...			*:unlockvar* *:unlo*
+:unlo[ckvar][!] [depth] {name} ...		*:unlockvar* *:unlo* *E1246*
 			Unlock the internal variable {name}.  Does the
 			opposite of |:lockvar|.
+
+			If {name} does not exist:
+			- In |Vim9| script an error is given.
+			- In legacy script this is silently ignored.
 
 :if {expr1}			*:if* *:end* *:endif* *:en* *E171* *E579* *E580*
 :en[dif]		Execute the commands until the next matching `:else`
@@ -2721,6 +3111,8 @@ text...
 				:  execute "silent 1,$delete"
 				:endif
 <
+			In |Vim9| script `:endif` cannot be shortened, to
+			improve script readability.
 			NOTE: The `:append` and `:insert` commands don't work
 			properly in between `:if` and `:endif`.
 
@@ -2728,10 +3120,14 @@ text...
 :el[se]			Execute the commands until the next matching `:else`
 			or `:endif` if they previously were not being
 			executed.
+			In |Vim9| script `:else` cannot be shortened, to
+			improve script readability.
 
 					*:elseif* *:elsei* *E582* *E584*
 :elsei[f] {expr1}	Short for `:else` `:if`, with the addition that there
 			is no extra `:endif`.
+			In |Vim9| script `:elseif` cannot be shortened, to
+			improve script readability.
 
 :wh[ile] {expr1}			*:while* *:endwhile* *:wh* *:endw*
 						*E170* *E585* *E588* *E733*
@@ -2746,6 +3142,8 @@ text...
 				   :let lnum = lnum + 1
 				:endwhile
 <
+			In |Vim9| script `:while`  and `:endwhile` cannot be
+			shortened, to improve script readability.
 			NOTE: The `:append` and `:insert` commands don't work
 			properly inside a `:while` and `:for` loop.
 
@@ -2753,9 +3151,12 @@ text...
 :endfo[r]						*:endfo* *:endfor*
 			Repeat the commands between `:for` and `:endfor` for
 			each item in {object}.  {object} can be a |List|,
-			a |Blob| or a |String|.
+			a |Blob| or a |String|. *E1177*
 
 			Variable {var} is set to the value of each item.
+			In |Vim9| script the loop variable must not have been
+			declared yet, unless when it is a
+			global/window/tab/buffer variable.
 
 			When an error is detected for a command inside the
 			loop, execution continues after the `endfor`.
@@ -2763,18 +3164,21 @@ text...
 			are used.  Make a copy if this is unwanted: >
 				:for item in copy(mylist)
 <
-			When {object} is a |List| and not making a copy, Vim
-			stores a reference to the next item in the |List|
-			before executing the commands with the current item.
-			Thus the current item can be removed without effect.
-			Removing any later item means it will not be found.
-			Thus the following example works (an inefficient way
-			to make a |List| empty): >
+			When {object} is a |List| and not making a copy, in
+			legacy script Vim stores a reference to the next item
+			in the |List| before executing the commands with the
+			current item.  Thus the current item can be removed
+			without effect.  Removing any later item means it will
+			not be found.  Thus the following example works (an
+			inefficient way to make a |List| empty): >
 				for item in mylist
 				   call remove(mylist, 0)
 				endfor
 <			Note that reordering the |List| (e.g., with sort() or
 			reverse()) may have unexpected effects.
+			In |Vim9| script the index is used.  If an item before
+			the current one is deleted the next item will be
+			skipped.
 
 			When {object} is a |Blob|, Vim always makes a copy to
 			iterate over.  Unlike with |List|, modifying the
@@ -2783,8 +3187,11 @@ text...
 			When {object} is a |String| each item is a string with
 			one character, plus any combining characters.
 
+			In |Vim9| script `:endfor` cannot be shortened, to
+			improve script readability.
+
 :for [{var1}, {var2}, ...] in {listlist}
-:endfo[r]
+:endfo[r]							*E1140*
 			Like `:for` above, but each item in {listlist} must be
 			a list, of which each item is assigned to {var1},
 			{var2}, etc.  Example: >
@@ -2795,7 +3202,6 @@ text...
 						*:continue* *:con* *E586*
 :con[tinue]		When used inside a `:while` or `:for` loop, jumps back
 			to the start of the loop.
-
 			If it is used after a `:try` inside the loop but
 			before the matching `:finally` (if present), the
 			commands following the `:finally` up to the matching
@@ -2803,6 +3209,8 @@ text...
 			all nested `:try`s inside the loop.  The outermost
 			`:endtry` then jumps back to the start of the loop.
 
+			In |Vim9| script `:cont` is the shortest form, to
+			improve script readability.
 						*:break* *:brea* *E587*
 :brea[k]		When used inside a `:while` or `:for` loop, skips to
 			the command after the matching `:endwhile` or
@@ -2814,7 +3222,11 @@ text...
 			all nested `:try`s inside the loop.  The outermost
 			`:endtry` then jumps to the command after the loop.
 
-:try				*:try* *:endt* *:endtry* *E600* *E601* *E602*
+			In |Vim9| script `:break` cannot be shortened, to
+			improve script readability.
+
+:try						*:try* *:endt* *:endtry*
+						*E600* *E601* *E602* *E1032*
 :endt[ry]		Change the error handling for the commands between
 			`:try` and `:endtry` including everything being
 			executed across `:source` commands, function calls,
@@ -2850,7 +3262,11 @@ text...
 		try | sleep 100 | catch /^Vim:Interrupt$/ | endtry
 		try | edit | catch /^Vim(edit):E\d\+/ | echo "error" | endtry
 <
-					*:cat* *:catch* *E603* *E604* *E605*
+			In |Vim9| script `:endtry` cannot be shortened, to
+			improve script readability.
+
+					*:cat* *:catch*
+					*E603* *E604* *E605* *E654* *E1033*
 :cat[ch] /{pattern}/	The following commands until the next `:catch`,
 			`:finally`, or `:endtry` that belongs to the same
 			`:try` as the `:catch` are executed when an exception
@@ -2871,12 +3287,14 @@ text...
 			Another character can be used instead of / around the
 			{pattern}, so long as it does not have a special
 			meaning (e.g., '|' or '"') and doesn't occur inside
-			{pattern}.
+			{pattern}. *E1067*
 			Information about the exception is available in
 			|v:exception|.  Also see |throw-variables|.
 			NOTE: It is not reliable to ":catch" the TEXT of
 			an error message because it may vary in different
 			locales.
+			In |Vim9| script `:catch` cannot be shortened, to
+			improve script readability.
 
 					*:fina* *:finally* *E606* *E607*
 :fina[lly]		The following commands until the matching `:endtry`
@@ -2886,17 +3304,21 @@ text...
 			`:break`, `:finish`, or `:return`, or by an error or
 			interrupt or exception (see `:throw`).
 
-							*:th* *:throw* *E608*
+			In |Vim9| script `:finally` cannot be shortened, to
+			improve script readability and avoid confusion with
+			`:final`.
+
+						*:th* *:throw* *E608* *E1129*
 :th[row] {expr1}	The {expr1} is evaluated and thrown as an exception.
-			If the `:throw` is used after a `:try` but before the
+			If the ":throw" is used after a `:try` but before the
 			first corresponding `:catch`, commands are skipped
 			until the first `:catch` matching {expr1} is reached.
-			If there is no such `:catch` or if the `:throw` is
+			If there is no such `:catch` or if the ":throw" is
 			used after a `:catch` but before the `:finally`, the
 			commands following the `:finally` (if present) up to
 			the matching `:endtry` are executed.  If the `:throw`
 			is after the `:finally`, commands up to the `:endtry`
-			are skipped.  At the `:endtry`, this process applies
+			are skipped.  At the ":endtry", this process applies
 			again for the next dynamically surrounding `:try`
 			(which may be found in a calling function or sourcing
 			script), until a matching `:catch` has been found.
@@ -2907,6 +3329,9 @@ text...
 <			Note that "catch" may need to be on a separate line
 			for when an error causes the parsing to skip the whole
 			line and not see the "|" that separates the commands.
+
+			In |Vim9| script `:throw` cannot be shortened, to
+			improve script readability.
 
 							*:ec* *:echo*
 :ec[ho] {expr1} ..	Echoes each {expr1}, with a space in between.  The
@@ -2927,20 +3352,7 @@ text...
 			postponed until you type something), force a redraw
 			with the `:redraw` command.  Example: >
 		:new | redraw | echo "there is a new window"
-<							*:echo-self-refer*
-			When printing nested containers echo prints second
-			occurrence of the self-referencing container using
-			"[...@level]" (self-referencing |List|) or
-			"{...@level}" (self-referencing |Dict|): >
-		:let l = []
-		:call add(l, l)
-		:let l2 = []
-		:call add(l2, [l2])
-		:echo l l2
-<			echoes "[[...@0]] [[[...@0]]]". Echoing "[l]" will
-			echo "[[[...@1]]]" because l first occurs at second
-			level.
-
+<
 							*:echon*
 :echon {expr1} ..	Echoes each {expr1}, without anything added.  Also see
 			|:comment|.
@@ -2988,6 +3400,22 @@ text...
 		:echomsg "It's a Zizzer Zazzer Zuzz, as you can plainly see."
 <			See |:echo-redraw| to avoid the message disappearing
 			when the screen is redrawn.
+
+					*:echow* *:echowin* *:echowindow*
+:[N]echow[indow] {expr1} ..
+			Like |:echomsg| but when the messages popup window is
+			available the message is displayed there.  This means
+			it will show for three seconds and avoid a
+			|hit-enter| prompt.  If you want to hide it before
+			that, press Esc in Normal mode (when it would
+			otherwise beep).  If it disappears too soon you can
+			use `:messages` to see the text.
+			When [N] is given then the window will show up for
+			this number of seconds.  The last `:echowindow` with a
+			count matters, it is used once only.
+			The message window is available when Vim was compiled
+			with the +timer and the +popupwin features.
+
 							*:echoe* *:echoerr*
 :echoe[rr] {expr1} ..	Echo the expression(s) as an error message, saving the
 			message in the |message-history|.  When used in a
@@ -3001,7 +3429,12 @@ text...
 <			If you just want a highlighted message use `:echohl`.
 			And to get a beep: >
 		:exe "normal \<Esc>"
-<
+
+:echoc[onsole] {expr1} ..				*:echoc* *:echoconsole*
+			Intended for testing: works like `:echomsg` but when
+			running in the GUI and started from a terminal write
+			the text to stdout.
+
 							*:eval*
 :eval {expr}		Evaluate {expr} and discard the result.  Example: >
 				:eval Getlist()->Filter()->append('$')
@@ -3011,6 +3444,9 @@ text...
 			the `append()` call appends the List with text to the
 			buffer.  This is similar to `:call` but works with any
 			expression.
+			In |Vim9| script an expression without an effect will
+			result in error *E1207* .  This should help noticing
+			mistakes.
 
 			The command can be shortened to `:ev` or `:eva`, but
 			these are hard to recognize and therefore not to be
@@ -3172,7 +3608,7 @@ this pending exception or command is discarded.
 For examples see |throw-catch| and |try-finally|.
 
 
-NESTING	OF TRY CONDITIONALS				*try-nesting*
+NESTING OF TRY CONDITIONALS				*try-nesting*
 
 Try conditionals can be nested arbitrarily.  That is, a complete try
 conditional can be put into the try block, a catch clause, or the finally
@@ -3303,7 +3739,7 @@ exception most recently caught as long it is not finished.
 
 	:function! Caught()
 	:  if v:exception != ""
-	:    echo 'Caught "' .. v:exception .. '" in ' .. v:throwpoint
+	:    echo 'Caught "' . v:exception .. '" in ' .. v:throwpoint
 	:  else
 	:    echo 'Nothing caught'
 	:  endif
@@ -4166,7 +4602,104 @@ code can be used: >
     unlet scriptnames_output
 
 ==============================================================================
-The sandbox					*eval-sandbox* *sandbox*
+10. Vim script versions		*vimscript-version* *vimscript-versions*
+							*scriptversion*
+Over time many features have been added to Vim script.  This includes Ex
+commands, functions, variable types, etc.  Each individual feature can be
+checked with the |has()| and |exists()| functions.
+
+Sometimes old syntax of functionality gets in the way of making Vim better.
+When support is taken away this will break older Vim scripts.  To make this
+explicit the |:scriptversion| command can be used.  When a Vim script is not
+compatible with older versions of Vim this will give an explicit error,
+instead of failing in mysterious ways.
+
+When using a legacy function, defined with `:function`, in |Vim9| script then
+scriptversion 4 is used.
+
+							*scriptversion-1*  >
+ :scriptversion 1
+<	This is the original Vim script, same as not using a |:scriptversion|
+	command.  Can be used to go back to old syntax for a range of lines.
+	Test for support with: >
+		has('vimscript-1')
+
+<							*scriptversion-2*  >
+ :scriptversion 2
+<	String concatenation with "." is not supported, use ".." instead.
+	This avoids the ambiguity using "." for Dict member access and
+	floating point numbers.  Now ".5" means the number 0.5.
+
+							*scriptversion-3*  >
+ :scriptversion 3
+<	All |vim-variable|s must be prefixed by "v:".  E.g. "version" doesn't
+	work as |v:version| anymore, it can be used as a normal variable.
+	Same for some obvious names as "count" and others.
+
+	Test for support with: >
+		has('vimscript-3')
+<
+							*scriptversion-4*  >
+ :scriptversion 4
+<	Numbers with a leading zero are not recognized as octal.  "0o" or "0O"
+	is still recognized as octal.  With the
+	previous version you get: >
+		echo 017   " displays 15 (octal)
+		echo 0o17  " displays 15 (octal)
+		echo 018   " displays 18 (decimal)
+<	with script version 4: >
+		echo 017   " displays 17 (decimal)
+		echo 0o17  " displays 15 (octal)
+		echo 018   " displays 18 (decimal)
+<	Also, it is possible to use single quotes inside numbers to make them
+	easier to read: >
+		echo 1'000'000
+<	The quotes must be surrounded by digits.
+
+	Test for support with: >
+		has('vimscript-4')
+
+==============================================================================
+11. No +eval feature				*no-eval-feature*
+
+When the |+eval| feature was disabled at compile time, none of the expression
+evaluation commands are available.  To prevent this from causing Vim scripts
+to generate all kinds of errors, the ":if" and ":endif" commands are still
+recognized, though the argument of the ":if" and everything between the ":if"
+and the matching ":endif" is ignored.  Nesting of ":if" blocks is allowed, but
+only if the commands are at the start of the line.  The ":else" command is not
+recognized.
+
+Example of how to avoid executing commands when the |+eval| feature is
+missing: >
+
+	:if 1
+	:  echo "Expression evaluation is compiled in"
+	:else
+	:  echo "You will _never_ see this message"
+	:endif
+
+To execute a command only when the |+eval| feature is disabled can be done in
+two ways.  The simplest is to exit the script (or Vim) prematurely: >
+	if 1
+	   echo "commands executed with +eval"
+	   finish
+	endif
+	args  " command executed without +eval
+
+If you do not want to abort loading the script you can use a trick, as this
+example shows: >
+
+	silent! while 0
+	  set history=111
+	silent! endwhile
+
+When the |+eval| feature is available the command is skipped because of the
+"while 0".  Without the |+eval| feature the "while 0" is an error, which is
+silently ignored, and the command is executed.
+
+==============================================================================
+12. The sandbox					*eval-sandbox* *sandbox*
 
 The 'foldexpr', 'formatexpr', 'includeexpr', 'indentexpr', 'statusline' and
 'foldtext' options may be evaluated in a sandbox.  This means that you are
@@ -4174,7 +4707,6 @@ protected from these expressions having nasty side effects.  This gives some
 safety for when these options are set from a modeline.  It is also used when
 the command from a tags file is executed and for CTRL-R = in the command line.
 The sandbox is also used for the |:sandbox| command.
-
 								*E48*
 These items are not allowed in the sandbox:
 	- changing the buffer text
@@ -4197,7 +4729,7 @@ A few options contain an expression.  When this expression is evaluated it may
 have to be done in the sandbox to avoid a security risk.  But the sandbox is
 restrictive, thus this only happens when the option was set from an insecure
 location.  Insecure in this context are:
-- sourcing a .nvimrc or .exrc in the current directory
+- sourcing a .vimrc or .exrc in the current directory
 - while executing in the sandbox
 - value coming from a modeline
 - executing a function that was defined in the sandbox
@@ -4206,7 +4738,7 @@ Note that when in the sandbox and saving an option value and restoring it, the
 option will still be marked as it was set in the sandbox.
 
 ==============================================================================
-Textlock							*textlock*
+13. Textlock							*textlock*
 
 In a few situations it is not allowed to change the text in the buffer, jump
 to another window and some other things that might confuse or break what Vim
@@ -4221,123 +4753,5 @@ This is not allowed when the textlock is active:
 	- closing a window or quitting Vim
 	- etc.
 
-==============================================================================
-Command-line expressions highlighting		*expr-highlight*
-
-Expressions entered by the user in |i_CTRL-R_=|, |c_CTRL-\_e|, |quote=| are
-highlighted by the built-in expressions parser.  It uses highlight groups
-described in the table below, which may be overridden by colorschemes.
-							*hl-NvimInvalid*
-Besides the "Nvim"-prefixed highlight groups described below, there are
-"NvimInvalid"-prefixed highlight groups which have the same meaning but
-indicate that the token contains an error or that an error occurred just
-before it.  They have mostly the same hierarchy, except that (by default) in
-place of any non-Nvim-prefixed group NvimInvalid linking to `Error` is used
-and some other intermediate groups are present.
-
-Group                              Default link            Colored expression ~
-*hl-NvimInternalError*               None, red/red           Parser bug
-
-*hl-NvimAssignment*                  Operator                Generic assignment
-*hl-NvimPlainAssignment*             NvimAssignment          `=` in |:let|
-*hl-NvimAugmentedAssignment*         NvimAssignment          Generic, `+=`/`-=`/`.=`
-*hl-NvimAssignmentWithAddition*      NvimAugmentedAssignment `+=` in |:let+=|
-*hl-NvimAssignmentWithSubtraction*   NvimAugmentedAssignment `-=` in |:let-=|
-*hl-NvimAssignmentWithConcatenation* NvimAugmentedAssignment `.=` in |:let.=|
-
-*hl-NvimOperator*                    Operator                Generic operator
-
-*hl-NvimUnaryOperator*               NvimOperator            Generic unary op
-*hl-NvimUnaryPlus*                   NvimUnaryOperator       |expr-unary-+|
-*hl-NvimUnaryMinus*                  NvimUnaryOperator       |expr-unary--|
-*hl-NvimNot*                         NvimUnaryOperator       |expr-!|
-
-*hl-NvimBinaryOperator*              NvimOperator            Generic binary op
-*hl-NvimComparison*                  NvimBinaryOperator      Any |expr4| operator
-*hl-NvimComparisonModifier*          NvimComparison          `#`/`?` near |expr4| op
-*hl-NvimBinaryPlus*                  NvimBinaryOperator      |expr-+|
-*hl-NvimBinaryMinus*                 NvimBinaryOperator      |expr--|
-*hl-NvimConcat*                      NvimBinaryOperator      |expr-.|
-*hl-NvimConcatOrSubscript*           NvimConcat              |expr-.| or |expr-entry|
-*hl-NvimOr*                          NvimBinaryOperator      |expr-barbar|
-*hl-NvimAnd*                         NvimBinaryOperator      |expr-&&|
-*hl-NvimMultiplication*              NvimBinaryOperator      |expr-star|
-*hl-NvimDivision*                    NvimBinaryOperator      |expr-/|
-*hl-NvimMod*                         NvimBinaryOperator      |expr-%|
-
-*hl-NvimTernary*                     NvimOperator            `?` in |expr1|
-*hl-NvimTernaryColon*                NvimTernary             `:` in |expr1|
-
-*hl-NvimParenthesis*                 Delimiter               Generic bracket
-*hl-NvimLambda*                      NvimParenthesis         `{`/`}` in |lambda|
-*hl-NvimNestingParenthesis*          NvimParenthesis         `(`/`)` in |expr-nesting|
-*hl-NvimCallingParenthesis*          NvimParenthesis         `(`/`)` in |expr-function|
-
-*hl-NvimSubscript*                   NvimParenthesis         Generic subscript
-*hl-NvimSubscriptBracket*            NvimSubscript           `[`/`]` in |expr-[]|
-*hl-NvimSubscriptColon*              NvimSubscript           `:` in |expr-[:]|
-*hl-NvimCurly*                       NvimSubscript           `{`/`}` in
-                                                           |curly-braces-names|
-
-*hl-NvimContainer*                   NvimParenthesis         Generic container
-*hl-NvimDict*                        NvimContainer           `{`/`}` in |dict| literal
-*hl-NvimList*                        NvimContainer           `[`/`]` in |list| literal
-
-*hl-NvimIdentifier*                  Identifier              Generic identifier
-*hl-NvimIdentifierScope*             NvimIdentifier          Namespace: letter
-                                                           before `:` in
-                                                           |internal-variables|
-*hl-NvimIdentifierScopeDelimiter*    NvimIdentifier          `:` after namespace
-                                                           letter
-*hl-NvimIdentifierName*              NvimIdentifier          Rest of the ident
-*hl-NvimIdentifierKey*               NvimIdentifier          Identifier after
-                                                           |expr-entry|
-
-*hl-NvimColon*                       Delimiter               `:` in |dict| literal
-*hl-NvimComma*                       Delimiter               `,` in |dict| or |list|
-                                                           literal or
-                                                           |expr-function|
-*hl-NvimArrow*                       Delimiter               `->` in |lambda|
-
-*hl-NvimRegister*                    SpecialChar             |expr-register|
-*hl-NvimNumber*                      Number                  Non-prefix digits
-                                                           in integer
-                                                           |expr-number|
-*hl-NvimNumberPrefix*                Type                    `0` for |octal-number|
-                                                           `0x` for |hex-number|
-                                                           `0b` for |binary-number|
-*hl-NvimFloat*                       NvimNumber              Floating-point
-                                                           number
-
-*hl-NvimOptionSigil*                 Type                    `&` in |expr-option|
-*hl-NvimOptionScope*                 NvimIdentifierScope     Option scope if any
-*hl-NvimOptionScopeDelimiter*        NvimIdentifierScopeDelimiter
-                                                           `:` after option scope
-*hl-NvimOptionName*                  NvimIdentifier          Option name
-
-*hl-NvimEnvironmentSigil*            NvimOptionSigil         `$` in |expr-env|
-*hl-NvimEnvironmentName*             NvimIdentifier          Env variable name
-
-*hl-NvimString*                      String                  Generic string
-*hl-NvimStringBody*                  NvimString              Generic string
-                                                           literal body
-*hl-NvimStringQuote*                 NvimString              Generic string quote
-*hl-NvimStringSpecial*               SpecialChar             Generic string
-                                                           non-literal body
-
-*hl-NvimSingleQuote*                 NvimStringQuote         `'` in |expr-'|
-*hl-NvimSingleQuotedBody*            NvimStringBody          Literal part of
-                                                           |expr-'| string body
-*hl-NvimSingleQuotedQuote*           NvimStringSpecial       `''` inside |expr-'|
-                                                           string body
-
-*hl-NvimDoubleQuote*                 NvimStringQuote         `"` in |expr-quote|
-*hl-NvimDoubleQuotedBody*            NvimStringBody          Literal part of
-                                                           |expr-quote| body
-*hl-NvimDoubleQuotedEscape*          NvimStringSpecial       Valid |expr-quote|
-                                                           escape sequence
-*hl-NvimDoubleQuotedUnknownEscape*   NvimInvalidValue        Unrecognized
-                                                           |expr-quote| escape
-                                                           sequence
 
  vim:tw=78:ts=8:noet:ft=help:norl:

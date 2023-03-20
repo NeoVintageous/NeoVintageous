@@ -1,4 +1,4 @@
-*index.txt*     Nvim
+*index.txt*     For Vim version 9.0.  Last change: 2022 Oct 15
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -10,12 +10,23 @@ short description.  The lists are sorted on ASCII value.
 Tip: When looking for certain functionality, use a search command.  E.g.,
 to look for deleting something, use: "/delete".
 
+1. Insert mode				|insert-index|
+2. Normal mode				|normal-index|
+   2.1. Text objects			|objects|
+   2.2. Window commands			|CTRL-W|
+   2.3. Square bracket commands		|[|
+   2.4. Commands starting with 'g'	|g|
+   2.5. Commands starting with 'z'	|z|
+   2.6. Operator-pending mode		|operator-pending-index|
+3. Visual mode				|visual-index|
+4. Command-line editing			|ex-edit-index|
+5. Terminal-Job mode			|terminal-job-index|
+6. EX commands				|ex-cmd-index|
+
 For an overview of options see |option-list|.
 For an overview of built-in functions see |functions|.
 For a list of Vim variables see |vim-variable|.
 For a complete listing of all help items see |help-tags|.
-
-                                      Type |gO| to see the table of contents.
 
 ==============================================================================
 1. Insert mode						*insert-index*
@@ -25,8 +36,9 @@ tag		char		action in Insert mode	~
 |i_CTRL-@|	CTRL-@		insert previously inserted text and stop
 				insert
 |i_CTRL-A|	CTRL-A		insert previously inserted text
+		CTRL-B		not used |i_CTRL-B-gone|
 |i_CTRL-C|	CTRL-C		quit insert mode, without checking for
-				abbreviation
+				abbreviation, unless 'insertmode' set.
 |i_CTRL-D|	CTRL-D		delete one shiftwidth of indent in the current
 				line
 |i_CTRL-E|	CTRL-E		insert the character which is below the cursor
@@ -50,6 +62,7 @@ tag		char		action in Insert mode	~
 |i_CTRL-J|	CTRL-J		same as <CR>
 |i_CTRL-K|	CTRL-K {char1} {char2}
 				enter digraph
+|i_CTRL-L|	CTRL-L		when 'insertmode' set: Leave Insert mode
 |i_<CR>|	<CR>		begin new line
 |i_CTRL-M|	CTRL-M		same as <CR>
 |i_CTRL-N|	CTRL-N		find next match for keyword in front of the
@@ -85,16 +98,18 @@ tag		char		action in Insert mode	~
 |i_CTRL-W|	CTRL-W		delete word before the cursor
 |i_CTRL-X|	CTRL-X {mode}	enter CTRL-X sub mode, see |i_CTRL-X_index|
 |i_CTRL-Y|	CTRL-Y		insert the character which is above the cursor
-|i_<Esc>|	<Esc>		end insert mode
+|i_CTRL-Z|	CTRL-Z		when 'insertmode' set: suspend Vim
+|i_<Esc>|	<Esc>		end insert mode (unless 'insertmode' set)
 |i_CTRL-[|	CTRL-[		same as <Esc>
 |i_CTRL-\_CTRL-N| CTRL-\ CTRL-N	go to Normal mode
-|i_CTRL-\_CTRL-G| CTRL-\ CTRL-G	go to Normal mode
+|i_CTRL-\_CTRL-G| CTRL-\ CTRL-G	go to mode specified with 'insertmode'
 		CTRL-\ a - z	reserved for extensions
 		CTRL-\ others	not used
 |i_CTRL-]|	CTRL-]		trigger abbreviation
 |i_CTRL-^|	CTRL-^		toggle use of |:lmap| mappings
 |i_CTRL-_|	CTRL-_		When 'allowrevins' set: change language
-				(Hebrew)
+				(Hebrew, Farsi) {only when compiled with
+				the |+rightleft| feature}
 
 		<Space> to '~'	not used, except '0' and '^' followed by
 				CTRL-D
@@ -219,14 +234,12 @@ tag		char	      note action in Normal mode	~
 |CTRL-Z|	CTRL-Z		   suspend program (or start new shell)
 		CTRL-[ <Esc>	   not used
 |CTRL-\_CTRL-N|	CTRL-\ CTRL-N	   go to Normal mode (no-op)
-|CTRL-\_CTRL-G|	CTRL-\ CTRL-G	   go to Normal mode (no-op)
+|CTRL-\_CTRL-G|	CTRL-\ CTRL-G	   go to mode specified with 'insertmode'
 		CTRL-\ a - z	   reserved for extensions
 		CTRL-\ others      not used
 |CTRL-]|	CTRL-]		   :ta to ident under cursor
 |CTRL-^|	CTRL-^		   edit Nth alternate file (equivalent to
 				   ":e #N")
-|CTRL-<Tab>|	CTRL-<Tab>	   same as `g<Tab>` : go to last accessed tab
-				   page
 		CTRL-_		   not used
 
 |<Space>|	<Space>		1  same as "l"
@@ -337,6 +350,7 @@ tag		char	      note action in Normal mode	~
 				   insert text, repeat N times
 |P|		["x]P		2  put the text [from register x] before the
 				   cursor N times
+|Q|		Q		   switch to "Ex" mode
 |R|		R		2  enter replace mode: overtype existing
 				   characters, repeat the entered text N-1
 				   times
@@ -351,7 +365,6 @@ tag		char	      note action in Normal mode	~
 				   register x]
 |Y|		["x]Y		   yank N lines [into register x]; synonym for
 				   "yy"
-				   Note: Mapped to "y$" by default. |default-mappings|
 |ZZ|		ZZ		   write if buffer changed and close window
 |ZQ|		ZQ		   close window without writing
 |[|		[{char}		   square bracket command (see |[| below)
@@ -399,7 +412,6 @@ tag		char	      note action in Normal mode	~
 |q|		q{0-9a-zA-Z"}	   record typed characters into named register
 				   {0-9a-zA-Z"} (uppercase to append)
 |q|		q		   (while recording) stops recording
-|Q|		Q		   replay last recorded macro
 |q:|		q:		   edit : command-line in command-line window
 |q/|		q/		   edit / command-line in command-line window
 |q?|		q?		   edit ? command-line in command-line window
@@ -409,7 +421,7 @@ tag		char	      note action in Normal mode	~
 |t|		t{char}		1  cursor till before Nth occurrence of {char}
 				   to the right
 |u|		u		2  undo changes
-|v|		v		   start charwise Visual mode
+|v|		v		   start characterwise Visual mode
 |w|		w		1  cursor N words forward
 |x|		["x]x		2  delete N characters under and after the
 				   cursor [into register x]
@@ -538,6 +550,7 @@ tag		command		   action in Normal mode	~
 |CTRL-W_CTRL-_|	CTRL-W CTRL-_	   same as "CTRL-W _"
 |CTRL-W_+|	CTRL-W +	   increase current window height N lines
 |CTRL-W_-|	CTRL-W -	   decrease current window height N lines
+|CTRL-W_:|	CTRL-W :	   same as |:|, edit a command line
 |CTRL-W_<|	CTRL-W <	   decrease current window width N columns
 |CTRL-W_=|	CTRL-W =	   make all windows the same height & width
 |CTRL-W_>|	CTRL-W >	   increase current window width N columns
@@ -577,7 +590,7 @@ tag		command		   action in Normal mode	~
 |CTRL-W_gt|	CTRL-W g t	   same as `gt`: go to next tab page
 |CTRL-W_gT|	CTRL-W g T	   same as `gT`: go to previous tab page
 |CTRL-W_g<Tab>|	CTRL-W g <Tab>	   same as |g<Tab>|: go to last accessed tab
-				   page
+				   page.
 |CTRL-W_h|	CTRL-W h	   go to Nth left window (stop at first window)
 |CTRL-W_i|	CTRL-W i	   split window and jump to declaration of
 				   identifier under the cursor
@@ -700,7 +713,8 @@ tag		char	      note action in Normal mode	~
 
 tag		char	      note action in Normal mode	~
 ------------------------------------------------------------------------------
-|g_CTRL-A|	g CTRL-A	   dump a memory profile
+|g_CTRL-A|	g CTRL-A	   only when compiled with MEM_PROFILE
+				   defined: dump a memory profile
 |g_CTRL-G|	g CTRL-G	   show information about current cursor
 				   position
 |g_CTRL-H|	g CTRL-H	   start Select block mode
@@ -795,7 +809,7 @@ tag		char	      note action in Normal mode	~
 |g<LeftMouse>|	g<LeftMouse>	   same as <C-LeftMouse>
 		g<MiddleMouse>	   same as <C-MiddleMouse>
 |g<RightMouse>|	g<RightMouse>	   same as <C-RightMouse>
-|g<Tab>|	g<Tab>		   go to last accessed tab page
+|g<Tab>|	g<Tab>		   go to the last accessed tab page.
 |g<Up>|		g<Up>		1  same as "gk"
 
 ==============================================================================
@@ -877,7 +891,7 @@ These can be used after an operator, but before a {motion} has been entered.
 
 tag		char		action in Operator-pending mode	~
 -----------------------------------------------------------------------
-|o_v|		v		force operator to work charwise
+|o_v|		v		force operator to work characterwise
 |o_V|		V		force operator to work linewise
 |o_CTRL-V|	CTRL-V		force operator to work blockwise
 
@@ -890,7 +904,7 @@ here are those that are different.
 tag		command	      note action in Visual mode	~
 ------------------------------------------------------------------------------
 |v_CTRL-\_CTRL-N| CTRL-\ CTRL-N	   stop Visual mode
-|v_CTRL-\_CTRL-G| CTRL-\ CTRL-G	   go to Normal mode
+|v_CTRL-\_CTRL-G| CTRL-\ CTRL-G	   go to mode specified with 'insertmode'
 |v_CTRL-A|	CTRL-A		2  add N to number in highlighted text
 |v_CTRL-C|	CTRL-C		   stop Visual mode
 |v_CTRL-G|	CTRL-G		   toggle between Visual mode and Select mode
@@ -993,7 +1007,7 @@ tag		command	      note action in Visual mode	~
 |v_r|		r		2  replace highlighted area with a character
 |v_s|		s		2  delete highlighted area and start insert
 |v_u|		u		2  make highlighted area lowercase
-|v_v|		v		   make Visual mode charwise or stop
+|v_v|		v		   make Visual mode characterwise or stop
 				   Visual mode
 |v_x|		x		2  delete the highlighted area
 |v_y|		y		   yank the highlighted area
@@ -1066,7 +1080,8 @@ tag		command		action in Command-line editing mode	~
 |c_<Esc>|	<Esc>		abandon command-line without executing it
 |c_CTRL-[|	CTRL-[		same as <Esc>
 |c_CTRL-\_CTRL-N| CTRL-\ CTRL-N	go to Normal mode, abandon command-line
-|c_CTRL-\_CTRL-G| CTRL-\ CTRL-G	go to Normal mode, abandon command-line
+|c_CTRL-\_CTRL-G| CTRL-\ CTRL-G	go to mode specified with 'insertmode',
+				abandon command-line
 		CTRL-\ a - d	reserved for extensions
 |c_CTRL-\_e|	CTRL-\ e {expr} replace the command line with the result of
 				{expr}
@@ -1075,7 +1090,7 @@ tag		command		action in Command-line editing mode	~
 |c_CTRL-]|	CTRL-]		trigger abbreviation
 |c_CTRL-^|	CTRL-^		toggle use of |:lmap| mappings
 |c_CTRL-_|	CTRL-_		when 'allowrevins' set: change language
-				(Hebrew)
+				(Hebrew, Farsi)
 |c_<Del>|	<Del>		delete the character under the cursor
 
 |c_<Left>|	<Left>		cursor left
@@ -1098,17 +1113,27 @@ tag		command		action in Command-line editing mode	~
 |c_<LeftMouse>|	<LeftMouse>	cursor at mouse click
 
 ==============================================================================
-5. Terminal mode				*terminal-mode-index*
+5. Terminal-Job mode				*terminal-job-index*
 
-In a |terminal| buffer all keys except CTRL-\ are forwarded to the terminal
-job.  If CTRL-\ is pressed, the next key is forwarded unless it is CTRL-N
-or CTRL-O.
-Use |CTRL-\_CTRL-N| to go to Normal mode.
-Use |t_CTRL-\_CTRL-O| to execute one normal mode command and then return
-to terminal mode.
+Most Normal mode commands except for window commands (|CTRL-W|) do not work in
+a terminal window. Switch to Terminal-Normal mode to use them.
+This assumes 'termwinkey' is not set.
 
+tag		char		action in Terminal-Job mode	~
+-----------------------------------------------------------------------
+|t_CTRL-\_CTRL-N| CTRL-\ CTRL-N	switch to Terminal-Normal mode
+|t_CTRL-W_N|	CTRL-W N	switch to Terminal-Normal mode
+|t_CTRL-W_:|	CTRL-W :	enter an Ex command
+|t_CTRL-W_.|	CTRL-W .	type CTRL-W in the terminal
+		CTRL-W CTRL-\	send a CTRL-\ to the job in the terminal
+|t_CTRL-W_quote|  CTRL-W " {register}
+				paste register in the terminal
+|t_CTRL-W_CTRL-C| CTRL-W CTRL-C	forcefully ends the job
+|t_CTRL-W_CTRL-W| CTRL-W CTRL-W	move focus to the next window
+|t_CTRL-W_gt|	CTRL-W gt	go to next tabpage, same as `gt`
+|t_CTRL-W_gT|	CTRL-W gT	go to previous tabpage, same as `gT`
 
-You found it, Arthur!				*holy-grail*
+You found it, Arthur!				*holy-grail* *:smile*
 
 ==============================================================================
 6. EX commands					*ex-cmd-index* *:index*
@@ -1125,13 +1150,15 @@ tag		command		action ~
 |:!!|		:!!		repeat last ":!" command
 |:#|		:#		same as ":number"
 |:&|		:&		repeat last ":substitute"
-|:star|		:*		execute contents of a register
+|:star|		:*		use the last Visual area, like :'<,'>
 |:<|		:<		shift lines one 'shiftwidth' left
-|:=|		:=		print the cursor line number
+|:=|		:=		print the last line number
 |:>|		:>		shift lines one 'shiftwidth' right
 |:@|		:@		execute contents of a register
 |:@@|		:@@		repeat the previous ":@"
 |:Next|		:N[ext]		go to previous file in the argument list
+|:Print|	:P[rint]	print lines
+|:X|		:X		ask for encryption key
 |:append|	:a[ppend]	append text
 |:abbreviate|	:ab[breviate]	enter abbreviation
 |:abclear|	:abc[lear]	remove all abbreviations
@@ -1209,7 +1236,6 @@ tag		command		action ~
 |:cgetfile|	:cg[etfile]	read file with error messages
 |:changes|	:changes	print the change list
 |:chdir|	:chd[ir]	change directory
-|:checkhealth|	:checkh[ealth]	run healthchecks
 |:checkpath|	:che[ckpath]	list included files
 |:checktime|	:checkt[ime]	check timestamp of loaded buffers
 |:chistory|	:chi[story]	list the error lists
@@ -1249,6 +1275,9 @@ tag		command		action ~
 |:delete|	:d[elete]	delete lines
 |:debug|	:deb[ug]	run a command in debugging mode
 |:debuggreedy|	:debugg[reedy]	read debug mode commands from normal input
+|:def|		:def		define a Vim9 user function
+|:defcompile|	:defc[ompile]	compile Vim9 user functions in current script
+|:defer|	:defer		call function when current function is done
 |:delcommand|	:delc[ommand]	delete user-defined command
 |:delfunction|	:delf[unction]	delete a user function
 |:delmarks|	:delm[arks]	delete marks
@@ -1261,6 +1290,7 @@ tag		command		action ~
 |:diffthis|	:diffthis	make current window a diff window
 |:digraphs|	:dig[raphs]	show or enter digraphs
 |:display|	:di[splay]	display registers
+|:disassemble|	:disa[ssemble]	disassemble Vim9 user function
 |:djump|	:dj[ump]	jump to #define
 |:dl|		:dl		short for |:delete| with the 'l' flag
 |:dlist|	:dli[st]	list #defines
@@ -1274,13 +1304,16 @@ tag		command		action ~
 |:edit|		:e[dit]		edit a file
 |:earlier|	:ea[rlier]	go to older change, undo
 |:echo|		:ec[ho]		echoes the result of expressions
+|:echoconsole|	:echoc[onsole]	like :echomsg but write to stdout
 |:echoerr|	:echoe[rr]	like :echo, show like an error and use history
 |:echohl|	:echoh[l]	set highlighting for echo commands
 |:echomsg|	:echom[sg]	same as :echo, put message in history
 |:echon|	:echon		same as :echo, but without <EOL>
+|:echowindow|	:echow[indow]	same as :echomsg, but use a popup window
 |:else|		:el[se]		part of an :if command
 |:elseif|	:elsei[f]	part of an :if command
 |:emenu|	:em[enu]	execute a menu by name
+|:enddef|	:enddef		end of a user function started with :def
 |:endif|	:en[dif]	end previous :if
 |:endfor|	:endfo[r]	end previous :for
 |:endfunction|	:endf[unction]	end of a user function started with :function
@@ -1291,15 +1324,18 @@ tag		command		action ~
 |:ex|		:ex		same as ":edit"
 |:execute|	:exe[cute]	execute result of expressions
 |:exit|		:exi[t]		same as ":xit"
+|:export|	:exp[ort]	Vim9: export an item from a script
 |:exusage|	:exu[sage]	overview of Ex commands
 |:file|		:f[ile]		show or set the current file name
 |:files|	:files		list all files in the buffer list
 |:filetype|	:filet[ype]	switch file type detection on/off
 |:filter|	:filt[er]	filter output of following command
 |:find|		:fin[d]		find file in 'path' and edit it
+|:final|	:final		declare an immutable variable in Vim9
 |:finally|	:fina[lly]	part of a :try command
 |:finish|	:fini[sh]	quit sourcing a Vim script
 |:first|	:fir[st]	go to the first file in the argument list
+|:fixdel|	:fix[del]	set key code of <Del>
 |:fold|		:fo[ld]		create a fold
 |:foldclose|	:foldc[lose]	close folds
 |:folddoopen|	:foldd[oopen]	execute command on lines not in a closed fold
@@ -1316,11 +1352,13 @@ tag		command		action ~
 |:hardcopy|	:ha[rdcopy]	send text to the printer
 |:help|		:h[elp]		open a help window
 |:helpclose|	:helpc[lose]	close one help window
+|:helpfind|	:helpf[ind]	dialog to open a help window
 |:helpgrep|	:helpg[rep]	like ":grep" but searches help files
 |:helptags|	:helpt[ags]	generate help tags for a directory
 |:highlight|	:hi[ghlight]	specify highlighting methods
 |:hide|		:hid[e]		hide current buffer for a command
 |:history|	:his[tory]	print a history list
+|:horizontal|	:hor[izontal]	following window command work horizontally
 |:insert|	:i[nsert]	insert text
 |:iabbrev|	:ia[bbrev]	like ":abbrev" but for Insert mode
 |:iabclear|	:iabc[lear]	like ":abclear" but for Insert mode
@@ -1330,6 +1368,7 @@ tag		command		action ~
 |:imap|		:im[ap]		like ":map" but for Insert mode
 |:imapclear|	:imapc[lear]	like ":mapclear" but for Insert mode
 |:imenu|	:ime[nu]	add menu for Insert mode
+|:import|	:imp[ort]	Vim9: import an item from another script
 |:inoremap|	:ino[remap]	like ":noremap" but for Insert mode
 |:inoreabbrev|	:inorea[bbrev]	like ":noreabbrev" but for Insert mode
 |:inoremenu|	:inoreme[nu]	like ":noremenu" but for Insert mode
@@ -1370,6 +1409,7 @@ tag		command		action ~
 |:lfdo|		:lfd[o]		execute command in each file in location list
 |:left|		:le[ft]		left align lines
 |:leftabove|	:lefta[bove]	make split window appear left or above
+|:legacy|	:leg[acy]	make following command use legacy script syntax
 |:let|		:let		assign a value to a variable or option
 |:lexpr|	:lex[pr]	read locations from expr and jump to first
 |:lfile|	:lf[ile]	read file with locations and jump to first
@@ -1428,6 +1468,11 @@ tag		command		action ~
 |:mkvimrc|	:mkv[imrc]	write current mappings and settings to a file
 |:mkview|	:mkvie[w]	write view of current window to a file
 |:mode|		:mod[e]		show or change the screen mode
+|:mzscheme|	:mz[scheme]	execute MzScheme command
+|:mzfile|	:mzf[ile]	execute MzScheme script file
+|:nbclose|	:nbc[lose]	close the current Netbeans session
+|:nbkey|	:nb[key]	pass a key to Netbeans
+|:nbstart|	:nbs[art]	start a new Netbeans session
 |:next|		:n[ext]		go to next file in the argument list
 |:new|		:new		create a new empty window
 |:nmap|		:nm[ap]		like ":map" but for Normal mode
@@ -1446,7 +1491,8 @@ tag		command		action ~
 |:number|	:nu[mber]	print lines with line number
 |:nunmap|	:nun[map]	like ":unmap" but for Normal mode
 |:nunmenu|	:nunme[nu]	remove menu for Normal mode
-|:oldfiles|	:ol[dfiles]	list files that have marks in the |shada| file
+|:oldfiles|	:ol[dfiles]	list files that have marks in the viminfo file
+|:open|		:o[pen]		start open mode (not implemented)
 |:omap|		:om[ap]		like ":map" but for Operator-pending mode
 |:omapclear|	:omapc[lear]	remove all mappings for Operator-pending mode
 |:omenu|	:ome[nu]	add menu for Operator-pending mode
@@ -1461,12 +1507,13 @@ tag		command		action ~
 |:packloadall|	:packl[oadall]	load all packages under 'packpath'
 |:pclose|	:pc[lose]	close preview window
 |:pedit|	:ped[it]	edit file in the preview window
-|:perl|		:pe[rl]		execute perl command
-|:perldo|	:perld[o]	execute perl command for each line
-|:perlfile|	:perlf[ile]	execute perl script file
+|:perl|		:pe[rl]		execute Perl command
 |:print|	:p[rint]	print lines
 |:profdel|	:profd[el]	stop profiling a function or script
 |:profile|	:prof[ile]	profiling functions and scripts
+|:promptfind|	:pro[mptfind]	open GUI dialog for searching
+|:promptrepl|	:promptr[epl]	open GUI dialog for search/replace
+|:perldo|	:perld[o]	execute Perl command for each line
 |:pop|		:po[p]		jump to older entry in tag stack
 |:popup|	:popu[p]	popup a menu by name
 |:ppop|		:pp[op]		":pop" in preview window
@@ -1502,9 +1549,8 @@ tag		command		action ~
 |:recover|	:rec[over]	recover a file from a swap file
 |:redo|		:red[o]		redo one undone change
 |:redir|	:redi[r]	redirect messages to a file or register
-|:redraw|	:redr[aw]	force a redraw of the display
-|:redrawstatus|	:redraws[tatus]	force a redraw of the status line(s) and
-				window bar(s)
+|:redraw|	:redr[aw]	  force a redraw of the display
+|:redrawstatus|	:redraws[tatus]	  force a redraw of the status line(s)
 |:redrawtabline|  :redrawt[abline]  force a redraw of the tabline
 |:registers|	:reg[isters]	display the contents of registers
 |:resize|	:res[ize]	change current window height
@@ -1513,12 +1559,12 @@ tag		command		action ~
 |:rewind|	:rew[ind]	go to the first file in the argument list
 |:right|	:ri[ght]	right align text
 |:rightbelow|	:rightb[elow]	make split window appear right or below
-|:rshada|	:rsh[ada]	read from |shada| file
 |:ruby|		:rub[y]		execute Ruby command
 |:rubydo|	:rubyd[o]	execute Ruby command for each line
 |:rubyfile|	:rubyf[ile]	execute Ruby script file
 |:rundo|	:rund[o]	read undo information from a file
 |:runtime|	:ru[ntime]	source vim scripts in 'runtimepath'
+|:rviminfo|	:rv[iminfo]	read from viminfo file
 |:substitute|	:s[ubstitute]	find and replace text
 |:sNext|	:sN[ext]	split window and go to previous file in
 				argument list
@@ -1546,6 +1592,7 @@ tag		command		action ~
 				buffer list
 |:scriptnames|	:scr[iptnames]	list names of all sourced Vim scripts
 |:scriptencoding| :scripte[ncoding]  encoding used in sourced Vim script
+|:scriptversion|  :scriptv[ersion]   version of Vim script used
 |:scscope|	:scs[cope]	split window and execute cscope command
 |:set|		:se[t]		show or set options
 |:setfiletype|	:setf[iletype]	set 'filetype', unless it was set already
@@ -1554,15 +1601,20 @@ tag		command		action ~
 |:sfind|	:sf[ind]	split current window and edit file in 'path'
 |:sfirst|	:sfir[st]	split window and go to first file in the
 				argument list
+|:shell|	:sh[ell]	escape to a shell
+|:simalt|	:sim[alt]	Win32 GUI: simulate Windows ALT key
 |:sign|		:sig[n]		manipulate signs
 |:silent|	:sil[ent]	run a command silently
 |:sleep|	:sl[eep]	do nothing for a few seconds
+|:sleep!|	:sl[eep]!	do nothing for a few seconds, without the
+				cursor visible
 |:slast|	:sla[st]	split window and go to last file in the
 				argument list
 |:smagic|	:sm[agic]	:substitute with 'magic'
 |:smap|		:smap		like ":map" but for Select mode
 |:smapclear|	:smapc[lear]	remove all mappings for Select mode
 |:smenu|	:sme[nu]	add menu for Select mode
+|:smile|	:smi[le]	make the user happy
 |:snext|	:sn[ext]	split window and go to next file in the
 				argument list
 |:snomagic|	:sno[magic]	:substitute with 'nomagic'
@@ -1620,26 +1672,30 @@ tag		command		action ~
 |:tags|		:tags		show the contents of the tag stack
 |:tcd|		:tc[d]		change directory for tab page
 |:tchdir|	:tch[dir]	change directory for tab page
-|:terminal|	:te[rminal]	open a terminal buffer
+|:tcl|		:tcl		execute Tcl command
+|:tcldo|	:tcld[o]	execute Tcl command for each line
+|:tclfile|	:tclf[ile]	execute Tcl script file
+|:tearoff|	:te[aroff]	tear-off a menu
+|:terminal|	:ter[minal]	open a terminal window
 |:tfirst|	:tf[irst]	jump to first matching tag
 |:throw|	:th[row]	throw an exception
 |:tjump|	:tj[ump]	like ":tselect", but jump directly when there
 				is only one match
 |:tlast|	:tl[ast]	jump to last matching tag
-|:tlmenu|	:tlm[enu]	add menu for |Terminal-mode|
-|:tlnoremenu|	:tln[oremenu]	like ":noremenu" but for |Terminal-mode|
-|:tlunmenu|	:tlu[nmenu]	remove menu for |Terminal-mode|
-|:tmapclear|	:tmapc[lear]	remove all mappings for |Terminal-mode|
-|:tmap|		:tma[p]		like ":map" but for |Terminal-mode|
+|:tlmenu|	:tlm[enu]	add menu for Terminal-Job mode
+|:tlnoremenu|	:tln[oremenu]	like ":noremenu" but for Terminal-Job mode
+|:tlunmenu|	:tlu[nmenu]	remove menu for Terminal-Job mode
+|:tmapclear|	:tmapc[lear]	remove all mappings for Terminal-Job mode
+|:tmap|		:tma[p]		like ":map" but for Terminal-Job mode
 |:tmenu|	:tm[enu]	define menu tooltip
 |:tnext|	:tn[ext]	jump to next matching tag
-|:tnoremap|	:tno[remap]	like ":noremap" but for |Terminal-mode|
+|:tnoremap|	:tno[remap]	like ":noremap" but for Terminal-Job mode
 |:topleft|	:to[pleft]	make split window appear at top or far left
 |:tprevious|	:tp[revious]	jump to previous matching tag
 |:trewind|	:tr[ewind]	jump to first matching tag
 |:try|		:try		execute commands, abort on error or exception
 |:tselect|	:ts[elect]	list matching tags and select one
-|:tunmap|	:tunma[p]	like ":unmap" but for |Terminal-mode|
+|:tunmap|	:tunma[p]	like ":unmap" but for Terminal-Job mode
 |:tunmenu|	:tu[nmenu]	remove menu tooltip
 |:undo|		:u[ndo]		undo last change(s)
 |:undojoin|	:undoj[oin]	join next change with previous undo block
@@ -1654,9 +1710,12 @@ tag		command		action ~
 |:unsilent|	:uns[ilent]	run a command not silently
 |:update|	:up[date]	write buffer if modified
 |:vglobal|	:v[global]	execute commands for not matching lines
+|:var|		:var		variable declaration in Vim9
 |:version|	:ve[rsion]	print version number and other info
 |:verbose|	:verb[ose]	execute command with 'verbose' set
 |:vertical|	:vert[ical]	make following command split vertically
+|:vim9cmd|	:vim9[cmd]	make following command use Vim9 script syntax
+|:vim9script|	:vim9s[cript]	indicates Vim9 script file
 |:vimgrep|	:vim[grep]	search for pattern in files
 |:vimgrepadd|	:vimgrepa[dd]	like :vimgrep, but append to current list
 |:visual|	:vi[sual]	same as ":edit", but turns off "Ex" mode
@@ -1686,13 +1745,14 @@ tag		command		action ~
 				argument list
 |:wq|		:wq		write to a file and quit window or Vim
 |:wqall|	:wqa[ll]	write all changed buffers and quit Vim
-|:wshada|	:wsh[ada]	write to ShaDa file
 |:wundo|	:wu[ndo]	write undo information to a file
+|:wviminfo|	:wv[iminfo]	write to viminfo file
 |:xit|		:x[it]		write if buffer changed and close window
 |:xall|		:xa[ll]		same as ":wqall"
 |:xmapclear|	:xmapc[lear]	remove all mappings for Visual mode
 |:xmap|		:xm[ap]		like ":map" but for Visual mode
 |:xmenu|	:xme[nu]	add menu for Visual mode
+|:xrestore|	:xr[estore]	restores the X server connection
 |:xnoremap|	:xn[oremap]	like ":noremap" but for Visual mode
 |:xnoremenu|	:xnoreme[nu]	like ":noremenu" but for Visual mode
 |:xunmap|	:xu[nmap]	like ":unmap" but for Visual mode

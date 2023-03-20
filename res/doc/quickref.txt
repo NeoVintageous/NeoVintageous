@@ -1,4 +1,4 @@
-*quickref.txt*  Nvim
+*quickref.txt*  For Vim version 9.0.  Last change: 2022 Nov 23
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -38,7 +38,7 @@ N is used to indicate an optional count that can be given before the command.
 |l|	N  l		right (also: <Space> or <Right> key)
 |0|	   0		to first character in the line (also: <Home> key)
 |^|	   ^		to first non-blank character in the line
-|$|	N  $		to the next EOL (end of line) position
+|$|	N  $		to the last character in the line (N-1 lines lower)
 			   (also: <End> key)
 |g0|	   g0		to first character in screen line (differs from "0"
 			   when lines wrap)
@@ -356,7 +356,6 @@ In Insert or Command-line mode:
 |v_y|	     {visual}y	yank the highlighted text into a register
 |yy|	  N  yy		yank N lines into a register
 |Y|	  N  Y		yank N lines into a register
-			Note: Mapped to "y$" by default. |default-mappings|
 |p|	  N  p		put a register after the cursor position (N times)
 |P|	  N  P		put a register before the cursor position (N times)
 |]p|	  N  ]p		like p, but adjust indent to current line
@@ -490,7 +489,6 @@ In Insert or Command-line mode:
 |q|	      q{a-z}	record typed characters into register {a-z}
 |q|	      q{A-Z}	record typed characters, appended to register {a-z}
 |q|	      q		stop recording
-|Q|	      Q		replay last recorded macro
 |@|	   N  @{a-z}	execute the contents of register {a-z} (N times)
 |@@|	   N  @@	   repeat previous @{a-z} (N times)
 |:@|	   :@{a-z}	execute the contents of register {a-z} as an Ex
@@ -551,7 +549,7 @@ In Insert or Command-line mode:
 				     settings to [file] (default: ".exrc";
 				     use ! to overwrite)
 |:mkvimrc|   :mkv[imrc][!] [file]
-				  same as :mkexrc, but with default ".nvimrc"
+				  same as ":mkexrc", but with default ".vimrc"
 |:mksession| :mks[ession][!] [file]
 				  like ":mkvimrc", but store current files,
 				     windows, etc. too, to be able to continue
@@ -574,7 +572,8 @@ In Insert or Command-line mode:
 *Q_op*		Options
 
 |:set|		:se[t]			  show all modified options
-|:set|		:se[t] all		  show all options
+|:set|		:se[t] all		  show all non-termcap options
+|:set|		:se[t] termcap		  show all termcap options
 |:set|		:se[t] {option}		  set boolean option (switch it on),
 					  show string or number option
 |:set|		:se[t] no{option}	  reset boolean option (switch it off)
@@ -592,6 +591,8 @@ In Insert or Command-line mode:
 |:setglobal|	:setg[lobal]		  like ":set" but set the global value
 					  of a local option
 
+|:fix|		:fix[del]		  set value of 't_kD' according to
+					  value of 't_kb'
 |:options|	:opt[ions]		  open a new window to view and set
 					  options, grouped by functionality,
 					  a one line explanation and links to
@@ -600,8 +601,11 @@ In Insert or Command-line mode:
 Short explanation of each option:		*option-list*
 'aleph'		  'al'	    ASCII code of the letter Aleph (Hebrew)
 'allowrevins'	  'ari'     allow CTRL-_ in Insert and Command-line mode
+'altkeymap'	  'akm'	    obsolete option for Farsi
 'ambiwidth'	  'ambw'    what to do with Unicode chars of ambiguous width
+'antialias'	  'anti'    Mac OS X: use smooth, antialiased fonts
 'autochdir'	  'acd'     change directory to the file in the current window
+'autoshelldir'	  'asd'     change directory to the shell's current directory
 'arabic'	  'arab'    for Arabic as a default second language
 'arabicshape'	  'arshape' do shaping for Arabic characters
 'autoindent'	  'ai'	    take indent for new line from previous line
@@ -621,6 +625,7 @@ Short explanation of each option:		*option-list*
 'balloonexpr'	  'bexpr'   expression to show in balloon
 'belloff'	  'bo'	    do not ring the bell for these reasons
 'binary'	  'bin'     read/write/edit file in binary mode
+'bioskey'	  'biosk'   MS-DOS: use bios calls for input characters
 'bomb'			    prepend a Byte Order Mark to the file
 'breakat'	  'brk'     characters that may cause a line break
 'breakindent'	  'bri'     wrapped line repeats indent
@@ -646,21 +651,26 @@ Short explanation of each option:		*option-list*
 'columns'	  'co'	    number of columns in the display
 'comments'	  'com'     patterns that can start a comment line
 'commentstring'   'cms'     template for comments; used for fold marker
+'compatible'	  'cp'	    behave Vi-compatible as much as possible
 'complete'	  'cpt'     specify how Insert mode completion works
 'completefunc'	  'cfu'     function to be used for Insert mode completion
 'completeopt'	  'cot'     options for Insert mode completion
+'completepopup'	  'cpp'     options for the Insert mode completion info popup
 'completeslash'	  'csl'	    like 'shellslash' for completion
 'concealcursor'	  'cocu'    whether concealable text is hidden in cursor line
 'conceallevel'	  'cole'    whether concealable text is shown or hidden
 'confirm'	  'cf'	    ask what to do about unsaved/read-only files
+'conskey'	  'consk'   get keys directly from console (MS-DOS only)
 'copyindent'	  'ci'	    make 'autoindent' use existing indent structure
 'cpoptions'	  'cpo'     flags for Vi-compatible behavior
+'cryptmethod'	  'cm'	    type of encryption to use for file writing
 'cscopepathcomp'  'cspc'    how many components of the path to show
 'cscopeprg'       'csprg'   command to execute cscope
 'cscopequickfix'  'csqf'    use quickfix window for cscope results
 'cscoperelative'  'csre'    Use cscope.out path basename as prefix
 'cscopetag'       'cst'     use cscope for tag commands
 'cscopetagorder'  'csto'    determines ":cstag" search order
+'cscopeverbose'   'csverb'  give messages when adding a cscope database
 'cursorbind'	  'crb'     move cursor in window as it moves in other windows
 'cursorcolumn'	  'cuc'	    highlight the screen column of the cursor
 'cursorline'	  'cul'	    highlight the screen line of the cursor
@@ -676,16 +686,20 @@ Short explanation of each option:		*option-list*
 'directory'	  'dir'     list of directory names for the swap file
 'display'	  'dy'	    list of flags for how to display text
 'eadirection'	  'ead'     in which direction 'equalalways' works
+'edcompatible'	  'ed'	    toggle flags of ":substitute" command
+'emoji'		  'emo'	    emoji characters are considered full width
 'encoding'	  'enc'     encoding used internally
+'endoffile'	  'eof'     write CTRL-Z at end of the file
 'endofline'	  'eol'     write <EOL> for last line in file
 'equalalways'	  'ea'	    windows are automatically made the same size
 'equalprg'	  'ep'	    external program to use for "=" command
 'errorbells'	  'eb'	    ring the bell for error messages
 'errorfile'	  'ef'	    name of the errorfile for the QuickFix mode
 'errorformat'	  'efm'     description of the lines in the error file
+'esckeys'	  'ek'	    recognize function keys in Insert mode
 'eventignore'	  'ei'	    autocommand events that are ignored
 'expandtab'	  'et'	    use spaces when <Tab> is inserted
-'exrc'		  'ex'	    read .nvimrc and .exrc in the current directory
+'exrc'		  'ex'	    read .vimrc and .exrc in the current directory
 'fileencoding'	  'fenc'    file encoding for multibyte text
 'fileencodings'   'fencs'   automatically detected character encodings
 'fileformat'	  'ff'	    file format used for file I/O
@@ -694,6 +708,7 @@ Short explanation of each option:		*option-list*
 'filetype'	  'ft'	    type of file, used for autocommands
 'fillchars'	  'fcs'     characters to use for displaying special items
 'fixendofline'	  'fixeol'  make sure last line in file has <EOL>
+'fkmap'		  'fk'	    obsolete option for Farsi
 'foldclose'	  'fcl'     close a fold when the cursor leaves it
 'foldcolumn'	  'fdc'     width of the column used to indicate folds
 'foldenable'	  'fen'     set to display all folds open
@@ -717,42 +732,54 @@ Short explanation of each option:		*option-list*
 'grepprg'	  'gp'	    program to use for ":grep"
 'guicursor'	  'gcr'     GUI: settings for cursor shape and blinking
 'guifont'	  'gfn'     GUI: Name(s) of font(s) to be used
+'guifontset'	  'gfs'     GUI: Names of multibyte fonts to be used
 'guifontwide'	  'gfw'     list of font names for double-wide characters
+'guiheadroom'	  'ghr'     GUI: pixels room for window decorations
+'guiligatures'	  'gli'	    GTK GUI: ASCII characters that can form shapes
 'guioptions'	  'go'	    GUI: Which components and options are used
+'guipty'		    GUI: try to use a pseudo-tty for ":!" commands
 'guitablabel'	  'gtl'     GUI: custom label for a tab page
 'guitabtooltip'   'gtt'     GUI: custom tooltip for a tab page
 'helpfile'	  'hf'	    full path name of the main help file
 'helpheight'	  'hh'	    minimum height of a new help window
 'helplang'	  'hlg'     preferred help languages
 'hidden'	  'hid'     don't unload buffer when it is |abandon|ed
-'hlsearch'	  'hls'     highlight matches with last search pattern
+'highlight'	  'hl'	    sets highlighting mode for various occasions
 'history'	  'hi'	    number of command-lines that are remembered
 'hkmap'		  'hk'	    Hebrew keyboard mapping
 'hkmapp'	  'hkp'     phonetic Hebrew keyboard mapping
+'hlsearch'	  'hls'     highlight matches with last search pattern
 'icon'			    let Vim set the text of the window icon
 'iconstring'		    string to use for the Vim icon text
 'ignorecase'	  'ic'	    ignore case in search patterns
+'imactivatefunc'  'imaf'    function to enable/disable the X input method
+'imactivatekey'   'imak'    key that activates the X input method
 'imcmdline'	  'imc'     use IM when starting to edit a command line
 'imdisable'	  'imd'     do not use the IM in any mode
 'iminsert'	  'imi'     use :lmap or IM in Insert mode
 'imsearch'	  'ims'     use :lmap or IM when typing a search pattern
+'imstatusfunc'    'imsf'    function to obtain X input method status
+'imstyle'	  'imst'    specifies the input style of the input method
 'include'	  'inc'     pattern to be used to find an include file
 'includeexpr'	  'inex'    expression used to process an include line
 'incsearch'	  'is'	    highlight match while typing search pattern
 'indentexpr'	  'inde'    expression used to obtain the indent of a line
 'indentkeys'	  'indk'    keys that trigger indenting with 'indentexpr'
 'infercase'	  'inf'     adjust case of match for keyword completion
+'insertmode'	  'im'	    start the edit of a file in Insert mode
 'isfname'	  'isf'     characters included in file names and pathnames
 'isident'	  'isi'     characters included in identifiers
 'iskeyword'	  'isk'     characters included in keywords
 'isprint'	  'isp'     printable characters
 'joinspaces'	  'js'	    two spaces after a period with a join command
-'jumpoptions'	  'jop'     specifies how jumping is done
+'key'			    encryption key
 'keymap'	  'kmp'     name of a keyboard mapping
 'keymodel'	  'km'	    enable starting/stopping selection with keys
+'keyprotocol'	  'kpc'	    what keyboard protocol to use for what terminal
 'keywordprg'	  'kp'	    program to use for the "K" command
 'langmap'	  'lmap'    alphabetic characters for other language mode
 'langmenu'	  'lm'	    language to be used for the menus
+'langnoremap'	  'lnr'	    do not apply 'langmap' to mapped characters
 'langremap'	  'lrm'	    do apply 'langmap' to mapped characters
 'laststatus'	  'ls'	    tells when last window has status lines
 'lazyredraw'	  'lz'	    don't redraw while executing macros
@@ -760,10 +787,13 @@ Short explanation of each option:		*option-list*
 'lines'			    number of lines in the display
 'linespace'	  'lsp'     number of pixel lines to use between characters
 'lisp'			    automatic indenting for Lisp
+'lispoptions'	  'lop'     changes how Lisp indenting is done
 'lispwords'	  'lw'	    words that change how lisp indenting works
 'list'			    show <Tab> and <EOL>
 'listchars'	  'lcs'     characters for displaying in list mode
 'loadplugins'	  'lpl'     load plugin scripts when starting up
+'luadll'		    name of the Lua dynamic library
+'macatsui'		    Mac GUI: use ATSUI text drawing
 'magic'			    changes special characters in search patterns
 'makeef'	  'mef'     name of the errorfile for ":make"
 'makeencoding'	  'menc'    encoding of external make/grep commands
@@ -773,7 +803,9 @@ Short explanation of each option:		*option-list*
 'maxcombine'	  'mco'     maximum nr of combining characters displayed
 'maxfuncdepth'	  'mfd'     maximum recursive depth for user functions
 'maxmapdepth'	  'mmd'     maximum recursive depth for mapping
+'maxmem'	  'mm'	    maximum memory (in Kbyte) used for one buffer
 'maxmempattern'   'mmp'     maximum memory (in Kbyte) used for pattern search
+'maxmemtot'	  'mmt'     maximum memory (in Kbyte) used for all buffers
 'menuitems'	  'mis'     maximum number of items in a menu
 'mkspellmem'	  'msm'     memory used before |:mkspell| compresses the tree
 'modeline'	  'ml'	    recognize modelines at start or end of file
@@ -786,15 +818,19 @@ Short explanation of each option:		*option-list*
 'mousefocus'	  'mousef'  keyboard focus follows the mouse
 'mousehide'	  'mh'	    hide mouse pointer while typing
 'mousemodel'	  'mousem'  changes meaning of mouse buttons
-'mousescroll'		    amount to scroll by when scrolling with a mouse
+'mousemoveevent'  'mousemev'  report mouse moves with <MouseMove>
 'mouseshape'	  'mouses'  shape of the mouse pointer in different modes
 'mousetime'	  'mouset'  max time between mouse double-click
+'mzquantum'	  'mzq'     the interval between polls for MzScheme threads
+'mzschemedll'		    name of the MzScheme dynamic library
+'mzschemegcdll'		    name of the MzScheme dynamic library for GC
 'nrformats'	  'nf'	    number formats recognized for CTRL-A command
 'number'	  'nu'	    print the line number in front of each line
 'numberwidth'	  'nuw'     number of columns used for the line number
 'omnifunc'	  'ofu'     function for filetype-specific completion
 'opendevice'	  'odev'    allow reading/writing devices on MS-Windows
 'operatorfunc'	  'opfunc'  function to be called for |g@| operator
+'osfiletype'	  'oft'     no longer supported
 'packpath'	  'pp'      list of directories used for packages
 'paragraphs'	  'para'    nroff macros that separate paragraphs
 'paste'			    allow pasting text
@@ -815,17 +851,24 @@ Short explanation of each option:		*option-list*
 'printmbcharset'  'pmbcs'   CJK character set to be used for :hardcopy
 'printmbfont'	  'pmbfn'   font names to be used for CJK output of :hardcopy
 'printoptions'	  'popt'    controls the format of :hardcopy output
+'prompt'	  'prompt'  enable prompt in Ex mode
 'pumheight'	  'ph'	    maximum height of the popup menu
 'pumwidth'	  'pw'	    minimum width of the popup menu
 'pythondll'		    name of the Python 2 dynamic library
+'pythonhome'		    name of the Python 2 home directory
 'pythonthreedll'	    name of the Python 3 dynamic library
+'pythonthreehome'	    name of the Python 3 home directory
 'pyxversion'	  'pyx'	    Python version used for pyx* commands
+'quickfixtextfunc' 'qftf'   function for the text in the quickfix window
 'quoteescape'	  'qe'	    escape characters used in a string
 'readonly'	  'ro'	    disallow writing the buffer
 'redrawtime'	  'rdt'     timeout for 'hlsearch' and |:match| highlighting
 'regexpengine'	  're'	    default regexp engine to use
 'relativenumber'  'rnu'	    show relative line number in front of each line
+'remap'			    allow mappings to work recursively
+'renderoptions'	  'rop'	    options for text rendering on Windows
 'report'		    threshold for reporting nr. of lines changed
+'restorescreen'   'rs'	    Win32: restore screen when exiting
 'revins'	  'ri'	    inserting characters will work backwards
 'rightleft'	  'rl'	    window is right-to-left oriented
 'rightleftcmd'	  'rlc'     commands for which editing works right-to-left
@@ -835,6 +878,7 @@ Short explanation of each option:		*option-list*
 'runtimepath'	  'rtp'     list of directories used for runtime files
 'scroll'	  'scr'     lines to scroll with CTRL-U and CTRL-D
 'scrollbind'	  'scb'     scroll in window as other windows scroll
+'scrollfocus'	  'scf'     scroll wheel applies to window under pointer
 'scrolljump'	  'sj'	    minimum number of lines to scroll
 'scrolloff'	  'so'	    minimum nr. of lines above and below cursor
 'scrollopt'	  'sbo'     how 'scrollbind' should behave
@@ -843,7 +887,6 @@ Short explanation of each option:		*option-list*
 'selection'	  'sel'     what type of selection to use
 'selectmode'	  'slm'     when to use Select mode instead of Visual mode
 'sessionoptions'  'ssop'    options for |:mksession|
-'shada'		  'sd'	    use .shada file upon startup and exiting
 'shell'		  'sh'	    name of shell to use for external commands
 'shellcmdflag'	  'shcf'    flag to shell to execute one command
 'shellpipe'	  'sp'	    string to put output of ":make" in error file
@@ -851,11 +894,13 @@ Short explanation of each option:		*option-list*
 'shellredir'	  'srr'     string to put output of filter in a temp file
 'shellslash'	  'ssl'     use forward slash for shell file names
 'shelltemp'	  'stmp'    whether to use a temp file for shell commands
+'shelltype'	  'st'	    Amiga: influences how to use a shell
 'shellxescape'	  'sxe'     characters to escape when 'shellxquote' is (
 'shellxquote'	  'sxq'     like 'shellquote', but include redirection
 'shiftround'	  'sr'	    round indent to multiple of shiftwidth
 'shiftwidth'	  'sw'	    number of spaces to use for (auto)indent step
 'shortmess'	  'shm'     list of flags, reduce length of messages
+'shortname'	  'sn'	    Filenames assumed to be 8.3 chars
 'showbreak'	  'sbr'     string to use at the start of wrapped lines
 'showcmd'	  'sc'	    show (partial) command in status line
 'showfulltag'	  'sft'     show full tag pattern when completing tag
@@ -864,10 +909,11 @@ Short explanation of each option:		*option-list*
 'showtabline'	  'stal'    tells when the tab pages line is displayed
 'sidescroll'	  'ss'	    minimum number of columns to scroll horizontal
 'sidescrolloff'   'siso'    min. nr. of columns to left and right of cursor
-'signcolumn'	  'scl'	    when and how to display the sign column
+'signcolumn'	  'scl'	    when to display the sign column
 'smartcase'	  'scs'     no ignore case when pattern has uppercase
 'smartindent'	  'si'	    smart autoindenting for C programs
 'smarttab'	  'sta'     use 'shiftwidth' when inserting <Tab>
+'smoothscroll'	  'sms'     scroll by screen lines when 'wrap' is set
 'softtabstop'	  'sts'     number of spaces that <Tab> uses while editing
 'spell'			    enable spell checking
 'spellcapcheck'   'spc'     pattern to locate end of a sentence
@@ -876,12 +922,14 @@ Short explanation of each option:		*option-list*
 'spelloptions'	  'spo'     options for spell checking
 'spellsuggest'	  'sps'     method(s) used to suggest spelling corrections
 'splitbelow'	  'sb'	    new window from split is below the current one
+'splitkeep'	  'spk'     determines scroll behavior for split windows
 'splitright'	  'spr'     new window is put right of the current one
 'startofline'	  'sol'     commands move cursor to first non-blank in line
 'statusline'	  'stl'     custom format for the status line
 'suffixes'	  'su'	    suffixes that are ignored with multiple match
 'suffixesadd'	  'sua'     suffixes added when searching for a file
 'swapfile'	  'swf'     whether to use a swapfile for a buffer
+'swapsync'	  'sws'     how to sync the swap file
 'switchbuf'	  'swb'     sets behavior when switching to another buffer
 'synmaxcol'	  'smc'     maximum column to find syntax items
 'syntax'	  'syn'     syntax to be loaded for current buffer
@@ -890,12 +938,23 @@ Short explanation of each option:		*option-list*
 'tabstop'	  'ts'	    number of spaces that <Tab> in file uses
 'tagbsearch'	  'tbs'     use binary searching in tags files
 'tagcase'	  'tc'      how to handle case when searching in tags files
+'tagfunc'	  'tfu'	    function to get list of tag matches
 'taglength'	  'tl'	    number of significant characters for a tag
 'tagrelative'	  'tr'	    file names in tag file are relative
 'tags'		  'tag'     list of file names used by the tag command
 'tagstack'	  'tgst'    push tags onto the tag stack
+'tcldll'		    name of the Tcl dynamic library
 'term'			    name of the terminal
 'termbidi'	  'tbidi'   terminal takes care of bi-directionality
+'termencoding'	  'tenc'    character encoding used by the terminal
+'termguicolors'	  'tgc'     use GUI colors for the terminal
+'termwinkey'	  'twk'	    key that precedes a Vim command in a terminal
+'termwinscroll'   'twsl'    max number of scrollback lines in a terminal window
+'termwinsize'	  'tws'	    size of a terminal window
+'termwintype'	  'twt'	    MS-Windows: type of pty to use for terminal window
+'terse'			    shorten some messages
+'textauto'	  'ta'	    obsolete, use 'fileformats'
+'textmode'	  'tx'	    obsolete, use 'fileformat'
 'textwidth'	  'tw'	    maximum width of text that is being inserted
 'thesaurus'	  'tsr'     list of thesaurus files for keyword completion
 'thesaurusfunc'	  'tsrfu'   function to be used for thesaurus completion
@@ -906,8 +965,14 @@ Short explanation of each option:		*option-list*
 'titlelen'		    percentage of 'columns' used for window title
 'titleold'		    old title, restored when exiting
 'titlestring'		    string to use for the Vim window title
+'toolbar'	  'tb'	    GUI: which items to show in the toolbar
+'toolbariconsize' 'tbis'    size of the toolbar icons (for GTK 2 only)
 'ttimeout'		    time out on mappings
 'ttimeoutlen'	  'ttm'     time out time for key codes in milliseconds
+'ttybuiltin'	  'tbi'     use built-in termcap before external termcap
+'ttyfast'	  'tf'	    indicates a fast terminal connection
+'ttymouse'	  'ttym'    type of mouse codes generated
+'ttyscroll'	  'tsl'     maximum number of lines for a scroll
 'ttytype'	  'tty'     alias for 'term'
 'undodir'	  'udir'    where to store undo files
 'undofile'	  'udf'	    save undo information in a file
@@ -921,9 +986,12 @@ Short explanation of each option:		*option-list*
 'verbosefile'	  'vfile'   file to write messages in
 'viewdir'	  'vdir'    directory where to store files with :mkview
 'viewoptions'	  'vop'     specifies what to save for :mkview
+'viminfo'	  'vi'	    use .viminfo file upon startup and exiting
+'viminfofile'	  'vif'	    file name used for the viminfo file
 'virtualedit'	  've'	    when to use virtual editing
 'visualbell'	  'vb'	    use visual bell instead of beeping
 'warn'			    warn for shell command when buffer was changed
+'weirdinvert'	  'wiv'	    for terminals that have weird inversion method
 'whichwrap'	  'ww'	    allow specified keys to cross line boundaries
 'wildchar'	  'wc'	    command-line character for wildcard expansion
 'wildcharm'	  'wcm'     like 'wildchar' but also works when mapped
@@ -933,13 +1001,14 @@ Short explanation of each option:		*option-list*
 'wildmode'	  'wim'     mode for 'wildchar' command-line expansion
 'wildoptions'	  'wop'     specifies how command line completion is done
 'winaltkeys'	  'wak'     when the windows system handles ALT keys
+'wincolor'	  'wcr'	    window-local highlighting
 'window'	  'wi'	    nr of lines to scroll for CTRL-F and CTRL-B
 'winheight'	  'wh'	    minimum number of lines for the current window
-'winhighlight'	  'winhl'   window-local highlighting
 'winfixheight'	  'wfh'     keep window height when opening/closing windows
 'winfixwidth'	  'wfw'     keep window width when opening/closing windows
 'winminheight'	  'wmh'     minimum number of lines for any window
 'winminwidth'	  'wmw'     minimal number of columns for any window
+'winptydll'		    name of the winpty dynamic library
 'winwidth'	  'wiw'     minimal number of columns for current window
 'wrap'			    long lines wrap and continue on the next line
 'wrapmargin'	  'wm'	    chars from the right where wrapping starts
@@ -948,6 +1017,7 @@ Short explanation of each option:		*option-list*
 'writeany'	  'wa'	    write to file with no need for "!" override
 'writebackup'	  'wb'	    make a backup before overwriting a file
 'writedelay'	  'wd'	    delay this many msec for each char (for debug)
+'xtermcodes'		    request terminal codes from an xterm
 ------------------------------------------------------------------------------
 *Q_ur*		Undo/Redo commands
 
@@ -957,6 +1027,7 @@ Short explanation of each option:		*option-list*
 ------------------------------------------------------------------------------
 *Q_et*		External commands
 
+|:shell|	:sh[ell]	start a shell
 |:!|		:!{command}	execute {command} with a shell
 |K|		   K		lookup keyword under the cursor with
 				   'keywordprg' program (default: "man")
@@ -996,11 +1067,14 @@ Short explanation of each option:		*option-list*
 |g_CTRL-G|	   g CTRL-G	show cursor column, line, and character
 				   position
 |CTRL-C|	   CTRL-C	during searches: Interrupt the search
+|dos-CTRL-Break|   CTRL-Break	MS-Windows: during searches: Interrupt the
+				   search
 |<Del>|		   <Del>	while entering a count: delete last character
 |:version|	:ve[rsion]	show version information
+|:mode|		:mode N		set screen mode to N (obsolete)
 |:normal|	:norm[al][!] {commands}
 				execute Normal mode commands
-|gQ|		   gQ		switch to "Ex" mode
+|Q|		   Q		switch to "Ex" mode
 
 |:redir|	:redir >{file}		redirect messages to {file}
 |:silent|	:silent[!] {command}	execute {command} silently
@@ -1109,6 +1183,7 @@ Context-sensitive completion on the command-line:
 ------------------------------------------------------------------------------
 *Q_st*		Starting Vim
 
+|-vim|	   vim [options]		start editing with an empty buffer
 |-file|	   vim [options] {file} ..	start editing one or more files
 |--|	   vim [options] -		read file from stdin
 |-tag|	   vim [options] -t {tag}	edit the file associated with {tag}
@@ -1117,27 +1192,39 @@ Context-sensitive completion on the command-line:
 
 	Most useful Vim arguments (for full list see |startup-options|)
 
+|-gui|	-g		    start GUI (also allows other options)
+
 |-+|	+[num]		    put the cursor at line [num] (default: last line)
 |-+c|	+{command}	    execute {command} after loading the file
 |-+/|	+/{pat} {file} ..   put the cursor at the first occurrence of {pat}
+|-v|	-v		    Vi mode, start ex in Normal mode
 |-e|	-e		    Ex mode, start vim in Ex mode
 |-R|	-R		    Read-only mode, implies -n
 |-m|	-m		    modifications not allowed (resets 'write' option)
-|-d|	-d		    |diff-mode|
+|-d|	-d		    diff mode |diff|
 |-b|	-b		    binary mode
 |-l|	-l		    lisp mode
 |-A|	-A		    Arabic mode ('arabic' is set)
+|-F|	-F		    Farsi mode ('fkmap' and 'rightleft' are set)
 |-H|	-H		    Hebrew mode ('hkmap' and 'rightleft' are set)
 |-V|	-V		    Verbose, give informative messages
+|-C|	-C		    Compatible, set the 'compatible' option
+|-N|	-N		    Nocompatible, reset the 'compatible' option
 |-r|	-r		    give list of swap files
 |-r|	-r {file} ..	    recover aborted edit session
 |-n|	-n		    do not create a swap file
 |-o|	-o [num]	    open [num] windows (default: one for each file)
+|-f|	-f		    GUI: foreground process, don't fork
+			    Amiga: do not restart Vim to open a window (for
+				e.g., mail)
 |-s|	-s {scriptin}	    first read commands from the file {scriptin}
 |-w|	-w {scriptout}	    write typed chars to file {scriptout} (append)
 |-W|	-W {scriptout}	    write typed chars to file {scriptout} (overwrite)
+|-T|	-T {terminal}	    set terminal name
+|-d|	-d {device}	    Amiga: open {device} to be used as a console
 |-u|	-u {vimrc}	    read inits from {vimrc} instead of other inits
-|-i|	-i {shada}	    read info from {shada} instead of other files
+|-U|	-U {gvimrc}	    idem, for when starting the GUI
+|-i|	-i {viminfo}	    read info from {viminfo} instead of other files
 |---|	--		    end of options, other arguments are file names
 |--help|    --help	    show list of arguments and exit
 |--version| --version	    show version info and exit
@@ -1221,12 +1308,12 @@ Context-sensitive completion on the command-line:
 ------------------------------------------------------------------------------
 *Q_ac*		Automatic Commands
 
-|shada-file|	read registers, marks, history at startup, save when exiting.
+|viminfo-file|	read registers, marks, history at startup, save when exiting.
 
-|:rshada|	:rsh[ada] [file]	read info from ShaDa file [file]
-|:rshada|	:rsh[ada]! [file]	idem, overwrite existing info
-|:wshada|	:wsh[ada] [file]	add info to ShaDa file [file]
-|:wshada|	:wsh[ada]! [file]	write info to ShaDa file [file]
+|:rviminfo|	:rv[iminfo] [file]	read info from viminfo file [file]
+|:rviminfo|	:rv[iminfo]! [file]	idem, overwrite existing info
+|:wviminfo|	:wv[iminfo] [file]	add info to viminfo file [file]
+|:wviminfo|	:wv[iminfo]! [file]	write info to viminfo file [file]
 
 |modeline|	Automatic option setting when editing a file
 
@@ -1343,6 +1430,9 @@ Context-sensitive completion on the command-line:
 					automatic indenting and settings
 ------------------------------------------------------------------------------
 *Q_gu*		GUI commands
+
+|:gui|		:gui			UNIX: start the GUI
+|:gui|		:gui {fname} ..		idem, and edit {fname} ..
 
 |:menu|		:menu			list all menus
 |:menu|		:menu {mpath}		list menus starting with {mpath}

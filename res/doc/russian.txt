@@ -1,4 +1,4 @@
-*russian.txt*   Nvim
+*russian.txt*   For Vim version 9.0.  Last change: 2006 Apr 24
 
 
 		  VIM REFERENCE MANUAL    by Vassily Ragosin
@@ -6,7 +6,10 @@
 
 Russian language localization and support in Vim	   *russian* *Russian*
 
-                                      Type |gO| to see the table of contents.
+1. Introduction				  |russian-intro|
+2. Russian keymaps			  |russian-keymap|
+3. Localization				  |russian-l18n|
+4. Known issues				  |russian-issues|
 
 ===============================================================================
 1. Introduction							*russian-intro*
@@ -46,6 +49,10 @@ Russian, you will need to install the RuVim Language Pack, available in
 different codepages from
 
     http://www.sourceforge.net/projects/ruvim/
+
+Make sure that your Vim is at least 6.2.506 and use ruvim 0.5 or later for
+automatic installs.  Vim also needs to be compiled with |+gettext| feature for
+user interface items translations to work.
 
 After downloading an archive from RuVim project, unpack it into your
 $VIMRUNTIME directory.  We recommend using UTF-8 archive.
