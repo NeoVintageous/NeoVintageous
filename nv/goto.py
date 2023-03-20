@@ -23,7 +23,7 @@ from sublime import find_resources
 from sublime import load_resource
 from sublime import version
 
-from NeoVintageous.nv.jumplist import jumplist_update
+from NeoVintageous.nv.jumplist import jumplist_updater
 from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.polyfill import view_find
 from NeoVintageous.nv.ui import ui_bell
@@ -253,9 +253,8 @@ def goto_line(view, mode: str, line_number: int) -> None:
             return Region(s.a, view.full_line(dest).b)
         return s
 
-    jumplist_update(view)
-    regions_transformer(view, f)
-    jumplist_update(view)
+    with jumplist_updater(view):
+        regions_transformer(view, f)
     show_if_not_visible(view)
 
 

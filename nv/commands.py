@@ -45,7 +45,7 @@ from NeoVintageous.nv.history import history_get
 from NeoVintageous.nv.history import history_get_type
 from NeoVintageous.nv.history import history_len
 from NeoVintageous.nv.history import history_update
-from NeoVintageous.nv.jumplist import jumplist_update
+from NeoVintageous.nv.jumplist import jumplist_updater
 from NeoVintageous.nv.macros import add_macro_step
 from NeoVintageous.nv.marks import get_mark
 from NeoVintageous.nv.marks import set_mark
@@ -1423,9 +1423,8 @@ class nv_vi_quote(TextCommand):
             view, target = target
             self.view.window().focus_view(view)
 
-        jumplist_update(self.view)
-        regions_transformer(self.view, f)
-        jumplist_update(self.view)
+        with jumplist_updater(self.view):
+            regions_transformer(self.view, f)
 
         if not self.view.visible_region().intersects(target):
             self.view.show_at_center(target)
@@ -1462,9 +1461,8 @@ class nv_vi_backtick(TextCommand):
             view, target = target
             self.view.window().focus_view(view)
 
-        jumplist_update(self.view)
-        regions_transformer(self.view, f)
-        jumplist_update(self.view)
+        with jumplist_updater(self.view):
+            regions_transformer(self.view, f)
 
 
 class nv_vi_big_d(TextCommand):
@@ -3075,9 +3073,8 @@ class nv_vi_gg(TextCommand):
 
             return s
 
-        jumplist_update(self.view)
-        regions_transformer(self.view, f)
-        jumplist_update(self.view)
+        with jumplist_updater(self.view):
+            regions_transformer(self.view, f)
 
 
 class nv_vi_big_g(TextCommand):
@@ -3098,10 +3095,9 @@ class nv_vi_big_g(TextCommand):
 
             return s
 
-        jumplist_update(self.view)
-        target = self.view.size()
-        regions_transformer(self.view, f)
-        jumplist_update(self.view)
+        with jumplist_updater(self.view):
+            target = self.view.size()
+            regions_transformer(self.view, f)
 
 
 class nv_vi_dollar(TextCommand):
@@ -3425,9 +3421,8 @@ class nv_vi_star(TextCommand):
 
         pattern, flags = process_word_search_pattern(self.view, word)
 
-        jumplist_update(self.view)
-        regions_transformer(self.view, f)
-        jumplist_update(self.view)
+        with jumplist_updater(self.view):
+            regions_transformer(self.view, f)
 
         add_search_highlighting(self.view, find_word_search_occurrences(self.view, pattern, flags))
 
@@ -3471,9 +3466,8 @@ class nv_vi_octothorp(TextCommand):
 
         pattern, flags = process_word_search_pattern(self.view, word)
 
-        jumplist_update(self.view)
-        regions_transformer(self.view, f)
-        jumplist_update(self.view)
+        with jumplist_updater(self.view):
+            regions_transformer(self.view, f)
 
         add_search_highlighting(self.view, find_word_search_occurrences(self.view, pattern, flags))
 
@@ -4157,21 +4151,19 @@ class nv_vi_go_to_symbol(TextCommand):
             # Global symbol; simply open the file; not a motion.
             # TODO: Perhaps must be a motion if the target file happens to be
             #       the current one?
-            jumplist_update(self.view)
-            self.view.window().open_file(
-                location[0] + ':' + ':'.join([str(x) for x in location[2]]),
-                ENCODED_POSITION
-            )
-            jumplist_update(self.view)
+            with jumplist_updater(self.view):
+                self.view.window().open_file(
+                    location[0] + ':' + ':'.join([str(x) for x in location[2]]),
+                    ENCODED_POSITION
+                )
 
             return
 
         # Local symbol; select.
         location = self.view.text_point(*location)
 
-        jumplist_update(self.view)
-        regions_transformer(self.view, f)
-        jumplist_update(self.view)
+        with jumplist_updater(self.view):
+            regions_transformer(self.view, f)
 
 
 class nv_vi_gm(TextCommand):
