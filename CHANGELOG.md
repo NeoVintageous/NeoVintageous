@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.28.0 - Unreleased
+## 1.28.0 - 2023-03-20
 
 * Added [#796](https://github.com/NeoVintageous/NeoVintageous/issues/796): Registers are now persisted on restarts
 * Added [#833](https://github.com/NeoVintageous/NeoVintageous/issues/833): Sessions are now saved on exit instead of at runtime (builds >= 4081)
