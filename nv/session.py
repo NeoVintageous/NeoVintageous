@@ -1,4 +1,6 @@
 from collections import defaultdict
+from collections import deque
+from json import JSONEncoder
 import json
 import os
 import traceback
@@ -6,7 +8,7 @@ import traceback
 from sublime import version
 from sublime import packages_path
 
-_session = {}
+_session = {}  # type: dict
 
 _views = defaultdict(dict)  # type: dict
 
@@ -79,6 +81,7 @@ def load_session() -> None:
                         'ex_substitute_last_replacement',
                         'last_used_register_name',
                         'macros',
+                        'registers',
                     )
 
                     for k, v in session.items():
@@ -99,6 +102,18 @@ def load_session() -> None:
                             # history is a special case.
                             continue
 
+                        # TODO Refactor registers module to be session friendly.
+                        if k == 'registers':
+                            _session['registers'] = {}
+                            for _k, _v in v.items():
+                                if _k == '1-9':
+                                    _v = deque(_v, maxlen=9)
+
+                                _session['registers'][_k] = _v
+
+                            # registers is a special case.
+                            continue
+
                         _session[k] = v
 
     except FileNotFoundError:
@@ -109,7 +124,17 @@ def load_session() -> None:
 
 def save_session() -> None:
     with open(_get_session_file(), 'w', encoding='utf-8') as f:
-        f.write(json.dumps(_session))
+        f.write(json.dumps(_session, cls=_JsonSessionEncoder))
+
+
+# Some sessions contain types that are not JSON serializable e.g. registers use
+# deque which is not serializable. See https://stackoverflow.com/a/8230505.
+class _JsonSessionEncoder(JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, deque):
+            return list(obj)
+
+        return JSONEncoder.default(self, obj)
 
 
 def get_session_value(name: str, default=None):

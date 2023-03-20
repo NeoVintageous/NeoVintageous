@@ -42,7 +42,7 @@ from NeoVintageous.nv.registers import _SELECTION_AND_DROP
 from NeoVintageous.nv.registers import _SMALL_DELETE
 from NeoVintageous.nv.registers import _SPECIAL
 from NeoVintageous.nv.registers import _UNNAMED
-from NeoVintageous.nv.registers import _data
+from NeoVintageous.nv.registers import _get_data
 from NeoVintageous.nv.registers import _get_selected_text
 from NeoVintageous.nv.registers import _is_register_linewise
 from NeoVintageous.nv.registers import _is_register_writable
@@ -75,7 +75,10 @@ class RegistersTestCase(unittest.ResetRegisters, unittest.ViewTestCase):
         _reset()
 
     def assertEmptyRegisters(self):
-        self.assertEqual(_data, {'0': (None, False), '1-9': deque([(None, False)] * 9, maxlen=9)})
+        self.assertEqual(_get_data(), {
+            '0': (None, False),
+            '1-9': deque([(None, False)] * 9, maxlen=9)
+        })
 
 
 class Test_get_for_paste(RegistersTestCase):
@@ -582,7 +585,7 @@ class Test_op_delete(RegistersTestCase):
         self.assertEqual(registers_get(self.view, '7'), ['x\n7'])
         self.assertEqual(registers_get(self.view, '8'), ['x\n8'])
         self.assertEqual(registers_get(self.view, '9'), ['x\n9'])
-        self.assertEqual(len(_data['1-9']), 9)
+        self.assertEqual(len(_get_data()['1-9']), 9)
         self.assertFalse(_is_register_linewise('"'))
         self.assertFalse(_is_register_linewise('8'))
         self.assertEqual(registers_get_for_paste(self.view, '"', unittest.INTERNAL_NORMAL), (['x\n1'], False))

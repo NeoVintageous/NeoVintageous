@@ -4,11 +4,12 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.28.0 - Unreleased
 
+* Added [#796](https://github.com/NeoVintageous/NeoVintageous/issues/796): Registers are now persisted on restarts
 * Added [#833](https://github.com/NeoVintageous/NeoVintageous/issues/833): Sessions are now saved on exit instead of at runtime (builds >= 4081)
 * Added [#74](https://github.com/NeoVintageous/NeoVintageous/issues/74): Add `#` alternate file register
 * Added [#74](https://github.com/NeoVintageous/NeoVintageous/issues/74): Add `<C-^>` (`<C-6>`) go to most recent used file
-* Added [#833](https://github.com/NeoVintageous/NeoVintageous/issues/833): Persist macros on restarts
-* Added [#833](https://github.com/NeoVintageous/NeoVintageous/issues/833): Recorded macros are now global
+* Added [#833](https://github.com/NeoVintageous/NeoVintageous/issues/833): Macros on now persisted on restarts
+* Added [#833](https://github.com/NeoVintageous/NeoVintageous/issues/833): Macros are now persisted globally
 
 ## 1.27.4 - 2022-12-16
 

@@ -35,6 +35,8 @@ except Exception:  # pragma: no cover
     def update_clipboard_history(text: str) -> None:
         print('NeoVintageous: update_clipboard_history() noop; could not import default pakage history updater')
 
+from NeoVintageous.nv.session import get_session_value
+from NeoVintageous.nv.session import maybe_do_runtime_save_session
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_LINE
@@ -121,43 +123,53 @@ _SPECIAL = (
 _ALL = _SPECIAL + _NUMBERED + _NAMED
 
 
-_data = {'0': (None, False), '1-9': deque([(None, False)] * 9, maxlen=9)}  # type: dict
-
-
 def _reset() -> None:
-    _data.clear()
-    _data['0'] = (None, False)
-    _data['1-9'] = deque([(None, False)] * 9, maxlen=9)
+    registers = _get_data()
+    registers.clear()
+    _init_registers(registers)
+
+
+def _init_registers(registers: dict) -> None:
+    registers['0'] = (None, False)
+    registers['1-9'] = deque([(None, False)] * 9, maxlen=9)
+
+
+def _get_data() -> dict:
+    registers = get_session_value('registers', {})
+    if not registers:
+        _init_registers(registers)
+
+    return registers
 
 
 def _set_data(name: str, values: list, linewise: bool) -> None:
-    _data[name] = (values, linewise)
+    _get_data()[name] = (values, linewise)
 
 
 def _get_data_values(name: str, default=None):
     try:
-        return _data[name][0]
+        return _get_data()[name][0]
     except KeyError:
         return default
 
 
 def _shift_numbered_register(content: list, linewise: bool) -> None:
-    _data['1-9'].appendleft((content, linewise))
+    _get_data()['1-9'].appendleft((content, linewise))
 
 
 def _set_numbered_register(number: str, values: list, linewise: bool) -> None:
-    _data['1-9'][int(number) - 1] = (values, linewise)
+    _get_data()['1-9'][int(number) - 1] = (values, linewise)
 
 
 def _get_numbered_register(number: str) -> list:
-    return _data['1-9'][int(number) - 1][0]
+    return _get_data()['1-9'][int(number) - 1][0]
 
 
 def _is_register_linewise(register: str) -> list:
     if register in '123456789':
-        return _data['1-9'][int(register) - 1][1]
+        return _get_data()['1-9'][int(register) - 1][1]
 
-    return _data.get(register, (None, False))[1]
+    return _get_data().get(register, (None, False))[1]
 
 
 def _is_register_writable(register: str) -> bool:
@@ -295,10 +307,12 @@ def get_alternate_file_register():
 
 def set_alternate_file_register(value: str) -> None:
     _set_data(_ALTERNATE_FILE, [value], False)
+    maybe_do_runtime_save_session()
 
 
 def set_expression_register(values: list) -> None:
     _set_data(_EXPRESSION, _list_values_to_str(values), False)
+    maybe_do_runtime_save_session()
 
 
 def _set_unnamed_register(values: list, linewise: bool = False) -> None:
@@ -318,6 +332,8 @@ def registers_set(view, key: str, value: list, linewise: bool = False) -> None:
     except AttributeError:
         # TODO [review] Looks like a bug: If set() above raises AttributeError so will this.
         _set(view, key, value, linewise)
+
+    maybe_do_runtime_save_session()
 
 
 def _maybe_set_sys_clipboard(view, name: str, values: list) -> None:
@@ -386,12 +402,15 @@ def _op(view, operation: str, register: str = None, linewise=False) -> None:
             if linewise or multiline:
                 _shift_numbered_register(selected_text, linewise)
 
+        maybe_do_runtime_save_session()
+
     # The small delete register.
     if operation in ('change', 'delete') and not multiline:
         # TODO Improve small delete register implementation.
         is_same_line = (lambda r: view.line(r.begin()) == view.line(r.end() - 1))
         if all(is_same_line(x) for x in list(view.sel())):
             _set(view, _SMALL_DELETE, selected_text, linewise)
+            maybe_do_runtime_save_session()
 
 
 def registers_op_change(view, register: str = None, linewise=False) -> None:
