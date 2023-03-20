@@ -68,7 +68,7 @@ def _recursively_convert_dict_digit_keys_to_int(value) -> dict:
 
 def load_session() -> None:
     try:
-        with open(_get_session_file(), 'r', encoding='utf=8', errors='replace') as f:
+        with open(_get_session_file(), 'r', encoding='utf-8', errors='replace') as f:
             content = f.read()
             if content.strip():
                 session = json.loads(content)
