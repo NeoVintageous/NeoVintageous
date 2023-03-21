@@ -341,6 +341,17 @@ def sel_observer(view):
     yield SelectionObserver(view)
 
 
+def sel_to_lines(view: View, s: Region, count: int) -> list:
+    line = view.line(s.b)
+
+    target_row = view.rowcol(line.a)[0] + (count - 1)
+    target_line = view.line(view.text_point(target_row, 0))
+
+    region = Region(line.a, target_line.b)
+
+    return view.lines(region)
+
+
 # This is a polyfill to work around various wrapping issues with some of
 # Sublime's internal commands such as next_modification, next_misspelling, etc.
 # See: https://github.com/SublimeTextIssues/Core/issues/2623.

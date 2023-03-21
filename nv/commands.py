@@ -149,6 +149,7 @@ from NeoVintageous.nv.utils import save_previous_selection
 from NeoVintageous.nv.utils import scroll_horizontally
 from NeoVintageous.nv.utils import scroll_viewport_position
 from NeoVintageous.nv.utils import sel_observer
+from NeoVintageous.nv.utils import sel_to_lines
 from NeoVintageous.nv.utils import should_motion_apply_op_transformer
 from NeoVintageous.nv.utils import show_if_not_visible
 from NeoVintageous.nv.utils import spell_file_add_word
@@ -1538,13 +1539,12 @@ class nv_vi_big_s(TextCommand):
     def run(self, edit, mode=None, count=1, register=None):
         def f(view, s):
             if mode == INTERNAL_NORMAL:
-                if count == 1:
-                    if view.line(s.b).size() > 0:
-                        eol = view.line(s.b).b
-                        begin = view.line(s.b).a
-                        begin = next_non_blank(view, begin)
-                        return Region(begin, eol)
-                    return s
+                lines = sel_to_lines(view, s, count)
+                if lines:
+                    return Region(
+                        next_non_blank(view, lines[0].a),
+                        lines[-1].b)
+
             return s
 
         regions_transformer(self.view, f)

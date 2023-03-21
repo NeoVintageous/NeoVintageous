@@ -636,7 +636,7 @@ class ViSubstituteByLines(ViOperatorDef):
             'action': 'nv_vi_big_s',
             'action_args': {
                 'mode': get_mode(view),
-                'count': 1,
+                'count': get_count(view),
                 'register': get_register(view)
             }
         }

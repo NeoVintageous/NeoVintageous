@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.29.0 - Unreleased
+
+* Added [#858](https://github.com/NeoVintageous/NeoVintageous/issues/858): `[count]` for `S`
+
 ## 1.28.0 - 2023-03-20
 
 * Added [#796](https://github.com/NeoVintageous/NeoVintageous/issues/796): Registers are now persisted on restarts
