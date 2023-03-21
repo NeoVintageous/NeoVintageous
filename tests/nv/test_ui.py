@@ -19,6 +19,8 @@ from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.ui import ui_bell
 
+from sublime import set_timeout
+
 
 class TestUIBell(unittest.ViewTestCase):
 
@@ -36,3 +38,69 @@ class TestUIBell(unittest.ViewTestCase):
         self.set_option('belloff', '')
         ui_bell('fizz buzz')
         self.assertStatusMessage('fizz buzz')
+
+    @unittest.mock_status_message()
+    def test_ui_bell_with_no_message(self):
+        ui_bell()
+        self.assertNoStatusMessage()
+
+    def assertDefaultColorScheme(self):
+        self.assertEqual(
+            'Packages/NeoVintageous/res/Bell-dark.hidden-color-scheme',
+            self.view.settings().get('color_scheme'))
+
+    def assertNoColorScheme(self) -> None:
+        for view in self.view.window().views():
+            self.assertNone(view.settings().get('color_scheme'))
+
+    def assertBellIsRemoved(self) -> None:
+        defaultDuration = int(0.3 * 1000)
+        duration = defaultDuration + 50
+        set_timeout(self.assertNoColorScheme, duration)
+
+    def test_default_color_scheme(self):
+        ui_bell('fizz')
+        self.assertDefaultColorScheme()
+
+    def test_light_color_scheme(self):
+        self.set_setting('bell_color_scheme', 'light')
+        ui_bell('fizz')
+        self.assertEqual(
+            'Packages/NeoVintageous/res/Bell-light.hidden-color-scheme',
+            self.view.settings().get('color_scheme'))
+
+    def test_dark_color_scheme(self):
+        self.set_setting('bell_color_scheme', 'dark')
+        ui_bell('fizz')
+        self.assertEqual(
+            'Packages/NeoVintageous/res/Bell-dark.hidden-color-scheme',
+            self.view.settings().get('color_scheme'))
+
+    # TODO test invalid bell_color_scheme
+
+    def test_custom_color_scheme(self):
+        self.set_setting('bell_color_scheme', 'Packages/NeoVintageous/tests/fixtures/custom.hidden-color-scheme')
+        ui_bell('fizz')
+        self.assertEqual(
+            'Packages/NeoVintageous/tests/fixtures/custom.hidden-color-scheme',
+            self.view.settings().get('color_scheme'))
+
+    def test_view_bell_style(self):
+        self.set_setting('bell', 'view')
+        ui_bell('fizz')
+        self.assertDefaultColorScheme()
+        self.assertBellIsRemoved()
+
+    def test_views_bell_style(self):
+        self.set_setting('bell', 'views')
+        ui_bell('fizz')
+        self.assertDefaultColorScheme()
+        self.assertBellIsRemoved()
+
+    def test_blink_bell_style(self):
+        self.set_setting('bell', 'blink')
+        ui_bell('fizz')
+
+    def test_none_bell_style(self):
+        self.set_setting('bell', 'none')
+        ui_bell('fizz')

@@ -436,6 +436,9 @@ class ViewTestCase(unittest.TestCase):
     def assertContentRegex(self, expected_regex: str, msg: str = None) -> None:
         self.assertRegex(self.content(), expected_regex, msg=msg)
 
+    def assertViewRegionsEmpty(self, key: str, msg: str = None) -> None:
+        self.assertEqual([], self.view.get_regions(key))
+
     def _assertContentSelection(self, sels: list, expected: str, msg: str = None) -> None:
         content = list(self.view.substr(Region(0, self.view.size())))
         counter = 0
@@ -475,6 +478,12 @@ class ViewTestCase(unittest.TestCase):
 
     def setLastSearchCommand(self, command: str) -> None:
         _set_last_buff_search_command(self.view, command)
+
+    def assertHighlightedYank(self, expected: str, msg: str = None) -> None:
+        self._assertContentRegion('highlightedyank', expected, msg)
+
+    def assertNoHighlightedYank(self, msg: str = None) -> None:
+        self.assertViewRegionsEmpty('highlightedyank', msg)
 
     def assertInsert(self, expected, msg: str = None) -> None:
         self._assertView(expected, INSERT, msg)  # type: ignore[arg-type]

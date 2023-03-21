@@ -73,6 +73,13 @@ class TestSession(unittest.ViewTestCase):
 
     @unittest.mock_session()
     @unittest.mock.patch('NeoVintageous.nv.session._get_session_file')
+    def test_load_blank_session(self, get_session_file):
+        get_session_file.return_value = self.fixturePath('session_is_blank.json')
+        session.load_session()
+        self.assertSession({})
+
+    @unittest.mock_session()
+    @unittest.mock.patch('NeoVintageous.nv.session._get_session_file')
     def test_load_session_does_not_exist_is_noop(self, get_session_file):
         get_session_file.return_value = self.fixturePath('session_does_not_exist.json')
         session.load_session()
