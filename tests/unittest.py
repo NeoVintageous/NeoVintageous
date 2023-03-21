@@ -126,7 +126,7 @@ class ViewTestCase(unittest.TestCase):
         #       The second end of the region. Defaults to the same as the a end
         #       of the region. May be less that a, in which case the region is a
         #       reversed one.
-        return Region(a, b)  # type: ignore[arg-type]
+        return Region(a, b)
 
     def select(self, selections) -> None:
         # Create selection in the view.
@@ -278,7 +278,7 @@ class ViewTestCase(unittest.TestCase):
                     for s in v_sels:
                         self.view.sel().add(Region(s.b, s.a))
                 else:
-                    self.view.sel().add_all(v_sels)
+                    self.view.sel().add_all(v_sels)  # type: ignore[arg-type]
 
             # This is required because the cursor in VISUAL mode is a block
             # cursor. Without this setting some tests will pass when the window
@@ -373,7 +373,7 @@ class ViewTestCase(unittest.TestCase):
         self.select(pt)
         _set_mark(self.view, name)
         self.view.sel().clear()
-        self.view.sel().add_all(sels)
+        self.view.sel().add_all(sels)  # type: ignore[arg-type]
 
     def assertMark(self, name: str, expected) -> None:
         self._assertContentSelection([_get_mark(self.view, name)], expected)
