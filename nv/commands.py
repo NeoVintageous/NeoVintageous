@@ -840,9 +840,7 @@ class nv_enter_normal_mode(TextCommand):
 
         self.view.settings().set('command_mode', True)
         self.view.settings().set('inverse_caret_state', True)
-
-        # Exit replace mode
-        self.view.set_overwrite_status(False)
+        self.view.set_overwrite_status(False)  # Exit replace mode.
 
         set_mode(self.view, NORMAL)
 
@@ -1115,19 +1113,18 @@ class nv_vi_dot(WindowCommand):
         if count and count == 1:
             count = None
 
-        type_, seq_or_cmd, old_mode, visual_data = repeat_data
+        repeat_type, seq_or_cmd, old_mode, visual_data = repeat_data
 
         if visual_data and (mode != VISUAL):
             restore_visual_repeat_data(self.view, get_mode(self.view), visual_data)
         elif not visual_data and (mode == VISUAL):
-            # Can't repeat normal mode commands in visual mode.
-            return ui_bell()
+            return ui_bell()  # Can't repeat normal mode commands in visual mode.
         elif mode not in (VISUAL, VISUAL_LINE, NORMAL, INTERNAL_NORMAL, INSERT):
             return ui_bell()
 
-        if type_ == 'vi':
+        if repeat_type == 'vi':
             self.window.run_command('nv_process_notation', {'keys': seq_or_cmd, 'repeat_count': count})
-        elif type_ == 'native':
+        elif repeat_type == 'native':
             # FIXME: We're not repeating as we should. It's the motion that should receive this count.
             for i in range(count or 1):
                 self.window.run_command(*seq_or_cmd)
