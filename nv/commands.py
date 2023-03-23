@@ -1497,12 +1497,11 @@ class nv_vi_big_c(TextCommand):
     def run(self, edit, mode=None, count=1, register=None):
         def f(view, s):
             if mode == INTERNAL_NORMAL:
-                if count == 1:
-                    if view.line(s.b).size() > 0:
-                        eol = view.line(s.b).b
-                        s.a = s.b
-                        s.b = eol
-                    return s
+                lines = sel_to_lines(view, s, count)
+                if lines:
+                    s.a = s.b
+                    s.b = lines[-1].b
+
             return s
 
         regions_transformer(self.view, f)
@@ -1526,9 +1525,8 @@ class nv_vi_big_s(TextCommand):
             if mode == INTERNAL_NORMAL:
                 lines = sel_to_lines(view, s, count)
                 if lines:
-                    return Region(
-                        next_non_blank(view, lines[0].a),
-                        lines[-1].b)
+                    s.a = next_non_blank(view, lines[0].a)
+                    s.b = lines[-1].b
 
             return s
 

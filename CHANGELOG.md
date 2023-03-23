@@ -4,6 +4,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.29.0 - Unreleased
 
+* Added [#860](https://github.com/NeoVintageous/NeoVintageous/issues/860): `[count]` for `C`
 * Added [#805](https://github.com/NeoVintageous/NeoVintageous/issues/805): `<k0>` alias for `0`
 * Added [#858](https://github.com/NeoVintageous/NeoVintageous/issues/858): `[count]` for `S`
 
