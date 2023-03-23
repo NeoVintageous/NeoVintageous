@@ -2777,6 +2777,7 @@ class ViMoveToSoftBol(ViMotionDef):
         }
 
 
+@assign(seqs.KEYPAD_0, MOTION_MODES)
 @assign(seqs.ZERO, MOTION_MODES)
 class ViMoveToHardBol(ViMotionDef):
     def __init__(self, *args, **kwargs):

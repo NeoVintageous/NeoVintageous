@@ -24,6 +24,7 @@ class Test_0(unittest.FunctionalTestCase):
         self.eq('|abc', 'n_0', '|abc')
         self.eq('a|bc', 'n_0', '|abc')
         self.eq('ab|c', 'n_0', '|abc')
+        self.eq('   ab|c', 'n_0', '|   abc')
         self.eq('x\n|ab\nx', 'n_0', 'x\n|ab\nx')
         self.eq('x\na|b\nx', 'n_0', 'x\n|ab\nx')
         self.eq('x\nab|\nx', 'n_0', 'x\n|ab\nx')
