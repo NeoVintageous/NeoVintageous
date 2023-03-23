@@ -90,6 +90,7 @@ from NeoVintageous.nv.vim import status_message
 from NeoVintageous.nv.window import window_buffer_control
 from NeoVintageous.nv.window import window_control
 from NeoVintageous.nv.window import window_quit_view
+from NeoVintageous.nv.window import window_quit_views
 from NeoVintageous.nv.window import window_tab_control
 
 
@@ -591,17 +592,8 @@ def ex_pwd(**kwargs) -> None:
     status_message(os.getcwd())
 
 
-def ex_qall(window, forceit: bool = False, **kwargs) -> None:
-    if forceit:
-        for view in window.views():
-            if view.is_dirty():
-                view.set_scratch(True)
-    elif has_dirty_buffers(window):
-        status_message("E37: No write since last change")
-        return
-
-    window.run_command('close_all')
-    window.run_command('exit')
+def ex_qall(**kwargs) -> None:
+    window_quit_views(**kwargs)
 
 
 def ex_quit(**kwargs) -> None:
