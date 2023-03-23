@@ -74,6 +74,7 @@ from NeoVintageous.nv.settings import set_ex_substitute_last_replacement
 from NeoVintageous.nv.settings import set_setting
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import adding_regions
+from NeoVintageous.nv.utils import get_line_count
 from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import row_at
@@ -359,7 +360,7 @@ def ex_file(view, **kwargs) -> None:
         msg += " [Modified]"
 
     if view.size() > 0:
-        line_count = view.rowcol(view.size())[0] + 1
+        line_count = get_line_count(view)
         cursor_line_number = view.rowcol(view.sel()[0].b)[0] + 1
 
         if cursor_line_number < line_count:

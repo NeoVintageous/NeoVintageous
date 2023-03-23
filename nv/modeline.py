@@ -21,6 +21,7 @@ from sublime import active_window
 
 from NeoVintageous.nv.ex_cmds import do_ex_cmdline
 from NeoVintageous.nv.options import get_option
+from NeoVintageous.nv.utils import get_line_count
 from NeoVintageous.nv.vim import message
 
 
@@ -81,7 +82,7 @@ def do_modeline(view) -> None:
 
     if window:
         modelines = get_option(view, 'modelines')
-        line_count = view.rowcol(view.size())[0] + 1
+        line_count = get_line_count(view)
         head_lines = range(0, min(modelines, line_count))
         tail_lines = range(max(0, line_count - modelines), line_count)
         lines = list(set(list(head_lines) + list(tail_lines)))

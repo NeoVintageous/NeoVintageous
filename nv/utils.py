@@ -264,6 +264,10 @@ def last_row(view) -> int:
     return view.rowcol(view.size())[0]
 
 
+def get_line_count(view: View) -> int:
+    return last_row(view) + 1
+
+
 # Used for example by commands like f{char}, t{char}, r{char}
 # TODO Refactor into nv.vi.keys module
 _TRANLSATE_CHAR_MAP = {
