@@ -1560,6 +1560,15 @@ _SEQ2CMD = {
     '<Esc>':        {'command': 'nv_feed_key', 'args': {'key': '<esc>'}},  # noqa: E241
     '<M-n>':        {'command': 'nv_feed_key', 'args': {'key': '<M-n>'}},  # noqa: E241
     '<k0>':         {'command': 'nv_feed_key', 'args': {'key': '<k0>'}},  # noqa: E241
+    '<k1>':         {'command': 'nv_feed_key', 'args': {'key': '<k1>'}},  # noqa: E241
+    '<k2>':         {'command': 'nv_feed_key', 'args': {'key': '<k2>'}},  # noqa: E241
+    '<k3>':         {'command': 'nv_feed_key', 'args': {'key': '<k3>'}},  # noqa: E241
+    '<k4>':         {'command': 'nv_feed_key', 'args': {'key': '<k4>'}},  # noqa: E241
+    '<k5>':         {'command': 'nv_feed_key', 'args': {'key': '<k5>'}},  # noqa: E241
+    '<k6>':         {'command': 'nv_feed_key', 'args': {'key': '<k6>'}},  # noqa: E241
+    '<k7>':         {'command': 'nv_feed_key', 'args': {'key': '<k7>'}},  # noqa: E241
+    '<k8>':         {'command': 'nv_feed_key', 'args': {'key': '<k8>'}},  # noqa: E241
+    '<k9>':         {'command': 'nv_feed_key', 'args': {'key': '<k9>'}},  # noqa: E241
     '<{':           {'command': 'nv_feed_key'},  # noqa: E241
     '=':            {'command': 'nv_feed_key'},  # noqa: E241
     '==':           {'command': 'nv_feed_key'},  # noqa: E241
