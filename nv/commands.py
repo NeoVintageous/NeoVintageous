@@ -820,8 +820,6 @@ class nv_vi_c(TextCommand):
 class nv_enter_normal_mode(TextCommand):
 
     def run(self, edit, mode=None, from_init=False):
-        _log.debug('enter NORMAL mode from=%s, from_init=%s', mode, from_init)
-
         self.view.window().run_command('hide_auto_complete')
         self.view.window().run_command('hide_overlay')
 
@@ -963,8 +961,6 @@ class nv_enter_normal_mode(TextCommand):
 class nv_enter_select_mode(TextCommand):
 
     def run(self, edit, mode=None, count=1):
-        _log.debug('enter SELECT mode from=%s, count=%s', mode, count)
-
         set_mode(self.view, SELECT)
 
         if mode == INTERNAL_NORMAL:
@@ -981,8 +977,6 @@ class nv_enter_select_mode(TextCommand):
 class nv_enter_insert_mode(TextCommand):
 
     def run(self, edit, mode=None, count=1):
-        _log.debug('enter INSERT mode from=%s, count=%s', mode, count)
-
         def f(view, s):
             s.a = s.b = get_insertion_point_at_b(s)
 
@@ -1001,8 +995,6 @@ class nv_enter_insert_mode(TextCommand):
 class nv_enter_visual_mode(TextCommand):
 
     def run(self, edit, mode=None, force=False):
-        _log.debug('enter VISUAL mode from=%s, force=%s', mode, force)
-
         if get_mode(self.view) == VISUAL and not force:
             enter_normal_mode(self.view, mode)
             return
@@ -1046,8 +1038,6 @@ class nv_enter_visual_mode(TextCommand):
 class nv_enter_visual_line_mode(TextCommand):
 
     def run(self, edit, mode=None, force=False):
-        _log.debug('enter VISUAL LINE mode from=%s, force=%s', mode, force)
-
         if get_mode(self.view) == VISUAL_LINE and not force:
             enter_normal_mode(self.view, mode)
             return
@@ -1094,8 +1084,6 @@ class nv_enter_visual_line_mode(TextCommand):
 class nv_enter_replace_mode(TextCommand):
 
     def run(self, edit, **kwargs):
-        _log.debug('enter REPLACE mode kwargs=%s', kwargs)
-
         def f(view, s):
             s.a = s.b
             return s
@@ -2401,8 +2389,6 @@ class nv_vi_at(TextCommand):
 class nv_enter_visual_block_mode(TextCommand):
 
     def run(self, edit, mode=None, force=False):
-        _log.debug('enter VISUAL BLOCK mode from=%s, force=%s', mode, force)
-
         if mode in (NORMAL, VISUAL, VISUAL_LINE, INTERNAL_NORMAL):
             VisualBlockSelection.create(self.view)
             set_mode(self.view, VISUAL_BLOCK)
