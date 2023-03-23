@@ -1242,3 +1242,8 @@ def view_count_excluding_help_views(window) -> int:
             count += 1
 
     return count
+
+
+def requires_motion(motion) -> None:
+    if motion is None:
+        raise ValueError('motion data required')

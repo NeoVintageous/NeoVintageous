@@ -136,6 +136,7 @@ from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import regions_transformer_indexed
 from NeoVintageous.nv.utils import regions_transformer_reversed
 from NeoVintageous.nv.utils import replace_line
+from NeoVintageous.nv.utils import requires_motion
 from NeoVintageous.nv.utils import resolve_internal_normal_target
 from NeoVintageous.nv.utils import resolve_normal_target
 from NeoVintageous.nv.utils import resolve_visual_block_begin
@@ -599,9 +600,7 @@ class nv_vi_g_big_u(TextCommand):
             return Region(s.b, s.a)
 
         if mode == INTERNAL_NORMAL:
-            if motion is None:
-                raise ValueError('motion data required')
-
+            requires_motion(motion)
             with sel_observer(self.view) as observer:
                 run_motion(self.view, motion)
                 if observer.has_sel_changed():
@@ -621,9 +620,7 @@ class nv_vi_gu(TextCommand):
             return Region(s.b, s.a)
 
         if mode == INTERNAL_NORMAL:
-            if motion is None:
-                raise ValueError('motion data required')
-
+            requires_motion(motion)
             with sel_observer(self.view) as observer:
                 run_motion(self.view, motion)
                 if observer.has_sel_changed():
@@ -780,8 +777,8 @@ class nv_vi_c(TextCommand):
         if mode is None:
             raise ValueError('mode required')
 
-        if mode == INTERNAL_NORMAL and motion is None:
-            raise ValueError('motion data required')
+        if mode == INTERNAL_NORMAL:
+            requires_motion(motion)
 
         if motion:
             with sel_observer(self.view) as observer:
@@ -1243,9 +1240,7 @@ class nv_vi_y(TextCommand):
 
     def run(self, edit, mode=None, count=1, motion=None, register=None):
         if mode == INTERNAL_NORMAL:
-            if motion is None:
-                raise ValueError('motion data required')
-
+            requires_motion(motion)
             run_motion(self.view, motion)
         elif mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, SELECT):
             return
@@ -1273,8 +1268,8 @@ class nv_vi_d(TextCommand):
         if mode not in (INTERNAL_NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK, SELECT):
             raise ValueError('wrong mode')
 
-        if mode == INTERNAL_NORMAL and not motion:
-            raise ValueError('motion data required')
+        if mode == INTERNAL_NORMAL:
+            requires_motion(motion)
 
         if motion:
             with sel_observer(self.view) as observer:
