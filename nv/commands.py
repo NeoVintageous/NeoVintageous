@@ -1456,11 +1456,10 @@ class nv_vi_big_d(TextCommand):
     def run(self, edit, mode=None, count=1, register=None):
         def f(view, s):
             if mode == INTERNAL_NORMAL:
-                if count == 1:
-                    if view.line(s.b).size() > 0:
-                        b = view.line(s.b).b
-                        s.a = s.b
-                        s.b = b
+                lines = sel_to_lines(view, s, count)
+                if lines:
+                    s.a = s.b
+                    s.b = lines[-1].b
 
             elif mode == VISUAL:
                 startline = view.line(s.begin())
