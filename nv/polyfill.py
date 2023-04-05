@@ -312,7 +312,11 @@ def toggle_preference(name: str) -> None:
         preferences.set(name, not preferences.get(name))
 
 
-def reload_syntax(view):
-    if int(version()) >= 4081:
-        from sublime import find_syntax_for_file
+if int(version()) >= 4081:
+    from sublime import find_syntax_for_file
+
+    def reload_syntax(view) -> None:
         view.assign_syntax(find_syntax_for_file(view.file_name()))
+else:
+    def reload_syntax(view) -> None:
+        pass
