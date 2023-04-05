@@ -57,22 +57,21 @@ class Mapping:
         self.rhs = rhs
 
 
-def _find_partial_matches(view, mode: str, lhs: str) -> list:
-    matches = []
+def _has_partial_matches(view, mode: str, lhs: str) -> bool:
     for map_lhs, map_rhs in _mappings[mode].items():
         if isinstance(map_rhs, str):
             if map_lhs.startswith(lhs):
-                matches.append(map_lhs)
+                return True
         else:
             file_type = get_file_type(view)
             if file_type and file_type in map_rhs:
                 if map_lhs.startswith(lhs):
-                    matches.append(map_lhs)
+                    return True
             elif '' in map_rhs:
                 if map_lhs.startswith(lhs):
-                    matches.append(map_lhs)
+                    return True
 
-    return matches
+    return False
 
 
 def _find_full_match(view, mode: str, lhs: str):
@@ -138,7 +137,7 @@ def mappings_is_incomplete(view) -> bool:
     if _find_full_match(view, mode, seq):
         return False
 
-    if _find_partial_matches(view, mode, seq):
+    if _has_partial_matches(view, mode, seq):
         return True
 
     return False
@@ -151,7 +150,7 @@ def mappings_can_resolve(view, key: str) -> bool:
     if _find_full_match(view, mode, sequence):
         return True
 
-    if _find_partial_matches(view, mode, sequence):
+    if _has_partial_matches(view, mode, sequence):
         return True
 
     return False

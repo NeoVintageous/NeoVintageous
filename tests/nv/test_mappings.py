@@ -26,7 +26,7 @@ from NeoVintageous.nv.mappings import VISUAL
 from NeoVintageous.nv.mappings import VISUAL_BLOCK
 from NeoVintageous.nv.mappings import VISUAL_LINE
 from NeoVintageous.nv.mappings import _find_full_match
-from NeoVintageous.nv.mappings import _find_partial_matches
+from NeoVintageous.nv.mappings import _has_partial_matches
 from NeoVintageous.nv.mappings import _seq_to_command
 from NeoVintageous.nv.mappings import _seq_to_mapping
 from NeoVintageous.nv.mappings import mappings_add
@@ -226,22 +226,22 @@ class TestMappings(unittest.ViewTestCase):
 
     @unittest.mock_mappings()
     def test_find_partial_match(self):
-        self.assertEqual(_find_partial_matches(self.view, unittest.NORMAL, ''), [])
-        self.assertEqual(_find_partial_matches(self.view, unittest.NORMAL, 'foobar'), [])
+        self.assertFalse(_has_partial_matches(self.view, unittest.NORMAL, ''))
+        self.assertFalse(_has_partial_matches(self.view, unittest.NORMAL, 'foobar'))
 
         mappings_add(unittest.NORMAL, 'x', 'y')
 
-        self.assertEqual(_find_partial_matches(self.view, unittest.NORMAL, ''), ['x'])
-        self.assertEqual(_find_partial_matches(self.view, unittest.NORMAL, 'x'), ['x'])
-        self.assertEqual(_find_partial_matches(self.view, unittest.NORMAL, ' '), [])
-        self.assertEqual(_find_partial_matches(self.view, unittest.NORMAL, 'x '), [])
-        self.assertEqual(_find_partial_matches(self.view, unittest.NORMAL, ' x'), [])
-        self.assertEqual(_find_partial_matches(self.view, unittest.NORMAL, 'y'), [])
-        self.assertEqual(_find_partial_matches(self.view, unittest.NORMAL, 'xy'), [])
-        self.assertEqual(_find_partial_matches(self.view, unittest.NORMAL, 'foobar'), [])
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, ''))
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, 'x'))
+        self.assertFalse(_has_partial_matches(self.view, unittest.NORMAL, ' '))
+        self.assertFalse(_has_partial_matches(self.view, unittest.NORMAL, 'x '))
+        self.assertFalse(_has_partial_matches(self.view, unittest.NORMAL, ' x'))
+        self.assertFalse(_has_partial_matches(self.view, unittest.NORMAL, 'y'))
+        self.assertFalse(_has_partial_matches(self.view, unittest.NORMAL, 'xy'))
+        self.assertFalse(_has_partial_matches(self.view, unittest.NORMAL, 'foobar'))
 
         mappings_add(unittest.NORMAL, 'FileType', 'js x yjs')
-        self.assertEqual(_find_partial_matches(self.view, unittest.NORMAL, 'x'), ['x'])
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, 'x'))
 
         mappings_add(unittest.NORMAL, 'yc', 'g')
         mappings_add(unittest.NORMAL, 'yd', 'g')
@@ -251,10 +251,10 @@ class TestMappings(unittest.ViewTestCase):
         mappings_add(unittest.NORMAL, 'Ya', 'g')  # For case-sensitive test.
 
         # Should also be sorted.
-        self.assertEqual(sorted(_find_partial_matches(self.view, unittest.NORMAL, 'y')), ['ya', 'yb', 'yc', 'yd'])
-        self.assertEqual(sorted(_find_partial_matches(self.view, unittest.NORMAL, '')), ['Y', 'Ya', 'x', 'ya', 'yb', 'yc', 'yd'])  # noqa: E501
-        self.assertEqual(sorted(_find_partial_matches(self.view, unittest.NORMAL, 'yd')), ['yd'])
-        self.assertEqual(sorted(_find_partial_matches(self.view, unittest.NORMAL, 'x')), ['x'])
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, 'y'))
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, ''))
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, 'yd'))
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, 'x'))
 
         mappings_add(unittest.NORMAL, 'FileType', 'js fj1 g')
         mappings_add(unittest.NORMAL, 'FileType', 'js fj2 g')
@@ -267,17 +267,17 @@ class TestMappings(unittest.ViewTestCase):
         mappings_add(unittest.NORMAL, 'FileType', 'php tp g')
 
         self.assignFileName('test.js')
-        self.assertEqual(_find_partial_matches(self.view, unittest.NORMAL, 'x'), ['x'])
-        self.assertEqual(sorted(_find_partial_matches(self.view, unittest.NORMAL, 'f')), ['fj1', 'fj2'])
-        self.assertEqual(sorted(_find_partial_matches(self.view, unittest.NORMAL, 'y')), ['ya', 'yb', 'yc', 'yd', 'yj1', 'yj2'])  # noqa: E501
-        self.assertEqual(sorted(_find_partial_matches(self.view, unittest.NORMAL, 'fj1')), ['fj1'])
-        self.assertEqual(sorted(_find_partial_matches(self.view, unittest.NORMAL, 'yp')), [])
-        self.assertEqual(sorted(_find_partial_matches(self.view, unittest.NORMAL, 't')), ['ta'])
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, 'x'))
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, 'f'))
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, 'y'))
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, 'fj1'))
+        self.assertFalse(_has_partial_matches(self.view, unittest.NORMAL, 'yp'))
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, 't'))
         self.assignFileName('test.php')
-        self.assertEqual(sorted(_find_partial_matches(self.view, unittest.NORMAL, 'y')), ['ya', 'yb', 'yc', 'yd', 'yp'])  # noqa: E501
-        self.assertEqual(sorted(_find_partial_matches(self.view, unittest.NORMAL, 'f')), ['fp'])
-        self.assertEqual(sorted(_find_partial_matches(self.view, unittest.NORMAL, 'fj1')), [])
-        self.assertEqual(sorted(_find_partial_matches(self.view, unittest.NORMAL, 't')), ['ta', 'tp'])
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, 'y'))
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, 'f'))
+        self.assertFalse(_has_partial_matches(self.view, unittest.NORMAL, 'fj1'))
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, 't'))
 
     @unittest.mock_mappings()
     def test_find_full_match(self):
