@@ -105,8 +105,6 @@ class FeedKeyHandler():
         if self._resolve_count():
             return
 
-        self._set_partial_sequence()
-
         self._handle()
 
     def _fix_selection(self) -> None:
@@ -199,10 +197,9 @@ class FeedKeyHandler():
 
         return False
 
-    def _set_partial_sequence(self) -> None:
+    def _handle(self) -> None:
         set_partial_sequence(self.view, get_partial_sequence(self.view) + self.key)
 
-    def _handle(self) -> None:
         command = mappings_resolve(self.view, check_user_mappings=self.check_user_mappings)
 
         if isinstance(command, IncompleteMapping):
