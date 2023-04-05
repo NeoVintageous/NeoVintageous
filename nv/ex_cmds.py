@@ -49,6 +49,7 @@ from NeoVintageous.nv.polyfill import has_dirty_buffers
 from NeoVintageous.nv.polyfill import has_newline_at_eof
 from NeoVintageous.nv.polyfill import is_file_read_only
 from NeoVintageous.nv.polyfill import is_view_read_only
+from NeoVintageous.nv.polyfill import reload_syntax
 from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
@@ -1084,6 +1085,7 @@ def _do_write_file(window, view, file_name: str, forceit: bool, line_range: Rang
 
         view.retarget(file_path)
         save_view(view)
+        reload_syntax(view)
     except IOError:
         ui_bell("E212: Can't open file for writing: {}".format(file_name))
 

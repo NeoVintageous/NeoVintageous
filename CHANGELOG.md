@@ -19,6 +19,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#804](https://github.com/NeoVintageous/NeoVintageous/issues/804): Change syntax highlighting when writing to a new file
 * Fixed [#859](https://github.com/NeoVintageous/NeoVintageous/issues/859):  `ZZ` doesn't save and close a new file
 
 ## 1.28.0 - 2023-03-20

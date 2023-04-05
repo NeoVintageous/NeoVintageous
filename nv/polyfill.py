@@ -23,9 +23,11 @@ import sys
 
 from sublime import Region
 from sublime import active_window as _active_window
+from sublime import find_syntax_for_file
 from sublime import load_settings
 from sublime import save_settings
 from sublime import status_message as _status_message
+from sublime import version
 from sublime import windows as _windows
 
 
@@ -309,3 +311,8 @@ def save_preferences():
 def toggle_preference(name: str) -> None:
     with save_preferences() as preferences:
         preferences.set(name, not preferences.get(name))
+
+
+def reload_syntax(view):
+    if int(version()) >= 4081:
+        view.assign_syntax(find_syntax_for_file(view.file_name()))
