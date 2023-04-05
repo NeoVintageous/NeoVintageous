@@ -18,9 +18,9 @@
 import logging
 
 from NeoVintageous.nv.ex_cmds import do_ex_user_cmdline
+from NeoVintageous.nv.mappings import IncompleteMapping
 from NeoVintageous.nv.mappings import Mapping
 from NeoVintageous.nv.mappings import mappings_can_resolve
-from NeoVintageous.nv.mappings import mappings_is_incomplete
 from NeoVintageous.nv.mappings import mappings_resolve
 from NeoVintageous.nv.settings import append_sequence
 from NeoVintageous.nv.settings import get_action_count
@@ -106,9 +106,6 @@ class FeedKeyHandler():
             return
 
         self._set_partial_sequence()
-
-        if self._has_incomplete_user_mapping():
-            return
 
         self._handle()
 
@@ -205,15 +202,11 @@ class FeedKeyHandler():
     def _set_partial_sequence(self) -> None:
         set_partial_sequence(self.view, get_partial_sequence(self.view) + self.key)
 
-    def _has_incomplete_user_mapping(self):
-        if self.check_user_mappings and mappings_is_incomplete(self.view):
-            _log.debug('found incomplete mapping')
-            return True
-
-        return False
-
     def _handle(self) -> None:
         command = mappings_resolve(self.view, check_user_mappings=self.check_user_mappings)
+
+        if isinstance(command, IncompleteMapping):
+            return
 
         if isinstance(command, ViOpenNameSpace):
             return

@@ -57,6 +57,10 @@ class Mapping:
         self.rhs = rhs
 
 
+class IncompleteMapping:
+    pass
+
+
 def _has_partial_matches(view, mode: str, lhs: str) -> bool:
     for map_lhs, map_rhs in _mappings[mode].items():
         if isinstance(map_rhs, str):
@@ -130,7 +134,7 @@ def mappings_clear() -> None:
         _mappings[mode] = {}
 
 
-def mappings_is_incomplete(view) -> bool:
+def _mappings_is_incomplete(view) -> bool:
     mode = get_mode(view)
     seq = get_partial_sequence(view)
 
@@ -231,6 +235,11 @@ def mappings_resolve(view, sequence: str = None, mode: str = None, check_user_ma
         # off the responsibility to the feed key command.
 
         command = _seq_to_mapping(view, seq)
+
+        if not command:
+            if not sequence:
+                if _mappings_is_incomplete(view):
+                    return IncompleteMapping()
 
     if not command:
         command = _seq_to_command(view, to_bare_command_name(seq), mode or get_mode(view))

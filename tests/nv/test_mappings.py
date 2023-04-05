@@ -31,7 +31,7 @@ from NeoVintageous.nv.mappings import _seq_to_command
 from NeoVintageous.nv.mappings import _seq_to_mapping
 from NeoVintageous.nv.mappings import mappings_add
 from NeoVintageous.nv.mappings import mappings_clear
-from NeoVintageous.nv.mappings import mappings_is_incomplete
+from NeoVintageous.nv.mappings import _mappings_is_incomplete
 from NeoVintageous.nv.mappings import mappings_remove
 from NeoVintageous.nv.mappings import mappings_resolve
 from NeoVintageous.nv.plugin_commentary import CommentaryLines
@@ -335,43 +335,43 @@ class TestMappings(unittest.ViewTestCase):
     def test_is_incomplete(self, get_mode, get_partial_sequence):
         get_mode.return_value = NORMAL
         get_partial_sequence.return_value = 'f'
-        self.assertFalse(mappings_is_incomplete(self.view))
+        self.assertFalse(_mappings_is_incomplete(self.view))
         mappings_add(unittest.NORMAL, 'aa', 'y')
         get_partial_sequence.return_value = 'a'
-        self.assertEqual(mappings_is_incomplete(self.view), True)
+        self.assertEqual(_mappings_is_incomplete(self.view), True)
         mappings_add(unittest.NORMAL, 'b', 'y')
         get_partial_sequence.return_value = 'b'
-        self.assertFalse(mappings_is_incomplete(self.view))
+        self.assertFalse(_mappings_is_incomplete(self.view))
         mappings_add(unittest.NORMAL, 'c', 'y')
         mappings_add(unittest.NORMAL, 'cc', 'y')
         get_partial_sequence.return_value = 'c'
-        self.assertFalse(mappings_is_incomplete(self.view))
+        self.assertFalse(_mappings_is_incomplete(self.view))
         mappings_add(unittest.NORMAL, 'd', 'y')
         mappings_add(unittest.NORMAL, 'ddd', 'y')
         get_partial_sequence.return_value = 'dd'
-        self.assertEquals(mappings_is_incomplete(self.view), True)
+        self.assertEquals(_mappings_is_incomplete(self.view), True)
         get_partial_sequence.return_value = 'f'
-        self.assertFalse(mappings_is_incomplete(self.view))
+        self.assertFalse(_mappings_is_incomplete(self.view))
         mappings_add(unittest.NORMAL, 'FileType', 'php a y')
         mappings_add(unittest.NORMAL, 'FileType', 'php eee y')
         mappings_add(unittest.NORMAL, 'FileType', 'js b y')
         mappings_add(unittest.NORMAL, 'FileType', 'js ee y')
         self.assignFileName('test.php')
         get_partial_sequence.return_value = 'a'
-        self.assertFalse(mappings_is_incomplete(self.view))
+        self.assertFalse(_mappings_is_incomplete(self.view))
         get_partial_sequence.return_value = 'b'
-        self.assertFalse(mappings_is_incomplete(self.view))
+        self.assertFalse(_mappings_is_incomplete(self.view))
         get_partial_sequence.return_value = 'e'
-        self.assertTrue(mappings_is_incomplete(self.view))
+        self.assertTrue(_mappings_is_incomplete(self.view))
         get_partial_sequence.return_value = 'ee'
-        self.assertTrue(mappings_is_incomplete(self.view))
+        self.assertTrue(_mappings_is_incomplete(self.view))
         get_partial_sequence.return_value = 'eee'
-        self.assertFalse(mappings_is_incomplete(self.view))
+        self.assertFalse(_mappings_is_incomplete(self.view))
         self.assignFileName('test.js')
         get_partial_sequence.return_value = 'e'
-        self.assertTrue(mappings_is_incomplete(self.view))
+        self.assertTrue(_mappings_is_incomplete(self.view))
         get_partial_sequence.return_value = 'ee'
-        self.assertFalse(mappings_is_incomplete(self.view))
+        self.assertFalse(_mappings_is_incomplete(self.view))
 
 
 class TestResolve(unittest.ViewTestCase):
