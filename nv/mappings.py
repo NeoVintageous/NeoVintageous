@@ -134,19 +134,6 @@ def mappings_clear() -> None:
         _mappings[mode] = {}
 
 
-def _mappings_is_incomplete(view) -> bool:
-    mode = get_mode(view)
-    seq = get_partial_sequence(view)
-
-    if _find_full_match(view, mode, seq):
-        return False
-
-    if _has_partial_matches(view, mode, seq):
-        return True
-
-    return False
-
-
 def mappings_can_resolve(view, key: str) -> bool:
     mode = get_mode(view)
     sequence = get_partial_sequence(view) + key
@@ -238,7 +225,7 @@ def mappings_resolve(view, sequence: str = None, mode: str = None, check_user_ma
 
         if not command:
             if not sequence:
-                if _mappings_is_incomplete(view):
+                if _has_partial_matches(view, get_mode(view), seq):
                     return IncompleteMapping()
 
     if not command:

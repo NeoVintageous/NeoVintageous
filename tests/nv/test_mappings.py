@@ -18,6 +18,7 @@
 from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.mappings import INSERT
+from NeoVintageous.nv.mappings import IncompleteMapping
 from NeoVintageous.nv.mappings import Mapping
 from NeoVintageous.nv.mappings import NORMAL
 from NeoVintageous.nv.mappings import OPERATOR_PENDING
@@ -31,7 +32,6 @@ from NeoVintageous.nv.mappings import _seq_to_command
 from NeoVintageous.nv.mappings import _seq_to_mapping
 from NeoVintageous.nv.mappings import mappings_add
 from NeoVintageous.nv.mappings import mappings_clear
-from NeoVintageous.nv.mappings import _mappings_is_incomplete
 from NeoVintageous.nv.mappings import mappings_remove
 from NeoVintageous.nv.mappings import mappings_resolve
 from NeoVintageous.nv.plugin_commentary import CommentaryLines
@@ -335,43 +335,43 @@ class TestMappings(unittest.ViewTestCase):
     def test_is_incomplete(self, get_mode, get_partial_sequence):
         get_mode.return_value = NORMAL
         get_partial_sequence.return_value = 'f'
-        self.assertFalse(_mappings_is_incomplete(self.view))
+        self.assertFalse(isinstance(mappings_resolve(self.view), IncompleteMapping))
         mappings_add(unittest.NORMAL, 'aa', 'y')
         get_partial_sequence.return_value = 'a'
-        self.assertEqual(_mappings_is_incomplete(self.view), True)
+        self.assertTrue(isinstance(mappings_resolve(self.view), IncompleteMapping))
         mappings_add(unittest.NORMAL, 'b', 'y')
         get_partial_sequence.return_value = 'b'
-        self.assertFalse(_mappings_is_incomplete(self.view))
+        self.assertFalse(isinstance(mappings_resolve(self.view), IncompleteMapping))
         mappings_add(unittest.NORMAL, 'c', 'y')
         mappings_add(unittest.NORMAL, 'cc', 'y')
         get_partial_sequence.return_value = 'c'
-        self.assertFalse(_mappings_is_incomplete(self.view))
+        self.assertFalse(isinstance(mappings_resolve(self.view), IncompleteMapping))
         mappings_add(unittest.NORMAL, 'd', 'y')
         mappings_add(unittest.NORMAL, 'ddd', 'y')
         get_partial_sequence.return_value = 'dd'
-        self.assertEquals(_mappings_is_incomplete(self.view), True)
+        self.assertTrue(isinstance(mappings_resolve(self.view), IncompleteMapping))
         get_partial_sequence.return_value = 'f'
-        self.assertFalse(_mappings_is_incomplete(self.view))
+        self.assertFalse(isinstance(mappings_resolve(self.view), IncompleteMapping))
         mappings_add(unittest.NORMAL, 'FileType', 'php a y')
         mappings_add(unittest.NORMAL, 'FileType', 'php eee y')
         mappings_add(unittest.NORMAL, 'FileType', 'js b y')
         mappings_add(unittest.NORMAL, 'FileType', 'js ee y')
         self.assignFileName('test.php')
         get_partial_sequence.return_value = 'a'
-        self.assertFalse(_mappings_is_incomplete(self.view))
+        self.assertFalse(isinstance(mappings_resolve(self.view), IncompleteMapping))
         get_partial_sequence.return_value = 'b'
-        self.assertFalse(_mappings_is_incomplete(self.view))
+        self.assertFalse(isinstance(mappings_resolve(self.view), IncompleteMapping))
         get_partial_sequence.return_value = 'e'
-        self.assertTrue(_mappings_is_incomplete(self.view))
+        self.assertTrue(isinstance(mappings_resolve(self.view), IncompleteMapping))
         get_partial_sequence.return_value = 'ee'
-        self.assertTrue(_mappings_is_incomplete(self.view))
+        self.assertTrue(isinstance(mappings_resolve(self.view), IncompleteMapping))
         get_partial_sequence.return_value = 'eee'
-        self.assertFalse(_mappings_is_incomplete(self.view))
+        self.assertFalse(isinstance(mappings_resolve(self.view), IncompleteMapping))
         self.assignFileName('test.js')
         get_partial_sequence.return_value = 'e'
-        self.assertTrue(_mappings_is_incomplete(self.view))
+        self.assertTrue(isinstance(mappings_resolve(self.view), IncompleteMapping))
         get_partial_sequence.return_value = 'ee'
-        self.assertFalse(_mappings_is_incomplete(self.view))
+        self.assertFalse(isinstance(mappings_resolve(self.view), IncompleteMapping))
 
 
 class TestResolve(unittest.ViewTestCase):
