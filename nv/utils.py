@@ -80,7 +80,7 @@ def save_view(view) -> None:
         # See https://github.com/sublimelsp/LSP/issues/1725
         view.run_command('lsp_save')
     else:
-        view.run_command('save', {'async': True})
+        view.run_command('save', {'async': get_setting(view, 'save_async')})
 
 
 def _regions_transformer(sels, view, f, with_idx) -> None:

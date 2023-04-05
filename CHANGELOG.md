@@ -4,13 +4,26 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.29.0 - Unreleased
 
+### Added
+
+* Added [#790](https://github.com/NeoVintageous/NeoVintageous/issues/790): Asynchronous file saving setting `vintageous_save_async`, false by default
 * Added [#643](https://github.com/NeoVintageous/NeoVintageous/issues/643): Mapping by file type e.g. `nnoremap FileType go gd :LspSymbolDefinition<CR>`
 * Added [#861](https://github.com/NeoVintageous/NeoVintageous/issues/861): `[count]` for `D`
 * Added [#860](https://github.com/NeoVintageous/NeoVintageous/issues/860): `[count]` for `C`
 * Added [#805](https://github.com/NeoVintageous/NeoVintageous/issues/805): `<k0>` alias for `0`
 * Added [#858](https://github.com/NeoVintageous/NeoVintageous/issues/858): `[count]` for `S`
 
+### Changed
+
+* Changed [#790](https://github.com/NeoVintageous/NeoVintageous/issues/790): Asynchronous file saving is now disabled by default
+
+### Fixed
+
+* Fixed [#859](https://github.com/NeoVintageous/NeoVintageous/issues/859):  `ZZ` doesn't save and close a new file
+
 ## 1.28.0 - 2023-03-20
+
+### Added
 
 * Added [#796](https://github.com/NeoVintageous/NeoVintageous/issues/796): Registers are now persisted on restarts
 * Added [#833](https://github.com/NeoVintageous/NeoVintageous/issues/833): Sessions are now saved on exit instead of at runtime (builds >= 4081)

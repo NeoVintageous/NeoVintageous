@@ -163,6 +163,9 @@
     // Reset to normal mode when a tab is activated.
     "vintageous_reset_mode_when_switching_tabs": true,
 
+    // Asynchronous file saving with commands like :w, :wq.
+    "vintageous_save_async": false,
+
     // Show output panel from shell commands.
     "vintageous_shell_silent": false,
 
