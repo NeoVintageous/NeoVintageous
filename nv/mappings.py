@@ -21,7 +21,7 @@ import traceback
 from NeoVintageous.nv import plugin
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_partial_sequence
-from NeoVintageous.nv.settings import get_setting
+from NeoVintageous.nv.settings import is_plugin_enabled
 from NeoVintageous.nv.variables import expand_keys
 from NeoVintageous.nv.vi import keys
 from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
@@ -131,9 +131,7 @@ def _seq_to_command(view, seq: str, mode: str):
     if mode in plugin.mappings:
         plugin_command = plugin.mappings[mode].get(seq)
         if plugin_command:
-            plugin_name = plugin_command.__class__.__module__[24:]
-            is_plugin_enabled = get_setting(view, 'enable_%s' % plugin_name)
-            if is_plugin_enabled:
+            if is_plugin_enabled(view, plugin_command):
                 return plugin_command
 
     if mode in keys.mappings:
