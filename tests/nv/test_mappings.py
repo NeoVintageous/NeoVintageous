@@ -38,7 +38,7 @@ from NeoVintageous.nv.plugin_commentary import CommentaryLines
 from NeoVintageous.nv.plugin_sneak import SneakS
 from NeoVintageous.nv.plugin_surround import SurroundS
 from NeoVintageous.nv.plugin_unimpaired import UnimpairedBlankDown
-from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
+from NeoVintageous.nv.vi.cmd_base import CommandNotFound
 from NeoVintageous.nv.vi.cmd_defs import ViMoveByWordEnds
 from NeoVintageous.nv.vi.cmd_defs import ViMoveByWords
 from NeoVintageous.nv.vi.cmd_defs import ViSubstituteByLines
@@ -390,7 +390,7 @@ class TestResolve(unittest.ViewTestCase):
         mappings_add(NORMAL, 'lhs', 'rhs')
         mappings_add(NORMAL, 'FileType', 'php e y')
         mappings_add(NORMAL, 'FileType', 'js w y')
-        self.assertIsInstance(mappings_resolve(self.view, 'foobar', NORMAL), ViMissingCommandDef)
+        self.assertIsInstance(mappings_resolve(self.view, 'foobar', NORMAL), CommandNotFound)
         self.assertIsInstance(mappings_resolve(self.view, 'w', NORMAL), ViMoveByWords, 'expected core command')
         self.assertIsInstance(mappings_resolve(self.view, 'gcc', NORMAL), CommentaryLines, 'expected plugin comman')
         self.assertIsInstance(mappings_resolve(self.view, 'e', NORMAL), ViMoveByWordEnds, 'expected core command')
@@ -424,7 +424,7 @@ class TestResolve(unittest.ViewTestCase):
     def test_resolve_missing_command(self):
         self.setNormalMode()
         for mode in (NORMAL, VISUAL, OPERATOR_PENDING, 'unknownmode'):
-            self.assertIsInstance(mappings_resolve(self.view, 'foobar', mode), ViMissingCommandDef)
+            self.assertIsInstance(mappings_resolve(self.view, 'foobar', mode), CommandNotFound)
 
     @unittest.mock_mappings()
     def test_resolve_plugin(self):
@@ -444,8 +444,8 @@ class TestResolve(unittest.ViewTestCase):
         self.set_setting('enable_commentary', False)
         self.set_setting('enable_unimpaired', False)
         self.set_setting('enable_surround', False)
-        self.assertIsInstance(mappings_resolve(self.view, 'gcc', NORMAL), ViMissingCommandDef)
-        self.assertIsInstance(mappings_resolve(self.view, ']<Space>', NORMAL), ViMissingCommandDef)
+        self.assertIsInstance(mappings_resolve(self.view, 'gcc', NORMAL), CommandNotFound)
+        self.assertIsInstance(mappings_resolve(self.view, ']<Space>', NORMAL), CommandNotFound)
         self.set_setting('enable_sneak', False)
         self.assertIsInstance(mappings_resolve(self.view, 'S', NORMAL), ViSubstituteByLines)
         self.set_setting('enable_sneak', True)
@@ -493,7 +493,7 @@ class TestSeqToCommand(unittest.TestCase):
                 return Settings()
 
         self.assertEqual(_seq_to_command(seq='s', view=View(), mode='a'), 'asv')
-        self.assertIsInstance(_seq_to_command(seq='s', view=View(), mode=''), ViMissingCommandDef)
+        self.assertIsInstance(_seq_to_command(seq='s', view=View(), mode=''), CommandNotFound)
         # Plugin mode exists, but not sequence.
         self.assertEqual(_seq_to_command(seq='t', view=View(), mode='b'), 'tsv')
         # Plugin mapping override.
@@ -505,11 +505,11 @@ class TestSeqToCommand(unittest.TestCase):
         class View():
             def settings(self):
                 pass
-        self.assertIsInstance(_seq_to_command(seq='s', view=View(), mode='unknown'), ViMissingCommandDef)
-        self.assertIsInstance(_seq_to_command(seq='s', view=View(), mode='u'), ViMissingCommandDef)
+        self.assertIsInstance(_seq_to_command(seq='s', view=View(), mode='unknown'), CommandNotFound)
+        self.assertIsInstance(_seq_to_command(seq='s', view=View(), mode='u'), CommandNotFound)
 
     def test_unknown_sequence(self):
         class View():
             def settings(self):
                 pass
-        self.assertIsInstance(_seq_to_command(seq='foobar', view=View(), mode='a'), ViMissingCommandDef)
+        self.assertIsInstance(_seq_to_command(seq='foobar', view=View(), mode='a'), CommandNotFound)

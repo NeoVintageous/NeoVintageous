@@ -49,8 +49,8 @@ from NeoVintageous.nv.state import set_action
 from NeoVintageous.nv.state import set_motion
 from NeoVintageous.nv.state import update_status_line
 from NeoVintageous.nv.ui import ui_bell
+from NeoVintageous.nv.vi.cmd_base import CommandNotFound
 from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
-from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
 from NeoVintageous.nv.vi.cmd_base import ViMotionDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.cmd_defs import ViOpenNameSpace
@@ -216,7 +216,7 @@ class FeedKeyHandler():
             self._handle_mapping(command)
             return
 
-        if isinstance(command, ViMissingCommandDef):
+        if isinstance(command, CommandNotFound):
 
             # TODO We shouldn't need to try resolve the command again. The
             # resolver should handle commands correctly the first time. The
@@ -233,7 +233,7 @@ class FeedKeyHandler():
             else:
                 command = mappings_resolve(self.view, sequence=to_bare_command_name(get_sequence(self.view)))
 
-            if self._handle_missing_command(command):
+            if self._handle_command_not_found(command):
                 return
 
         if (isinstance(command, ViOperatorDef) and get_mode(self.view) == OPERATOR_PENDING):
@@ -245,7 +245,7 @@ class FeedKeyHandler():
             # only be the '>>' command that needs this code.
 
             command = mappings_resolve(self.view, sequence=to_bare_command_name(get_sequence(self.view)), mode=NORMAL)
-            if self._handle_missing_command(command):
+            if self._handle_command_not_found(command):
                 return
 
             if not command.motion_required:
@@ -361,8 +361,8 @@ class FeedKeyHandler():
         if do_eval:
             evaluate_state(self.view)
 
-    def _handle_missing_command(self, command) -> bool:
-        if isinstance(command, ViMissingCommandDef):
+    def _handle_command_not_found(self, command) -> bool:
+        if isinstance(command, CommandNotFound):
             if get_mode(self.view) == OPERATOR_PENDING:
                 set_mode(self.view, NORMAL)
 

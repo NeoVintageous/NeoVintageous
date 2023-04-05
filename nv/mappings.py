@@ -26,7 +26,7 @@ from NeoVintageous.nv.settings import is_plugin_enabled
 from NeoVintageous.nv.utils import get_file_type
 from NeoVintageous.nv.variables import expand_keys
 from NeoVintageous.nv.vi import keys
-from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
+from NeoVintageous.nv.vi.cmd_base import CommandNotFound
 from NeoVintageous.nv.vi.keys import to_bare_command_name
 from NeoVintageous.nv.vi.keys import tokenize_keys
 from NeoVintageous.nv.vim import INSERT
@@ -163,8 +163,8 @@ def _seq_to_command(view, seq: str, mode: str):
     #   mode (str): Forces the use of this mode instead of the global state's.
     #
     # Returns:
-    #   ViCommandDefBase:
-    #   ViMissingCommandDef: If not found.
+    #   ViCommandDefBase
+    #   CommandNotFound
     if mode in plugin.mappings:
         plugin_command = plugin.mappings[mode].get(seq)
         if plugin_command:
@@ -176,7 +176,7 @@ def _seq_to_command(view, seq: str, mode: str):
         if command:
             return command
 
-    return ViMissingCommandDef()
+    return CommandNotFound()
 
 
 def mappings_resolve(view, sequence: str = None, mode: str = None, check_user_mappings: bool = True):
@@ -196,7 +196,8 @@ def mappings_resolve(view, sequence: str = None, mode: str = None, check_user_ma
     #
     # Returns:
     #   Mapping:
-    #   ViMissingCommandDef: If not found.
+    #   IncompleteMapping
+    #   CommandNotFound
 
     # We usually need to look at the partial sequence, but some commands do
     # weird things, like ys, which isn't a namespace but behaves as such
