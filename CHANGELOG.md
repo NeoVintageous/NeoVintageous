@@ -4,6 +4,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.29.0 - Unreleased
 
+* Added [#643](https://github.com/NeoVintageous/NeoVintageous/issues/643): Mapping by file type e.g. `nnoremap FileType go gd :LspSymbolDefinition<CR>`
 * Added [#861](https://github.com/NeoVintageous/NeoVintageous/issues/861): `[count]` for `D`
 * Added [#860](https://github.com/NeoVintageous/NeoVintageous/issues/860): `[count]` for `C`
 * Added [#805](https://github.com/NeoVintageous/NeoVintageous/issues/805): `<k0>` alias for `0`

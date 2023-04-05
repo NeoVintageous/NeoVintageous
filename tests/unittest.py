@@ -23,6 +23,7 @@ from unittest import skipIf  # noqa: F401
 import copy
 import os
 import sys
+import tempfile
 import textwrap
 import unittest
 
@@ -246,6 +247,10 @@ class ViewTestCase(unittest.TestCase):
 
     def fixturePath(self, *args) -> str:
         return os.path.join(os.path.dirname(__file__), 'fixtures', *args)
+
+    def assignFileName(self, rel_file_name) -> None:
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            self.view.retarget(os.path.join(tmpdirname, rel_file_name))
 
     def write(self, text: str) -> None:
         self.view.run_command('nv_test_write', {'text': text})

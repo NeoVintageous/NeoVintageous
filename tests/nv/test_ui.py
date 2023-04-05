@@ -52,8 +52,10 @@ class TestUIBell(unittest.ViewTestCase):
         #     self.view.settings().get('color_scheme'))
 
     def assertNoColorScheme(self) -> None:
-        for view in self.view.window().views():
-            self.assertNone(view.settings().get('color_scheme'))
+        window = self.view.window()
+        if window:
+            for view in window.views():
+                self.assertNone(view.settings().get('color_scheme'))
 
     def assertBellIsRemoved(self) -> None:
         defaultDuration = int(0.3 * 1000)

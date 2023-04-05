@@ -432,3 +432,7 @@ foobar
 
     :let mapleader=,
 " ^^^^^^^^^^^^^^^^^ invalid
+
+nnoremap FileType go gd :LspSymbolDefinition<CR>
+" ^ keyword.control
+"        ^ keyword

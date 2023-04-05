@@ -18,6 +18,11 @@ contexts:
     - match: ^:?((i|n|o|s|v)?noremap)\b
       scope: keyword.control.neovintageourc
 
+    # Mapping FileType
+    - match: \b(FileType)\b
+      captures:
+        1: keyword.neovintageourc
+
     # Recursive mappings were replaced with non-recursive mappings because they
     # were not implemented properly and can cause infinite loop problems.
     # https://github.com/NeoVintageous/NeoVintageous/blob/master/CHANGELOG.md#removed-3

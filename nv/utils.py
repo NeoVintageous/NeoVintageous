@@ -31,8 +31,9 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from contextlib import contextmanager
 from collections import Counter
+from contextlib import contextmanager
+import os
 import re
 
 from sublime import Region
@@ -266,6 +267,22 @@ def last_row(view) -> int:
 
 def get_line_count(view: View) -> int:
     return last_row(view) + 1
+
+
+def get_file_type(view: View) -> str:
+    file_name = view.file_name()
+    if not file_name:
+        return ''
+
+    parts = os.path.splitext(file_name)
+    if not parts:
+        return ''
+
+    ext = parts[1]
+    if ext and ext[0] == '.':
+        ext = ext[1:]
+
+    return ext
 
 
 # Used for example by commands like f{char}, t{char}, r{char}
