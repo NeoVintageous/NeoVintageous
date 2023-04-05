@@ -291,6 +291,7 @@ class TestMappings(unittest.ViewTestCase):
         mappings_add(unittest.NORMAL, 'FileType', 'php xd aphp')
         mappings_add(unittest.NORMAL, 'FileType', 'php xj bphp')
         mappings_add(unittest.NORMAL, 'FileType', 'js xd ajs')
+        mappings_add(unittest.NORMAL, 'FileType', 'html,go xd ahtmlgo')
 
         self.assertEqual(_find_full_match(self.view, unittest.NORMAL, ''), None)
         self.assertEqual(_find_full_match(self.view, unittest.NORMAL, ' '), None)
@@ -323,6 +324,10 @@ class TestMappings(unittest.ViewTestCase):
         self.assertEqual(_find_full_match(self.view, unittest.NORMAL, 'xd'), 'aphp')
         self.assertEqual(_find_full_match(self.view, unittest.NORMAL, 'xj'), 'bphp')
         self.assertEqual(_find_full_match(self.view, unittest.NORMAL, 'bbp'), 'yphp')
+        self.assignFileName('test.html')
+        self.assertEqual(_find_full_match(self.view, unittest.NORMAL, 'xd'), 'ahtmlgo')
+        self.assignFileName('test.go')
+        self.assertEqual(_find_full_match(self.view, unittest.NORMAL, 'xd'), 'ahtmlgo')
 
     @unittest.mock_mappings()
     @unittest.mock.patch('NeoVintageous.nv.mappings.get_partial_sequence')

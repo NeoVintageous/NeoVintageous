@@ -101,20 +101,20 @@ def mappings_add(mode: str, lhs: str, rhs: str) -> None:
     if re.match('^FileType$', lhs):
         parsed = re.match('^([^ ]+) ([^ ]+)\\s+', rhs)
         if parsed:
-            file_type = parsed.group(1)
-            file_type_lhs = parsed.group(2)
-            file_type_rhs = rhs[len(parsed.group(0)):]
+            for file_type in parsed.group(1).split(','):
+                file_type_lhs = parsed.group(2)
+                file_type_rhs = rhs[len(parsed.group(0)):]
 
-            file_type_lhs_norm = _normalise_lhs(file_type_lhs)
+                file_type_lhs_norm = _normalise_lhs(file_type_lhs)
 
-            match = _mappings[mode].get(file_type_lhs_norm)
+                match = _mappings[mode].get(file_type_lhs_norm)
 
-            if not match:
-                _mappings[mode][file_type_lhs_norm] = {}
-            elif isinstance(match, str):
-                _mappings[mode][file_type_lhs_norm] = {'': match}
+                if not match:
+                    _mappings[mode][file_type_lhs_norm] = {}
+                elif isinstance(match, str):
+                    _mappings[mode][file_type_lhs_norm] = {'': match}
 
-            _mappings[mode][file_type_lhs_norm][file_type] = file_type_rhs
+                _mappings[mode][file_type_lhs_norm][file_type] = file_type_rhs
 
             return
 
