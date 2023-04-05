@@ -102,7 +102,7 @@ class FeedKeyHandler():
         if self._collect_input():
             return
 
-        if self._resolve_mappings():
+        if self._resolve_count():
             return
 
         self._set_partial_sequence()
@@ -169,7 +169,7 @@ class FeedKeyHandler():
 
         return False
 
-    def _resolve_mappings(self) -> bool:
+    def _resolve_count(self) -> bool:
         # If the user has defined any mappings that starts with a number
         # (count), or " (register character), we need to skip the count handler
         # and go straight to resolving the mapping, otherwise it won't resolve.
