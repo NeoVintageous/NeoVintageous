@@ -49,6 +49,7 @@ from NeoVintageous.nv.polyfill import has_dirty_buffers
 from NeoVintageous.nv.polyfill import has_newline_at_eof
 from NeoVintageous.nv.polyfill import is_file_read_only
 from NeoVintageous.nv.polyfill import is_view_read_only
+from NeoVintageous.nv.polyfill import reload_syntax
 from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
@@ -74,6 +75,7 @@ from NeoVintageous.nv.settings import set_ex_substitute_last_replacement
 from NeoVintageous.nv.settings import set_setting
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import adding_regions
+from NeoVintageous.nv.utils import get_line_count
 from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import row_at
@@ -90,6 +92,7 @@ from NeoVintageous.nv.vim import status_message
 from NeoVintageous.nv.window import window_buffer_control
 from NeoVintageous.nv.window import window_control
 from NeoVintageous.nv.window import window_quit_view
+from NeoVintageous.nv.window import window_quit_views
 from NeoVintageous.nv.window import window_tab_control
 
 
@@ -358,7 +361,7 @@ def ex_file(view, **kwargs) -> None:
         msg += " [Modified]"
 
     if view.size() > 0:
-        line_count = view.rowcol(view.size())[0] + 1
+        line_count = get_line_count(view)
         cursor_line_number = view.rowcol(view.sel()[0].b)[0] + 1
 
         if cursor_line_number < line_count:
@@ -591,17 +594,8 @@ def ex_pwd(**kwargs) -> None:
     status_message(os.getcwd())
 
 
-def ex_qall(window, forceit: bool = False, **kwargs) -> None:
-    if forceit:
-        for view in window.views():
-            if view.is_dirty():
-                view.set_scratch(True)
-    elif has_dirty_buffers(window):
-        status_message("E37: No write since last change")
-        return
-
-    window.run_command('close_all')
-    window.run_command('exit')
+def ex_qall(**kwargs) -> None:
+    window_quit_views(**kwargs)
 
 
 def ex_quit(**kwargs) -> None:
@@ -1091,6 +1085,7 @@ def _do_write_file(window, view, file_name: str, forceit: bool, line_range: Rang
 
         view.retarget(file_path)
         save_view(view)
+        reload_syntax(view)
     except IOError:
         ui_bell("E212: Can't open file for writing: {}".format(file_name))
 

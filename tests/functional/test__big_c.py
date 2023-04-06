@@ -32,6 +32,11 @@ class Test_C(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegisterEmpty('0')
         self.assertRegisterEmpty('1')
 
+    def test_C_with_count(self):
+        self.eq('x\nfi|zz\nbuzz\ny', '2C', 'i_x\nfi|\ny')
+        self.eq('x\nfi|zz\nbuzz\nfizz\nbuzz\ny', '3C', 'i_x\nfi|\nbuzz\ny')
+        self.eq('x\nfi|zz\nbuzz\n1\n2', '9C', 'i_x\nfi|')
+
     def test_C_multiple_selections(self):
         self.eq('x\n|1\n|2\n|3\nx\n|4\nx', 'C', 'i_x\n|\n|\n|\nx\n|\nx')
         self.assertRegister('"', ['1', '2', '3', '4'])

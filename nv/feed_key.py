@@ -18,9 +18,9 @@
 import logging
 
 from NeoVintageous.nv.ex_cmds import do_ex_user_cmdline
+from NeoVintageous.nv.mappings import IncompleteMapping
 from NeoVintageous.nv.mappings import Mapping
 from NeoVintageous.nv.mappings import mappings_can_resolve
-from NeoVintageous.nv.mappings import mappings_is_incomplete
 from NeoVintageous.nv.mappings import mappings_resolve
 from NeoVintageous.nv.settings import append_sequence
 from NeoVintageous.nv.settings import get_action_count
@@ -49,8 +49,8 @@ from NeoVintageous.nv.state import set_action
 from NeoVintageous.nv.state import set_motion
 from NeoVintageous.nv.state import update_status_line
 from NeoVintageous.nv.ui import ui_bell
+from NeoVintageous.nv.vi.cmd_base import CommandNotFound
 from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
-from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
 from NeoVintageous.nv.vi.cmd_base import ViMotionDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.cmd_defs import ViOpenNameSpace
@@ -102,12 +102,7 @@ class FeedKeyHandler():
         if self._collect_input():
             return
 
-        if self._resolve_mappings():
-            return
-
-        self._set_partial_sequence()
-
-        if self._has_incomplete_user_mapping():
+        if self._resolve_count():
             return
 
         self._handle()
@@ -169,7 +164,7 @@ class FeedKeyHandler():
 
         return False
 
-    def _resolve_mappings(self) -> bool:
+    def _resolve_count(self) -> bool:
         # If the user has defined any mappings that starts with a number
         # (count), or " (register character), we need to skip the count handler
         # and go straight to resolving the mapping, otherwise it won't resolve.
@@ -202,18 +197,13 @@ class FeedKeyHandler():
 
         return False
 
-    def _set_partial_sequence(self) -> None:
+    def _handle(self) -> None:
         set_partial_sequence(self.view, get_partial_sequence(self.view) + self.key)
 
-    def _has_incomplete_user_mapping(self):
-        if self.check_user_mappings and mappings_is_incomplete(self.view):
-            _log.debug('found incomplete mapping')
-            return True
-
-        return False
-
-    def _handle(self) -> None:
         command = mappings_resolve(self.view, check_user_mappings=self.check_user_mappings)
+
+        if isinstance(command, IncompleteMapping):
+            return
 
         if isinstance(command, ViOpenNameSpace):
             return
@@ -226,7 +216,7 @@ class FeedKeyHandler():
             self._handle_mapping(command)
             return
 
-        if isinstance(command, ViMissingCommandDef):
+        if isinstance(command, CommandNotFound):
 
             # TODO We shouldn't need to try resolve the command again. The
             # resolver should handle commands correctly the first time. The
@@ -243,7 +233,7 @@ class FeedKeyHandler():
             else:
                 command = mappings_resolve(self.view, sequence=to_bare_command_name(get_sequence(self.view)))
 
-            if self._handle_missing_command(command):
+            if self._handle_command_not_found(command):
                 return
 
         if (isinstance(command, ViOperatorDef) and get_mode(self.view) == OPERATOR_PENDING):
@@ -255,7 +245,7 @@ class FeedKeyHandler():
             # only be the '>>' command that needs this code.
 
             command = mappings_resolve(self.view, sequence=to_bare_command_name(get_sequence(self.view)), mode=NORMAL)
-            if self._handle_missing_command(command):
+            if self._handle_command_not_found(command):
                 return
 
             if not command.motion_required:
@@ -371,8 +361,8 @@ class FeedKeyHandler():
         if do_eval:
             evaluate_state(self.view)
 
-    def _handle_missing_command(self, command) -> bool:
-        if isinstance(command, ViMissingCommandDef):
+    def _handle_command_not_found(self, command) -> bool:
+        if isinstance(command, CommandNotFound):
             if get_mode(self.view) == OPERATOR_PENDING:
                 set_mode(self.view, NORMAL)
 

@@ -136,6 +136,7 @@ from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import regions_transformer_indexed
 from NeoVintageous.nv.utils import regions_transformer_reversed
 from NeoVintageous.nv.utils import replace_line
+from NeoVintageous.nv.utils import requires_motion
 from NeoVintageous.nv.utils import resolve_internal_normal_target
 from NeoVintageous.nv.utils import resolve_normal_target
 from NeoVintageous.nv.utils import resolve_visual_block_begin
@@ -149,6 +150,7 @@ from NeoVintageous.nv.utils import save_previous_selection
 from NeoVintageous.nv.utils import scroll_horizontally
 from NeoVintageous.nv.utils import scroll_viewport_position
 from NeoVintageous.nv.utils import sel_observer
+from NeoVintageous.nv.utils import sel_to_lines
 from NeoVintageous.nv.utils import should_motion_apply_op_transformer
 from NeoVintageous.nv.utils import show_if_not_visible
 from NeoVintageous.nv.utils import spell_file_add_word
@@ -598,9 +600,7 @@ class nv_vi_g_big_u(TextCommand):
             return Region(s.b, s.a)
 
         if mode == INTERNAL_NORMAL:
-            if motion is None:
-                raise ValueError('motion data required')
-
+            requires_motion(motion)
             with sel_observer(self.view) as observer:
                 run_motion(self.view, motion)
                 if observer.has_sel_changed():
@@ -620,9 +620,7 @@ class nv_vi_gu(TextCommand):
             return Region(s.b, s.a)
 
         if mode == INTERNAL_NORMAL:
-            if motion is None:
-                raise ValueError('motion data required')
-
+            requires_motion(motion)
             with sel_observer(self.view) as observer:
                 run_motion(self.view, motion)
                 if observer.has_sel_changed():
@@ -779,8 +777,8 @@ class nv_vi_c(TextCommand):
         if mode is None:
             raise ValueError('mode required')
 
-        if mode == INTERNAL_NORMAL and motion is None:
-            raise ValueError('motion data required')
+        if mode == INTERNAL_NORMAL:
+            requires_motion(motion)
 
         if motion:
             with sel_observer(self.view) as observer:
@@ -819,8 +817,6 @@ class nv_vi_c(TextCommand):
 class nv_enter_normal_mode(TextCommand):
 
     def run(self, edit, mode=None, from_init=False):
-        _log.debug('enter NORMAL mode from=%s, from_init=%s', mode, from_init)
-
         self.view.window().run_command('hide_auto_complete')
         self.view.window().run_command('hide_overlay')
 
@@ -841,9 +837,7 @@ class nv_enter_normal_mode(TextCommand):
 
         self.view.settings().set('command_mode', True)
         self.view.settings().set('inverse_caret_state', True)
-
-        # Exit replace mode
-        self.view.set_overwrite_status(False)
+        self.view.set_overwrite_status(False)  # Exit replace mode.
 
         set_mode(self.view, NORMAL)
 
@@ -962,8 +956,6 @@ class nv_enter_normal_mode(TextCommand):
 class nv_enter_select_mode(TextCommand):
 
     def run(self, edit, mode=None, count=1):
-        _log.debug('enter SELECT mode from=%s, count=%s', mode, count)
-
         set_mode(self.view, SELECT)
 
         if mode == INTERNAL_NORMAL:
@@ -980,8 +972,6 @@ class nv_enter_select_mode(TextCommand):
 class nv_enter_insert_mode(TextCommand):
 
     def run(self, edit, mode=None, count=1):
-        _log.debug('enter INSERT mode from=%s, count=%s', mode, count)
-
         def f(view, s):
             s.a = s.b = get_insertion_point_at_b(s)
 
@@ -1000,8 +990,6 @@ class nv_enter_insert_mode(TextCommand):
 class nv_enter_visual_mode(TextCommand):
 
     def run(self, edit, mode=None, force=False):
-        _log.debug('enter VISUAL mode from=%s, force=%s', mode, force)
-
         if get_mode(self.view) == VISUAL and not force:
             enter_normal_mode(self.view, mode)
             return
@@ -1045,8 +1033,6 @@ class nv_enter_visual_mode(TextCommand):
 class nv_enter_visual_line_mode(TextCommand):
 
     def run(self, edit, mode=None, force=False):
-        _log.debug('enter VISUAL LINE mode from=%s, force=%s', mode, force)
-
         if get_mode(self.view) == VISUAL_LINE and not force:
             enter_normal_mode(self.view, mode)
             return
@@ -1093,8 +1079,6 @@ class nv_enter_visual_line_mode(TextCommand):
 class nv_enter_replace_mode(TextCommand):
 
     def run(self, edit, **kwargs):
-        _log.debug('enter REPLACE mode kwargs=%s', kwargs)
-
         def f(view, s):
             s.a = s.b
             return s
@@ -1126,19 +1110,18 @@ class nv_vi_dot(WindowCommand):
         if count and count == 1:
             count = None
 
-        type_, seq_or_cmd, old_mode, visual_data = repeat_data
+        repeat_type, seq_or_cmd, old_mode, visual_data = repeat_data
 
         if visual_data and (mode != VISUAL):
             restore_visual_repeat_data(self.view, get_mode(self.view), visual_data)
         elif not visual_data and (mode == VISUAL):
-            # Can't repeat normal mode commands in visual mode.
-            return ui_bell()
+            return ui_bell()  # Can't repeat normal mode commands in visual mode.
         elif mode not in (VISUAL, VISUAL_LINE, NORMAL, INTERNAL_NORMAL, INSERT):
             return ui_bell()
 
-        if type_ == 'vi':
+        if repeat_type == 'vi':
             self.window.run_command('nv_process_notation', {'keys': seq_or_cmd, 'repeat_count': count})
-        elif type_ == 'native':
+        elif repeat_type == 'native':
             # FIXME: We're not repeating as we should. It's the motion that should receive this count.
             for i in range(count or 1):
                 self.window.run_command(*seq_or_cmd)
@@ -1257,9 +1240,7 @@ class nv_vi_y(TextCommand):
 
     def run(self, edit, mode=None, count=1, motion=None, register=None):
         if mode == INTERNAL_NORMAL:
-            if motion is None:
-                raise ValueError('motion data required')
-
+            requires_motion(motion)
             run_motion(self.view, motion)
         elif mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, SELECT):
             return
@@ -1287,8 +1268,8 @@ class nv_vi_d(TextCommand):
         if mode not in (INTERNAL_NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK, SELECT):
             raise ValueError('wrong mode')
 
-        if mode == INTERNAL_NORMAL and not motion:
-            raise ValueError('motion data required')
+        if mode == INTERNAL_NORMAL:
+            requires_motion(motion)
 
         if motion:
             with sel_observer(self.view) as observer:
@@ -1470,11 +1451,10 @@ class nv_vi_big_d(TextCommand):
     def run(self, edit, mode=None, count=1, register=None):
         def f(view, s):
             if mode == INTERNAL_NORMAL:
-                if count == 1:
-                    if view.line(s.b).size() > 0:
-                        b = view.line(s.b).b
-                        s.a = s.b
-                        s.b = b
+                lines = sel_to_lines(view, s, count)
+                if lines:
+                    s.a = s.b
+                    s.b = lines[-1].b
 
             elif mode == VISUAL:
                 startline = view.line(s.begin())
@@ -1511,12 +1491,11 @@ class nv_vi_big_c(TextCommand):
     def run(self, edit, mode=None, count=1, register=None):
         def f(view, s):
             if mode == INTERNAL_NORMAL:
-                if count == 1:
-                    if view.line(s.b).size() > 0:
-                        eol = view.line(s.b).b
-                        s.a = s.b
-                        s.b = eol
-                    return s
+                lines = sel_to_lines(view, s, count)
+                if lines:
+                    s.a = s.b
+                    s.b = lines[-1].b
+
             return s
 
         regions_transformer(self.view, f)
@@ -1538,13 +1517,11 @@ class nv_vi_big_s(TextCommand):
     def run(self, edit, mode=None, count=1, register=None):
         def f(view, s):
             if mode == INTERNAL_NORMAL:
-                if count == 1:
-                    if view.line(s.b).size() > 0:
-                        eol = view.line(s.b).b
-                        begin = view.line(s.b).a
-                        begin = next_non_blank(view, begin)
-                        return Region(begin, eol)
-                    return s
+                lines = sel_to_lines(view, s, count)
+                if lines:
+                    s.a = next_non_blank(view, lines[0].a)
+                    s.b = lines[-1].b
+
             return s
 
         regions_transformer(self.view, f)
@@ -2401,8 +2378,6 @@ class nv_vi_at(TextCommand):
 class nv_enter_visual_block_mode(TextCommand):
 
     def run(self, edit, mode=None, force=False):
-        _log.debug('enter VISUAL BLOCK mode from=%s, force=%s', mode, force)
-
         if mode in (NORMAL, VISUAL, VISUAL_LINE, INTERNAL_NORMAL):
             VisualBlockSelection.create(self.view)
             set_mode(self.view, VISUAL_BLOCK)

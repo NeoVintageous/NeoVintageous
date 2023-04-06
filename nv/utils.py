@@ -31,8 +31,9 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from contextlib import contextmanager
 from collections import Counter
+from contextlib import contextmanager
+import os
 import re
 
 from sublime import Region
@@ -79,7 +80,7 @@ def save_view(view) -> None:
         # See https://github.com/sublimelsp/LSP/issues/1725
         view.run_command('lsp_save')
     else:
-        view.run_command('save', {'async': True})
+        view.run_command('save', {'async': get_setting(view, 'save_async')})
 
 
 def _regions_transformer(sels, view, f, with_idx) -> None:
@@ -264,6 +265,26 @@ def last_row(view) -> int:
     return view.rowcol(view.size())[0]
 
 
+def get_line_count(view: View) -> int:
+    return last_row(view) + 1
+
+
+def get_file_type(view: View) -> str:
+    file_name = view.file_name()
+    if not file_name:
+        return ''
+
+    parts = os.path.splitext(file_name)
+    if not parts:
+        return ''
+
+    ext = parts[1]
+    if ext and ext[0] == '.':
+        ext = ext[1:]
+
+    return ext
+
+
 # Used for example by commands like f{char}, t{char}, r{char}
 # TODO Refactor into nv.vi.keys module
 _TRANLSATE_CHAR_MAP = {
@@ -339,6 +360,17 @@ class SelectionObserver():
 @contextmanager
 def sel_observer(view):
     yield SelectionObserver(view)
+
+
+def sel_to_lines(view: View, s: Region, count: int) -> list:
+    line = view.line(s.b)
+
+    target_row = view.rowcol(line.a)[0] + (count - 1)
+    target_line = view.line(view.text_point(target_row, 0))
+
+    region = Region(line.a, target_line.b)
+
+    return view.lines(region)
 
 
 # This is a polyfill to work around various wrapping issues with some of
@@ -1227,3 +1259,8 @@ def view_count_excluding_help_views(window) -> int:
             count += 1
 
     return count
+
+
+def requires_motion(motion) -> None:
+    if motion is None:
+        raise ValueError('motion data required')

@@ -68,10 +68,10 @@ class ViCommandDefBase:
         }
 
 
-class ViMissingCommandDef(ViCommandDefBase):
+class CommandNotFound(ViCommandDefBase):
 
     def translate(self):
-        raise TypeError('ViMissingCommandDef should not be used as a runnable command')
+        raise TypeError('CommandNotFound should not be used as a runnable command')
 
 
 class ViMotionDef(ViCommandDefBase):

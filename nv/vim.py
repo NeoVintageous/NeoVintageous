@@ -70,7 +70,7 @@ _MODE2CHAR = {
     NORMAL: 'n',
     SELECT: 's',
     VISUAL: 'v',
-    VISUAL_LINE: 'V',
+    VISUAL_LINE: 'V',  # Sometimes "l" in code e.g. case-insensitive situations.
     VISUAL_BLOCK: 'b',
 }
 

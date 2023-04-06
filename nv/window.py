@@ -17,6 +17,7 @@
 
 import os
 
+from NeoVintageous.nv.polyfill import has_dirty_buffers
 from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.settings import get_cmdline_cwd
 from NeoVintageous.nv.settings import get_exit_when_quiting_last_window
@@ -249,6 +250,19 @@ def window_quit_view(window, **kwargs) -> None:
 
     if len(window.views()) == 0 and exit_when_quiting_last_window:
         window.run_command('close')
+
+
+def window_quit_views(window, forceit: bool = False, **kwargs) -> None:
+    if forceit:
+        for view in window.views():
+            if view.is_dirty():
+                view.set_scratch(True)
+    elif has_dirty_buffers(window):
+        status_message("E37: No write since last change")
+        return
+
+    window.run_command('close_all')
+    window.run_command('exit')
 
 
 def _exchange_views(window, view_a, view_b) -> None:

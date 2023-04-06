@@ -26,6 +26,11 @@ class Test_D(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('12|34\nx', 'D', '1|2\nx')
         self.assertRegisters('"-', '34', '01')
 
+    def test_n_with_count(self):
+        self.eq('111\n|222\n333\n444', '2D', '111\n|\n444')
+        self.eq('111\n|222\n333\n444\n5\n6\n7\n8', '3D', '111\n|\n5\n6\n7\n8')
+        self.eq('111\n|2\n3\n4\n55555', '9D', '111\n|')
+
     def test_v(self):
         self.eq('1|23|4', 'v_D', 'n_|')
         self.eq('x\n1|2\n34\n5|6\ny', 'v_D', 'n_x\n|y')

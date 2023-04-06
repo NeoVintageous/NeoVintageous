@@ -636,7 +636,7 @@ class ViSubstituteByLines(ViOperatorDef):
             'action': 'nv_vi_big_s',
             'action_args': {
                 'mode': get_mode(view),
-                'count': 1,
+                'count': get_count(view),
                 'register': get_register(view)
             }
         }
@@ -2777,6 +2777,7 @@ class ViMoveToSoftBol(ViMotionDef):
         }
 
 
+@assign(seqs.KEYPAD_0, MOTION_MODES)
 @assign(seqs.ZERO, MOTION_MODES)
 class ViMoveToHardBol(ViMotionDef):
     def __init__(self, *args, **kwargs):

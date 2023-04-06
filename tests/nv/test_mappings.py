@@ -18,6 +18,7 @@
 from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.mappings import INSERT
+from NeoVintageous.nv.mappings import IncompleteMapping
 from NeoVintageous.nv.mappings import Mapping
 from NeoVintageous.nv.mappings import NORMAL
 from NeoVintageous.nv.mappings import OPERATOR_PENDING
@@ -26,19 +27,19 @@ from NeoVintageous.nv.mappings import VISUAL
 from NeoVintageous.nv.mappings import VISUAL_BLOCK
 from NeoVintageous.nv.mappings import VISUAL_LINE
 from NeoVintageous.nv.mappings import _find_full_match
-from NeoVintageous.nv.mappings import _find_partial_matches
+from NeoVintageous.nv.mappings import _has_partial_matches
 from NeoVintageous.nv.mappings import _seq_to_command
 from NeoVintageous.nv.mappings import _seq_to_mapping
 from NeoVintageous.nv.mappings import mappings_add
 from NeoVintageous.nv.mappings import mappings_clear
-from NeoVintageous.nv.mappings import mappings_is_incomplete
 from NeoVintageous.nv.mappings import mappings_remove
 from NeoVintageous.nv.mappings import mappings_resolve
 from NeoVintageous.nv.plugin_commentary import CommentaryLines
 from NeoVintageous.nv.plugin_sneak import SneakS
 from NeoVintageous.nv.plugin_surround import SurroundS
 from NeoVintageous.nv.plugin_unimpaired import UnimpairedBlankDown
-from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
+from NeoVintageous.nv.vi.cmd_base import CommandNotFound
+from NeoVintageous.nv.vi.cmd_defs import ViMoveByWordEnds
 from NeoVintageous.nv.vi.cmd_defs import ViMoveByWords
 from NeoVintageous.nv.vi.cmd_defs import ViSubstituteByLines
 
@@ -78,8 +79,15 @@ class TestMappings(unittest.ViewTestCase):
         mappings_add(unittest.NORMAL, 'A', 'B')
         mappings_add(unittest.NORMAL, 'C', 'D')
         mappings_add(unittest.NORMAL, 'E', 'F')
+        mappings_add(unittest.NORMAL, 'FileType', 'js G H')
+        mappings_add(unittest.NORMAL, 'FileType', 'php G H')
+        mappings_add(unittest.NORMAL, 'I', 'J')
+        mappings_add(unittest.NORMAL, 'FileType', 'php I J')
+        mappings_add(unittest.NORMAL, 'FileType', 'php K L')
         mappings_remove(unittest.INSERT, 'C')
         mappings_remove(unittest.NORMAL, 'E')
+        mappings_remove(unittest.NORMAL, 'G')
+        mappings_remove(unittest.NORMAL, 'I')
         self.assertMappings({
             INSERT: {
                 'A': 'B',
@@ -88,6 +96,7 @@ class TestMappings(unittest.ViewTestCase):
             NORMAL: {
                 'A': 'B',
                 'C': 'D',
+                'K': {'php': 'L'}
             },
             OPERATOR_PENDING: {},
             SELECT: {},
@@ -97,16 +106,16 @@ class TestMappings(unittest.ViewTestCase):
         })
 
     @unittest.mock_mappings()
-    def test_remove_raises_exception(self):
-        with self.assertRaises(KeyError, msg='mapping not found'):
+    def test_removing_unknown_mapping_raises_exception(self):
+        with self.assertRaisesRegex(KeyError, 'foobar'):
             mappings_remove('foobar', 'foobar')
 
-        with self.assertRaises(KeyError, msg='mapping not found'):
+        with self.assertRaisesRegex(KeyError, 'foobar'):
             mappings_remove(unittest.INSERT, 'foobar')
 
         mappings_add(unittest.INSERT, 'X', 'Y')
 
-        with self.assertRaises(KeyError, msg='mapping not found'):
+        with self.assertRaisesRegex(KeyError, 'foobar'):
             mappings_remove(unittest.INSERT, 'foobar')
 
         # Should not raise exception (protect against false positive).
@@ -167,46 +176,72 @@ class TestMappings(unittest.ViewTestCase):
         mappings_add(unittest.VISUAL_BLOCK, 'X', 'Y')
         mappings_add(unittest.VISUAL_LINE, 'X', 'Y')
         mappings_add(unittest.VISUAL, 'X', 'Y')
+        mappings_add(unittest.NORMAL, 'FileType', 'php X Y')
+        mappings_add(unittest.NORMAL, 'FileType', 'php P Y')
+        mappings_add(unittest.NORMAL, 'FileType', 'js P Y')
         mappings_clear()
         self.assertMappingsEmpty()
 
     @unittest.mock_mappings()
     def test_seq_to_mapping(self):
+        self.normal('fizz')
         mappings_add(unittest.NORMAL, 'G', 'G_')
-        mapping = _seq_to_mapping(unittest.NORMAL, 'G')
+        mappings_add(unittest.NORMAL, 'FileType', 'js G G^')
+        mappings_add(unittest.NORMAL, 'FileType', 'php G G$')
+        mapping = _seq_to_mapping(self.view, 'G')
 
         self.assertIsInstance(mapping, Mapping)
         self.assertEqual(mapping.rhs, 'G_')
         self.assertEqual(mapping.lhs, 'G')
 
         mappings_add(unittest.NORMAL, '<C-m>', 'daw')
-        mapping = _seq_to_mapping(unittest.NORMAL, '<C-m>')
+        mapping = _seq_to_mapping(self.view, '<C-m>')
 
         self.assertIsInstance(mapping, Mapping)
         self.assertEqual(mapping.rhs, 'daw')
         self.assertEqual(mapping.lhs, '<C-m>')
 
+        self.assignFileName('test.js')
+        mapping = _seq_to_mapping(self.view, 'G')
+        self.assertIsInstance(mapping, Mapping)
+        self.assertEqual(mapping.lhs, 'G')
+        self.assertEqual(mapping.rhs, 'G^')
+
+        self.assignFileName('test.php')
+        mapping = _seq_to_mapping(self.view, 'G')
+        self.assertIsInstance(mapping, Mapping)
+        self.assertEqual(mapping.lhs, 'G')
+        self.assertEqual(mapping.rhs, 'G$')
+
     @unittest.mock_mappings()
     def test_seq_to_mapping_returns_none_when_not_found(self):
-        self.assertIsNone(_seq_to_mapping(unittest.NORMAL, ''))
-        self.assertIsNone(_seq_to_mapping(unittest.NORMAL, 'G'))
-        self.assertIsNone(_seq_to_mapping(unittest.NORMAL, 'foobar'))
+        self.normal('fizz')
+        mappings_add(unittest.NORMAL, 'FileType', 'js G G_')
+        self.assertIsNone(_seq_to_mapping(self.view, ''))
+        self.assertIsNone(_seq_to_mapping(self.view, 'G'))
+        self.assertIsNone(_seq_to_mapping(self.view, 'foobar'))
+        self.assignFileName('test.php')
+        self.assertIsNone(_seq_to_mapping(self.view, ''))
+        self.assertIsNone(_seq_to_mapping(self.view, 'G'))
 
     @unittest.mock_mappings()
     def test_find_partial_match(self):
-        self.assertEqual(_find_partial_matches(unittest.NORMAL, ''), [])
-        self.assertEqual(_find_partial_matches(unittest.NORMAL, 'foobar'), [])
+        self.assertFalse(_has_partial_matches(self.view, unittest.NORMAL, ''))
+        self.assertFalse(_has_partial_matches(self.view, unittest.NORMAL, 'foobar'))
 
         mappings_add(unittest.NORMAL, 'x', 'y')
 
-        self.assertEqual(_find_partial_matches(unittest.NORMAL, ''), ['x'])
-        self.assertEqual(_find_partial_matches(unittest.NORMAL, 'x'), ['x'])
-        self.assertEqual(_find_partial_matches(unittest.NORMAL, ' '), [])
-        self.assertEqual(_find_partial_matches(unittest.NORMAL, 'x '), [])
-        self.assertEqual(_find_partial_matches(unittest.NORMAL, ' x'), [])
-        self.assertEqual(_find_partial_matches(unittest.NORMAL, 'y'), [])
-        self.assertEqual(_find_partial_matches(unittest.NORMAL, 'xy'), [])
-        self.assertEqual(_find_partial_matches(unittest.NORMAL, 'foobar'), [])
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, ''))
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, 'x'))
+        self.assertFalse(_has_partial_matches(self.view, unittest.NORMAL, ' '))
+        self.assertFalse(_has_partial_matches(self.view, unittest.NORMAL, 'x '))
+        self.assertFalse(_has_partial_matches(self.view, unittest.NORMAL, ' x'))
+        self.assertFalse(_has_partial_matches(self.view, unittest.NORMAL, 'y'))
+        self.assertFalse(_has_partial_matches(self.view, unittest.NORMAL, 'xy'))
+        self.assertFalse(_has_partial_matches(self.view, unittest.NORMAL, 'foobar'))
+
+        mappings_add(unittest.NORMAL, 'FileType', 'js x yjs')
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, 'x'))
 
         mappings_add(unittest.NORMAL, 'yc', 'g')
         mappings_add(unittest.NORMAL, 'yd', 'g')
@@ -216,43 +251,83 @@ class TestMappings(unittest.ViewTestCase):
         mappings_add(unittest.NORMAL, 'Ya', 'g')  # For case-sensitive test.
 
         # Should also be sorted.
-        self.assertEqual(sorted(_find_partial_matches(unittest.NORMAL, 'y')), ['ya', 'yb', 'yc', 'yd'])
-        self.assertEqual(sorted(_find_partial_matches(unittest.NORMAL, '')), ['Y', 'Ya', 'x', 'ya', 'yb', 'yc', 'yd'])
-        self.assertEqual(sorted(_find_partial_matches(unittest.NORMAL, 'yd')), ['yd'])
-        self.assertEqual(sorted(_find_partial_matches(unittest.NORMAL, 'x')), ['x'])
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, 'y'))
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, ''))
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, 'yd'))
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, 'x'))
+
+        mappings_add(unittest.NORMAL, 'FileType', 'js fj1 g')
+        mappings_add(unittest.NORMAL, 'FileType', 'js fj2 g')
+        mappings_add(unittest.NORMAL, 'FileType', 'js yj1 g')
+        mappings_add(unittest.NORMAL, 'FileType', 'js yj2 g')
+        mappings_add(unittest.NORMAL, 'FileType', 'php yp g')
+        mappings_add(unittest.NORMAL, 'FileType', 'php fp g')
+        mappings_add(unittest.NORMAL, 'ta', 'g')
+        mappings_add(unittest.NORMAL, 'FileType', 'php ta g')
+        mappings_add(unittest.NORMAL, 'FileType', 'php tp g')
+
+        self.assignFileName('test.js')
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, 'x'))
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, 'f'))
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, 'y'))
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, 'fj1'))
+        self.assertFalse(_has_partial_matches(self.view, unittest.NORMAL, 'yp'))
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, 't'))
+        self.assignFileName('test.php')
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, 'y'))
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, 'f'))
+        self.assertFalse(_has_partial_matches(self.view, unittest.NORMAL, 'fj1'))
+        self.assertTrue(_has_partial_matches(self.view, unittest.NORMAL, 't'))
 
     @unittest.mock_mappings()
     def test_find_full_match(self):
-        self.assertEqual(_find_full_match(unittest.NORMAL, ''), None)
-        self.assertEqual(_find_full_match(unittest.NORMAL, 'foobar'), None)
+        self.assertEqual(_find_full_match(self.view, unittest.NORMAL, ''), None)
+        self.assertEqual(_find_full_match(self.view, unittest.NORMAL, 'foobar'), None)
 
         mappings_add(unittest.NORMAL, 'xc', 'y')
         mappings_add(unittest.NORMAL, 'xd', 'abc')
         mappings_add(unittest.NORMAL, 'xa', 'y')
         mappings_add(unittest.NORMAL, 'xb', 'y')
+        mappings_add(unittest.NORMAL, 'FileType', 'php xd aphp')
+        mappings_add(unittest.NORMAL, 'FileType', 'php xj bphp')
+        mappings_add(unittest.NORMAL, 'FileType', 'js xd ajs')
+        mappings_add(unittest.NORMAL, 'FileType', 'html,go xd ahtmlgo')
 
-        self.assertEqual(_find_full_match(unittest.NORMAL, ''), None)
-        self.assertEqual(_find_full_match(unittest.NORMAL, ' '), None)
-        self.assertEqual(_find_full_match(unittest.NORMAL, 'foobar'), None)
-        self.assertEqual(_find_full_match(unittest.NORMAL, 'x'), None)
-        self.assertEqual(_find_full_match(unittest.NORMAL, 'xdd'), None)
-        self.assertEqual(_find_full_match(unittest.NORMAL, 'xd '), None)
-        self.assertEqual(_find_full_match(unittest.NORMAL, ' xd'), None)
-
-        self.assertEqual(_find_full_match(unittest.NORMAL, 'xd'), 'abc')
-        self.assertEqual(_find_full_match(unittest.NORMAL, 'xd'), 'abc')
-        self.assertEqual(_find_full_match(unittest.NORMAL, 'xd'), 'abc')
-        self.assertEqual(_find_full_match(unittest.NORMAL, 'xd'), 'abc')
+        self.assertEqual(_find_full_match(self.view, unittest.NORMAL, ''), None)
+        self.assertEqual(_find_full_match(self.view, unittest.NORMAL, ' '), None)
+        self.assertEqual(_find_full_match(self.view, unittest.NORMAL, 'foobar'), None)
+        self.assertEqual(_find_full_match(self.view, unittest.NORMAL, 'x'), None)
+        self.assertEqual(_find_full_match(self.view, unittest.NORMAL, 'xdd'), None)
+        self.assertEqual(_find_full_match(self.view, unittest.NORMAL, 'xd '), None)
+        self.assertEqual(_find_full_match(self.view, unittest.NORMAL, ' xd'), None)
+        self.assertEqual(_find_full_match(self.view, unittest.NORMAL, 'xd'), 'abc')
+        self.assertEqual(_find_full_match(self.view, unittest.NORMAL, 'xd'), 'abc')
+        self.assertEqual(_find_full_match(self.view, unittest.NORMAL, 'xd'), 'abc')
+        self.assertEqual(_find_full_match(self.view, unittest.NORMAL, 'xd'), 'abc')
 
         mappings_add(unittest.NORMAL, 'bbc', 'y')
         mappings_add(unittest.NORMAL, 'bbd', 'y')
         mappings_add(unittest.NORMAL, 'bbb', 'cde')
         mappings_add(unittest.NORMAL, 'bba', 'y')
+        mappings_add(unittest.NORMAL, 'FileType', 'php bbp yphp')
+        mappings_add(unittest.NORMAL, 'FileType', 'js bbp yjs')
 
-        self.assertEqual(_find_full_match(unittest.NORMAL, ''), None)
-        self.assertEqual(_find_full_match(unittest.NORMAL, 'b'), None)
-        self.assertEqual(_find_full_match(unittest.NORMAL, 'bb'), None)
-        self.assertEqual(_find_full_match(unittest.NORMAL, 'bbb'), 'cde')
+        self.assertEqual(_find_full_match(self.view, unittest.NORMAL, ''), None)
+        self.assertEqual(_find_full_match(self.view, unittest.NORMAL, 'b'), None)
+        self.assertEqual(_find_full_match(self.view, unittest.NORMAL, 'bb'), None)
+        self.assertEqual(_find_full_match(self.view, unittest.NORMAL, 'bbb'), 'cde')
+
+        self.assignFileName('test.js')
+        self.assertEqual(_find_full_match(self.view, unittest.NORMAL, 'xd'), 'ajs')
+        self.assertEqual(_find_full_match(self.view, unittest.NORMAL, 'bbp'), 'yjs')
+        self.assignFileName('test.php')
+        self.assertEqual(_find_full_match(self.view, unittest.NORMAL, 'xd'), 'aphp')
+        self.assertEqual(_find_full_match(self.view, unittest.NORMAL, 'xj'), 'bphp')
+        self.assertEqual(_find_full_match(self.view, unittest.NORMAL, 'bbp'), 'yphp')
+        self.assignFileName('test.html')
+        self.assertEqual(_find_full_match(self.view, unittest.NORMAL, 'xd'), 'ahtmlgo')
+        self.assignFileName('test.go')
+        self.assertEqual(_find_full_match(self.view, unittest.NORMAL, 'xd'), 'ahtmlgo')
 
     @unittest.mock_mappings()
     @unittest.mock.patch('NeoVintageous.nv.mappings.get_partial_sequence')
@@ -260,26 +335,51 @@ class TestMappings(unittest.ViewTestCase):
     def test_is_incomplete(self, get_mode, get_partial_sequence):
         get_mode.return_value = NORMAL
         get_partial_sequence.return_value = 'f'
-        self.assertFalse(mappings_is_incomplete(self.view))
+        self.assertFalse(isinstance(mappings_resolve(self.view), IncompleteMapping))
         mappings_add(unittest.NORMAL, 'aa', 'y')
         get_partial_sequence.return_value = 'a'
-        self.assertEqual(mappings_is_incomplete(self.view), True)
+        self.assertTrue(isinstance(mappings_resolve(self.view), IncompleteMapping))
         mappings_add(unittest.NORMAL, 'b', 'y')
         get_partial_sequence.return_value = 'b'
-        self.assertFalse(mappings_is_incomplete(self.view))
+        self.assertFalse(isinstance(mappings_resolve(self.view), IncompleteMapping))
         mappings_add(unittest.NORMAL, 'c', 'y')
         mappings_add(unittest.NORMAL, 'cc', 'y')
         get_partial_sequence.return_value = 'c'
-        self.assertFalse(mappings_is_incomplete(self.view))
+        self.assertFalse(isinstance(mappings_resolve(self.view), IncompleteMapping))
         mappings_add(unittest.NORMAL, 'd', 'y')
         mappings_add(unittest.NORMAL, 'ddd', 'y')
         get_partial_sequence.return_value = 'dd'
-        self.assertEquals(mappings_is_incomplete(self.view), True)
+        self.assertTrue(isinstance(mappings_resolve(self.view), IncompleteMapping))
         get_partial_sequence.return_value = 'f'
-        self.assertFalse(mappings_is_incomplete(self.view))
+        self.assertFalse(isinstance(mappings_resolve(self.view), IncompleteMapping))
+        mappings_add(unittest.NORMAL, 'FileType', 'php a y')
+        mappings_add(unittest.NORMAL, 'FileType', 'php eee y')
+        mappings_add(unittest.NORMAL, 'FileType', 'js b y')
+        mappings_add(unittest.NORMAL, 'FileType', 'js ee y')
+        self.assignFileName('test.php')
+        get_partial_sequence.return_value = 'a'
+        self.assertFalse(isinstance(mappings_resolve(self.view), IncompleteMapping))
+        get_partial_sequence.return_value = 'b'
+        self.assertFalse(isinstance(mappings_resolve(self.view), IncompleteMapping))
+        get_partial_sequence.return_value = 'e'
+        self.assertTrue(isinstance(mappings_resolve(self.view), IncompleteMapping))
+        get_partial_sequence.return_value = 'ee'
+        self.assertTrue(isinstance(mappings_resolve(self.view), IncompleteMapping))
+        get_partial_sequence.return_value = 'eee'
+        self.assertFalse(isinstance(mappings_resolve(self.view), IncompleteMapping))
+        self.assignFileName('test.js')
+        get_partial_sequence.return_value = 'e'
+        self.assertTrue(isinstance(mappings_resolve(self.view), IncompleteMapping))
+        get_partial_sequence.return_value = 'ee'
+        self.assertFalse(isinstance(mappings_resolve(self.view), IncompleteMapping))
 
 
 class TestResolve(unittest.ViewTestCase):
+
+    def assertMappingEqual(self, expected: Mapping, actual) -> None:
+        self.assertIsInstance(actual, Mapping)
+        self.assertEqual(actual.rhs, expected.rhs)
+        self.assertEqual(actual.lhs, expected.lhs)
 
     @unittest.mock_mappings()
     @unittest.mock.patch('NeoVintageous.nv.mappings.get_partial_sequence')
@@ -287,18 +387,20 @@ class TestResolve(unittest.ViewTestCase):
     def test_resolve(self, get_mode, get_partial_sequence):
         get_mode.return_value = NORMAL
         get_partial_sequence.return_value = None
-
         mappings_add(NORMAL, 'lhs', 'rhs')
-
-        self.assertIsInstance(mappings_resolve(self.view, 'foobar', NORMAL), ViMissingCommandDef)
+        mappings_add(NORMAL, 'FileType', 'php e y')
+        mappings_add(NORMAL, 'FileType', 'js w y')
+        self.assertIsInstance(mappings_resolve(self.view, 'foobar', NORMAL), CommandNotFound)
         self.assertIsInstance(mappings_resolve(self.view, 'w', NORMAL), ViMoveByWords, 'expected core command')
         self.assertIsInstance(mappings_resolve(self.view, 'gcc', NORMAL), CommentaryLines, 'expected plugin comman')
-
-        actual = mappings_resolve(self.view, 'lhs', NORMAL)
-        self.assertIsInstance(actual, Mapping)
-        expected = Mapping('lhs', 'rhs')
-        self.assertEqual(actual.rhs, expected.rhs)
-        self.assertEqual(actual.lhs, expected.lhs)
+        self.assertIsInstance(mappings_resolve(self.view, 'e', NORMAL), ViMoveByWordEnds, 'expected core command')
+        self.assertMappingEqual(Mapping('lhs', 'rhs'), mappings_resolve(self.view, 'lhs', NORMAL))
+        self.assignFileName('test.php')
+        self.assertMappingEqual(Mapping('e', 'y'), mappings_resolve(self.view, 'e', NORMAL))
+        self.assertIsInstance(mappings_resolve(self.view, 'w', NORMAL), ViMoveByWords, 'expected core command')
+        self.assignFileName('test.js')
+        self.assertIsInstance(mappings_resolve(self.view, 'e', NORMAL), ViMoveByWordEnds, 'expected core command')
+        self.assertMappingEqual(Mapping('w', 'y'), mappings_resolve(self.view, 'w', NORMAL))
 
     @unittest.mock_mappings()
     def test_can_resolve_core_mapping(self):
@@ -310,16 +412,19 @@ class TestResolve(unittest.ViewTestCase):
     def test_can_resolve_user_mapping(self):
         self.setNormalMode()
         mappings_add(NORMAL, 'w', 'b')
-        mapping = mappings_resolve(self.view, 'w', unittest.NORMAL, True)
-        self.assertIsInstance(mapping, Mapping)
-        self.assertEqual((mapping.lhs, mapping.rhs), ('w', 'b'))
+        mappings_add(NORMAL, 'FileType', 'php e y')
+        self.assertMappingEqual(Mapping('w', 'b'), mappings_resolve(self.view, 'w', NORMAL))
         self.assertIsInstance(mappings_resolve(self.view, 'w', unittest.NORMAL, False), ViMoveByWords)
+        self.assertIsInstance(mappings_resolve(self.view, 'e', unittest.NORMAL), ViMoveByWordEnds)
+        self.assignFileName('test.php')
+        self.assertMappingEqual(Mapping('e', 'y'), mappings_resolve(self.view, 'e', NORMAL))
+        self.assertIsInstance(mappings_resolve(self.view, 'e', unittest.NORMAL, False), ViMoveByWordEnds)
 
     @unittest.mock_mappings()
     def test_resolve_missing_command(self):
         self.setNormalMode()
         for mode in (NORMAL, VISUAL, OPERATOR_PENDING, 'unknownmode'):
-            self.assertIsInstance(mappings_resolve(self.view, 'foobar', mode), ViMissingCommandDef)
+            self.assertIsInstance(mappings_resolve(self.view, 'foobar', mode), CommandNotFound)
 
     @unittest.mock_mappings()
     def test_resolve_plugin(self):
@@ -339,8 +444,8 @@ class TestResolve(unittest.ViewTestCase):
         self.set_setting('enable_commentary', False)
         self.set_setting('enable_unimpaired', False)
         self.set_setting('enable_surround', False)
-        self.assertIsInstance(mappings_resolve(self.view, 'gcc', NORMAL), ViMissingCommandDef)
-        self.assertIsInstance(mappings_resolve(self.view, ']<Space>', NORMAL), ViMissingCommandDef)
+        self.assertIsInstance(mappings_resolve(self.view, 'gcc', NORMAL), CommandNotFound)
+        self.assertIsInstance(mappings_resolve(self.view, ']<Space>', NORMAL), CommandNotFound)
         self.set_setting('enable_sneak', False)
         self.assertIsInstance(mappings_resolve(self.view, 'S', NORMAL), ViSubstituteByLines)
         self.set_setting('enable_sneak', True)
@@ -388,7 +493,7 @@ class TestSeqToCommand(unittest.TestCase):
                 return Settings()
 
         self.assertEqual(_seq_to_command(seq='s', view=View(), mode='a'), 'asv')
-        self.assertIsInstance(_seq_to_command(seq='s', view=View(), mode=''), ViMissingCommandDef)
+        self.assertIsInstance(_seq_to_command(seq='s', view=View(), mode=''), CommandNotFound)
         # Plugin mode exists, but not sequence.
         self.assertEqual(_seq_to_command(seq='t', view=View(), mode='b'), 'tsv')
         # Plugin mapping override.
@@ -400,11 +505,11 @@ class TestSeqToCommand(unittest.TestCase):
         class View():
             def settings(self):
                 pass
-        self.assertIsInstance(_seq_to_command(seq='s', view=View(), mode='unknown'), ViMissingCommandDef)
-        self.assertIsInstance(_seq_to_command(seq='s', view=View(), mode='u'), ViMissingCommandDef)
+        self.assertIsInstance(_seq_to_command(seq='s', view=View(), mode='unknown'), CommandNotFound)
+        self.assertIsInstance(_seq_to_command(seq='s', view=View(), mode='u'), CommandNotFound)
 
     def test_unknown_sequence(self):
         class View():
             def settings(self):
                 pass
-        self.assertIsInstance(_seq_to_command(seq='foobar', view=View(), mode='a'), ViMissingCommandDef)
+        self.assertIsInstance(_seq_to_command(seq='foobar', view=View(), mode='a'), CommandNotFound)

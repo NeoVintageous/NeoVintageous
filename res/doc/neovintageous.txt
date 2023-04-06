@@ -287,6 +287,14 @@ name as MixedCase and pass arguments in space separated key-value pairs: >
 
     nnoremap <leader>f :ShowOverlay overlay=goto text=@<CR>
 
+File type specific mappings are supported: >
+
+    nnoremap FileType go gd :LspSymbolDefinition<CR>
+
+Multiple file types can be specified as a comma-delimited value: >
+
+    nnoremap FileType go,html gd :LspSymbolDefinition<CR>
+
 Chaining commands is supported by use of the special <Bar> character: >
 
     nnoremap <leader>m :Cmd1<Bar>:Cmd2<CR>

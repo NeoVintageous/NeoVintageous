@@ -375,3 +375,7 @@ def toggle_ctrl_keys() -> None:
 
 def toggle_super_keys() -> None:
     toggle_preference('vintageous_use_super_keys')
+
+
+def is_plugin_enabled(view, plugin: object) -> bool:
+    return get_setting(view, 'enable_%s' % plugin.__class__.__module__[24:])

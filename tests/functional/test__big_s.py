@@ -40,6 +40,12 @@ class Test_S(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('1\ntw|o', 'S', 'i_1\n|')
         self.eq('1\ntw|o\n', 'S', 'i_1\n|\n')
 
+    def test_n_with_count(self):
+        self.eq('1\n|2\n3\n4', '2S', 'i_1\n|\n4')
+        self.eq('111\n|222\n333\n444', '2S', 'i_111\n|\n444')
+        self.eq('111\n|222\n333\n444\n555\n666', '3S', 'i_111\n|\n555\n666')
+        self.eq('111\n|222\n333\n444', '9S', 'i_111\n|')
+
     def test_v(self):
         self.eq('one\n|two\n|three', 'v_S', 'i_one\n|three')
         self.assertLinewiseRegister('"two\n')

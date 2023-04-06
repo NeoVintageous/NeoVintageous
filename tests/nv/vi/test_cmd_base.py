@@ -18,7 +18,7 @@
 import unittest
 
 from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
-from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
+from NeoVintageous.nv.vi.cmd_base import CommandNotFound
 
 
 class TestViCommandDefBase(unittest.TestCase):
@@ -98,12 +98,12 @@ class TestViCommandDefBaseTestImplementation(unittest.TestCase):
         self.assertEqual({'name': 'ViCommandDefBaseImplementation', 'data': {'_inp': 'ab'}}, self.command.serialize())
 
 
-class TestViMissingCommandDef(unittest.TestCase):
+class TestCommandNotFound(unittest.TestCase):
 
     def setUp(self):
         super().setUp()
-        self.command = ViMissingCommandDef()
+        self.command = CommandNotFound()
 
     def test_translate_raises_exception(self):
-        with self.assertRaisesRegex(TypeError, 'ViMissingCommandDef should not be used as a runnable command'):
+        with self.assertRaisesRegex(TypeError, 'CommandNotFound should not be used as a runnable command'):
             self.command.translate()

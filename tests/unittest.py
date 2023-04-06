@@ -23,6 +23,7 @@ from unittest import skipIf  # noqa: F401
 import copy
 import os
 import sys
+import tempfile
 import textwrap
 import unittest
 
@@ -126,7 +127,7 @@ class ViewTestCase(unittest.TestCase):
         #       The second end of the region. Defaults to the same as the a end
         #       of the region. May be less that a, in which case the region is a
         #       reversed one.
-        return Region(a, b)  # type: ignore[arg-type]
+        return Region(a, b)
 
     def select(self, selections) -> None:
         # Create selection in the view.
@@ -247,6 +248,10 @@ class ViewTestCase(unittest.TestCase):
     def fixturePath(self, *args) -> str:
         return os.path.join(os.path.dirname(__file__), 'fixtures', *args)
 
+    def assignFileName(self, rel_file_name) -> None:
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            self.view.retarget(os.path.join(tmpdirname, rel_file_name))
+
     def write(self, text: str) -> None:
         self.view.run_command('nv_test_write', {'text': text})
 
@@ -278,7 +283,7 @@ class ViewTestCase(unittest.TestCase):
                     for s in v_sels:
                         self.view.sel().add(Region(s.b, s.a))
                 else:
-                    self.view.sel().add_all(v_sels)
+                    self.view.sel().add_all(v_sels)  # type: ignore[arg-type]
 
             # This is required because the cursor in VISUAL mode is a block
             # cursor. Without this setting some tests will pass when the window
@@ -373,7 +378,7 @@ class ViewTestCase(unittest.TestCase):
         self.select(pt)
         _set_mark(self.view, name)
         self.view.sel().clear()
-        self.view.sel().add_all(sels)
+        self.view.sel().add_all(sels)  # type: ignore[arg-type]
 
     def assertMark(self, name: str, expected) -> None:
         self._assertContentSelection([_get_mark(self.view, name)], expected)
@@ -436,6 +441,9 @@ class ViewTestCase(unittest.TestCase):
     def assertContentRegex(self, expected_regex: str, msg: str = None) -> None:
         self.assertRegex(self.content(), expected_regex, msg=msg)
 
+    def assertViewRegionsEmpty(self, key: str, msg: str = None) -> None:
+        self.assertEqual([], self.view.get_regions(key))
+
     def _assertContentSelection(self, sels: list, expected: str, msg: str = None) -> None:
         content = list(self.view.substr(Region(0, self.view.size())))
         counter = 0
@@ -475,6 +483,12 @@ class ViewTestCase(unittest.TestCase):
 
     def setLastSearchCommand(self, command: str) -> None:
         _set_last_buff_search_command(self.view, command)
+
+    def assertHighlightedYank(self, expected: str, msg: str = None) -> None:
+        self._assertContentRegion('highlightedyank', expected, msg)
+
+    def assertNoHighlightedYank(self, msg: str = None) -> None:
+        self.assertViewRegionsEmpty('highlightedyank', msg)
 
     def assertInsert(self, expected, msg: str = None) -> None:
         self._assertView(expected, INSERT, msg)  # type: ignore[arg-type]
@@ -1550,6 +1564,16 @@ _SEQ2CMD = {
     '<CR>':         {'command': 'nv_feed_key', 'args': {'key': '<cr>'}},  # noqa: E241
     '<Esc>':        {'command': 'nv_feed_key', 'args': {'key': '<esc>'}},  # noqa: E241
     '<M-n>':        {'command': 'nv_feed_key', 'args': {'key': '<M-n>'}},  # noqa: E241
+    '<k0>':         {'command': 'nv_feed_key', 'args': {'key': '<k0>'}},  # noqa: E241
+    '<k1>':         {'command': 'nv_feed_key', 'args': {'key': '<k1>'}},  # noqa: E241
+    '<k2>':         {'command': 'nv_feed_key', 'args': {'key': '<k2>'}},  # noqa: E241
+    '<k3>':         {'command': 'nv_feed_key', 'args': {'key': '<k3>'}},  # noqa: E241
+    '<k4>':         {'command': 'nv_feed_key', 'args': {'key': '<k4>'}},  # noqa: E241
+    '<k5>':         {'command': 'nv_feed_key', 'args': {'key': '<k5>'}},  # noqa: E241
+    '<k6>':         {'command': 'nv_feed_key', 'args': {'key': '<k6>'}},  # noqa: E241
+    '<k7>':         {'command': 'nv_feed_key', 'args': {'key': '<k7>'}},  # noqa: E241
+    '<k8>':         {'command': 'nv_feed_key', 'args': {'key': '<k8>'}},  # noqa: E241
+    '<k9>':         {'command': 'nv_feed_key', 'args': {'key': '<k9>'}},  # noqa: E241
     '<{':           {'command': 'nv_feed_key'},  # noqa: E241
     '=':            {'command': 'nv_feed_key'},  # noqa: E241
     '==':           {'command': 'nv_feed_key'},  # noqa: E241
@@ -1794,6 +1818,7 @@ _SEQ2CMD = {
     'cre':          {'command': 'nv_feed_key'},  # noqa: E241
     'crk':          {'command': 'nv_feed_key'},  # noqa: E241
     'crm':          {'command': 'nv_feed_key'},  # noqa: E241
+    'crp':          {'command': 'nv_feed_key'},  # noqa: E241
     'crs':          {'command': 'nv_feed_key'},  # noqa: E241
     'crt':          {'command': 'nv_feed_key'},  # noqa: E241
     'cru':          {'command': 'nv_feed_key'},  # noqa: E241

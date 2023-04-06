@@ -16,15 +16,17 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 import logging
+import re
 import traceback
 
 from NeoVintageous.nv import plugin
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_partial_sequence
-from NeoVintageous.nv.settings import get_setting
+from NeoVintageous.nv.settings import is_plugin_enabled
+from NeoVintageous.nv.utils import get_file_type
 from NeoVintageous.nv.variables import expand_keys
 from NeoVintageous.nv.vi import keys
-from NeoVintageous.nv.vi.cmd_base import ViMissingCommandDef
+from NeoVintageous.nv.vi.cmd_base import CommandNotFound
 from NeoVintageous.nv.vi.keys import to_bare_command_name
 from NeoVintageous.nv.vi.keys import tokenize_keys
 from NeoVintageous.nv.vim import INSERT
@@ -55,13 +57,40 @@ class Mapping:
         self.rhs = rhs
 
 
-def _find_partial_matches(mode: str, lhs: str) -> list:
-    return [x for x in _mappings[mode] if x.startswith(lhs)]
+class IncompleteMapping:
+    pass
 
 
-def _find_full_match(mode: str, lhs: str):
-    if lhs in _mappings[mode]:
-        return _mappings[mode][lhs]
+def _has_partial_matches(view, mode: str, lhs: str) -> bool:
+    for map_lhs, map_rhs in _mappings[mode].items():
+        if isinstance(map_rhs, str):
+            if map_lhs.startswith(lhs):
+                return True
+        else:
+            file_type = get_file_type(view)
+            if file_type and file_type in map_rhs:
+                if map_lhs.startswith(lhs):
+                    return True
+            elif '' in map_rhs:
+                if map_lhs.startswith(lhs):
+                    return True
+
+    return False
+
+
+def _find_full_match(view, mode: str, lhs: str):
+    rhs = _mappings[mode].get(lhs)
+    if rhs:
+        if isinstance(rhs, str):
+            return rhs
+
+        try:
+            return _mappings[mode][lhs][get_file_type(view)]
+        except KeyError:
+            try:
+                return _mappings[mode][lhs]['']
+            except KeyError:
+                pass
 
 
 def _normalise_lhs(lhs: str) -> str:
@@ -73,6 +102,26 @@ def _normalise_lhs(lhs: str) -> str:
 
 
 def mappings_add(mode: str, lhs: str, rhs: str) -> None:
+    if re.match('^FileType$', lhs):
+        parsed = re.match('^([^ ]+) ([^ ]+)\\s+', rhs)
+        if parsed:
+            for file_type in parsed.group(1).split(','):
+                file_type_lhs = parsed.group(2)
+                file_type_rhs = rhs[len(parsed.group(0)):]
+
+                file_type_lhs_norm = _normalise_lhs(file_type_lhs)
+
+                match = _mappings[mode].get(file_type_lhs_norm)
+
+                if not match:
+                    _mappings[mode][file_type_lhs_norm] = {}
+                elif isinstance(match, str):
+                    _mappings[mode][file_type_lhs_norm] = {'': match}
+
+                _mappings[mode][file_type_lhs_norm][file_type] = file_type_rhs
+
+            return
+
     _mappings[mode][_normalise_lhs(lhs)] = rhs
 
 
@@ -85,34 +134,22 @@ def mappings_clear() -> None:
         _mappings[mode] = {}
 
 
-def mappings_is_incomplete(view) -> bool:
-    mode = get_mode(view)
-    seq = get_partial_sequence(view)
-
-    if _find_full_match(mode, seq):
-        return False
-
-    if _find_partial_matches(mode, seq):
-        return True
-
-    return False
-
-
 def mappings_can_resolve(view, key: str) -> bool:
     mode = get_mode(view)
     sequence = get_partial_sequence(view) + key
 
-    if _find_full_match(mode, sequence):
+    if _find_full_match(view, mode, sequence):
         return True
 
-    if _find_partial_matches(mode, sequence):
+    if _has_partial_matches(view, mode, sequence):
         return True
 
     return False
 
 
-def _seq_to_mapping(mode: str, seq: str):
-    full_match = _find_full_match(mode, seq)
+def _seq_to_mapping(view, seq: str):
+    mode = get_mode(view)
+    full_match = _find_full_match(view, mode, seq)
     if full_match:
         return Mapping(seq, full_match)
 
@@ -126,14 +163,12 @@ def _seq_to_command(view, seq: str, mode: str):
     #   mode (str): Forces the use of this mode instead of the global state's.
     #
     # Returns:
-    #   ViCommandDefBase:
-    #   ViMissingCommandDef: If not found.
+    #   ViCommandDefBase
+    #   CommandNotFound
     if mode in plugin.mappings:
         plugin_command = plugin.mappings[mode].get(seq)
         if plugin_command:
-            plugin_name = plugin_command.__class__.__module__[24:]
-            is_plugin_enabled = get_setting(view, 'enable_%s' % plugin_name)
-            if is_plugin_enabled:
+            if is_plugin_enabled(view, plugin_command):
                 return plugin_command
 
     if mode in keys.mappings:
@@ -141,7 +176,7 @@ def _seq_to_command(view, seq: str, mode: str):
         if command:
             return command
 
-    return ViMissingCommandDef()
+    return CommandNotFound()
 
 
 def mappings_resolve(view, sequence: str = None, mode: str = None, check_user_mappings: bool = True):
@@ -161,7 +196,8 @@ def mappings_resolve(view, sequence: str = None, mode: str = None, check_user_ma
     #
     # Returns:
     #   Mapping:
-    #   ViMissingCommandDef: If not found.
+    #   IncompleteMapping
+    #   CommandNotFound
 
     # We usually need to look at the partial sequence, but some commands do
     # weird things, like ys, which isn't a namespace but behaves as such
@@ -186,7 +222,12 @@ def mappings_resolve(view, sequence: str = None, mode: str = None, check_user_ma
         # let the definition handle any special-cases itself instead of passing
         # off the responsibility to the feed key command.
 
-        command = _seq_to_mapping(get_mode(view), seq)
+        command = _seq_to_mapping(view, seq)
+
+        if not command:
+            if not sequence:
+                if _has_partial_matches(view, get_mode(view), seq):
+                    return IncompleteMapping()
 
     if not command:
         command = _seq_to_command(view, to_bare_command_name(seq), mode or get_mode(view))
