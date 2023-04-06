@@ -1818,6 +1818,7 @@ _SEQ2CMD = {
     'cre':          {'command': 'nv_feed_key'},  # noqa: E241
     'crk':          {'command': 'nv_feed_key'},  # noqa: E241
     'crm':          {'command': 'nv_feed_key'},  # noqa: E241
+    'crp':          {'command': 'nv_feed_key'},  # noqa: E241
     'crs':          {'command': 'nv_feed_key'},  # noqa: E241
     'crt':          {'command': 'nv_feed_key'},  # noqa: E241
     'cru':          {'command': 'nv_feed_key'},  # noqa: E241

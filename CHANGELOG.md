@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#855](https://github.com/NeoVintageous/NeoVintageous/issues/855): `crp` PascalCase coercion, alias to `crm` (Abolish plugin)
 * Added [#790](https://github.com/NeoVintageous/NeoVintageous/issues/790): Asynchronous file saving setting `vintageous_save_async`, false by default
 * Added [#643](https://github.com/NeoVintageous/NeoVintageous/issues/643): Mapping by file type e.g. `nnoremap FileType go gd :LspSymbolDefinition<CR>`
 * Added [#861](https://github.com/NeoVintageous/NeoVintageous/issues/861): `[count]` for `D`

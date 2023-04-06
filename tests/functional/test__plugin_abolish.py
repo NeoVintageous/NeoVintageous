@@ -22,6 +22,7 @@ class TestAbolish(unittest.FunctionalTestCase):
 
     def test_coercion(self):
         self.eq('a b snake_ca|seCamelCaseTitleUPPER c', 'crm', 'a b |SnakeCaseCamelCaseTitleUpper c')
+        self.eq('a b snake_ca|seCamelCaseTitleUPPER c', 'crp', 'a b |SnakeCaseCamelCaseTitleUpper c')
         self.eq('a b sn|ake_caseCamelCaseTitleUPPER c', 'crc', 'a b |snakeCaseCamelCaseTitleUpper c')
         self.eq('a b snake_caseCamelCaseTitleUPP|ER c', 'cr ', 'a b |snake case camel case title upper c')
         self.eq('a b s|nake_caseCamelCaseTitleUPPER c', 'cr.', 'a b |snake.case.camel.case.title.upper c')

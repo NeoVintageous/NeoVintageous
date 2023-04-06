@@ -88,6 +88,7 @@ _COERCIONS = {
 
 _ALIASES = {
     'm': 'mixedcase',
+    'p': 'mixedcase',
     'c': 'camelcase',
     '_': 'snakecase',
     's': 'snakecase',
