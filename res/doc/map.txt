@@ -1,4 +1,4 @@
-*map.txt*       For Vim version 9.0.  Last change: 2022 Dec 01
+*map.txt*       For Vim version 9.0.  Last change: 2023 Feb 27
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -20,9 +20,10 @@ manual.
    1.8 Examples					|map-examples|
    1.9 Using mappings				|map-typing|
    1.10 Mapping alt-keys			|:map-alt-keys|
-   1.11 Mapping in modifyOtherKeys mode		|modifyOtherKeys|
-   1.12 Mapping with Kitty keyboard protocol	|kitty-keyboard-protocol|
-   1.13 Mapping an operator			|:map-operator|
+   1.11 Mapping meta-keys			|:map-meta-keys|
+   1.12 Mapping in modifyOtherKeys mode		|modifyOtherKeys|
+   1.13 Mapping with Kitty keyboard protocol	|kitty-keyboard-protocol|
+   1.14 Mapping an operator			|:map-operator|
 2. Abbreviations		|abbreviations|
 3. Local mappings and functions	|script-local|
 4. User-defined commands	|user-commands|
@@ -777,8 +778,8 @@ To avoid mapping of the characters you type in insert or Command-line mode,
 type a CTRL-V first.  The mapping in Insert mode is disabled if the 'paste'
 option is on.
 							*map-error*
-Note that when an error is encountered (that causes an error message or beep)
-the rest of the mapping is not executed.  This is Vi-compatible.
+Note that when an error is encountered (that causes an error message or might
+cause a beep) the rest of the mapping is not executed.  This is Vi-compatible.
 
 Note that the second character (argument) of the commands @zZtTfF[]rm'`"v
 and CTRL-X is not mapped.  This was done to be able to use all the named
@@ -794,8 +795,8 @@ otherwise you would not be able to use those commands anymore.  Here are a few
 suggestions:
 - Function keys <F2>, <F3>, etc..  Also the shifted function keys <S-F1>,
   <S-F2>, etc.  Note that <F1> is already used for the help command.
-- Meta-keys (with the ALT key pressed).  Depending on your keyboard accented
-  characters may be used as well. |:map-alt-keys|
+- Any key with the Alt or Meta key pressed.  Depending on your keyboard
+  accented characters may be used as well. |:map-alt-keys|
 - Use the '_' or ',' character and then any other character.  The "_" and ","
   commands do exist in Vim (see |_| and |,|), but you probably never use them.
 - Use a key that is a synonym for another command.  For example: CTRL-P and
@@ -844,7 +845,7 @@ option).  After that it assumes that the 'q' is to be interpreted as such.  If
 you type slowly, or your system is slow, reset the 'timeout' option.  Then you
 might want to set the 'ttimeout' option.
 
-			      				*map-precedence*
+							*map-precedence*
 Buffer-local mappings (defined using |:map-<buffer>|) take precedence over
 global mappings.  When a buffer-local mapping is the same as a global mapping,
 Vim will use the buffer-local mapping.  In addition, Vim will use a complete
@@ -922,12 +923,19 @@ in the original Vi, you would get back the text before the first undo).
 
 1.10 MAPPING ALT-KEYS					*:map-alt-keys*
 
+For a readable mapping command the <A-k> form can be used.  Note that <A-k>
+and <A-K> are different, the latter will use an upper case letter.  Actually,
+<A-K> and <A-S-K> are the same.  Instead of "A" you can use "M".  If you have
+an actual Meta modifier key, please see |:map-meta-keys|.
+
 In the GUI Vim handles the Alt key itself, thus mapping keys with ALT should
 always work.  But in a terminal Vim gets a sequence of bytes and has to figure
 out whether ALT was pressed or not.
 
 If the terminal supports the modifyOtherKeys mode and it has been enabled,
 then Vim can recognize more key combinations, see |modifyOtherKeys| below.
+The Kitty keyboard protocol works in a similar way, see
+|kitty-keyboard-protocol|.
 
 By default Vim assumes that pressing the ALT key sets the 8th bit of a typed
 character.  Most decent terminals can work that way, such as xterm, aterm and
@@ -966,7 +974,21 @@ on the terminal; that's a good last resource in case you want to send ESC when
 using other applications but not when inside Vim.
 
 
-1.11 MAPPING IN modifyOtherKeys mode			*modifyOtherKeys*
+1.11 MAPPING META-KEYS					*:map-meta-keys*
+
+Mapping keys with the Meta modifier works very similar to using the Alt key.
+What key on your keyboard produces the Meta modifier depends on your keyboard
+and configuration.
+
+Note that mapping <M-a> actually is for using the Alt key.  That can be
+confusing!  It cannot be changed, it would not be backwards compatible.
+
+For the Meta modifier the "T" character is used.  For example, to map Meta-b
+in Insert mode: >
+	:imap <T-b> terrible
+
+
+1.12 MAPPING IN modifyOtherKeys mode			*modifyOtherKeys*
 
 Xterm and a few other terminals can be put in a mode where keys with modifiers
 are sent with a special escape code.  Vim recognizes these codes and can then
@@ -1011,7 +1033,7 @@ enabled when it spots an escape sequence that must have been created by it.
 To see if Vim detected such an escape sequence use `:verbose map`, the first
 line will then show "Seen modifyOtherKeys: true" (possibly translated).
 
-This automatic detection depends on receiving an escape code starting with 
+This automatic detection depends on receiving an escape code starting with
 "<1b>[27;".  This is the normal way xterm sends these key codes.  However, if
 the *formatOtherKeys* resource is set another form is used that is not
 recognized, therefore you must not set formatOtherKeys.
@@ -1028,7 +1050,7 @@ When the 'esckeys' option is off, then modifyOtherKeys will be disabled in
 Insert mode to avoid every key with a modifier causing Insert mode to end.
 
 
-1.12 MAPPING WITH KITTY KEYBOARD PROTOCOL	 *kitty-keyboard-protocol*
+1.13 MAPPING WITH KITTY KEYBOARD PROTOCOL	 *kitty-keyboard-protocol*
 
 If the value of 'term' contains "kitty" then Vim will send out an escape
 sequence to enable the Kitty keyboard protocol.  This can be changed with the
@@ -1051,11 +1073,11 @@ translated).  The meaning of {value}:
 	On		protocol is used
 	Disabled	protocol was used but expected to have been disabled
 			by 't_TE'
-	Cleared		protocol expected to have beeen disabled by 't_TE',
-			previous state is unknown 
+	Cleared		protocol expected to have been disabled by 't_TE',
+			previous state is unknown
 
 
-1.13 MAPPING AN OPERATOR				*:map-operator*
+1.14 MAPPING AN OPERATOR				*:map-operator*
 
 An operator is used before a {motion} command.  To define your own operator
 you must create a mapping that first sets the 'operatorfunc' option and then
@@ -1195,7 +1217,7 @@ non-id	  The "non-id" type ends in a non-keyword character, the other
 Examples of strings that cannot be abbreviations: "a.b", "#def", "a b", "_$r"
 
 An abbreviation is only recognized when you type a non-keyword character.
-This can also be the <Esc> that ends insert mode or the <CR> that ends a
+This can also be the <Esc> that ends Insert mode or the <CR> that ends a
 command.  The non-keyword character which ends the abbreviation is inserted
 after the expanded abbreviation.  An exception to this is the character <C-]>,
 which is used to expand an abbreviation without inserting any extra
@@ -1399,12 +1421,13 @@ this, they can be made local to the script.
 
 						*<SID>* *<SNR>* *E81*
 The string "<SID>" can be used in a mapping or menu.  This requires that the
-'<' flag is not present in 'cpoptions'.
+'<' flag is not present in 'cpoptions'.  This is useful if you have a
+script-local function that you want to call from a mapping in the same script.
    When executing the map command, Vim will replace "<SID>" with the special
 key code <SNR>, followed by a number that's unique for the script, and an
 underscore.  Example: >
 	:map <SID>Add
-could define a mapping "<SNR>23_Add".
+would define a mapping "<SNR>23_Add".
 
 When defining a function in a script, "s:" can be prepended to the name to
 make it local to the script (in |Vim9| script functions without a prefix are
@@ -1706,7 +1729,7 @@ by default correspond to the current line, last line and the whole buffer,
 relate to arguments, (loaded) buffers, windows or tab pages.
 
 Possible values are (second column is the short name used in listing):
-    -addr=lines		  	Range of lines (this is the default for -range)
+    -addr=lines			Range of lines (this is the default for -range)
     -addr=arguments	  arg	Range for arguments
     -addr=buffers	  buf	Range for buffers (also not loaded buffers)
     -addr=loaded_buffers  load	Range for loaded buffers

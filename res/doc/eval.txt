@@ -1,4 +1,4 @@
-*eval.txt*	For Vim version 9.0.  Last change: 2022 Dec 11
+*eval.txt*	For Vim version 9.0.  Last change: 2023 Feb 25
 
 
 		  VIM REFERENCE MANUAL	  by Bram Moolenaar
@@ -1372,7 +1372,7 @@ Note that the dot is also used for String concatenation.  To avoid confusion
 always put spaces around the dot for String concatenation.
 
 
-expr10(expr1, ...)	|Funcref| function call  	*E1085*
+expr10(expr1, ...)	|Funcref| function call		*E1085*
 
 When expr10 is a |Funcref| type variable, invoke the function it refers to.
 
@@ -1654,7 +1654,7 @@ See below |functions|.
 
 lambda expression				*expr-lambda* *lambda*
 -----------------
-{args -> expr1}		legacy lambda expression 		*E451*
+{args -> expr1}		legacy lambda expression		*E451*
 (args) => expr1		|Vim9| lambda expression
 
 A lambda expression creates a new unnamed function which returns the result of
@@ -2504,6 +2504,10 @@ v:t_number	Value of |Number| type.  Read-only.  See: |type()|
 v:t_string	Value of |String| type.  Read-only.  See: |type()|
 					*v:t_blob* *t_blob-variable*
 v:t_blob	Value of |Blob| type.  Read-only.  See: |type()|
+					*v:t_class* *t_class-variable*
+v:t_class	Value of |class| type.  Read-only.  See: |type()|
+					*v:t_object* *t_object-variable*
+v:t_object	Value of |object| type.  Read-only.  See: |type()|
 
 				*v:termresponse* *termresponse-variable*
 v:termresponse	The escape sequence returned by the terminal for the |t_RV|
@@ -2970,6 +2974,8 @@ text...
 			deleted when the script ends).  Function-local
 			variables are automatically deleted when the function
 			ends.
+			In |Vim9| script variables declared in a function or
+			script cannot be removed.
 
 :unl[et] ${env-name} ...			*:unlet-environment* *:unlet-$*
 			Remove environment variable {env-name}.
@@ -4575,10 +4581,10 @@ The input is in the variable "line", the results in the variables "file",
 
 getting the scriptnames in a Dictionary ~
 						*scriptnames-dictionary*
-The |:scriptnames| command can be used to get a list of all script files that
-have been sourced.  There is no equivalent function or variable for this
-(because it's rarely needed).  In case you need to manipulate the list this
-code can be used: >
+The `:scriptnames` command can be used to get a list of all script files that
+have been sourced.  There is also the `getscriptinfo()` function, but the
+information returned is not exactly the same.  In case you need to manipulate
+the output of `scriptnames` this code can be used: >
     " Get the output of ":scriptnames" in the scriptnames_output variable.
     let scriptnames_output = ''
     redir => scriptnames_output
