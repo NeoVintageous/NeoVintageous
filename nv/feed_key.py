@@ -170,8 +170,6 @@ class FeedKeyHandler():
                 set_action_count(self.view, str(self.repeat_count))
 
             if self._handle_count(self.key, self.repeat_count):
-                _log.debug('handled count')
-
                 return True
 
         return False
