@@ -102,9 +102,6 @@ class FeedKeyHandler():
         if self._collect_input():
             return
 
-        if self._resolve_count():
-            return
-
         self._handle()
 
     def _handle_bad_selection(self) -> None:
@@ -191,6 +188,9 @@ class FeedKeyHandler():
         return False
 
     def _handle(self) -> None:
+        if self._resolve_count():
+            return
+
         set_partial_sequence(self.view, get_partial_sequence(self.view) + self.key)
 
         command = mappings_resolve(self.view, check_user_mappings=self.check_user_mappings)
