@@ -165,11 +165,11 @@ class FeedKeyHandler():
         # you press the digit 1 followed by 2, it's a count of 12, not 3.
         elif self.key.isdigit():
             if not get_action(self.view):
-                if (self.key != '0' or get_action_count(self.view)):
+                if self.key != '0' or get_action_count(self.view):
                     set_action_count(self.view, get_action_count(self.view) + self.key)
                     return True
             elif get_mode(self.view) == OPERATOR_PENDING:
-                if (self.key != '0' or get_motion_count(self.view)):
+                if self.key != '0' or get_motion_count(self.view):
                     set_motion_count(self.view, get_motion_count(self.view) + self.key)
                     return True
 
