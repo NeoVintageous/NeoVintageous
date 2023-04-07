@@ -164,15 +164,16 @@ class FeedKeyHandler():
         if self.repeat_count:
             set_action_count(self.view, str(self.repeat_count))
 
-        if not get_action(self.view) and self.key.isdigit():
-            if not self.repeat_count and (self.key != '0' or get_action_count(self.view)):
-                set_action_count(self.view, str(get_action_count(self.view)) + self.key)
-                return True
+        if self.key.isdigit():
+            if not get_action(self.view):
+                if not self.repeat_count and (self.key != '0' or get_action_count(self.view)):
+                    set_action_count(self.view, str(get_action_count(self.view)) + self.key)
+                    return True
 
-        if (get_action(self.view) and (get_mode(self.view) == OPERATOR_PENDING) and self.key.isdigit()):
-            if not self.repeat_count and (self.key != '0' or get_motion_count(self.view)):
-                set_motion_count(self.view, str(get_motion_count(self.view)) + self.key)
-                return True
+            if (get_action(self.view) and (get_mode(self.view) == OPERATOR_PENDING)):
+                if not self.repeat_count and (self.key != '0' or get_motion_count(self.view)):
+                    set_motion_count(self.view, str(get_motion_count(self.view)) + self.key)
+                    return True
 
         return False
 
