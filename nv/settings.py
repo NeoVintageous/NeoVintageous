@@ -66,9 +66,6 @@ def get_action_count(view) -> str:
 
 
 def set_action_count(view, value: str) -> None:
-    # TODO Is this check necessary; this was an assertion which are disabled in <4000 which is good
-    if value != '' and not value.isdigit():
-        raise ValueError()
     set_session_view_value(view, 'action_count', value)
 
 
