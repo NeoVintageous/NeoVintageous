@@ -89,7 +89,7 @@ class FeedKeyHandler():
             check_user_mappings)
 
     def handle(self) -> None:
-        self._fix_selection()
+        self._handle_bad_selection()
 
         if self._handle_escape():
             return
@@ -107,7 +107,7 @@ class FeedKeyHandler():
 
         self._handle()
 
-    def _fix_selection(self) -> None:
+    def _handle_bad_selection(self) -> None:
         if _is_selection_malformed(self.view, self.mode):
             self.mode = _fix_malformed_selection(self.view, self.mode)
 
