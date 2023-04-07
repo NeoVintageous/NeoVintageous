@@ -120,20 +120,20 @@ def set_ex_shell_last_command(cmd: str) -> None:
     set_session_value('ex_shell_last_command', cmd)
 
 
-def get_ex_substitute_last_pattern() -> str:
-    return get_session_value('ex_substitute_last_pattern')
+def get_last_substitute_search_pattern() -> str:
+    return get_session_value('last_substitute_search_pattern')
 
 
-def set_ex_substitute_last_pattern(pattern: str) -> None:
-    set_session_value('ex_substitute_last_pattern', pattern, persist=True)
+def set_last_substitute_search_pattern(pattern: str) -> None:
+    set_session_value('last_substitute_search_pattern', pattern, persist=True)
 
 
-def get_ex_substitute_last_replacement() -> str:
-    return get_session_value('ex_substitute_last_replacement')
+def get_last_substitute_string() -> str:
+    return get_session_value('last_substitute_string')
 
 
-def set_ex_substitute_last_replacement(replacement: str) -> None:
-    set_session_value('ex_substitute_last_replacement', replacement, persist=True)
+def set_last_substitute_string(replacement: str) -> None:
+    set_session_value('last_substitute_string', replacement, persist=True)
 
 
 def get_exit_when_quiting_last_window(view) -> bool:

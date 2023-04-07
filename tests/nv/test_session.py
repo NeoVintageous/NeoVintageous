@@ -91,8 +91,6 @@ class TestSession(unittest.ViewTestCase):
         get_session_file.return_value = self.fixturePath('session_basic.json')
         session.load_session()
         self.assertSession({
-            "ex_substitute_last_pattern": "fizz",
-            "ex_substitute_last_replacement": "buzz",
             "history": {
                 1: {
                     'num': 6,
@@ -107,6 +105,8 @@ class TestSession(unittest.ViewTestCase):
                 4: {'num': 0, "items": {}},
                 5: {'num': 0, "items": {}},
             },
+            "last_substitute_search_pattern": "fizz",
+            "last_substitute_string": "buzz",
             "last_used_register_name": "w",
             "macros": {
                 "w": [
@@ -122,8 +122,6 @@ class TestSession(unittest.ViewTestCase):
         })
 
     @unittest.mock.patch.dict('NeoVintageous.nv.session._session', {
-        "ex_substitute_last_pattern": "fizz",
-        "ex_substitute_last_replacement": "buzz",
         "foo": "bar",
         "history": {
             1: {
@@ -139,6 +137,8 @@ class TestSession(unittest.ViewTestCase):
             4: {'num': 0, "items": {}},
             5: {'num': 0, "items": {}}
         },
+        "last_substitute_search_pattern": "fizz",
+        "last_substitute_string": "buzz",
         "last_used_register_name": "w",
         "macros": {
             "w": [

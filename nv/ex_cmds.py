@@ -62,16 +62,16 @@ from NeoVintageous.nv.search import is_smartcase_pattern
 from NeoVintageous.nv.settings import get_cmdline_cwd
 from NeoVintageous.nv.settings import get_ex_global_last_pattern
 from NeoVintageous.nv.settings import get_ex_shell_last_command
-from NeoVintageous.nv.settings import get_ex_substitute_last_pattern
-from NeoVintageous.nv.settings import get_ex_substitute_last_replacement
+from NeoVintageous.nv.settings import get_last_substitute_search_pattern
+from NeoVintageous.nv.settings import get_last_substitute_string
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import reset_setting
 from NeoVintageous.nv.settings import set_cmdline_cwd
 from NeoVintageous.nv.settings import set_ex_global_last_pattern
 from NeoVintageous.nv.settings import set_ex_shell_last_command
-from NeoVintageous.nv.settings import set_ex_substitute_last_pattern
-from NeoVintageous.nv.settings import set_ex_substitute_last_replacement
+from NeoVintageous.nv.settings import set_last_substitute_search_pattern
+from NeoVintageous.nv.settings import set_last_substitute_string
 from NeoVintageous.nv.settings import set_setting
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import adding_regions
@@ -781,8 +781,8 @@ def ex_substitute(view, edit, line_range: RangeNode,
     # When no pattern is given then the the last search pattern and last
     # replacement is used. Note that the last used flags are not used.
     if not pattern:
-        pattern = get_ex_substitute_last_pattern()
-        replacement = get_ex_substitute_last_replacement()
+        pattern = get_last_substitute_search_pattern()
+        replacement = get_last_substitute_string()
 
     if not pattern:
         return status_message('E33: No previous substitute regular expression')
@@ -790,8 +790,8 @@ def ex_substitute(view, edit, line_range: RangeNode,
     if replacement is None:
         return status_message('No substitute replacement string')
 
-    set_ex_substitute_last_pattern(pattern)
-    set_ex_substitute_last_replacement(replacement)
+    set_last_substitute_search_pattern(pattern)
+    set_last_substitute_string(replacement)
 
     computed_flags = 0
 

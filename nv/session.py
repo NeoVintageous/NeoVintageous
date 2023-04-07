@@ -76,11 +76,11 @@ def load_session() -> None:
                 session = json.loads(content)
                 if session:
                     accept_keys = (
-                        'ex_substitute_last_pattern',
-                        'ex_substitute_last_replacement',
                         'history',
                         'last_search_pattern',
                         'last_search_pattern_command',
+                        'last_substitute_search_pattern',
+                        'last_substitute_string',
                         'last_used_register_name',
                         'macros',
                         'registers',

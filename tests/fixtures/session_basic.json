@@ -1,6 +1,4 @@
 {
-    "ex_substitute_last_pattern": "fizz",
-    "ex_substitute_last_replacement": "buzz",
     "foo": "bar",
     "history": {
         "1": {
@@ -28,6 +26,8 @@
             "items": {}
         }
     },
+    "last_substitute_search_pattern": "fizz",
+    "last_substitute_string": "buzz",
     "last_used_register_name": "w",
     "macros": {
         "w": [
