@@ -161,9 +161,8 @@ class FeedKeyHandler():
         return False
 
     def _resolve_count(self) -> bool:
-        # If the user has defined any mappings that starts with a number
-        # (count), or " (register character), we need to skip the count handler
-        # and go straight to resolving the mapping, otherwise it won't resolve.
+        # If the user has defined a mapping that starts with a number i.e. count
+        # then the count handler has to be skipped otherwise it won't resolve.
         # See https://github.com/NeoVintageous/NeoVintageous/issues/434.
         if not mappings_can_resolve(self.view, self.key):
             if self._handle_count():
