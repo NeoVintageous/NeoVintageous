@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.30.0 - Unreleased
+
+* Added [#863](https://github.com/NeoVintageous/NeoVintageous/issues/863): Persist last search pattern on restarts
+
 ## 1.29.0 - 2023-04-06
 
 ### Added

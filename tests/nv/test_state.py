@@ -65,9 +65,12 @@ class TestState(unittest.ViewTestCase):
         self.assertIsNone(panel.settings().get('inverse_caret_state'))
         self.assertIsNone(panel.settings().get('vintage'))
 
+    @unittest.mock_session()
     def test_can_initialize(self):
         # Make sure the actual usage of NeoVintageous doesn't change the
         # pristine state. This isn't great, though.
+
+        # DEPRECATED
         self.view.window().settings().erase('_vintageous_last_char_search_command')
         self.view.window().settings().erase('_vintageous_last_char_search_character')
         self.view.window().settings().erase('_vintageous_last_buff_search_command')

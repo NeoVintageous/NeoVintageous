@@ -167,17 +167,17 @@ def set_last_char_search_character(view, value: str) -> None:
 
 # The last characte used for searches such as "/" and "?".
 def get_last_search_pattern(view) -> str:
-    return _get_private(view.window(), 'last_search_pattern', '')
+    return get_session_value('last_search_pattern', '')
 
 
 # Supports repeating the last search commands. For example the command "n".
 def get_last_search_pattern_command(view) -> str:
-    return _get_private(view.window(), 'last_search_pattern_command', 'nv_vi_slash')
+    return get_session_value('last_search_pattern_command', 'nv_vi_slash')
 
 
 def set_last_search_pattern(view, pattern: str, command: str) -> None:
-    _set_private(view.window(), 'last_search_pattern', pattern)
-    _set_private(view.window(), 'last_search_pattern_command', command)
+    set_session_value('last_search_pattern', pattern)
+    set_session_value('last_search_pattern_command', command)
 
 
 # State of current mode. It isn't guaranteed that the underlying view's
