@@ -157,24 +157,9 @@ class TestStateCounts(unittest.ViewTestCase):
         set_action_count(self.view, '10')
         self.assertEqual(get_count(self.view), 10)
 
-    def test_fails_if_bad_action_count(self):
-        def set_count():
-            set_action_count(self.view, 'x')
-        self.assertRaises(ValueError, set_count)
-
-    def test_fails_if_bad_motion_count(self):
-        def set_count():
-            set_motion_count(self.view, 'x')
-        self.assertRaises(ValueError, set_count)
-
     def test_count_is_never_less_than1(self):
         set_motion_count(self.view, '0')
         self.assertEqual(get_count(self.view), 1)
-
-        def set_count():
-            set_motion_count(self.view, '-1')
-
-        self.assertRaises(ValueError, set_count)
 
     def test_can_retrieve_good_motion_count(self):
         set_motion_count(self.view, '10')
@@ -184,6 +169,30 @@ class TestStateCounts(unittest.ViewTestCase):
         set_motion_count(self.view, '10')
         set_action_count(self.view, '10')
         self.assertEqual(get_count(self.view), 100)
+
+    def test_adding_action_count_concatinates_str_not_int_addition(self):
+        # NOTE motion/action counts need to be cast to strings because they need
+        # to be "joined" to the previous key press, not added. For example when
+        # you press the digit 1 followed by 2, it's a count of 12, not 3.
+        set_action_count(self.view, '1')
+        set_action_count(self.view, get_action_count(self.view) + '2')
+        self.assertEqual('12', get_action_count(self.view))
+        set_action_count(self.view, get_action_count(self.view) + '3')
+        self.assertEqual('123', get_action_count(self.view))
+        with self.assertRaisesRegex(TypeError, 'can only concatenate str'):
+            set_action_count(self.view, get_action_count(self.view) + 4)
+
+    def test_adding_motion_count_concatinates_str_not_int_addition(self):
+        # NOTE motion/action counts need to be cast to strings because they need
+        # to be "joined" to the previous key press, not added. For example when
+        # you press the digit 1 followed by 2, it's a count of 12, not 3.
+        set_motion_count(self.view, '1')
+        set_motion_count(self.view, get_motion_count(self.view) + '2')
+        self.assertEqual('12', get_motion_count(self.view))
+        set_motion_count(self.view, get_motion_count(self.view) + '3')
+        self.assertEqual('123', get_motion_count(self.view))
+        with self.assertRaisesRegex(TypeError, 'can only concatenate str'):
+            set_motion_count(self.view, get_motion_count(self.view) + 4)
 
 
 class TestStateRunnability(unittest.ViewTestCase):

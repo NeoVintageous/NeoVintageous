@@ -65,8 +65,8 @@ def get_action_count(view) -> str:
     return get_session_view_value(view, 'action_count', '')
 
 
-def set_action_count(view, value: str) -> None:
-    set_session_view_value(view, 'action_count', value)
+def set_action_count(view, value) -> None:
+    set_session_view_value(view, 'action_count', str(value))
 
 
 def get_cmdline_cwd() -> str:
@@ -203,12 +203,8 @@ def get_motion_count(view) -> str:
     return get_session_view_value(view, 'motion_count', '')
 
 
-def set_motion_count(view, value: str) -> None:
-    # TODO Is this check necessary; this was an assertion which are disabled in <4000 which is good
-    if value != '' and not value.isdigit():
-        raise ValueError()
-
-    set_session_view_value(view, 'motion_count', value)
+def set_motion_count(view, value) -> None:
+    set_session_view_value(view, 'motion_count', str(value))
 
 
 # This setting isn't reset automatically. nv_enter_normal_mode mode must take care
