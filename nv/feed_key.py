@@ -157,16 +157,6 @@ class FeedKeyHandler():
 
         return False
 
-    def _resolve_count(self) -> bool:
-        # If the user has defined a mapping that starts with a number i.e. count
-        # then the count handler has to be skipped otherwise it won't resolve.
-        # See https://github.com/NeoVintageous/NeoVintageous/issues/434.
-        if not mappings_can_resolve(self.view, self.key):
-            if self._handle_count():
-                return True
-
-        return False
-
     def _handle_count(self) -> bool:
         # NOTE motion/action counts need to be cast to strings because they need
         # to be "joined" to the previous key press, not added. For example when
@@ -188,8 +178,12 @@ class FeedKeyHandler():
         return False
 
     def _handle(self) -> None:
-        if self._resolve_count():
-            return
+        # If the user has defined a mapping that starts with a number i.e. count
+        # then the count handler has to be skipped otherwise it won't resolve.
+        # See https://github.com/NeoVintageous/NeoVintageous/issues/434.
+        if not mappings_can_resolve(self.view, self.key):
+            if self._handle_count():
+                return
 
         set_partial_sequence(self.view, get_partial_sequence(self.view) + self.key)
 
