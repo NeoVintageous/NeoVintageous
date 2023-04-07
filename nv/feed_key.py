@@ -169,24 +169,24 @@ class FeedKeyHandler():
             if self.repeat_count:
                 set_action_count(self.view, str(self.repeat_count))
 
-            if self._handle_count(self.key, self.repeat_count):
+            if self._handle_count():
                 return True
 
         return False
 
-    def _handle_count(self, key: str, repeat_count: int) -> bool:
+    def _handle_count(self) -> bool:
         # NOTE motion/action counts need to be cast to strings because they need
         # to be "joined" to the previous key press, not added. For example when
         # you press the digit 1 followed by 2, it's a count of 12, not 3.
 
-        if not get_action(self.view) and key.isdigit():
-            if not repeat_count and (key != '0' or get_action_count(self.view)):
-                set_action_count(self.view, str(get_action_count(self.view)) + key)
+        if not get_action(self.view) and self.key.isdigit():
+            if not self.repeat_count and (self.key != '0' or get_action_count(self.view)):
+                set_action_count(self.view, str(get_action_count(self.view)) + self.key)
                 return True
 
-        if (get_action(self.view) and (get_mode(self.view) == OPERATOR_PENDING) and key.isdigit()):
-            if not repeat_count and (key != '0' or get_motion_count(self.view)):
-                set_motion_count(self.view, str(get_motion_count(self.view)) + key)
+        if (get_action(self.view) and (get_mode(self.view) == OPERATOR_PENDING) and self.key.isdigit()):
+            if not self.repeat_count and (self.key != '0' or get_motion_count(self.view)):
+                set_motion_count(self.view, str(get_motion_count(self.view)) + self.key)
                 return True
 
         return False
