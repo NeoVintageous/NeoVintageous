@@ -146,31 +146,6 @@ def previous_word_end(view, pt: int) -> int:
     return view.find_by_class(pt, forward=False, classes=ANCHOR_PREVIOUS_WORD_BOUNDARY)
 
 
-def next_word_start(view, pt: int) -> int:
-    if is_at_punctuation(view, pt):
-        # Skip all punctuation surrounding the caret and any trailing spaces.
-        end = get_punctuation_region(view, pt).b
-        if view.substr(end) in (' ', '\n'):
-            end = view.find_by_class(end, forward=True, classes=ANCHOR_NEXT_WORD_BOUNDARY)
-
-            return end
-
-    elif is_at_space(view, pt):
-        # Skip all spaces surrounding the cursor and the text word.
-        end = get_space_region(view, pt).b
-        if is_at_word(view, end) or is_at_punctuation(view, end):
-            end = view.find_by_class(
-                end,
-                forward=True,
-                classes=CLASS_WORD_END | CLASS_PUNCTUATION_END | CLASS_LINE_END
-            )
-
-            return end
-
-    # Skip the word under the caret and any trailing spaces.
-    return view.find_by_class(pt, forward=True, classes=ANCHOR_NEXT_WORD_BOUNDARY)
-
-
 def current_word_start(view, pt: int) -> int:
     if is_at_punctuation(view, pt):
         return get_punctuation_region(view, pt).a
