@@ -163,14 +163,14 @@ class FeedKeyHandler():
         # NOTE motion/action counts need to be cast to strings because they need
         # to be "joined" to the previous key press, not added. For example when
         # you press the digit 1 followed by 2, it's a count of 12, not 3.
-        if self.key.isdigit():
+        elif self.key.isdigit():
             if not get_action(self.view):
-                if not self.repeat_count and (self.key != '0' or get_action_count(self.view)):
+                if (self.key != '0' or get_action_count(self.view)):
                     set_action_count(self.view, get_action_count(self.view) + self.key)
                     return True
 
             if (get_action(self.view) and (get_mode(self.view) == OPERATOR_PENDING)):
-                if not self.repeat_count and (self.key != '0' or get_motion_count(self.view)):
+                if (self.key != '0' or get_motion_count(self.view)):
                     set_motion_count(self.view, get_motion_count(self.view) + self.key)
                     return True
 
