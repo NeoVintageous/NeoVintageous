@@ -179,7 +179,7 @@ class TestStateCounts(unittest.ViewTestCase):
         self.assertEqual('12', get_action_count(self.view))
         set_action_count(self.view, get_action_count(self.view) + '3')
         self.assertEqual('123', get_action_count(self.view))
-        with self.assertRaisesRegex(TypeError, 'can only concatenate str'):
+        with self.assertRaisesRegex(TypeError, self._get_type_error()):
             set_action_count(self.view, get_action_count(self.view) + 4)
 
     def test_adding_motion_count_concatinates_str_not_int_addition(self):
@@ -191,8 +191,14 @@ class TestStateCounts(unittest.ViewTestCase):
         self.assertEqual('12', get_motion_count(self.view))
         set_motion_count(self.view, get_motion_count(self.view) + '3')
         self.assertEqual('123', get_motion_count(self.view))
-        with self.assertRaisesRegex(TypeError, 'can only concatenate str'):
+        with self.assertRaisesRegex(TypeError, self._get_type_error()):
             set_motion_count(self.view, get_motion_count(self.view) + 4)
+
+    def _get_type_error(self) -> str:
+        if unittest.ST_VERSION < 4000:
+            return 'Can\'t convert \'int\' object to str'
+
+        return 'can only concatenate str'
 
 
 class TestStateRunnability(unittest.ViewTestCase):
