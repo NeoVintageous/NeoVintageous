@@ -168,8 +168,7 @@ class FeedKeyHandler():
                 if (self.key != '0' or get_action_count(self.view)):
                     set_action_count(self.view, get_action_count(self.view) + self.key)
                     return True
-
-            if (get_action(self.view) and (get_mode(self.view) == OPERATOR_PENDING)):
+            elif get_mode(self.view) == OPERATOR_PENDING:
                 if (self.key != '0' or get_motion_count(self.view)):
                     set_motion_count(self.view, get_motion_count(self.view) + self.key)
                     return True
