@@ -134,19 +134,6 @@ def mappings_clear() -> None:
         _mappings[mode] = {}
 
 
-def mappings_can_resolve(view, key: str) -> bool:
-    mode = get_mode(view)
-    sequence = get_partial_sequence(view) + key
-
-    if _find_full_match(view, mode, sequence):
-        return True
-
-    if _has_partial_matches(view, mode, sequence):
-        return True
-
-    return False
-
-
 def _seq_to_mapping(view, seq: str):
     mode = get_mode(view)
     full_match = _find_full_match(view, mode, seq)

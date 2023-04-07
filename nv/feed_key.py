@@ -20,7 +20,6 @@ import logging
 from NeoVintageous.nv.ex_cmds import do_ex_user_cmdline
 from NeoVintageous.nv.mappings import IncompleteMapping
 from NeoVintageous.nv.mappings import Mapping
-from NeoVintageous.nv.mappings import mappings_can_resolve
 from NeoVintageous.nv.mappings import mappings_resolve
 from NeoVintageous.nv.settings import append_sequence
 from NeoVintageous.nv.settings import get_action_count
@@ -178,19 +177,19 @@ class FeedKeyHandler():
         return False
 
     def _handle(self) -> None:
-        # If the user has defined a mapping that starts with a number i.e. count
-        # then the count handler has to be skipped otherwise it won't resolve.
-        # See https://github.com/NeoVintageous/NeoVintageous/issues/434.
-        if not mappings_can_resolve(self.view, self.key):
-            if self._handle_count():
-                return
-
         set_partial_sequence(self.view, get_partial_sequence(self.view) + self.key)
 
         command = mappings_resolve(self.view, check_user_mappings=self.check_user_mappings)
 
         if isinstance(command, IncompleteMapping):
             return
+
+        # If the user has defined a mapping that starts with a number i.e. count
+        # then the count handler has to be skipped otherwise it won't resolve.
+        # See https://github.com/NeoVintageous/NeoVintageous/issues/434.
+        if not isinstance(command, Mapping):
+            if self._handle_count():
+                return
 
         if isinstance(command, ViOpenNameSpace):
             return
