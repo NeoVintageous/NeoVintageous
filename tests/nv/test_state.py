@@ -23,9 +23,9 @@ from NeoVintageous.nv.settings import get_action_count
 from NeoVintageous.nv.settings import get_capture_register
 from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_glue_until_normal_mode
-from NeoVintageous.nv.settings import get_last_buff_search_pattern
 from NeoVintageous.nv.settings import get_last_char_search_character
 from NeoVintageous.nv.settings import get_last_char_search_command
+from NeoVintageous.nv.settings import get_last_search_pattern
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_motion_count
 from NeoVintageous.nv.settings import get_partial_sequence
@@ -72,6 +72,8 @@ class TestState(unittest.ViewTestCase):
         self.view.window().settings().erase('_vintageous_last_char_search_character')
         self.view.window().settings().erase('_vintageous_last_buff_search_command')
         self.view.window().settings().erase('_vintageous_last_buff_search_pattern')
+        self.view.window().settings().erase('_vintageous_last_search_pattern')
+        self.view.window().settings().erase('_vintageous_last_search_pattern_command')
 
         self.assertEqual(get_sequence(self.view), '')
         self.assertEqual(get_partial_sequence(self.view), '')
@@ -115,7 +117,7 @@ class TestState(unittest.ViewTestCase):
         self.assertEqual(get_last_char_search_command(self.view), 'vi_f')
         self.assertEqual(is_interactive(self.view), True)
         self.assertEqual(get_capture_register(self.view), False)
-        self.assertEqual(get_last_buff_search_pattern(self.view), '')
+        self.assertEqual(get_last_search_pattern(self.view), '')
         self.assertEqual(get_reset_during_init(self.view), True)
 
     def test_must_scroll_into_view(self):

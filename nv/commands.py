@@ -73,8 +73,8 @@ from NeoVintageous.nv.search import process_word_search_pattern
 from NeoVintageous.nv.settings import append_sequence
 from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_glue_until_normal_mode
-from NeoVintageous.nv.settings import get_last_buff_search_command
-from NeoVintageous.nv.settings import get_last_buff_search_pattern
+from NeoVintageous.nv.settings import get_last_search_pattern_command
+from NeoVintageous.nv.settings import get_last_search_pattern
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_normal_insert_count
 from NeoVintageous.nv.settings import get_repeat_data
@@ -83,8 +83,8 @@ from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import get_xpos
 from NeoVintageous.nv.settings import is_processing_notation
 from NeoVintageous.nv.settings import set_glue_until_normal_mode
-from NeoVintageous.nv.settings import set_last_buff_search
 from NeoVintageous.nv.settings import set_last_char_search
+from NeoVintageous.nv.settings import set_last_search_pattern
 from NeoVintageous.nv.settings import set_mode
 from NeoVintageous.nv.settings import set_normal_insert_count
 from NeoVintageous.nv.settings import set_repeat_data
@@ -2767,13 +2767,13 @@ class nv_vi_slash(TextCommand):
 class nv_vi_slash_impl(TextCommand):
     def run(self, edit, pattern, mode=None, count=1, save=True):
         if not pattern:
-            pattern = get_last_buff_search_pattern(self.view)
+            pattern = get_last_search_pattern(self.view)
             if not pattern:
                 ui_bell('E35: no previous regular expression')
                 return
 
         if save:
-            set_last_buff_search(self.view, 'nv_vi_slash', pattern)
+            set_last_search_pattern(self.view, pattern, 'nv_vi_slash')
 
         sel = self.view.sel()[0]
         pattern, flags = process_search_pattern(self.view, pattern)
@@ -3402,7 +3402,7 @@ class nv_vi_star(TextCommand):
         add_search_highlighting(self.view, find_word_search_occurrences(self.view, pattern, flags))
 
         if save:
-            set_last_buff_search(self.view, 'nv_vi_star', word)
+            set_last_search_pattern(self.view, word, 'nv_vi_star')
 
         show_if_not_visible(self.view)
 
@@ -3447,7 +3447,7 @@ class nv_vi_octothorp(TextCommand):
         add_search_highlighting(self.view, find_word_search_occurrences(self.view, pattern, flags))
 
         if save:
-            set_last_buff_search(self.view, 'nv_vi_octothorp', word)
+            set_last_search_pattern(self.view, word, 'nv_vi_octothorp')
 
         show_if_not_visible(self.view)
 
@@ -3796,13 +3796,13 @@ class nv_vi_right_paren(TextCommand):
 class nv_vi_question_mark_impl(TextCommand):
     def run(self, edit, pattern, mode=None, count=1, save=True):
         if not pattern:
-            pattern = get_last_buff_search_pattern(self.view)
+            pattern = get_last_search_pattern(self.view)
             if not pattern:
                 ui_bell('E35: no previous regular expression')
                 return
 
         if save:
-            set_last_buff_search(self.view, 'nv_vi_question_mark', pattern)
+            set_last_search_pattern(self.view, pattern, 'nv_vi_question_mark')
 
         sel = self.view.sel()[0]
         pattern, flags = process_search_pattern(self.view, pattern)
@@ -3898,8 +3898,8 @@ class nv_vi_repeat_buffer_search(TextCommand):
     }
 
     def run(self, edit, mode=None, count=1, reverse=False):
-        last_pattern = get_last_buff_search_pattern(self.view)
-        last_command = get_last_buff_search_command(self.view)
+        last_pattern = get_last_search_pattern(self.view)
+        last_command = get_last_search_pattern_command(self.view)
         command = self.commands[last_command][int(reverse)]
 
         _log.debug('repeat search %s reverse=%s -> %s (pattern=%s)', last_command, reverse, command, last_pattern)
@@ -3917,7 +3917,7 @@ class nv_vi_repeat_buffer_search(TextCommand):
 class nv_vi_search(TextCommand):
 
     def run(self, edit, mode=None, count=1, forward=True):
-        last_search = get_last_buff_search_pattern(self.view)
+        last_search = get_last_search_pattern(self.view)
 
         def f(view, s):
             b = get_insertion_point_at_b(s)

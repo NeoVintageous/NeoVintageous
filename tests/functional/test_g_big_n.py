@@ -22,7 +22,7 @@ class Test_gN(unittest.FunctionalTestCase):
 
     def setUp(self):
         super().setUp()
-        self.setLastSearch('fizz')
+        self.setLastSearchPattern('fizz', 'nv_vi_slash')
         self.set_option('wrapscan', True)
 
     def test_n(self):

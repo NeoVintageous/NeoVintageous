@@ -119,8 +119,8 @@ class Test__nv_vi_repeat_slash_InNormalMode(unittest.ViewTestCase):
 
     def test_repeat_forward(self):
         self.normal('|foo\nabc\nbar\nabc\nmoo\nabc\nend')
+        self.setLastSearchPattern('foobar', 'nv_vi_slash')
         self.view.run_command('nv_vi_slash_impl', {'mode': unittest.NORMAL, 'pattern': 'abc'})
-        self.setLastSearchCommand('nv_vi_slash')
         self.assertNormal('foo\n|abc\nbar\nabc\nmoo\nabc\nend')
         self.view.run_command('nv_vi_repeat_buffer_search', {'mode': unittest.NORMAL, 'reverse': False})
         self.assertNormal('foo\nabc\nbar\n|abc\nmoo\nabc\nend')
@@ -129,8 +129,8 @@ class Test__nv_vi_repeat_slash_InNormalMode(unittest.ViewTestCase):
 
     def test_repeat_reverse(self):
         self.normal('|foo\nabc\nbar\nabc\nmoo\nabc\nend')
+        self.setLastSearchPattern('foobar', 'nv_vi_slash')
         self.view.run_command('nv_vi_slash_impl', {'mode': unittest.NORMAL, 'pattern': 'abc'})
-        self.setLastSearchCommand('nv_vi_slash')
         self.assertNormal('foo\n|abc\nbar\nabc\nmoo\nabc\nend')
         self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
         self.assertSearchCurrent('foo\n|abc|\nbar\nabc\nmoo\nabc\nend')
@@ -141,8 +141,8 @@ class Test__nv_vi_repeat_slash_InNormalMode(unittest.ViewTestCase):
 
     def test_repeat_partial(self):
         self.normal('|foo\nabc\nbar\nabcxmoo\nabc\nend')
+        self.setLastSearchPattern('foobar', 'nv_vi_slash')
         self.view.run_command('nv_vi_slash_impl', {'mode': unittest.NORMAL, 'pattern': 'abc'})
-        self.setLastSearchCommand('nv_vi_slash')
         self.assertNormal('foo\n|abc\nbar\nabcxmoo\nabc\nend')
         self.assertSearch('foo\n|abc|\nbar\n|abc|xmoo\n|abc|\nend')
         self.assertSearchCurrent('foo\n|abc|\nbar\nabcxmoo\nabc\nend')
@@ -160,8 +160,8 @@ class Test__nv_vi_repeat_question_mark_InNormalMode(unittest.ViewTestCase):
 
     def test_repeat_forward(self):
         self.normal('|foo\nabc\nbar\nabc\nmoo\nabc\nend')
+        self.setLastSearchPattern('foobar', 'nv_vi_question_mark')
         self.view.run_command('nv_vi_question_mark_impl', {'mode': unittest.NORMAL, 'pattern': 'abc'})
-        self.setLastSearchCommand('nv_vi_question_mark')
         self.assertNormal('foo\nabc\nbar\nabc\nmoo\n|abc\nend')
         self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
         self.assertSearchCurrent('foo\nabc\nbar\nabc\nmoo\n|abc|\nend')
@@ -172,8 +172,8 @@ class Test__nv_vi_repeat_question_mark_InNormalMode(unittest.ViewTestCase):
 
     def test_repeat_reverse(self):
         self.normal('|foo\nabc\nbar\nabc\nmoo\nabc\nend')
+        self.setLastSearchPattern('foobar', 'nv_vi_question_mark')
         self.view.run_command('nv_vi_question_mark_impl', {'mode': unittest.NORMAL, 'pattern': 'abc'})
-        self.setLastSearchCommand('nv_vi_question_mark')
         self.assertNormal('foo\nabc\nbar\nabc\nmoo\n|abc\nend')
         self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
         self.assertSearchCurrent('foo\nabc\nbar\nabc\nmoo\n|abc|\nend')
@@ -184,8 +184,8 @@ class Test__nv_vi_repeat_question_mark_InNormalMode(unittest.ViewTestCase):
 
     def test_repeat_partial(self):
         self.normal('|foo\nabc\nbar\nabcxmoo\nabc\nend')
+        self.setLastSearchPattern('foobar', 'nv_vi_question_mark')
         self.view.run_command('nv_vi_question_mark_impl', {'mode': unittest.NORMAL, 'pattern': 'abc'})
-        self.setLastSearchCommand('nv_vi_question_mark')
         self.assertNormal('foo\nabc\nbar\nabcxmoo\n|abc\nend')
         self.assertSearch('foo\n|abc|\nbar\n|abc|xmoo\n|abc|\nend')
         self.assertSearchCurrent('foo\nabc\nbar\nabcxmoo\n|abc|\nend')

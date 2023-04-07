@@ -51,13 +51,12 @@ from NeoVintageous.nv.registers import _reset as _registers_reset
 from NeoVintageous.nv.registers import _set_data as _set_register_data
 from NeoVintageous.nv.registers import _set_numbered_register
 from NeoVintageous.nv.registers import registers_get as _registers_get
-from NeoVintageous.nv.settings import _set_last_buff_search_command
-from NeoVintageous.nv.settings import _set_last_buff_search_pattern
 from NeoVintageous.nv.settings import get_mode as _get_mode
 from NeoVintageous.nv.settings import get_setting as _get_setting
 from NeoVintageous.nv.settings import get_visual_block_direction as _get_visual_block_direction
 from NeoVintageous.nv.settings import get_xpos as _get_xpos
 from NeoVintageous.nv.settings import reset_setting as _reset_setting
+from NeoVintageous.nv.settings import set_last_search_pattern
 from NeoVintageous.nv.settings import set_mode as _set_mode
 from NeoVintageous.nv.settings import set_reset_during_init as _set_reset_during_init
 from NeoVintageous.nv.settings import set_setting as _set_setting
@@ -478,11 +477,8 @@ class ViewTestCase(unittest.TestCase):
         self.assertSearchCurrent(content)
         self.assertSearchIncremental(content)
 
-    def setLastSearch(self, term: str) -> None:
-        _set_last_buff_search_pattern(self.view, term)
-
-    def setLastSearchCommand(self, command: str) -> None:
-        _set_last_buff_search_command(self.view, command)
+    def setLastSearchPattern(self, pattern: str, command: str) -> None:
+        set_last_search_pattern(self.view, pattern, command)
 
     def assertHighlightedYank(self, expected: str, msg: str = None) -> None:
         self._assertContentRegion('highlightedyank', expected, msg)
