@@ -145,16 +145,12 @@ class FeedKeyHandler():
         action = get_action(self.view)
 
         if must_collect_input(self.view, motion, action):
-            _log.debug('collecting input!')
-
             if motion and motion.accept_input:
                 motion.accept(self.key)
-                # Processed motion needs to reserialised and stored.
-                set_motion(self.view, motion)
+                set_motion(self.view, motion)  # Processed motion needs to reserialised and stored.
             else:
                 action.accept(self.key)
-                # Processed action needs to reserialised and stored.
-                set_action(self.view, action)
+                set_action(self.view, action)  # Processed action needs to reserialised and stored.
 
             if is_runnable(self.view) and self.do_eval:
                 evaluate_state(self.view)
