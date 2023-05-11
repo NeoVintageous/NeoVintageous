@@ -16,6 +16,7 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 import logging
+import re
 
 from NeoVintageous.nv.ex_cmds import do_ex_user_cmdline
 from NeoVintageous.nv.mappings import IncompleteMapping
@@ -71,6 +72,8 @@ _log = logging.getLogger(__name__)
 
 
 class FeedKeyHandler():
+
+    KEYPAD_NUM = re.compile('<k(\\d)>')
 
     def __init__(self, view, key: str, repeat_count: int, do_eval: bool, check_user_mappings: bool):
         self.view = view
@@ -184,6 +187,9 @@ class FeedKeyHandler():
         # NOTE motion/action counts need to be cast to strings because they need
         # to be "joined" to the previous key press, not added. For example when
         # you press the digit 1 followed by 2, it's a count of 12, not 3.
+
+        if (keypad_num := self.KEYPAD_NUM.search(key)):
+            key = keypad_num.group(1)
 
         if not get_action(self.view) and key.isdigit():
             if not repeat_count and (key != '0' or get_action_count(self.view)):
