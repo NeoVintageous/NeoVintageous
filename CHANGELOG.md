@@ -2,7 +2,7 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
-## 1.29.1 - Unreleased
+## 1.29.1 - 2023-05-14
 
 * Fixed [#854](https://github.com/NeoVintageous/NeoVintageous/issues/854): Add missing vim sneak help page
 * Fixed [#868](https://github.com/NeoVintageous/NeoVintageous/issues/868): Add `CTRL` / `SUPER+END` keybindings
