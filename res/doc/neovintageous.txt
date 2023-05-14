@@ -307,7 +307,7 @@ Toggle super-keys from the command palette "Toggle SUPER keys".
 
 ==============================================================================
 
-MULTIPLE CURSORS                                         *nv-multiple-cursors*
+MULTIPLE CURSORS                      *multiple-cursors* *nv-multiple-cursors*
 
 Inspired by https://github.com/terryma/vim-multiple-cursors.
 
