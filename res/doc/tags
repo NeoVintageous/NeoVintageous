@@ -3596,6 +3596,7 @@ $quote	eval.txt	/*$quote*
 :wall	editing.txt	/*:wall*
 :wh	eval.txt	/*:wh*
 :while	eval.txt	/*:while*
+:wi	gui.txt	/*:wi*
 :win	gui.txt	/*:win*
 :winc	windows.txt	/*:winc*
 :wincmd	windows.txt	/*:wincmd*
@@ -4227,7 +4228,6 @@ E1133	vim9.txt	/*E1133*
 E1134	vim9.txt	/*E1134*
 E1135	eval.txt	/*E1135*
 E1136	map.txt	/*E1136*
-E1137	map.txt	/*E1137*
 E1138	eval.txt	/*E1138*
 E1139	vim9.txt	/*E1139*
 E114	eval.txt	/*E114*
@@ -4475,6 +4475,8 @@ E136	starting.txt	/*E136*
 E1360	vim9class.txt	/*E1360*
 E1361	syntax.txt	/*E1361*
 E1362	vim9class.txt	/*E1362*
+E1363	vim9class.txt	/*E1363*
+E1364	recover.txt	/*E1364*
 E137	starting.txt	/*E137*
 E138	starting.txt	/*E138*
 E139	message.txt	/*E139*
@@ -5626,6 +5628,8 @@ SessionLoadPost	autocmd.txt	/*SessionLoadPost*
 ShellCmdPost	autocmd.txt	/*ShellCmdPost*
 ShellFilterPost	autocmd.txt	/*ShellFilterPost*
 SigUSR1	autocmd.txt	/*SigUSR1*
+SneakEnter	sneak.txt	/*SneakEnter*
+SneakLeave	sneak.txt	/*SneakLeave*
 SourceCmd	autocmd.txt	/*SourceCmd*
 SourcePost	autocmd.txt	/*SourcePost*
 SourcePre	autocmd.txt	/*SourcePre*
@@ -7569,8 +7573,6 @@ g:netrw_localmkdir	pi_netrw.txt	/*g:netrw_localmkdir*
 g:netrw_localmkdiropt	pi_netrw.txt	/*g:netrw_localmkdiropt*
 g:netrw_localmovecmd	pi_netrw.txt	/*g:netrw_localmovecmd*
 g:netrw_localmovecmdopt	pi_netrw.txt	/*g:netrw_localmovecmdopt*
-g:netrw_localrmdir	pi_netrw.txt	/*g:netrw_localrmdir*
-g:netrw_localrmdiropt	pi_netrw.txt	/*g:netrw_localrmdiropt*
 g:netrw_maxfilenamelen	pi_netrw.txt	/*g:netrw_maxfilenamelen*
 g:netrw_menu	pi_netrw.txt	/*g:netrw_menu*
 g:netrw_mkdir_cmd	pi_netrw.txt	/*g:netrw_mkdir_cmd*
@@ -7630,6 +7632,9 @@ g:rustfmt_autosave	ft_rust.txt	/*g:rustfmt_autosave*
 g:rustfmt_command	ft_rust.txt	/*g:rustfmt_command*
 g:rustfmt_fail_silently	ft_rust.txt	/*g:rustfmt_fail_silently*
 g:rustfmt_options	ft_rust.txt	/*g:rustfmt_options*
+g:sneak#label	sneak.txt	/*g:sneak#label*
+g:sneak#label_esc	sneak.txt	/*g:sneak#label_esc*
+g:sneak#target_labels	sneak.txt	/*g:sneak#target_labels*
 g:statusline_winid	options.txt	/*g:statusline_winid*
 g:syntax_on	syntax.txt	/*g:syntax_on*
 g:tar_browseoptions	pi_tar.txt	/*g:tar_browseoptions*
@@ -8727,6 +8732,7 @@ multilang	mlang.txt	/*multilang*
 multilang-menus	mlang.txt	/*multilang-menus*
 multilang-messages	mlang.txt	/*multilang-messages*
 multilang-scripts	mlang.txt	/*multilang-scripts*
+multiple-cursors	neovintageous.txt	/*multiple-cursors*
 multiple-cursors-contents	multiple_cursors.txt	/*multiple-cursors-contents*
 multiple-cursors-contributing	multiple_cursors.txt	/*multiple-cursors-contributing*
 multiple-cursors-credit	multiple_cursors.txt	/*multiple-cursors-credit*
@@ -9890,6 +9896,30 @@ slice()	builtin.txt	/*slice()*
 slow-fast-terminal	term.txt	/*slow-fast-terminal*
 slow-start	starting.txt	/*slow-start*
 slow-terminal	term.txt	/*slow-terminal*
+sneak	sneak.txt	/*sneak*
+sneak#cancel()	sneak.txt	/*sneak#cancel()*
+sneak#is_sneaking()	sneak.txt	/*sneak#is_sneaking()*
+sneak#reset()	sneak.txt	/*sneak#reset()*
+sneak#state()	sneak.txt	/*sneak#state()*
+sneak#wrap()	sneak.txt	/*sneak#wrap()*
+sneak-clever-s	sneak.txt	/*sneak-clever-s*
+sneak-config	sneak.txt	/*sneak-config*
+sneak-contributing	sneak.txt	/*sneak-contributing*
+sneak-credits	sneak.txt	/*sneak-credits*
+sneak-custom-mappings	sneak.txt	/*sneak-custom-mappings*
+sneak-disable-mappings	sneak.txt	/*sneak-disable-mappings*
+sneak-events	sneak.txt	/*sneak-events*
+sneak-fallthrough	sneak.txt	/*sneak-fallthrough*
+sneak-features	sneak.txt	/*sneak-features*
+sneak-functions	sneak.txt	/*sneak-functions*
+sneak-highlight	sneak.txt	/*sneak-highlight*
+sneak-label-mode	sneak.txt	/*sneak-label-mode*
+sneak-mappings	sneak.txt	/*sneak-mappings*
+sneak-options	sneak.txt	/*sneak-options*
+sneak-streak-mode	sneak.txt	/*sneak-streak-mode*
+sneak-usage	sneak.txt	/*sneak-usage*
+sneak-vertical-scope	sneak.txt	/*sneak-vertical-scope*
+sneak.txt	sneak.txt	/*sneak.txt*
 socket-interface	channel.txt	/*socket-interface*
 sort()	builtin.txt	/*sort()*
 sorting	change.txt	/*sorting*
@@ -10088,6 +10118,7 @@ string	eval.txt	/*string*
 string()	builtin.txt	/*string()*
 string-functions	usr_41.txt	/*string-functions*
 string-match	builtin.txt	/*string-match*
+string-offset-encoding	eval.txt	/*string-offset-encoding*
 strlen()	builtin.txt	/*strlen()*
 strpart()	builtin.txt	/*strpart()*
 strpbrk()	builtin.txt	/*strpbrk()*
@@ -10097,6 +10128,7 @@ strridx()	builtin.txt	/*strridx()*
 strspn()	builtin.txt	/*strspn()*
 strstr()	builtin.txt	/*strstr()*
 strtrans()	builtin.txt	/*strtrans()*
+strutf16len()	builtin.txt	/*strutf16len()*
 strwidth()	builtin.txt	/*strwidth()*
 style-changes	develop.txt	/*style-changes*
 style-compiler	develop.txt	/*style-compiler*
@@ -10773,6 +10805,7 @@ utf-8	mbyte.txt	/*utf-8*
 utf-8-char-arg	mbyte.txt	/*utf-8-char-arg*
 utf-8-in-xwindows	mbyte.txt	/*utf-8-in-xwindows*
 utf-8-typing	mbyte.txt	/*utf-8-typing*
+utf16idx()	builtin.txt	/*utf16idx()*
 utf8	mbyte.txt	/*utf8*
 v	visual.txt	/*v*
 v:	eval.txt	/*v:*
