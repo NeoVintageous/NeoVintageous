@@ -175,7 +175,7 @@ class KeySequenceTokenizer():
             elif c == '>':
                 modifiers = self._sort_modifiers(modifiers.lower())
 
-                if len(key_name) == 1:
+                if len(key_name) == 1  and key_name not in seqs.NAMED_KEY_ALIASES:
                     if not modifiers:
                         raise ValueError('wrong sequence {0}'.format(self.source))
 
