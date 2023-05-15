@@ -39,7 +39,7 @@ mappings = {
 }  # type: dict
 
 
-_NAMED_KEYS = [
+_NAMED_KEYS_NEST = [
 
     seqs.BACKSLASH,
     seqs.BACKSPACE,
@@ -99,6 +99,7 @@ _NAMED_KEYS = [
     seqs.F20,
 
 ]
+_NAMED_KEYS = [item for sublist in _NAMED_KEYS_NEST for item in sublist]
 
 
 _NAMED_KEY_ALIASES = {
