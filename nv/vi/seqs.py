@@ -22,16 +22,18 @@ SEQ = dict()
 # ToDo: add a Shifted function instead of Upper to also work with 9→( and [→{
 _sep = ' '
 _mod2vim = {"⇧":"", "⎈":"C-", "⇧⎈":"C-", "⎇":"M-", "":""}
-symbolSubs = {
-  'up'      	: ['▲'],
-  'down'    	: ['▼'],
-  'left'    	: ['◀'],
-  'right'   	: ['▶'],
-  'pagedown'	: ['⇟'],
-  'pageup'  	: ['⇞'],
-  'bs'      	: ['␈'],
-  'cr'      	: ['⏎'],
-  'space'   	: ['␠'],
+NAMED_KEY_ALIASES = {
+  'enter' 	: 'cr',
+  'return'	: 'cr',
+  '⏎'     	: 'cr',
+  '▲'     	: 'up',
+  '▼'     	: 'down',
+  '◀'     	: 'left',
+  '▶'     	: 'right',
+  '⇟'     	: 'pagedown',
+  '⇞'     	: 'pageup',
+  '␈'     	: 'bs',
+  '␠'     	: 'space',
 }
 _letters = { # space-separated lists of keycaps
   "function"  	: {"keycaps":"1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20", "mods":[
@@ -98,7 +100,7 @@ _letters = { # space-separated lists of keycaps
     {"mLbl"   	: None,"preVar":"z","preVal":"","preVal":"z"},
     {"mLbl"   	: "⇧","preVar":"z","preVal":"","preVal":"z"},
     ]}        	,
-  "symbol"    	: {"keycaps":list(symbolSubs.keys()),"mods":[
+  "symbol"    	: {"keycaps":list(NAMED_KEY_ALIASES.keys()),"mods":[
     {"mLbl"   	: None ,"varLbl":""   ,"preVal":"<","valLbl":""  ,"posVal":">"},
     {"mLbl"   	: "⇧" ,"varLbl":""   ,"preVal":"<","valLbl":"S-" ,"posVal":">"},
     #         	   ↑↓ requires manual "S-" since special keys don't get Capitalized
@@ -120,9 +122,9 @@ for lbl, row in _letters.items():
     valLbl	= mod["valLbl"] if "valLbl" in mod else ""
     posVal	= mod["posVal"] if "posVal" in mod else ""
     for key in keycaps:
-      if key in symbolSubs:
-        key_var	= symbolSubs[key][0]
-        key_vim	= key
+      if key in NAMED_KEY_ALIASES:
+        key_var	= key
+        key_vim	= NAMED_KEY_ALIASES[key]
       else:
         key_var	= key
         key_vim	= key.upper() if "⇧" in modVar else key

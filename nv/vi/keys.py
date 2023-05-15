@@ -102,15 +102,10 @@ _NAMED_KEYS_NEST = [
 _NAMED_KEYS = [item for sublist in _NAMED_KEYS_NEST for item in sublist]
 
 
-_NAMED_KEY_ALIASES = {
-    'enter': 'cr',
-    'return': 'cr'
-}
-
 
 def _resolve_named_key_alias(key: str):
     try:
-        return _NAMED_KEY_ALIASES[key]
+        return seqs.NAMED_KEY_ALIASES[key]
     except KeyError:
         return key
 
