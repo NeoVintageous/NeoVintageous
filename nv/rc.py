@@ -103,6 +103,7 @@ def _parse_line(line: str):
                 # translated to <bar> internally (implementation detail).
                 # See https://github.com/NeoVintageous/NeoVintageous/issues/615.
                 cmdline = cmdline.replace('\\|', '<bar>')
+                cmdline = cmdline.replace('\t', ' ') # avoid bugs with tab literal
 
                 if '|' in cmdline:
                     # Using '|' to separate map commands is currently not supported.
