@@ -29,8 +29,8 @@ from NeoVintageous.nv.vim import SELECT
 __all__ = ()
 
 
-@register(seqs.CTRL_N, ACTION_MODES)
-@register(seqs.GH, ACTION_MODES)
+@register(seqs.SEQ['⎈n'], ACTION_MODES)
+@register(seqs.SEQ['gh'], ACTION_MODES)
 class MultipleCursorsStart(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -46,7 +46,7 @@ class MultipleCursorsStart(ViOperatorDef):
         }
 
 
-@register(seqs.BIG_J, (SELECT,))
+@register(seqs.SEQ['⇧j'], (SELECT,))
 @register(seqs.ESC, (SELECT,))
 class MultipleCursorsExit(ViOperatorDef):
     def __init__(self, *args, **kwargs):
@@ -65,8 +65,8 @@ class MultipleCursorsExit(ViOperatorDef):
         }
 
 
-@register(seqs.CTRL_N, (SELECT,))
-@register(seqs.J, (SELECT,))
+@register(seqs.SEQ['⎈n'], (SELECT,))
+@register(seqs.SEQ['j'], (SELECT,))
 class MultipleCursorsAdd(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -83,8 +83,8 @@ class MultipleCursorsAdd(ViOperatorDef):
         }
 
 
-@register(seqs.CTRL_P, (SELECT,))
-@register(seqs.K, (SELECT,))
+@register(seqs.SEQ['⎈p'], (SELECT,))
+@register(seqs.SEQ['k'], (SELECT,))
 class MultipleCursorsRemove(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -101,8 +101,8 @@ class MultipleCursorsRemove(ViOperatorDef):
         }
 
 
-@register(seqs.CTRL_X, (SELECT,))
-@register(seqs.L, (SELECT,))
+@register(seqs.SEQ['⎈x'], (SELECT,))
+@register(seqs.SEQ['l'], (SELECT,))
 class MultipleCursorsSkip(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -115,7 +115,7 @@ class MultipleCursorsSkip(ViOperatorDef):
         }
 
 
-@register(seqs.G_BIG_H, ACTION_MODES)
+@register(seqs.SEQ['g⇧h'], ACTION_MODES)
 class MultipleCursorsAll(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

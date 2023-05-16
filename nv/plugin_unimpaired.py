@@ -44,7 +44,7 @@ __all__ = [
 ]
 
 
-@register(seqs.LEFT_SQUARE_BRACKET_L, (NORMAL, VISUAL))
+@register(seqs.SEQ['[l'], (NORMAL, VISUAL))
 class UnimpairedContextPrevious(ViOperatorDef):
     def translate(self, view):
         return {
@@ -57,7 +57,7 @@ class UnimpairedContextPrevious(ViOperatorDef):
         }
 
 
-@register(seqs.RIGHT_SQUARE_BRACKET_L, (NORMAL, VISUAL))
+@register(seqs.SEQ[']l'], (NORMAL, VISUAL))
 class UnimpairedContextNext(ViOperatorDef):
     def translate(self, view):
         return {
@@ -70,7 +70,7 @@ class UnimpairedContextNext(ViOperatorDef):
         }
 
 
-@register(seqs.LEFT_SQUARE_BRACKET_N, (NORMAL,))
+@register(seqs.SEQ['[n'], (NORMAL,))
 class UnimpairedGotoPrevConflictMarker(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -88,7 +88,7 @@ class UnimpairedGotoPrevConflictMarker(ViOperatorDef):
         }
 
 
-@register(seqs.RIGHT_SQUARE_BRACKET_N, (NORMAL,))
+@register(seqs.SEQ[']n'], (NORMAL,))
 class UnimpairedGotoNextConflictMarker(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -106,7 +106,7 @@ class UnimpairedGotoNextConflictMarker(ViOperatorDef):
         }
 
 
-@register(seqs.LEFT_SQUARE_BRACKET_SPACE, (NORMAL,))
+@register(seqs.SEQ['[␠'], (NORMAL,))
 class UnimpairedBlankUp(ViOperatorDef):
     def translate(self, view):
         return {
@@ -119,7 +119,7 @@ class UnimpairedBlankUp(ViOperatorDef):
         }
 
 
-@register(seqs.RIGHT_SQUARE_BRACKET_SPACE, (NORMAL,))
+@register(seqs.SEQ[']␠'], (NORMAL,))
 class UnimpairedBlankDown(ViOperatorDef):
     def translate(self, view):
         return {
@@ -132,7 +132,7 @@ class UnimpairedBlankDown(ViOperatorDef):
         }
 
 
-@register(seqs.LEFT_SQUARE_BRACKET_B, (NORMAL,))
+@register(seqs.SEQ['[b'], (NORMAL,))
 class UnimpairedBprevious(ViOperatorDef):
     def translate(self, view):
         return {
@@ -145,7 +145,7 @@ class UnimpairedBprevious(ViOperatorDef):
         }
 
 
-@register(seqs.RIGHT_SQUARE_BRACKET_B, (NORMAL,))
+@register(seqs.SEQ[']b'], (NORMAL,))
 class UnimpairedBnext(ViOperatorDef):
     def translate(self, view):
         return {
@@ -158,7 +158,7 @@ class UnimpairedBnext(ViOperatorDef):
         }
 
 
-@register(seqs.LEFT_SQUARE_BRACKET_BIG_B, (NORMAL,))
+@register(seqs.SEQ['[⇧b'], (NORMAL,))
 class UnimpairedBfirst(ViOperatorDef):
     def translate(self, view):
         return {
@@ -171,7 +171,7 @@ class UnimpairedBfirst(ViOperatorDef):
         }
 
 
-@register(seqs.RIGHT_SQUARE_BRACKET_BIG_B, (NORMAL,))
+@register(seqs.SEQ[']⇧b'], (NORMAL,))
 class UnimpairedBlast(ViOperatorDef):
     def translate(self, view):
         return {
@@ -184,7 +184,7 @@ class UnimpairedBlast(ViOperatorDef):
         }
 
 
-@register(seqs.LEFT_SQUARE_BRACKET_E, (NORMAL,))
+@register(seqs.SEQ['[e'], (NORMAL,))
 class UnimpairedMoveUp(ViOperatorDef):
     def translate(self, view):
         return {
@@ -197,7 +197,7 @@ class UnimpairedMoveUp(ViOperatorDef):
         }
 
 
-@register(seqs.RIGHT_SQUARE_BRACKET_E, (NORMAL,))
+@register(seqs.SEQ[']e'], (NORMAL,))
 class UnimpairedMoveDown(ViOperatorDef):
     def translate(self, view):
         return {
@@ -210,7 +210,7 @@ class UnimpairedMoveDown(ViOperatorDef):
         }
 
 
-@register(seqs.LEFT_SQUARE_BRACKET_T, (NORMAL,))
+@register(seqs.SEQ['[t'], (NORMAL,))
 class UnimpairedTabprevious(ViOperatorDef):
     def translate(self, view):
         return {
@@ -223,7 +223,7 @@ class UnimpairedTabprevious(ViOperatorDef):
         }
 
 
-@register(seqs.RIGHT_SQUARE_BRACKET_T, (NORMAL,))
+@register(seqs.SEQ[']t'], (NORMAL,))
 class UnimpairedTabnext(ViOperatorDef):
     def translate(self, view):
         return {
@@ -236,7 +236,7 @@ class UnimpairedTabnext(ViOperatorDef):
         }
 
 
-@register(seqs.LEFT_SQUARE_BRACKET_BIG_T, (NORMAL,))
+@register(seqs.SEQ['[⇧t'], (NORMAL,))
 class UnimpairedTabfirst(ViOperatorDef):
     def translate(self, view):
         return {
@@ -249,7 +249,7 @@ class UnimpairedTabfirst(ViOperatorDef):
         }
 
 
-@register(seqs.RIGHT_SQUARE_BRACKET_BIG_T, (NORMAL,))
+@register(seqs.SEQ[']⇧t'], (NORMAL,))
 class UnimpairedTablast(ViOperatorDef):
     def translate(self, view):
         return {
@@ -279,8 +279,8 @@ class OptionMixin(ViOperatorDef):
         return True
 
 
-@register(seqs.CO, (NORMAL,))
-@register(seqs.YO, (NORMAL,))
+@register(seqs.SEQ['co'], (NORMAL,))
+@register(seqs.SEQ['yo'], (NORMAL,))
 class UnimpairedToggle(OptionMixin):
     def translate(self, view):
         return {
@@ -292,7 +292,7 @@ class UnimpairedToggle(OptionMixin):
         }
 
 
-@register(seqs.LEFT_SQUARE_BRACKET_O, (NORMAL,))
+@register(seqs.SEQ['[o'], (NORMAL,))
 class UnimpairedToggleOn(OptionMixin):
     def translate(self, view):
         return {
@@ -304,7 +304,7 @@ class UnimpairedToggleOn(OptionMixin):
         }
 
 
-@register(seqs.RIGHT_SQUARE_BRACKET_O, (NORMAL,))
+@register(seqs.SEQ[']o'], (NORMAL,))
 class UnimpairedToggleOff(OptionMixin):
     def translate(self, view):
         return {

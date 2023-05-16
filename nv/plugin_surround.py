@@ -53,7 +53,7 @@ def _should_tag_accept_input(inp: str) -> bool:
     return not inp[-1] in ('>', '\n')
 
 
-@register(seqs.YS, (NORMAL,))
+@register(seqs.SEQ['ys'], (NORMAL,))
 class Surroundys(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -121,7 +121,7 @@ class Surroundyss(Surroundys):
         }
 
 
-@register(seqs.BIG_S, (VISUAL, VISUAL_LINE, VISUAL_BLOCK))
+@register(seqs.SEQ['⇧s'], (VISUAL, VISUAL_LINE, VISUAL_BLOCK))
 class SurroundS(Surroundys):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -129,7 +129,7 @@ class SurroundS(Surroundys):
         self.input_parser = InputParser(InputParser.IMMEDIATE)
 
 
-@register(seqs.DS, (NORMAL, OPERATOR_PENDING))
+@register(seqs.SEQ['ds'], (NORMAL, OPERATOR_PENDING))
 class Surroundds(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -162,7 +162,7 @@ class Surroundds(ViOperatorDef):
         }
 
 
-@register(seqs.CS, (NORMAL, OPERATOR_PENDING))
+@register(seqs.SEQ['cs'], (NORMAL, OPERATOR_PENDING))
 class Surroundcs(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

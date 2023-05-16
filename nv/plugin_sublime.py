@@ -42,7 +42,7 @@ class StQuickSwitchProject(ViOperatorDef):
         }
 
 
-@register(seqs.CTRL_0, ACTION_MODES)
+@register(seqs.SEQ['⎈0'], ACTION_MODES)
 class StFocusSideBar(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -56,14 +56,14 @@ class StFocusSideBar(ViOperatorDef):
         }
 
 
-@register(seqs.CTRL_1, ACTION_MODES, group=0)
-@register(seqs.CTRL_2, ACTION_MODES, group=1)
-@register(seqs.CTRL_3, ACTION_MODES, group=2)
-@register(seqs.CTRL_4, ACTION_MODES, group=3)
-@register(seqs.CTRL_5, ACTION_MODES, group=4)
-@register(seqs.CTRL_7, ACTION_MODES, group=6)
-@register(seqs.CTRL_8, ACTION_MODES, group=7)
-@register(seqs.CTRL_9, ACTION_MODES, group=8)
+@register(seqs.SEQ['⎈1'], ACTION_MODES, group=0)
+@register(seqs.SEQ['⎈2'], ACTION_MODES, group=1)
+@register(seqs.SEQ['⎈3'], ACTION_MODES, group=2)
+@register(seqs.SEQ['⎈4'], ACTION_MODES, group=3)
+@register(seqs.SEQ['⎈5'], ACTION_MODES, group=4)
+@register(seqs.SEQ['⎈7'], ACTION_MODES, group=6)
+@register(seqs.SEQ['⎈8'], ACTION_MODES, group=7)
+@register(seqs.SEQ['⎈9'], ACTION_MODES, group=8)
 class StFocusGroup(ViOperatorDef):
     def __init__(self, *args, group=None, **kwargs):
         super().__init__(*args, **kwargs)
@@ -96,7 +96,7 @@ class StToggleSideBar(ViOperatorDef):
 
 
 @register(seqs.COMMAND_P, ACTION_MODES)
-@register(seqs.CTRL_P, ACTION_MODES)
+@register(seqs.SEQ['⎈p'], ACTION_MODES)
 class StGotoAnything(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -166,7 +166,7 @@ class StCommandPalette(ViOperatorDef):
         }
 
 
-@register(seqs.F2, ACTION_MODES)
+@register(seqs.SEQ['F2'], ACTION_MODES)
 class StNextBookmark(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -180,7 +180,7 @@ class StNextBookmark(ViOperatorDef):
         }
 
 
-@register(seqs.F3, ACTION_MODES)
+@register(seqs.SEQ['F3'], ACTION_MODES)
 class StFindNext(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -194,7 +194,7 @@ class StFindNext(ViOperatorDef):
         }
 
 
-@register(seqs.F4, ACTION_MODES)
+@register(seqs.SEQ['F4'], ACTION_MODES)
 class StNextResult(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -208,7 +208,7 @@ class StNextResult(ViOperatorDef):
         }
 
 
-@register(seqs.F6, ACTION_MODES)
+@register(seqs.SEQ['F6'], ACTION_MODES)
 class StToggleSpellCheck(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -223,7 +223,7 @@ class StToggleSpellCheck(ViOperatorDef):
         }
 
 
-@register(seqs.F7, ACTION_MODES)
+@register(seqs.SEQ['F7'], ACTION_MODES)
 class StBuild(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -237,7 +237,7 @@ class StBuild(ViOperatorDef):
         }
 
 
-@register(seqs.F9, ACTION_MODES)
+@register(seqs.SEQ['F9'], ACTION_MODES)
 class StSortLines(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -252,7 +252,7 @@ class StSortLines(ViOperatorDef):
         }
 
 
-@register(seqs.F11, ACTION_MODES)
+@register(seqs.SEQ['F11'], ACTION_MODES)
 class StToggleFullScreen(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -266,7 +266,7 @@ class StToggleFullScreen(ViOperatorDef):
         }
 
 
-@register(seqs.F12, ACTION_MODES)
+@register(seqs.SEQ['F12'], ACTION_MODES)
 class StGotoDefinition(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -280,7 +280,7 @@ class StGotoDefinition(ViOperatorDef):
         }
 
 
-@register(seqs.CTRL_F2, ACTION_MODES)
+@register(seqs.SEQ['⎈F2'], ACTION_MODES)
 class StToggleBookmark(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -294,7 +294,7 @@ class StToggleBookmark(ViOperatorDef):
         }
 
 
-@register(seqs.CTRL_F12, ACTION_MODES)
+@register(seqs.SEQ['⎈F12'], ACTION_MODES)
 class StGotoSymbol(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -311,7 +311,7 @@ class StGotoSymbol(ViOperatorDef):
         }
 
 
-@register(seqs.SHIFT_F2, ACTION_MODES)
+@register(seqs.SEQ['⇧F2'], ACTION_MODES)
 class StPrevBookmark(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -325,7 +325,7 @@ class StPrevBookmark(ViOperatorDef):
         }
 
 
-@register(seqs.SHIFT_F4, ACTION_MODES)
+@register(seqs.SEQ['⇧F4'], ACTION_MODES)
 class StPrevResult(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -339,7 +339,7 @@ class StPrevResult(ViOperatorDef):
         }
 
 
-@register(seqs.SHIFT_F11, ACTION_MODES)
+@register(seqs.SEQ['⇧F11'], ACTION_MODES)
 class StToggleDistractionFree(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -353,7 +353,7 @@ class StToggleDistractionFree(ViOperatorDef):
         }
 
 
-@register(seqs.CTRL_SHIFT_F2, ACTION_MODES)
+@register(seqs.SEQ['⇧⎈F2'], ACTION_MODES)
 class StClearBookmarks(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -367,7 +367,7 @@ class StClearBookmarks(ViOperatorDef):
         }
 
 
-@register(seqs.CTRL_SHIFT_F12, ACTION_MODES)
+@register(seqs.SEQ['⇧⎈F12'], ACTION_MODES)
 class StGotoSymbolInProject(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

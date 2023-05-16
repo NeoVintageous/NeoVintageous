@@ -103,7 +103,7 @@ _ALIASES = {
 }
 
 
-@register(seqs.CR, (NORMAL,))
+@register(seqs.SEQ['cr'], (NORMAL,))
 class AbolishCoercions(RequiresOneCharMixinDef, ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
