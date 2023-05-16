@@ -11,7 +11,7 @@ else:
     from typing_extensions import Literal
 
 
-from json5kit.nodes import (
+from NeoVintageous.dep.json5kit.nodes import (
     Json5Array,
     Json5Boolean,
     Json5Comma,
@@ -28,7 +28,7 @@ from json5kit.nodes import (
     Json5Trivia,
     Json5Whitespace,
 )
-from json5kit.visitor import Json5Visitor, Json5Transformer
+from NeoVintageous.dep.json5kit.visitor import Json5Visitor, Json5Transformer
 
 
 class Json5ParseError(Exception):

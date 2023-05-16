@@ -4,7 +4,7 @@ import inspect
 
 from typing import Callable, Iterator
 
-from json5kit.nodes import Json5Node
+from NeoVintageous.dep.json5kit.nodes import Json5Node
 
 
 def iter_child_nodes(node: Json5Node) -> Iterator[Json5Node]:
