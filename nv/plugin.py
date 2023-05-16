@@ -38,7 +38,7 @@ mappings = {
 classes = {}  # type: dict
 
 
-def register(seq: str, modes: tuple, *args, **kwargs):
+def register(seq: list, modes: tuple, *args, **kwargs):
     """
     Register a 'key sequence' to 'command' mapping with NeoVintageous.
 
@@ -53,7 +53,8 @@ def register(seq: str, modes: tuple, *args, **kwargs):
     """
     def inner(cls):
         for mode in modes:
-            mappings[mode][seq] = cls(*args, **kwargs)
-            classes[cls.__name__] = cls
+            for seq_lng in seq:
+                mappings[mode][seq_lng] = cls(*args, **kwargs)
+                classes[cls.__name__] = cls
         return cls
     return inner

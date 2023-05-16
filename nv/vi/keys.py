@@ -234,7 +234,7 @@ def to_bare_command_name(seq: str) -> str:
     return ''.join(k for k in new_seq if not k.isdigit())
 
 
-def assign(seq: str, modes, *args, **kwargs):
+def assign(seq: list, modes, *args, **kwargs):
     """
     Register a 'key sequence' to 'command' mapping with NeoVintageous.
 
@@ -244,11 +244,12 @@ def assign(seq: str, modes, *args, **kwargs):
     The decorated class is instantiated with `*args` and `**kwargs`.
 
     @keys
-      A list of (`mode:tuple`, `sequence:string`) pairs to map the decorated
+      A list of (`mode:tuple`, `sequence:list`) pairs to map the decorated
       class to.
     """
     def inner(cls):
         for mode in modes:
-            mappings[mode][seq] = cls(*args, **kwargs)
+            for seq_lng in seq:
+                mappings[mode][seq_lng] = cls(*args, **kwargs)
         return cls
     return inner
