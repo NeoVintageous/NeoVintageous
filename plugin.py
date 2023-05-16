@@ -64,6 +64,7 @@ try:
 
     # Commands.
     from NeoVintageous.nv.commands import *  # noqa: F401,F403
+    from NeoVintageous.nv.layout_generate import * # noqa: F401,F403
 
     # Plugins.
     from NeoVintageous.nv.plugin_abolish import *  # noqa: F401,F403
