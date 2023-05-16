@@ -1,8 +1,8 @@
 [
 {"caption":"NeoVintageous: Generate non-QWERTY keymap"	,"command":"nv_user_keymap"	,"args":{"file":"${packages}/User/NeoVintageous/Default.sublime-keymap"}},
-{"caption":"NeoVintageous: Changelog"          	,"command":"open_file"    	,"args":{"file":"${packages}/NeoVintageous/CHANGELOG.md"}},
-{"caption":"NeoVintageous: Open RC File"       	,"command":"neovintageous"	,"args":{"action":"open_rc_file"}},
-{"caption":"NeoVintageous: Reload RC File"     	,"command":"neovintageous"	,"args":{"action":"reload_rc_file"}},
-{"caption":"NeoVintageous: Toggle ⎈ CTRL keys" 	,"command":"neovintageous"	,"args":{"action":"toggle_ctrl_keys"}},
-{"caption":"NeoVintageous: Toggle ◆ SUPER keys"	,"command":"neovintageous"	,"args":{"action":"toggle_super_keys"}},
+{"caption":"NeoVintageous: Changelog"                 	,"command":"open_file"     	,"args":{"file":"${packages}/NeoVintageous/CHANGELOG.md"}},
+{"caption":"NeoVintageous: Open RC File"              	,"command":"neovintageous" 	,"args":{"action":"open_rc_file"}},
+{"caption":"NeoVintageous: Reload RC File"            	,"command":"neovintageous" 	,"args":{"action":"reload_rc_file"}},
+{"caption":"NeoVintageous: Toggle ⎈ CTRL keys"        	,"command":"neovintageous" 	,"args":{"action":"toggle_ctrl_keys"}},
+{"caption":"NeoVintageous: Toggle ◆ SUPER keys"       	,"command":"neovintageous" 	,"args":{"action":"toggle_super_keys"}},
 ]
