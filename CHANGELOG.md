@@ -4,7 +4,13 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.30.0 - Unreleased
 
+### Added
+
 * Added [#863](https://github.com/NeoVintageous/NeoVintageous/issues/863): Persist last search pattern on restarts
+
+### Fixed
+
+* Fixed [#871](https://github.com/NeoVintageous/NeoVintageous/issues/871): Should be able to paste into multiple cursor
 
 ## 1.29.1 - 2023-05-14
 

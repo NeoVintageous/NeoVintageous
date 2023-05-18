@@ -878,7 +878,7 @@ class ViReformatLinewise(ViOperatorDef):
         }
 
 
-@assign(seqs.P, ACTION_MODES)
+@assign(seqs.P, ACTION_MODES + (SELECT,))
 class ViPasteAfter(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -898,7 +898,7 @@ class ViPasteAfter(ViOperatorDef):
         }
 
 
-@assign(seqs.BIG_P, ACTION_MODES)
+@assign(seqs.BIG_P, ACTION_MODES + (SELECT,))
 class ViPasteBefore(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -918,8 +918,8 @@ class ViPasteBefore(ViOperatorDef):
         }
 
 
-@assign(seqs.RIGHT_SQUARE_BRACKET_BIG_P, ACTION_MODES)
-@assign(seqs.RIGHT_SQUARE_BRACKET_P, ACTION_MODES)
+@assign(seqs.RIGHT_SQUARE_BRACKET_BIG_P, ACTION_MODES + (SELECT,))
+@assign(seqs.RIGHT_SQUARE_BRACKET_P, ACTION_MODES + (SELECT,))
 class ViPasteAfterAndIndent(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -940,8 +940,8 @@ class ViPasteAfterAndIndent(ViOperatorDef):
         }
 
 
-@assign(seqs.LEFT_SQUARE_BRACKET_BIG_P, ACTION_MODES)
-@assign(seqs.LEFT_SQUARE_BRACKET_P, ACTION_MODES)
+@assign(seqs.LEFT_SQUARE_BRACKET_BIG_P, ACTION_MODES + (SELECT,))
+@assign(seqs.LEFT_SQUARE_BRACKET_P, ACTION_MODES + (SELECT,))
 class ViPasteBeforeAndIndent(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -962,7 +962,7 @@ class ViPasteBeforeAndIndent(ViOperatorDef):
         }
 
 
-@assign(seqs.GP, ACTION_MODES)
+@assign(seqs.GP, ACTION_MODES + (SELECT,))
 class ViPasteAfterWithAdjustedCursor(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -983,7 +983,7 @@ class ViPasteAfterWithAdjustedCursor(ViOperatorDef):
         }
 
 
-@assign(seqs.G_BIG_P, ACTION_MODES)
+@assign(seqs.G_BIG_P, ACTION_MODES + (SELECT,))
 class ViPasteBeforeWithAdjustedCursor(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

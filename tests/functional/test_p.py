@@ -173,3 +173,15 @@ class Test_p(unittest.ResetRegisters, unittest.FunctionalTestCase):
     def test_issue_93(self):
         self.register('"', ['THIS ', 'THIS ', 'THIS '])
         self.eq('|THIS IS\n|THIS IS\n|THIS IS', 'p', 'TTHIS| HIS IS\nTTHIS| HIS IS\nTTHIS| HIS IS')
+
+    @unittest.mock_bell()
+    def test_issue_871_should_paste_in_multiple_cursor_mode(self):
+        self.visual('|one| buzz x\ntwo buzz x\nthree buzz x\n')
+        self.feed('y')
+        self.feed('w')
+        self.feed('<C-n>')
+        self.feed('<C-n>')
+        self.feed('<C-n>')
+        self.feed('p')
+        self.assertNoBell()
+        self.assertNormal('one |one x\ntwo |one x\nthree |one x\n')

@@ -1916,7 +1916,7 @@ class nv_vi_paste(TextCommand):
                     self.view.sel().add(pt)
 
             enter_normal_mode(self.view, mode)
-        elif mode in (VISUAL, VISUAL_LINE):
+        elif mode in (VISUAL, VISUAL_LINE, SELECT):
             new_sels = []
             for text, sel in contents:
                 self.view.replace(edit, sel, text)
