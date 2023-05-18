@@ -309,8 +309,6 @@ Toggle super-keys from the command palette "Toggle SUPER keys".
 
 MULTIPLE CURSORS                      *multiple-cursors* *nv-multiple-cursors*
 
-Inspired by https://github.com/terryma/vim-multiple-cursors.
-
 normal mode and visual mode
 
     start:      <C-n>, gh       Start multiple cursor.
@@ -335,6 +333,9 @@ the behaviour of exiting see 'vintageous_multi_cursor_exit_from_visual_mode'.
 <M-n>, A                Select all matches.
 v                       Enter normal mode.
 gH                      Select all search occurrences (/, ?, *, #).
+
+Inspired by https://github.com/terryma/vim-multiple-cursors.
+Inspired by https://github.com/mg979/vim-visual-multi.
 
 ==============================================================================
 
