@@ -27,7 +27,7 @@ CONTENTS                                                         *nv-contents*
 
     Options ........................|nv-options|
     Settings .......................|nv-settings|
-    neovintageousrc ................|nv-rc|
+    Neovintageousrc ................|nv-rc|
     Multiple cursors ...............|nv-multiple-cursors|
     Window splits ..................|nv-window-splits|
     Toggle Sidebar .................|nv-toggle-sidebar|
@@ -313,11 +313,11 @@ Inspired by https://github.com/terryma/vim-multiple-cursors.
 
 normal mode and visual mode
 
-    start:      <C-n> or gh     Start multiple cursor.
-        next:   <C-n> or j      Add next match.
-        skip:   <C-x> or l      Skip next match.
-        prev:   <C-p> or k      Remove current match.
-        all:    <M-n> or A      Select all matches.
+    start:      <C-n>, gh       Start multiple cursor.
+        next:   <C-n>, n, j     Add next match.
+        skip:   <C-x> q, l      Skip next match.
+        prev:   <C-p>, Q, k     Remove current match.
+        all:    <M-n>, A        Select all matches.
 
 You can now use visual commands e.g. c, I, x, y work without any issues.
 
@@ -327,12 +327,12 @@ for example commands like ciw work without any issues.
 At any time you can press <Esc> or J to exit back to regular Vim. To change
 the behaviour of exiting see 'vintageous_multi_cursor_exit_from_visual_mode'.
 
-<C-n> or gh             Start multiple cursor.
-<C-n> or j              Add next match.
-<C-x> or l              Skip next match.
-<C-p> or k              Remove current match and go back on previous.
-<Esc> or J              Quit and enter normal mode.
-<M-n> or A              Select all matches.
+<C-n>, gh               Start multiple cursor.
+<C-n>, n, j             Add next match.
+<C-x>, q, l             Skip next match.
+<C-p>, Q, k             Remove current match and go back on previous.
+<Esc>, J                Quit and enter normal mode.
+<M-n>, A                Select all matches.
 v                       Enter normal mode.
 gH                      Select all search occurrences (/, ?, *, #).
 

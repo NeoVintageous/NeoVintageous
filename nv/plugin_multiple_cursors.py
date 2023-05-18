@@ -67,6 +67,7 @@ class MultipleCursorsExit(ViOperatorDef):
 
 @register(seqs.CTRL_N, (SELECT,))
 @register(seqs.J, (SELECT,))
+@register(seqs.N, (SELECT,))
 class MultipleCursorsAdd(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -85,6 +86,7 @@ class MultipleCursorsAdd(ViOperatorDef):
 
 @register(seqs.CTRL_P, (SELECT,))
 @register(seqs.K, (SELECT,))
+@register(seqs.BIG_Q, (SELECT,))
 class MultipleCursorsRemove(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -103,6 +105,7 @@ class MultipleCursorsRemove(ViOperatorDef):
 
 @register(seqs.CTRL_X, (SELECT,))
 @register(seqs.L, (SELECT,))
+@register(seqs.Q, (SELECT,))
 class MultipleCursorsSkip(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

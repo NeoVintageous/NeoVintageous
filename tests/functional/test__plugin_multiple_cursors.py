@@ -55,7 +55,7 @@ class TestMultipleCursors(unittest.FunctionalTestCase):
             self.assertStatusLineIsNormal()
 
     def test_add_match(self):
-        for seq in ('<C-n>', 'j'):
+        for seq in ('<C-n>', 'j', 'n'):
             self.normal('x fizz |fizz| fizz x')
             self.feed('<C-n>')
             self.assertVselect('x fizz |fizz| fizz x')
@@ -83,7 +83,7 @@ class TestMultipleCursors(unittest.FunctionalTestCase):
             self.assertStatusLineIsSelect()
 
     def test_remove_match(self):
-        for seq in ('<C-p>', 'k'):
+        for seq in ('<C-p>', 'k', 'Q'):
             self.normal('fizz fi|zz fizz fizz fizz')
             self.feed('<C-n>')
             self.feed('s_<C-n>')
@@ -113,7 +113,7 @@ class TestMultipleCursors(unittest.FunctionalTestCase):
             self.assertStatusLineIsBlank()
 
     def test_skip_match(self):
-        for seq in ('<C-x>', 'l'):
+        for seq in ('<C-x>', 'l', 'q'):
             self.normal('fizz |fizz| fizz fizz fizz fizz fizz')
             self.feed('<C-n>')
             self.feed('s_<C-n>')
