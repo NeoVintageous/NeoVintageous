@@ -24,14 +24,14 @@ A clear and concise description of what you expected to happen.
 A clear and concise description of what actually happened.
 
 **Versions**  
-Show the Sublime Text console log: `Menu > View > Show Console`. 
+Show the Sublime Text console log: `Menu → View → Show Console`.
 Example: `startup, version: 3200 linux x64 channel: stable`
 
 **Additional Information**  
 
 Any additional information, configuration, or data that might be necessary to reproduce the issue.
 
-To show the Sublime Text console log: `Menu > View > Show Console`.
+To show the Sublime Text console log: `Menu → View → Show Console`.
 
 Command and input logging are enabled by running the following commands in input box at the bottom of the console: `sublime.log_commands(True)` and `sublime.log_input(True)`.
 

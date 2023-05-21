@@ -2,17 +2,17 @@
 
 ## Documentation
 
-You can open the built-in help file by running `:help neovintageous` and [view it online](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt).
+You can open the built-in help file by running `:help nv` and [view it online](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt).
 
 ## Debugging
 
 ### Console
 
-To view console logging: **Menu > View > Show Console**
+To view console logging: **Menu → View → Show Console**
 
 ### Performance
 
-To view plugin performance: **Menu > Tools > Developer > Profile Plugins**
+To view plugin performance: **Menu → Tools → Developer → Profile Plugins**
 
 ### Logging
 
