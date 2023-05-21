@@ -52,6 +52,13 @@ class TestRcfile(unittest.TestCase):
         self.assertIsNotNone(_PARSE_LINE_PATTERN.match('vunmap x'))
         self.assertIsNotNone(_PARSE_LINE_PATTERN.match('xunmap x'))
 
+    def test_allow_commands_to_be_indented(self):
+        self.assertIsNotNone(_PARSE_LINE_PATTERN.match(' let mapleader=,'))
+        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('  noremap x y'))
+        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('   nnoremap x y'))
+        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('\tnnoremap x y'))
+        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('\t\tnnoremap x y'))
+
     def test_parse_line_return_none_for_non_commands(self):
         self.assertEquals(None, _parse_line(''))
         self.assertEquals(None, _parse_line('"'))

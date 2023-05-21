@@ -16,11 +16,11 @@ contexts:
       scope: comment.line.neovintageourc
 
     # Map.
-    - match: ^:?((i|n|o|s|v|x)?noremap)\b
+    - match: ^\s*:?((i|n|o|s|v|x)?noremap)\b
       scope: keyword.control.neovintageourc
 
     # Unmap.
-    - match: ^:?((i|n|o|s|v|x)?unmap)\b
+    - match: ^\s*:?((i|n|o|s|v|x)?unmap)\b
       scope: keyword.control.neovintageourc
 
     # Mapping FileType
@@ -35,14 +35,14 @@ contexts:
       scope: invalid.neovintageourc
 
     # Mapleader.
-    - match: ^:?(let) (map(?:local)?leader)(=).*
+    - match: ^\s*:?(let) (map(?:local)?leader)(=).*
       captures:
         1: keyword.control.neovintageourc
         2: variable.language.neovintageourc
         3: keyword.operator.assignment.neovintageourc
 
     # Set.
-    - match: ^:?(set) ([a-z]+)(=)?(.+)?$
+    - match: ^\s*:?(set) ([a-z]+)(=)?(.+)?$
       captures:
         1: keyword.control.neovintageourc
         2: entity.name.neovintageourc

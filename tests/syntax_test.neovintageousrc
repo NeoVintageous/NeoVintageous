@@ -10,6 +10,10 @@ let mapleader=,
 "   ^^^^^^^^^ variable.language
 "            ^ keyword.operator.assignment
 
+    let mapleader=,
+"   ^ keyword.control
+"       ^ variable.language
+
 :let mapleader=,
 " ^ keyword.control
 "    ^^^^^^^^^ variable.language
@@ -21,6 +25,10 @@ let mapleader=, " x
 set hlsearch
 " ^ keyword.control
 "   ^^^^^^^^ entity.name
+
+    set hlsearch
+"   ^ keyword.control
+"       ^ entity.name
 
 :set hlsearch
 " ^^ keyword.control
@@ -37,6 +45,18 @@ set winaltkeys=menu
 nnoremap <space> :
 " ^^^^^^ keyword.control
 "        ^^^^^^^ storage.type
+
+ nnoremap <space> :
+" ^ keyword.control
+"         ^ storage.type
+
+  nnoremap <space> :
+" ^ keyword.control
+"          ^ storage.type
+
+   nnoremap <space> :
+"  ^ keyword.control
+"           ^ storage.type
 
 nnoremap <Space> :
 "        ^^^^^^^ storage.type
@@ -406,12 +426,10 @@ xunmap x
 " ^ keyword.control
 
  noremap x y
-" ^^^^^^^^^^ -keyword
-" ^^^^^^^^^^ -storage
+" ^ keyword
 
     noremap x y
-" ^^^^^^^^^^^^^ -keyword
-" ^^^^^^^^^^^^^ -storage
+"   ^ keyword
 
 nnoremap <leader>= <C-w>=
 " ^^^^^^ keyword.control
@@ -449,11 +467,15 @@ foobar
 " ^^^^ invalid
 
     let mapleader=,
-" ^^^^^^^^^^^^^^^^^ invalid
+"   ^ keyword
 
     :let mapleader=,
-" ^^^^^^^^^^^^^^^^^ invalid
+"    ^ keyword
 
 nnoremap FileType go gd :LspSymbolDefinition<CR>
 " ^ keyword.control
 "        ^ keyword
+
+    nnoremap FileType go gd :LspSymbolDefinition<CR>
+"   ^ keyword.control
+"            ^ keyword
