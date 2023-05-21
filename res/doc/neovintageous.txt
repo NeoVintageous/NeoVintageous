@@ -32,11 +32,12 @@ CONTENTS                                                         *nv-contents*
     Window splits ..................|nv-window-splits|
     Toggle Sidebar .................|nv-toggle-sidebar|
     Plugins ........................|nv-plugins|
+    Option toggling ................|nv-option-toggling|
     Mapping capslock to escape .....|nv-capslock|
     Key presses are laggy or slow ..|nv-keyboard-repeat|
     Search highlighting ............|nv-search-highlighting|
     Highlighted yank ...............|nv-highlightedyank|
-    Toggle Command .................|nv-toggle|
+    Toggle plugin ..................|nv-toggle|
 
 
 ==============================================================================
@@ -62,7 +63,8 @@ See `:help '{option}'` for help on individual options.
     'modeline'
     'modelines'
     'number'
-    'relativenumber',
+    'relativenumber'
+    'scrolloff'
     'shell'
     'sidebar'
     'smartcase'
@@ -78,7 +80,7 @@ See `:help '{option}'` for help on individual options.
 
 SETTINGS                                              *settings* *nv-settings*
 
-To edit settings go to `Menu > Preferences > Settings`.
+To edit settings go to Menu → Preferences → Settings.
 
                                                            *'highlightedyank'*
 'highlightedyank'       boolean (default on)
@@ -341,7 +343,8 @@ Inspired by https://github.com/mg979/vim-visual-multi.
 
 WINDOW SPLITS                                               *nv-window-splits*
 
-Some window features require https://packagecontrol.io/packages/Origami.
+Some window features require the Origami plugin:
+https://packagecontrol.io/packages/Origami
 
 CTRL-W CTRL-S
 CTRL-W s
@@ -358,21 +361,20 @@ CTRL-W V
 
 TOGGLE SIDEBAR                            *toggle-sidebar* *nv-toggle-sidebar*
 
-To enable toggling the side bar via a mapping, first set your mapping: >
+To map a side bar toggle add a mapping: >
 
     nnoremap <leader>d :Neovintageous action=toggle_side_bar<CR>
 
-Then add a key binding for when the sidebar has focus. To edit your key
-bindings go to `Menu > Preferences > Key Bindings`: >
+Then add a key binding (this is for when the side bar has focus).
 
-    [
-        {
-            "keys": [",", "d"],
-            "command": "neovintageous",
-            "args": {"action": "toggle_side_bar"},
-            "context": [{"key": "control", "operand": "sidebar_tree"}]
-        }
-    ]
+Menu → Preferences → Key Bindings: >
+
+    {
+        "keys": [",", "d"],
+        "command": "neovintageous",
+        "args": {"action": "toggle_side_bar"},
+        "context": [{"key": "control", "operand": "sidebar_tree"}]
+    }
 
 ==============================================================================
 
@@ -391,6 +393,18 @@ to request missing features that you would like to see supported.
     vim-surround            https://github.com/tpope/vim-surround
     vim-targets             https://github.com/wellle/targets.vim
     vim-unimpaired          https://github.com/tpope/vim-unimpaired
+
+==============================================================================
+
+Option toggling                                           *nv-option-toggling*
+
+Toggles included in addition to |unimpaired-toggling|.
+
+ On      Off     Toggle Option
+*[oa*   *]oa*   *yoa*   'menu'
+*[oe*   *]oe*   *yoe*   'statusbar'
+*[om*   *]om*   *yom*   'minimap'
+*[ot*   *]ot*   *yot*   'sidebar'
 
 ==============================================================================
 
@@ -473,13 +487,13 @@ setting and the style can be configured by 'highlightedyank_style'.
 To customise the colors, create a color scheme override for your color scheme:
 for example if you have the default Monokai color scheme enabled, create a file
 named `Monokai.sublime-color-scheme` in the User directory (find the User
-directory location via the Menu: `Preferences > Browse Packages...`), then
+directory location via the Menu → Preferences → Browse Packages...), then
 create the styles using the scopes: >
 
 To customise the colors, create a color scheme override: for example if you
 have the default Monokai color scheme enabled - create a file named
 Monokai.sublime-color-scheme in the Sublime Text User directory
-(Menu > Preferences > BrowsePackages...), and create the styles using the
+(Menu → Preferences → BrowsePackages...), and create the styles using the
 "highlightedyank" scope: >
 
     {
