@@ -392,6 +392,19 @@ xnoremap x y
 :xnoremap x y
 " ^ keyword.control
 
+unmap x
+" ^ keyword.control
+nunmap x
+" ^ keyword.control
+ounmap x
+" ^ keyword.control
+sunmap x
+" ^ keyword.control
+vunmap x
+" ^ keyword.control
+xunmap x
+" ^ keyword.control
+
  noremap x y
 " ^^^^^^^^^^ -keyword
 " ^^^^^^^^^^ -storage

@@ -45,6 +45,12 @@ class TestRcfile(unittest.TestCase):
         self.assertIsNotNone(_PARSE_LINE_PATTERN.match('snoremap x y'))
         self.assertIsNotNone(_PARSE_LINE_PATTERN.match('vnoremap x y'))
         self.assertIsNotNone(_PARSE_LINE_PATTERN.match('xnoremap x y'))
+        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('unmap x'))
+        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('nunmap x'))
+        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('ounmap x'))
+        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('sunmap x'))
+        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('vunmap x'))
+        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('xunmap x'))
 
     def test_parse_line_return_none_for_non_commands(self):
         self.assertEquals(None, _parse_line(''))
@@ -65,6 +71,12 @@ class TestRcfile(unittest.TestCase):
         self.assertEquals(':snoremap x yz', _parse_line(':snoremap x yz'))
         self.assertEquals(':vnoremap x yz', _parse_line(':vnoremap x yz'))
         self.assertEquals(':xnoremap x yz', _parse_line(':xnoremap x yz'))
+        self.assertEquals(':unmap x', _parse_line(':unmap x'))
+        self.assertEquals(':nunmap x', _parse_line(':nunmap x'))
+        self.assertEquals(':ounmap x', _parse_line(':ounmap x'))
+        self.assertEquals(':sunmap x', _parse_line(':sunmap x'))
+        self.assertEquals(':vunmap x', _parse_line(':vunmap x'))
+        self.assertEquals(':xunmap x', _parse_line(':xunmap x'))
 
     def test_parse_line_colon_prefix_should_be_optional(self):
         self.assertEquals(':let mapleader=,', _parse_line('let mapleader=,'))
@@ -75,6 +87,12 @@ class TestRcfile(unittest.TestCase):
         self.assertEquals(':snoremap x yz', _parse_line('snoremap x yz'))
         self.assertEquals(':vnoremap x yz', _parse_line('vnoremap x yz'))
         self.assertEquals(':xnoremap x yz', _parse_line('xnoremap x yz'))
+        self.assertEquals(':unmap x', _parse_line('unmap x'))
+        self.assertEquals(':nunmap x', _parse_line('nunmap x'))
+        self.assertEquals(':ounmap x', _parse_line('ounmap x'))
+        self.assertEquals(':sunmap x', _parse_line('sunmap x'))
+        self.assertEquals(':vunmap x', _parse_line('vunmap x'))
+        self.assertEquals(':xunmap x', _parse_line('xunmap x'))
 
     def test_parse_line_strips_trailing_whitespace(self):
         self.assertEquals(':let mapleader=,', _parse_line('let mapleader=,    '))

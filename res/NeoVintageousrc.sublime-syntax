@@ -15,8 +15,12 @@ contexts:
     - match: "^\\s*\".*"
       scope: comment.line.neovintageourc
 
-    # Mapping commands.
+    # Map.
     - match: ^:?((i|n|o|s|v|x)?noremap)\b
+      scope: keyword.control.neovintageourc
+
+    # Unmap.
+    - match: ^:?((i|n|o|s|v|x)?unmap)\b
       scope: keyword.control.neovintageourc
 
     # Mapping FileType

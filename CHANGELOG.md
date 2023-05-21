@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#877](https://github.com/NeoVintageous/NeoVintageous/issues/877): Add `unmap`, `nunmap`, `ounmap`, `sunmap`, `vunmap`, `xunmap` support in neovintageousrc file
 * Added [#876](https://github.com/NeoVintageous/NeoVintageous/issues/876): Add `:xnoremap` and `:xunmap`
 * Added [#874](https://github.com/NeoVintageous/NeoVintageous/issues/874): Toggle highlight gutter aswell as highlight line On/Off/Toggle `[oc`/`]oc`/`yoc`
 * Added [#870](https://github.com/NeoVintageous/NeoVintageous/issues/870): `n` (next), `q` (skip), `Q` (remove) keys in multiple cursor mode

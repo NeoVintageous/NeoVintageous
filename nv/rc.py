@@ -84,7 +84,7 @@ def _load() -> None:
 # were removed in version 1.5.0. They were removed because they were they were
 # implemented as non-recursive mappings.
 _PARSE_LINE_PATTERN = re.compile(
-    '^(?::)?(?P<cmdline>(?P<cmd>(?:[nsviox])?noremap|let|set) .*)$')
+    '^(?::)?(?P<cmdline>(?P<cmd>(?:[nsviox])?noremap|let|set|(?:[nsviox])?unmap) .*)$')
 
 
 def _parse_line(line: str):
