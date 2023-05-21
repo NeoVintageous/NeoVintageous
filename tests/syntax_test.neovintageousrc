@@ -360,6 +360,10 @@ vmap x y
 " ^^^^^^ invalid
 :vmap x y
 " ^^^^^^^ invalid
+xmap x y
+" ^^^^^^ invalid
+:xmap x y
+" ^^^^^^^ invalid
 
 noremap x y
 " ^ keyword.control
@@ -382,6 +386,10 @@ snoremap x y
 vnoremap x y
 " ^ keyword.control
 :vnoremap x y
+" ^ keyword.control
+xnoremap x y
+" ^ keyword.control
+:xnoremap x y
 " ^ keyword.control
 
  noremap x y

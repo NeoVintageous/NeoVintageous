@@ -44,6 +44,7 @@ class TestRcfile(unittest.TestCase):
         self.assertIsNotNone(_PARSE_LINE_PATTERN.match('onoremap x y'))
         self.assertIsNotNone(_PARSE_LINE_PATTERN.match('snoremap x y'))
         self.assertIsNotNone(_PARSE_LINE_PATTERN.match('vnoremap x y'))
+        self.assertIsNotNone(_PARSE_LINE_PATTERN.match('xnoremap x y'))
 
     def test_parse_line_return_none_for_non_commands(self):
         self.assertEquals(None, _parse_line(''))
@@ -63,6 +64,7 @@ class TestRcfile(unittest.TestCase):
         self.assertEquals(':onoremap x yz', _parse_line(':onoremap x yz'))
         self.assertEquals(':snoremap x yz', _parse_line(':snoremap x yz'))
         self.assertEquals(':vnoremap x yz', _parse_line(':vnoremap x yz'))
+        self.assertEquals(':xnoremap x yz', _parse_line(':xnoremap x yz'))
 
     def test_parse_line_colon_prefix_should_be_optional(self):
         self.assertEquals(':let mapleader=,', _parse_line('let mapleader=,'))
@@ -72,6 +74,7 @@ class TestRcfile(unittest.TestCase):
         self.assertEquals(':onoremap x yz', _parse_line('onoremap x yz'))
         self.assertEquals(':snoremap x yz', _parse_line('snoremap x yz'))
         self.assertEquals(':vnoremap x yz', _parse_line('vnoremap x yz'))
+        self.assertEquals(':xnoremap x yz', _parse_line('xnoremap x yz'))
 
     def test_parse_line_strips_trailing_whitespace(self):
         self.assertEquals(':let mapleader=,', _parse_line('let mapleader=,    '))
@@ -84,6 +87,7 @@ class TestRcfile(unittest.TestCase):
         self.assertIsNone(_PARSE_LINE_PATTERN.match('omap x y'))
         self.assertIsNone(_PARSE_LINE_PATTERN.match('smap x y'))
         self.assertIsNone(_PARSE_LINE_PATTERN.match('vmap x y'))
+        self.assertIsNone(_PARSE_LINE_PATTERN.match('xmap x y'))
 
     def test_parse_line_returns_none_for_recursive_mapping_commands(self):
 
@@ -100,12 +104,14 @@ class TestRcfile(unittest.TestCase):
         self.assertEquals(None, _parse_line(':omap x yz'))
         self.assertEquals(None, _parse_line(':smap x yz'))
         self.assertEquals(None, _parse_line(':vmap x yz'))
+        self.assertEquals(None, _parse_line(':xmap x yz'))
         self.assertEquals(None, _parse_line('map x yz'))
         self.assertEquals(None, _parse_line('imap x yz'))
         self.assertEquals(None, _parse_line('nmap x yz'))
         self.assertEquals(None, _parse_line('omap x yz'))
         self.assertEquals(None, _parse_line('smap x yz'))
         self.assertEquals(None, _parse_line('vmap x yz'))
+        self.assertEquals(None, _parse_line('xmap x yz'))
 
     @unittest.mock.patch('NeoVintageous.nv.rc.message')
     def test_unescaped_pipe_character_is_invalid(self, message):

@@ -680,6 +680,14 @@ def _ex_route_write(state) -> TokenCommand:
     return command
 
 
+def _ex_route_xnoremap(state) -> TokenCommand:
+    return _create_map_route(state, 'xnoremap')
+
+
+def _ex_route_xunmap(state) -> TokenCommand:
+    return _create_word_route(state, 'xunmap', 'lhs')
+
+
 def _ex_route_yank(state) -> TokenCommand:
     command = TokenCommand('yank')
     command.addressable = True
@@ -781,5 +789,7 @@ ex_routes[r'wa(?:ll)?'] = _ex_route_wall
 ex_routes[r'wqa(?:ll)?'] = _ex_route_wqall
 ex_routes[r'wq(?=[^a-zA-Z]|$)?'] = _ex_route_wq
 ex_routes[r'xa(?:ll)?'] = _ex_route_wqall
+ex_routes[r'xn(?:oremap)?'] = _ex_route_xnoremap
+ex_routes[r'xu(?:nmap)?'] = _ex_route_xunmap
 ex_routes[r'x(?:it)?'] = _ex_route_exit
 ex_routes[r'y(?:ank)?'] = _ex_route_yank

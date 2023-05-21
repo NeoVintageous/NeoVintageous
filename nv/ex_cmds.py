@@ -1119,6 +1119,23 @@ def _do_write_append(window, view, line_range: RangeNode = None) -> None:
     enter_normal_mode(window, get_mode(view))
 
 
+def ex_xnoremap(lhs: str = None, rhs: str = None, **kwargs) -> None:
+    if not (lhs and rhs):
+        return status_message('Listing key mappings is not implemented')
+
+    mappings_add(VISUAL, lhs, rhs)
+    mappings_add(VISUAL_LINE, lhs, rhs)
+    mappings_add(VISUAL_BLOCK, lhs, rhs)
+
+
+def ex_xunmap(lhs: str, **kwargs) -> None:
+    for mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
+        try:
+            mappings_remove(mode, lhs)
+        except KeyError:
+            status_message('E31: No such mapping')
+
+
 def ex_yank(view, register: str, line_range: RangeNode, **kwargs) -> None:
     if not register:
         register = '"'

@@ -16,7 +16,7 @@ contexts:
       scope: comment.line.neovintageourc
 
     # Mapping commands.
-    - match: ^:?((i|n|o|s|v)?noremap)\b
+    - match: ^:?((i|n|o|s|v|x)?noremap)\b
       scope: keyword.control.neovintageourc
 
     # Mapping FileType
@@ -27,7 +27,7 @@ contexts:
     # Recursive mappings were replaced with non-recursive mappings because they
     # were not implemented properly and can cause infinite loop problems.
     # https://github.com/NeoVintageous/NeoVintageous/blob/master/CHANGELOG.md#removed-3
-    - match: ^:?\b(i|n|o|s|v)?map.*
+    - match: ^:?\b.?map.*
       scope: invalid.neovintageourc
 
     # Mapleader.
