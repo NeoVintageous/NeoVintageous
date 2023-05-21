@@ -299,6 +299,23 @@ class TestUnimpairedToggles(unittest.FunctionalTestCase):
             self.feed('yo%s' % key)
             self.assertOption(name, True, msg=name)
 
+    def test_toggle_cursorline(self):
+        self.settings().set('highlight_line', False)
+        self.settings().set('highlight_gutter', False)
+        self.normal('f|izz')
+        self.feed('[oc')
+        self.assertSetting('highlight_line', True)
+        self.assertSetting('highlight_gutter', True)
+        self.feed(']oc')
+        self.assertSetting('highlight_line', False)
+        self.assertSetting('highlight_gutter', False)
+        self.feed('yoc')
+        self.assertSetting('highlight_line', True)
+        self.assertSetting('highlight_gutter', True)
+        self.feed('yoc')
+        self.assertSetting('highlight_line', False)
+        self.assertSetting('highlight_gutter', False)
+
     def test_issue_716_toggle_list(self):
         self.normal('f|izz')
         self.view.settings().set('draw_white_space', 'none')

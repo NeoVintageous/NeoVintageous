@@ -469,12 +469,13 @@ def _statusbar_option(view, flag: bool = None) -> None:
 # Used by the _toggle_option() function.
 # * None: means the option is not implemented.
 # * str: means the option is a boolean option.
+# * tuple: means the many str.
 # * function: means it is a complex option.
 _OPTIONS = {
     'background': None,
     'crosshairs': None,
     'cursorcolumn': None,
-    'cursorline': 'highlight_line',
+    'cursorline': ('highlight_line', 'highlight_gutter'),
     'diff': None,
     'hlsearch': _hlsearch_option,
     'ignorecase': _ignorecase_option,
@@ -518,7 +519,7 @@ def _toggle_option(view, key, value=None) -> None:
         key = _OPTION_ALIASES[key]
 
     if key not in _OPTIONS:
-        raise ValueError('unknown toggle')
+        raise ValueError('unknown option')
 
     option = _OPTIONS[key]
     if not option:
@@ -526,6 +527,9 @@ def _toggle_option(view, key, value=None) -> None:
 
     if isinstance(option, str):
         _set_bool_option(view, option, value)
+    elif isinstance(option, tuple):
+        for opt in option:
+            _set_bool_option(view, opt, value)
     elif callable(option):
         option(view, value)
     else:
