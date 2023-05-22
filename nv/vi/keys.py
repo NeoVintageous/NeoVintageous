@@ -114,6 +114,17 @@ def _resolve_named_key_alias(key: str):
         return key
 
 
+_KEYPAD_NUM = re.compile('<k(\\d)>')
+
+
+def resolve_keypad_count(key: str) -> str:
+    keypad_num = _KEYPAD_NUM.search(key)
+    if keypad_num:
+        return keypad_num.group(1)
+
+    return key
+
+
 class KeySequenceTokenizer():
     """Takes in a sequence of key names and tokenizes it."""
 

@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#867](https://github.com/NeoVintageous/NeoVintageous/issues/867): Support keypad numbers as count prefix
 * Added [#878](https://github.com/NeoVintageous/NeoVintageous/issues/878): Allow leading whitespace for commands in neovintageousrc file
 * Added [#877](https://github.com/NeoVintageous/NeoVintageous/issues/877): Add `unmap`, `nunmap`, `ounmap`, `sunmap`, `vunmap`, `xunmap` support in neovintageousrc file
 * Added [#876](https://github.com/NeoVintageous/NeoVintageous/issues/876): Add `:xnoremap` and `:xunmap`

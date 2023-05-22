@@ -55,6 +55,7 @@ from NeoVintageous.nv.vi.cmd_base import ViMotionDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.cmd_defs import ViOpenNameSpace
 from NeoVintageous.nv.vi.cmd_defs import ViOpenRegister
+from NeoVintageous.nv.vi.keys import resolve_keypad_count
 from NeoVintageous.nv.vi.keys import to_bare_command_name
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import NORMAL
@@ -160,18 +161,20 @@ class FeedKeyHandler():
     def _handle_count(self) -> bool:
         if self.repeat_count:
             set_action_count(self.view, self.repeat_count)
-        elif self.key.isdigit():
-            # NOTE motion/action counts need to be cast to strings because they need
-            # to be "joined" to the previous key press, not added. For example when
-            # you press the digit 1 followed by 2, it's a count of 12, not 3.
-            if not get_action(self.view):
-                if self.key != '0' or get_action_count(self.view):
-                    set_action_count(self.view, get_action_count(self.view) + self.key)
-                    return True
-            elif get_mode(self.view) == OPERATOR_PENDING:
-                if self.key != '0' or get_motion_count(self.view):
-                    set_motion_count(self.view, get_motion_count(self.view) + self.key)
-                    return True
+        else:
+            key = resolve_keypad_count(self.key)
+            if key.isdigit():
+                # NOTE motion/action counts need to be cast to strings because they need
+                # to be "joined" to the previous key press, not added. For example when
+                # you press the digit 1 followed by 2, it's a count of 12, not 3.
+                if not get_action(self.view):
+                    if key != '0' or get_action_count(self.view):
+                        set_action_count(self.view, get_action_count(self.view) + key)
+                        return True
+                elif get_mode(self.view) == OPERATOR_PENDING:
+                    if key != '0' or get_motion_count(self.view):
+                        set_motion_count(self.view, get_motion_count(self.view) + key)
+                        return True
 
         return False
 

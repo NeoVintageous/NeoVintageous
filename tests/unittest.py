@@ -828,7 +828,7 @@ _FEEDCHAR2KEY = {
 
 class FunctionalTestCase(ViewTestCase):
 
-    def feed(self, seq: str) -> None:
+    def feed(self, seq: str, check_user_mappings: bool = False) -> None:
         # Args:
         #   seq (str):
         #       A command sequence e.g. 3w, <C-a>, cs'", :pwd
@@ -925,13 +925,13 @@ class FunctionalTestCase(ViewTestCase):
 
         if command == 'nv_feed_key':
             if 'count' in args and args['count'] >= 1:
-                window.run_command('nv_feed_key', {'key': str(args['count']), 'check_user_mappings': False})
+                window.run_command('nv_feed_key', {'key': str(args['count']), 'check_user_mappings': check_user_mappings})  # noqa: E501
 
             if 'key' in args:
-                window.run_command('nv_feed_key', {'key': args['key'], 'check_user_mappings': False})
+                window.run_command('nv_feed_key', {'key': args['key'], 'check_user_mappings': check_user_mappings})
             elif 'keys' in args:
                 for key in args['keys']:
-                    window.run_command('nv_feed_key', {'key': key, 'check_user_mappings': False})
+                    window.run_command('nv_feed_key', {'key': key, 'check_user_mappings': check_user_mappings})
             else:
                 for key in seq:
                     try:
@@ -939,9 +939,12 @@ class FunctionalTestCase(ViewTestCase):
                     except Exception:
                         pass
 
-                    window.run_command('nv_feed_key', {'key': key, 'check_user_mappings': False})
+                    window.run_command('nv_feed_key', {'key': key, 'check_user_mappings': check_user_mappings})
         else:
             window.run_command(command, args)
+
+    def feedWithUserMappings(self, seq: str) -> None:
+        self.feed(seq, check_user_mappings=True)
 
     def onRunFeedCommand(self, command: str, args) -> None:
         pass
