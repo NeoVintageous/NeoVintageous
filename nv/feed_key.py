@@ -20,6 +20,7 @@ import logging
 from NeoVintageous.nv.ex_cmds import do_ex_user_cmdline
 from NeoVintageous.nv.mappings import IncompleteMapping
 from NeoVintageous.nv.mappings import Mapping
+from NeoVintageous.nv.mappings import mappings_can_resolve
 from NeoVintageous.nv.mappings import mappings_resolve
 from NeoVintageous.nv.settings import append_sequence
 from NeoVintageous.nv.settings import get_action_count
@@ -159,11 +160,10 @@ class FeedKeyHandler():
     def _handle_count(self) -> bool:
         if self.repeat_count:
             set_action_count(self.view, self.repeat_count)
-
-        # NOTE motion/action counts need to be cast to strings because they need
-        # to be "joined" to the previous key press, not added. For example when
-        # you press the digit 1 followed by 2, it's a count of 12, not 3.
         elif self.key.isdigit():
+            # NOTE motion/action counts need to be cast to strings because they need
+            # to be "joined" to the previous key press, not added. For example when
+            # you press the digit 1 followed by 2, it's a count of 12, not 3.
             if not get_action(self.view):
                 if self.key != '0' or get_action_count(self.view):
                     set_action_count(self.view, get_action_count(self.view) + self.key)
@@ -176,19 +176,19 @@ class FeedKeyHandler():
         return False
 
     def _handle(self) -> None:
+        # If the user has defined a mapping that starts with a number i.e. count
+        # then the count handler has to be skipped otherwise it won't resolve.
+        # See https://github.com/NeoVintageous/NeoVintageous/issues/434.
+        if not mappings_can_resolve(self.view, self.key):
+            if self._handle_count():
+                return
+
         set_partial_sequence(self.view, get_partial_sequence(self.view) + self.key)
 
         command = mappings_resolve(self.view, check_user_mappings=self.check_user_mappings)
 
         if isinstance(command, IncompleteMapping):
             return
-
-        # If the user has defined a mapping that starts with a number i.e. count
-        # then the count handler has to be skipped otherwise it won't resolve.
-        # See https://github.com/NeoVintageous/NeoVintageous/issues/434.
-        if not isinstance(command, Mapping):
-            if self._handle_count():
-                return
 
         if isinstance(command, ViOpenNameSpace):
             return

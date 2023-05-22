@@ -134,6 +134,19 @@ def mappings_clear() -> None:
         _mappings[mode] = {}
 
 
+def mappings_can_resolve(view, key: str) -> bool:
+    mode = get_mode(view)
+    sequence = get_partial_sequence(view) + key
+
+    if _find_full_match(view, mode, sequence):
+        return True
+
+    if _has_partial_matches(view, mode, sequence):
+        return True
+
+    return False
+
+
 def _seq_to_mapping(view, seq: str):
     mode = get_mode(view)
     full_match = _find_full_match(view, mode, seq)
@@ -187,8 +200,7 @@ def mappings_resolve(view, sequence: str = None, mode: str = None, check_user_ma
     #   CommandNotFound
 
     # We usually need to look at the partial sequence, but some commands do
-    # weird things, like ys, which isn't a namespace but behaves as such
-    # sometimes.
+    # weird things, like ys, which isn't a namespace but behaves as such.
     seq = sequence or get_partial_sequence(view)
 
     command = None

@@ -429,6 +429,20 @@ class TestFeedKey(unittest.ResetRegisters, unittest.ResetCommandLineOutput, unit
             self.assertNormal('1this\n2that\n3that\n4that\n|5that\n6this\n7this')
 
     @unittest.mock_bell()
+    @unittest.mock_mappings((unittest.NORMAL, 'l', 'w'))
+    def test_can_count_user_mapping(self):
+        self.normal('|fizz buzz fizz')
+        self.feedkeys('2l')
+        self.assertNormal('fizz buzz |fizz')
+
+    @unittest.mock_bell()
+    @unittest.mock_mappings((unittest.NORMAL, '9h', 'b'))
+    def test_can_resolve_digit_user_mapping(self):
+        self.normal('fizz buzz |fizz')
+        self.feedkeys('9h')
+        self.assertNormal('fizz |buzz fizz')
+
+    @unittest.mock_bell()
     @unittest.mock_mappings(
         (unittest.NORMAL, ',a', '3l'),
         (unittest.VISUAL, ',a', '3l'),
