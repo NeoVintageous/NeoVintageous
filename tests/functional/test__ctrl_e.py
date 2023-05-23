@@ -20,6 +20,22 @@ from NeoVintageous.tests import unittest
 
 class Test_ctrl_e(unittest.FunctionalTestCase):
 
+    def test_n(self):
+        self.normal('1\n2\n3\n4\n5\n6\n7\n|8\n9\n10')
+        self.feed('<C-e>')
+        self.assertNormal('1\n2\n3\n4\n5\n6\n7\n|8\n9\n10')
+        self.assertVisibleRegion((2, 20))
+        self.feed('<C-e>')
+        self.assertVisibleRegion((4, 20))
+        self.feed('<C-e>')
+        self.assertVisibleRegion((6, 20))
+
+    def test_n_count(self):
+        self.normal('1\n2\n3\n4\n5\n6\n7\n|8\n9\n10')
+        self.feed('3<C-e>')
+        self.assertNormal('1\n2\n3\n4\n5\n6\n7\n|8\n9\n10')
+        self.assertVisibleRegion((6, 20))
+
     def test_v(self):
         self.eq('1\nfi|zz\nbu|zz\n3\n4', 'v_<C-e>', '1\nfi|zz\nbu|zz\n3\n4')
 

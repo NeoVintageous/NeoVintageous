@@ -590,6 +590,9 @@ class ViewTestCase(unittest.TestCase):
             self.assertIsInstance(actual, Region)
             self.assertEqual(actual, expected)
 
+    def assertVisibleRegion(self, expected) -> None:
+        self.assertRegion(self.view.visible_region(), expected)
+
     def _assertRegister(self, name: str, expected, linewise: bool = False, msg: str = None) -> None:
         if expected is not None and not isinstance(expected, list):
             expected = [expected]
@@ -1319,8 +1322,9 @@ def mock_mappings(*mappings):
 def mock_ui(screen_rows=None, visible_region=None, em_width=10.0, line_height=22.0):
     """Mock the UI.
 
-    Note that the number of screen rows and visible region default to the size
-    of the view fixture content.
+    All arguments default to the view fixture values. For example, the number of
+    screen rows, visible region, em width, and line height, all default to the
+    fixture screen rows, visble rows, em width, and line height.
 
     Usage:
 

@@ -1587,12 +1587,12 @@ class ViRepeat(ViOperatorDef):
 
 
 @assign(seqs.CTRL_Y, ACTION_MODES)
-class ViScrollByLinesUp(ViOperatorDef):
+class ViScrollByLinesUp(ViMotionDef):
 
     def translate(self, view):
         return {
-            'action': 'nv_vi_ctrl_y',
-            'action_args': {
+            'motion': 'nv_vi_ctrl_y',
+            'motion_args': {
                 'mode': get_mode(view),
                 'count': get_count(view)
             }
@@ -1618,12 +1618,12 @@ class ViChangeToUpperCaseByCharsVisual(ViOperatorDef):
 
 
 @assign(seqs.CTRL_E, ACTION_MODES)
-class ViScrollByLinesDown(ViOperatorDef):
+class ViScrollByLinesDown(ViMotionDef):
 
     def translate(self, view):
         return {
-            'action': 'nv_vi_ctrl_e',
-            'action_args': {
+            'motion': 'nv_vi_ctrl_e',
+            'motion_args': {
                 'mode': get_mode(view),
                 'count': get_count(view)
             }
