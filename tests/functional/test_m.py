@@ -34,3 +34,10 @@ class Test_m(unittest.FunctionalTestCase):
 
     def test_b(self):
         self.eq('1\nf|iz|z\nb|uz|z\n3\n', 'b_mx', '1\nf|iz|z\nb|uz|z\n3\n')
+
+    @unittest.mock_bell()
+    def test_invalid_mark_should_emit_bell(self):
+        self.normal('f|izz')
+        self.feed('m')
+        self.feed('$')
+        self.assertBell()

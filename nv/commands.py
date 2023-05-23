@@ -1370,7 +1370,10 @@ class nv_vi_big_i(TextCommand):
 class nv_vi_m(TextCommand):
 
     def run(self, edit, mode=None, count=1, register=None, character=None):
-        set_mark(self.view, character)
+        try:
+            set_mark(self.view, character)
+        except KeyError:
+            ui_bell()
 
 
 class nv_vi_quote(TextCommand):
@@ -1395,7 +1398,12 @@ class nv_vi_quote(TextCommand):
 
             return s
 
-        target = get_mark(self.view, character)
+        try:
+            target = get_mark(self.view, character)
+        except KeyError:
+            ui_bell('E78: unknown mark')
+            return
+
         if target is None:
             ui_bell('E20: mark not set')
             return
@@ -1433,7 +1441,12 @@ class nv_vi_backtick(TextCommand):
 
             return s
 
-        target = get_mark(self.view, character)
+        try:
+            target = get_mark(self.view, character)
+        except KeyError:
+            ui_bell('E78: unknown mark')
+            return
+
         if target is None:
             ui_bell('E20: mark not set')
             return

@@ -15,26 +15,26 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+from string import ascii_letters
+
 from sublime import Region
 
 from NeoVintageous.nv.jumplist import jumplist_back
 from NeoVintageous.nv.utils import get_insertion_point_at_b
 
 
-def _get_key(name: str) -> str:
-    return '_nv_mark' + name
-
-
-def _get_regions(view, name: str) -> list:
-    return view.get_regions(_get_key(name))
-
-
 def set_mark(view, name: str) -> None:
+    if not _is_valid(name):
+        raise KeyError()
+
     pt = get_insertion_point_at_b(view.sel()[0])
     view.add_regions(_get_key(name), [Region(pt)])
 
 
 def get_mark(view, name: str):
+    if not _is_valid(name):
+        raise KeyError()
+
     # Returns None, list[Region], or tuple[sublime.View, list[Region]]
     if name in ('\'', '`'):
         marks_view, marks = jumplist_back(view)
@@ -47,3 +47,15 @@ def get_mark(view, name: str):
         marks = _get_regions(view, name)
         if marks:
             return marks[0]
+
+
+def _is_valid(name: str) -> bool:
+    return name in ascii_letters
+
+
+def _get_key(name: str) -> str:
+    return '_nv_mark' + name
+
+
+def _get_regions(view, name: str) -> list:
+    return view.get_regions(_get_key(name))

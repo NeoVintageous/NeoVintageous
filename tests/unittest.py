@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+from string import ascii_uppercase
 from unittest import TestCase  # noqa: F401
 from unittest import expectedFailure  # noqa: F401
 from unittest import mock  # noqa: F401
@@ -40,6 +41,7 @@ from NeoVintageous.nv import macros
 from NeoVintageous.nv.cmdline import Cmdline
 from NeoVintageous.nv.ex_cmds import do_ex_cmdline
 from NeoVintageous.nv.mappings import _mappings
+from NeoVintageous.nv.marks import _get_key
 from NeoVintageous.nv.marks import get_mark
 from NeoVintageous.nv.marks import set_mark
 from NeoVintageous.nv.options import get_option
@@ -378,6 +380,13 @@ class ViewTestCase(unittest.TestCase):
     def resetRegisters(self, values=None) -> None:
         _reset()
         _set_clipboard('')
+
+    def resetMarks(self):
+        window = self.view.window()
+        if window:
+            for view in window.views():
+                for character in ascii_uppercase:
+                    view.erase_regions(_get_key(character))
 
     def resetMacros(self) -> None:
         macros._data.clear()
@@ -1134,6 +1143,13 @@ class ResetRegisters(FunctionalTestCase):
         self.resetRegisters()
 
 
+class ResetMarks(FunctionalTestCase):
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.resetMarks()
+
+
 # DEPRECATED Use newer APIs.
 def _make_region(view, a: int, b: int = None) -> Region:
     try:
@@ -1728,6 +1744,7 @@ _SEQ2CMD = {
     '[s':           {'command': 'nv_feed_key'},  # noqa: E241
     '[t':           {'command': 'nv_feed_key'},  # noqa: E241
     '[{':           {'command': 'nv_feed_key'},  # noqa: E241
+    '\'':           {'command': 'nv_feed_key'},  # noqa: E241
     '\'a':          {'command': 'nv_feed_key'},  # noqa: E241
     '\'p':          {'command': 'nv_feed_key'},  # noqa: E241
     '\'x':          {'command': 'nv_feed_key'},  # noqa: E241
@@ -1756,6 +1773,7 @@ _SEQ2CMD = {
     ']}':           {'command': 'nv_feed_key'},  # noqa: E241
     '^':            {'command': 'nv_feed_key'},  # noqa: E241
     '_':            {'command': 'nv_feed_key'},  # noqa: E241
+    '`':            {'command': 'nv_feed_key'},  # noqa: E241
     '`a':           {'command': 'nv_feed_key'},  # noqa: E241
     '`p':           {'command': 'nv_feed_key'},  # noqa: E241
     '`x':           {'command': 'nv_feed_key'},  # noqa: E241
@@ -2224,6 +2242,7 @@ _SEQ2CMD = {
     'j':            {'command': 'nv_feed_key'},  # noqa: E241
     'k':            {'command': 'nv_feed_key'},  # noqa: E241
     'l':            {'command': 'nv_feed_key'},  # noqa: E241
+    'm':            {'command': 'nv_feed_key'},  # noqa: E241
     'ma':           {'command': 'nv_feed_key'},  # noqa: E241
     'mx':           {'command': 'nv_feed_key'},  # noqa: E241
     'n':            {'command': 'nv_feed_key'},  # noqa: E241

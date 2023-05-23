@@ -292,6 +292,10 @@ def _ex_route_let(state) -> TokenCommand:
     return command
 
 
+def _ex_route_marks(state) -> TokenCommand:
+    return _create_route(state, 'marks')
+
+
 def _ex_route_move(state) -> TokenCommand:
     command = _create_route(state, 'move', addressable=True)
 
@@ -745,6 +749,7 @@ ex_routes[r'his(?:tory)?'] = _ex_route_history
 ex_routes[r'h(?:elp)?'] = _ex_route_help
 ex_routes[r'ino(?:remap)?'] = _ex_route_inoremap
 ex_routes[r'let\s'] = _ex_route_let
+ex_routes[r'marks'] = _ex_route_marks
 ex_routes[r'm(?:ove)?(?=[^a]|$)'] = _ex_route_move
 ex_routes[r'new'] = _ex_route_new
 ex_routes[r'nn(?:oremap)?'] = _ex_route_nnoremap

@@ -88,3 +88,10 @@ class Test_quote(unittest.FunctionalTestCase):
     def test_mark_not_set(self):
         self.eq('fi|zz', 'n_\'p', 'fi|zz')
         self.assertStatusMessage('E20: mark not set')
+
+    @unittest.mock_bell()
+    def test_unknown_mark_should_emit_bell(self):
+        self.normal('f|izz')
+        self.feed('\'')
+        self.feed('$')
+        self.assertBell('E78: unknown mark')

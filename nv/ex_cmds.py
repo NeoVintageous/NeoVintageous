@@ -44,6 +44,7 @@ from NeoVintageous.nv.goto import goto_help_subject
 from NeoVintageous.nv.history import history
 from NeoVintageous.nv.mappings import mappings_add
 from NeoVintageous.nv.mappings import mappings_remove
+from NeoVintageous.nv.marks import get_mark
 from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.options import set_option
 from NeoVintageous.nv.options import toggle_option
@@ -614,6 +615,36 @@ def ex_read(view, edit, line_range: RangeNode, cmd: str = None, file_name: str =
     # file's content *if no file is given* but Vim doesn't seem to do that.
     elif file_name:
         ui_bell(':read [file] is not yet implemeneted; please open an issue')
+
+
+def ex_marks(view, **kwargs) -> None:
+    output = CmdlineOutput(view.window())
+    output.write('mark line  col file/text\n')
+
+    def _write_mark(view, name: str, mark: Region) -> None:
+        line_number, col = view.rowcol(mark.b)
+        line_number += 1
+
+        if view.file_name():
+            file_or_text = view.file_name()
+        else:
+            file_or_text = view.substr(view.line(mark.b))
+
+        template = '{:^4} {:>4} {:>4} {:>10}\n'
+        output.write(template.format(name, line_number, col, file_or_text))
+
+    for name in ascii_lowercase:
+        mark = get_mark(view, name)
+        if mark is not None:
+            _write_mark(view, name, mark)
+
+    for view in view.window().views():
+        for name in ascii_uppercase:
+            mark = get_mark(view, name)
+            if mark is not None:
+                _write_mark(view, name, mark)
+
+    output.show()
 
 
 def ex_registers(window, view, **kwargs) -> None:

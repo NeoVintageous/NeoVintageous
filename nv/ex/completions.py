@@ -252,7 +252,7 @@ _CMDLINE_COMPLETIONS = [
     'bNext', 'bfirst', 'blast', 'bnext', 'bprevious', 'brewind', 'browse',
     'buffer', 'buffers', 'cd', 'close', 'copy', 'cquit', 'delete', 'edit',
     'exit', 'file', 'files', 'global', 'help', 'history', 'inoremap', 'let',
-    'ls', 'move', 'new', 'nnoremap', 'nohlsearch', 'noremap', 'nunmap', 'only',
+    'ls', 'marks', 'move', 'new', 'nnoremap', 'nohlsearch', 'noremap', 'nunmap', 'only',
     'onoremap', 'ounmap', 'print', 'pwd', 'qall', 'quit', 'read', 'registers',
     'set', 'setlocal', 'shell', 'silent', 'snoremap', 'sort', 'spellgood',
     'spellundo', 'split', 'substitute', 'sunmap', 'tabNext', 'tabclose',

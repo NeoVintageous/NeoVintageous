@@ -6,6 +6,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#881](https://github.com/NeoVintageous/NeoVintageous/issues/881): List all the current marks `:marks`
+* Added [#881](https://github.com/NeoVintageous/NeoVintageous/issues/881): Unknown mark now emits bell
+* Added [#881](https://github.com/NeoVintageous/NeoVintageous/issues/881): Invalid mark now emits bell
 * Added [#896](https://github.com/NeoVintageous/NeoVintageous/issues/896): `gF` Same as `gf`, except if a :row:col follows the file name, then the cursor is positioned on that line
 * Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `gf` visual, visual line, and visual block mode
 * Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `gf` for Unix the '~' character is expanded, like in "~user/file"

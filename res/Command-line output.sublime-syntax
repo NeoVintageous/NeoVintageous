@@ -21,3 +21,6 @@ contexts:
 
     - match: '^Name Content$'
       scope: entity.name.cmdline-output
+
+    - match: '^mark line  col file\/text$'
+      scope: entity.name.cmdline-output

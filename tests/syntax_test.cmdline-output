@@ -38,3 +38,9 @@ Name Content
 
    Name Content
 "^^^^^^^^^^^^^^ -entity.name.cmdline-output
+
+mark line  col file/text
+"^^^^^^^^^^^^^^^^^^^^^^^ entity.name.cmdline-output
+
+    mark line  col file/text
+"^^^^^^^^^^^^^^^^^^^^^^^^^^^ -entity.name.cmdline-output
