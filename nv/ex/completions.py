@@ -257,7 +257,7 @@ _CMDLINE_COMPLETIONS = [
     'spellundo', 'split', 'substitute', 'sunmap', 'tabNext', 'tabclose',
     'tabfirst', 'tablast', 'tabnext', 'tabonly', 'tabprevious', 'tabrewind',
     'unmap', 'unvsplit', 'vnoremap', 'vsplit', 'vunmap', 'wall', 'wq', 'wqall',
-    'write', 'xall', 'xit', 'yank'
+    'write', 'xall', 'xit', 'yank', 'xnoremap', 'xunmap'
 ]
 
 # Keeps track of current completion completion.
