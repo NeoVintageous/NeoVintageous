@@ -834,6 +834,8 @@ _FEEDCHAR2KEY = {
 }
 
 
+_SEQ_PARSER = re.compile('(?:([vinVbs])_)?([1-9][0-9]*)?(.+)')
+
 class FunctionalTestCase(ViewTestCase):
 
     def feed(self, seq: str, check_user_mappings: bool = False) -> None:
@@ -882,7 +884,7 @@ class FunctionalTestCase(ViewTestCase):
         orig_seq = seq
         seq_args = {}  # type: dict
 
-        parsed_seq = re.match('(?:([vinVbs])_)?([1-9][0-9]*)?(.+)', seq)
+        parsed_seq = _SEQ_PARSER.match(seq)
         if parsed_seq:
             if parsed_seq.group(1):
                 seq_args['mode'] = _CHAR2MODE[parsed_seq.group(1)]
