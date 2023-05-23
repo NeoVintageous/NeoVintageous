@@ -94,6 +94,10 @@ def is_py38() -> bool:
     return sys.version_info >= (3, 8)
 
 
+def is_osx() -> bool:
+    return _platform() == 'osx'
+
+
 class ViewTestCase(unittest.TestCase):
 
     def setUp(self) -> None:
@@ -838,6 +842,8 @@ class FunctionalTestCase(ViewTestCase):
         #
         # The seq can be prefixed to specify a mode:
         #
+        # **The default mode is Internal Normal.**
+        #
         # * n_ - Normal
         # * i_ - Insert
         # * v_ - Visual
@@ -847,8 +853,6 @@ class FunctionalTestCase(ViewTestCase):
         # * R_ - Replace
         # * :<','> - Visual Command-line
         # * N_ - Internal Normal
-        #
-        # The default mode is "N_".
         #
         # NOTE: This method currently uses a **hardcoded** map of sequences to
         # commands (except <Esc> and cmdline sequences). You may need to add the
@@ -865,6 +869,7 @@ class FunctionalTestCase(ViewTestCase):
         # >>> feed('<Esc>')
         # >>> feed('i_<Esc>')
         # >>> feed('<C-v>')
+        # >>> feed('n_<C-e>')
         # >>> feed('<CR>')
         # >>> feed(':pwd')
         # >>> feed(':copy 2')

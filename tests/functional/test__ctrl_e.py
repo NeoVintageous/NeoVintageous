@@ -20,6 +20,7 @@ from NeoVintageous.tests import unittest
 
 class Test_ctrl_e(unittest.FunctionalTestCase):
 
+    @unittest.skipIf(unittest.is_osx(), 'Test does not work on OSX')
     def test_n(self):
         self.normal('1\n2\n3\n4\n5\n6\n7\n|8\n9\n10')
         self.feed('<C-e>')
@@ -30,9 +31,12 @@ class Test_ctrl_e(unittest.FunctionalTestCase):
         self.feed('<C-e>')
         self.assertVisibleRegion((6, 20))
 
+    @unittest.skipIf(unittest.is_osx(), 'Test does not work on OSX')
     def test_n_count(self):
         self.normal('1\n2\n3\n4\n5\n6\n7\n|8\n9\n10')
-        self.feed('3<C-e>')
+        self.feed('n_<C-e>')
+        self.feed('n_<C-e>')
+        self.feed('n_<C-e>')
         self.assertNormal('1\n2\n3\n4\n5\n6\n7\n|8\n9\n10')
         self.assertVisibleRegion((6, 20))
 

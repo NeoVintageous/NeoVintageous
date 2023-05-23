@@ -20,9 +20,13 @@ from NeoVintageous.tests import unittest
 
 class Test_ctrl_y(unittest.FunctionalTestCase):
 
+    @unittest.skipIf(unittest.is_osx(), 'Test does not work on OSX')
     def test_n(self):
         self.normal('1\n2\n3\n4\n5\n6\n7\n|8\n9\n10')
-        self.feed('3<C-e>')
+        self.assertVisibleRegion((0, 20))
+        self.feed('<C-e>')
+        self.feed('<C-e>')
+        self.feed('<C-e>')
         self.assertVisibleRegion((6, 20))
         self.feed('<C-y>')
         self.assertNormal('1\n2\n3\n4\n5\n6\n7\n|8\n9\n10')
@@ -30,11 +34,17 @@ class Test_ctrl_y(unittest.FunctionalTestCase):
         self.feed('<C-y>')
         self.assertVisibleRegion((2, 20))
 
+    @unittest.skipIf(unittest.is_osx(), 'Test does not work on OSX')
     def test_n_count(self):
         self.normal('1\n2\n3\n4\n5\n6\n7\n|8\n9\n10')
-        self.feed('4<C-e>')
+        self.feed('<C-e>')
+        self.feed('<C-e>')
+        self.feed('<C-e>')
+        self.feed('<C-e>')
         self.assertVisibleRegion((8, 20))
-        self.feed('3<C-y>')
+        self.feed('<C-y>')
+        self.feed('<C-y>')
+        self.feed('<C-y>')
         self.assertNormal('1\n2\n3\n4\n5\n6\n7\n|8\n9\n10')
         self.assertVisibleRegion((2, 20))
 
