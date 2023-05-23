@@ -22,6 +22,7 @@ from unittest import skip  # noqa: F401
 from unittest import skipIf  # noqa: F401
 import copy
 import os
+import re
 import sys
 import tempfile
 import textwrap
@@ -881,19 +882,13 @@ class FunctionalTestCase(ViewTestCase):
         orig_seq = seq
         seq_args = {}  # type: dict
 
-        if seq[0] in 'vinVbs' and (len(seq) > 1 and seq[1] == '_'):
-            seq_args['mode'] = _CHAR2MODE[seq[0]]
-            seq = seq[2:]
-
-        if seq[0].isdigit():
-            if seq != '0':  # Special case motion.
-                # XXX Quick hack to make digits greater than 9 work.
-                if seq[1].isdigit():
-                    seq_args['count'] = int(seq[0] + seq[1])
-                    seq = seq[2:]
-                else:
-                    seq_args['count'] = int(seq[0])
-                    seq = seq[1:]
+        parsed_seq = re.match('(?:([vinVbs])_)?([1-9][0-9]*)?(.+)', seq)
+        if parsed_seq:
+            if parsed_seq.group(1):
+                seq_args['mode'] = _CHAR2MODE[parsed_seq.group(1)]
+            if parsed_seq.group(2):
+                seq_args['count'] = int(parsed_seq.group(2))
+            seq = parsed_seq.group(3)
 
         try:
             # The reason for this try catch is because  some sequences map to
