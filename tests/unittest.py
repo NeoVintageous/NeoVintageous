@@ -834,9 +834,6 @@ _FEEDCHAR2KEY = {
 }
 
 
-_SEQ_PARSER = re.compile('(?:([vinVbs])_)?([1-9][0-9]*)?(.+)')
-
-
 class FunctionalTestCase(ViewTestCase):
 
     def feed(self, seq: str, check_user_mappings: bool = False) -> None:
@@ -883,15 +880,7 @@ class FunctionalTestCase(ViewTestCase):
             return _do_ex_cmdline(self.view.window(), seq)
 
         orig_seq = seq
-        seq_args = {}  # type: dict
-
-        parsed_seq = _SEQ_PARSER.match(seq)
-        if parsed_seq:
-            if parsed_seq.group(1):
-                seq_args['mode'] = _CHAR2MODE[parsed_seq.group(1)]
-            if parsed_seq.group(2):
-                seq_args['count'] = int(parsed_seq.group(2))
-            seq = parsed_seq.group(3)
+        seq, seq_args = _parse_seq(seq)
 
         try:
             # The reason for this try catch is because  some sequences map to
@@ -1068,6 +1057,22 @@ class FunctionalTestCase(ViewTestCase):
             direction = DIRECTION_DOWN
 
         return content, direction
+
+
+_SEQ_PARSER = re.compile('(?:([vinVbs])_)?([1-9][0-9]*)?(.+)')
+
+
+def _parse_seq(seq: str) -> tuple:
+    args = {}  # type: dict
+    parsed_seq = _SEQ_PARSER.match(seq)
+    if parsed_seq:
+        if parsed_seq.group(1):
+            args['mode'] = _CHAR2MODE[parsed_seq.group(1)]
+        if parsed_seq.group(2):
+            args['count'] = int(parsed_seq.group(2))
+        seq = parsed_seq.group(3)
+
+    return (seq, args)
 
 
 # Test case mixin for commands like j and k that need to extract the xpos from
