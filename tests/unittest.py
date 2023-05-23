@@ -836,6 +836,7 @@ _FEEDCHAR2KEY = {
 
 _SEQ_PARSER = re.compile('(?:([vinVbs])_)?([1-9][0-9]*)?(.+)')
 
+
 class FunctionalTestCase(ViewTestCase):
 
     def feed(self, seq: str, check_user_mappings: bool = False) -> None:
