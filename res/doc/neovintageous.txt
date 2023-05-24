@@ -9,7 +9,7 @@
                                                     Advanced Vim emulation!
 
 
-Jump to a subject:  Position the cursor on a tag (e.g.|bars|and hit CTRL-].
+Jump to a subject:  Position the cursor on a tag (e.g. |bars| and hit CTRL-].
         Jump back:  Type CTRL-I or CTRL-O.  Repeat to go further back.
 
 Vim feature-parity is an ongoing effort, some features are not implemented or
@@ -22,22 +22,21 @@ Please open issues to request missing features.
 
 If you are new to vim also see|help.txt|.
 
-
 CONTENTS                                                         *nv-contents*
 
-    Options ........................|nv-options|
-    Settings .......................|nv-settings|
-    Neovintageousrc ................|nv-rc|
-    Multiple cursors ...............|nv-multiple-cursors|
-    Window splits ..................|nv-window-splits|
-    Toggle Sidebar .................|nv-toggle-sidebar|
-    Plugins ........................|nv-plugins|
-    Option toggling ................|nv-option-toggling|
-    Mapping capslock to escape .....|nv-capslock|
-    Key presses are laggy or slow ..|nv-keyboard-repeat|
-    Search highlighting ............|nv-search-highlighting|
-    Highlighted yank ...............|nv-highlightedyank|
-    Toggle plugin ..................|nv-toggle|
+    Options ........................ |nv-options|
+    Settings ....................... |nv-settings|
+    Neovintageousrc ................ |nv-rc|
+    Multiple cursors ............... |nv-multiple-cursors|
+    Window splits .................. |nv-window-splits|
+    Toggle Sidebar ................. |nv-toggle-sidebar|
+    Plugins ........................ |nv-plugins|
+    Option toggling ................ |nv-option-toggling|
+    Mapping capslock to escape ..... |nv-capslock|
+    Key presses are laggy or slow .. |nv-keyboard-repeat|
+    Search highlighting ............ |nv-search-highlighting|
+    Highlighted yank ............... |nv-highlightedyank|
+    Toggle plugin .................. |nv-toggle|
 
 
 ==============================================================================
@@ -95,19 +94,19 @@ To edit settings go to Menu → Preferences → Settings.
         Valid values: fill, outline, underline, squiggly_underline,
         stippled_underline.
 
-                                             *'neovintageous_search_cur_style'*
+                                            *'neovintageous_search_cur_style'*
 'neovintageous_search_cur_style'
                         string (default "fill")
         The current search style. Valid values: fill, outline, underline,
         squiggly_underline, stippled_underline.
 
-                                             *'neovintageous_search_inc_style'*
+                                            *'neovintageous_search_inc_style'*
 'neovintageous_search_inc_style'
                         string (default "fill")
         The incremental search style. Valid values: fill, outline, underline,
         squiggly_underline, stippled_underline.
 
-                                             *'neovintageous_search_occ_style'*
+                                            *'neovintageous_search_occ_style'*
 'neovintageous_search_occ_style'
                         string (default "fill")
         The search occurrences style. Valid values: fill, outline, underline,
@@ -150,7 +149,7 @@ To edit settings go to Menu → Preferences → Settings.
 'vintageous_enable_sneak'
                         boolean (default off)
 
-                                                *'vintageous_enable_sublime'*
+                                                 *'vintageous_enable_sublime'*
 'vintageous_enable_sublime'
                         boolean (default on)
 
@@ -200,7 +199,7 @@ To edit settings go to Menu → Preferences → Settings.
                         boolean (default off)
         Map insert mode jj to <Esc>.
 
-                                              *'vintageous_i_escape_jk'*
+                                                    *'vintageous_i_escape_jk'*
 'vintageous_i_escape_jk'
                         boolean (default off)
         Map insert mode jk to <Esc>.
@@ -212,7 +211,7 @@ To edit settings go to Menu → Preferences → Settings.
         will not quit and delete all existing cursors. Useful if you want to
         go to Normal mode, and still be able to operate on all the cursors.
 
-                                                 *'vintageous_lsp_save'*
+                                                       *'vintageous_lsp_save'*
 'vintageous_lsp_save'
                         boolean (default off)
         Override native save to handle LSP Code-Actions-On-Save.
