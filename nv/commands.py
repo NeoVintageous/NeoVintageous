@@ -1965,14 +1965,13 @@ class nv_vi_ga(WindowCommand):
             return "<" + char + ">"
 
         view = self.window.active_view()
-
-        for region in view.sel():
-            c_str = view.substr(get_insertion_point_at_b(region))
-            c_ord = ord(c_str)
-            c_hex = hex(c_ord)
-            c_oct = oct(c_ord)
-            c_not = char_to_notation(c_str)
-            status_message('%7s %3s,  Hex %4s,  Octal %5s' % (c_not, c_ord, c_hex, c_oct))
+        region = view.sel()[-1]
+        c_str = view.substr(get_insertion_point_at_b(region))
+        c_ord = ord(c_str)
+        c_hex = hex(c_ord)
+        c_oct = oct(c_ord)
+        c_not = char_to_notation(c_str)
+        status_message('%7s %3s,  Hex %4s,  Octal %5s' % (c_not, c_ord, c_hex, c_oct))
 
 
 class nv_vi_gt(WindowCommand):
