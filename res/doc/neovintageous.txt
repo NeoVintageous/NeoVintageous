@@ -52,7 +52,7 @@ See `:help '{option}'` for help on individual options.
 
     'autoindent'
     'belloff'
-    'expandtabs'
+    'expandtab'
     'hlsearch'
     'ignorecase'
     'incsearch'

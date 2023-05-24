@@ -174,7 +174,7 @@ def _get_default_shell() -> str:
 _options = {
     'autoindent': BooleanViewOption('auto_indent'),
     'belloff': StringOption('belloff', '', select=('', 'all')),
-    'expandtabs': BooleanViewOption('translate_tabs_to_spaces', on=False, off=True),
+    'expandtab': BooleanViewOption('translate_tabs_to_spaces', on=False, off=True),
     'hlsearch': BooleanOption('hlsearch', True),
     'ignorecase': BooleanOption('ignorecase', False),
     'incsearch': BooleanOption('incsearch', True),
@@ -203,7 +203,7 @@ _options = {
 _OPTION_ALIASES = {
     'ai': 'autoindent',
     'bo': 'belloff',
-    'et': 'expandtabs',
+    'et': 'expandtab',
     'hls': 'hlsearch',
     'ic': 'ignorecase',
     'is': 'incsearch',
