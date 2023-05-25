@@ -17,6 +17,7 @@
 
 import os
 
+from NeoVintageous.nv.polyfill import goto_definition_side_by_side
 from NeoVintageous.nv.polyfill import has_dirty_buffers
 from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.settings import get_cmdline_cwd
@@ -680,7 +681,7 @@ def window_control(window, action: str, count: int = 1, **kwargs) -> None:
     elif action == 'x':
         _exchange_view_by_count(window, count)
     elif action == ']':
-        window.run_command('goto_definition', {'side_by_side': True})
+        goto_definition_side_by_side(window)
     else:
         raise ValueError('unknown action')
 

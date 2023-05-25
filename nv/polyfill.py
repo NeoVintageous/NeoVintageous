@@ -320,3 +320,8 @@ if int(version()) >= 4081:
 else:
     def reload_syntax(view) -> None:
         pass
+
+
+def goto_definition_side_by_side(window) -> None:
+    window.run_command('goto_definition', {'side_by_side': True})
+    window.run_command('carry_file_to_pane', {'direction': 'right'})
