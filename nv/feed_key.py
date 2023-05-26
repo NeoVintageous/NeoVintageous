@@ -149,7 +149,7 @@ class FeedKeyHandler():
                 action.accept(self.key)
                 set_action(self.view, action)  # Processed action needs to reserialised and stored.
 
-            if is_runnable(self.view) and self.do_eval:
+            if self.do_eval and is_runnable(self.view):
                 evaluate_state(self.view)
                 reset_command_data(self.view)
 
