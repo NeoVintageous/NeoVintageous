@@ -17,18 +17,17 @@
 
 import logging
 
-from NeoVintageous.nv.ex_cmds import do_ex_user_cmdline
 from NeoVintageous.nv.mappings import IncompleteMapping
 from NeoVintageous.nv.mappings import Mapping
 from NeoVintageous.nv.mappings import mappings_can_resolve
 from NeoVintageous.nv.mappings import mappings_resolve
+from NeoVintageous.nv.mappings_handler import evaluate_mapping
 from NeoVintageous.nv.settings import append_sequence
 from NeoVintageous.nv.settings import get_action_count
 from NeoVintageous.nv.settings import get_capture_register
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_motion_count
 from NeoVintageous.nv.settings import get_partial_sequence
-from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.settings import get_sequence
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import is_interactive
@@ -241,75 +240,10 @@ class FeedKeyHandler():
 
         self._handle_command(command, self.do_eval)
 
-    def _handle_mapping(self, command) -> None:
+    def _handle_mapping(self, mapping: Mapping) -> None:
         # TODO Review What happens if Mapping + do_eval=False
         if self.do_eval:
-            _log.debug('evaluating user mapping...')
-
-            # TODO Review Why does rhs of mapping need to be resequenced in OPERATOR PENDING mode?
-            rhs = command.rhs
-            if get_mode(self.view) == OPERATOR_PENDING:
-                rhs = get_sequence(self.view)[:-len(get_partial_sequence(self.view))] + command.rhs
-
-            # TODO Review Why does state need to be reset before running user mapping?
-            reg = get_register(self.view)
-            acount = get_action_count(self.view)
-            mcount = get_motion_count(self.view)
-            reset_command_data(self.view)
-            set_register(self.view, reg)
-            set_motion_count(self.view, mcount)
-            set_action_count(self.view, acount)
-
-            _log.info('user mapping %s -> %s', command.lhs, rhs)
-
-            if ':' in rhs:
-
-                # This hacky piece of code (needs refactoring), is to
-                # support mappings in the format of {seq}:{ex-cmd}<CR>{seq},
-                # where leading and trailing sequences are optional.
-                #
-                # Examples:
-                #
-                #   :
-                #   :w
-                #   :sort<CR>
-                #   vi]:sort u<CR>
-                #   vi]:sort u<CR>vi]y<Esc>
-
-                colon_pos = rhs.find(':')
-                leading = rhs[:colon_pos]
-                rhs = rhs[colon_pos:]
-
-                cr_pos = rhs.lower().find('<cr>')
-                if cr_pos >= 0:
-                    command = rhs[:cr_pos + 4]
-                    trailing = rhs[cr_pos + 4:]
-                else:
-                    # Example :reg
-                    command = rhs
-                    trailing = ''
-
-                _log.debug('parsed user mapping before="%s", cmd="%s", after="%s"', leading, command, trailing)
-
-                if leading:
-                    self.window.run_command('nv_process_notation', {
-                        'keys': leading,
-                        'check_user_mappings': False,
-                    })
-
-                do_ex_user_cmdline(self.window, command)
-
-                if trailing:
-                    self.window.run_command('nv_process_notation', {
-                        'keys': trailing,
-                        'check_user_mappings': False,
-                    })
-
-            else:
-                self.window.run_command('nv_process_notation', {
-                    'keys': rhs,
-                    'check_user_mappings': False,
-                })
+            evaluate_mapping(self.view, mapping)
 
     def _handle_command(self, command: ViCommandDefBase, do_eval: bool) -> None:
         # Raises:
