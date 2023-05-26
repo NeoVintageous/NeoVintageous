@@ -1414,9 +1414,18 @@ def mock_run_commands(*methods):
 
     @unittest.mock_run_commands('redo', 'hide_panel')
     def test(self):
+
+        # Assert command ran successfully.
         self.assertRunCommand('redo')
+
+        # Assert command ran {count} times.
         self.assertRunCommand('redo', count=3)
+
+        # Assert command and arguments.
         self.assertRunCommand('hide_panel', {'cancel': True})
+
+        # Assert command and arguments ran {count} times..
+        self.assertRunCommand('hide_panel', {'cancel': True}, count=3)
 
     """
     def wrapper(f):
