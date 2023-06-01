@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#886](https://github.com/NeoVintageous/NeoVintageous/issues/886): Support visual modes in unimpaired goto conflict commands `]n` and `[n`
 * Added [#854](https://github.com/NeoVintageous/NeoVintageous/issues/854): Add support for keys `à`, `è`, `ò`, `ù`
 * Added [#867](https://github.com/NeoVintageous/NeoVintageous/issues/867): Support keypad numbers as count prefix
 * Added [#878](https://github.com/NeoVintageous/NeoVintageous/issues/878): Allow leading whitespace for commands in neovintageousrc file

@@ -30,11 +30,16 @@ from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.utils import regions_transformer
+from NeoVintageous.nv.utils import resolve_normal_target
+from NeoVintageous.nv.utils import resolve_visual_line_target
+from NeoVintageous.nv.utils import resolve_visual_target
 from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
+from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import VISUAL
+from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.window import window_buffer_control
 from NeoVintageous.nv.window import window_tab_control
 
@@ -70,7 +75,7 @@ class UnimpairedContextNext(ViOperatorDef):
         }
 
 
-@register(seqs.LEFT_SQUARE_BRACKET_N, (NORMAL,))
+@register(seqs.LEFT_SQUARE_BRACKET_N, (NORMAL, VISUAL, VISUAL_LINE))
 class UnimpairedGotoPrevConflictMarker(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -88,7 +93,7 @@ class UnimpairedGotoPrevConflictMarker(ViOperatorDef):
         }
 
 
-@register(seqs.RIGHT_SQUARE_BRACKET_N, (NORMAL,))
+@register(seqs.RIGHT_SQUARE_BRACKET_N, (NORMAL, VISUAL, VISUAL_LINE))
 class UnimpairedGotoNextConflictMarker(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -319,32 +324,47 @@ class UnimpairedToggleOff(OptionMixin):
 _CONFLICT_MARKER_REGEX = '^(<<<<<<< |=======$|>>>>>>> )'
 
 
-def _goto_prev_conflict_marker(view, count: int) -> None:
+def _goto_prev_conflict_marker(view, mode: str, count: int) -> None:
     def f(view, s):
         for i in range(0, count):
             match = view_rfind(view, _CONFLICT_MARKER_REGEX, s.b)
             if not match:
                 break
 
-            s.a = s.b = match.begin()
+            target = match.begin()
+
+            _resolve_conflict_marker_target(view, mode, s, target)
 
         return s
 
     regions_transformer(view, f)
 
 
-def _goto_next_conflict_marker(view, count: int) -> None:
+def _goto_next_conflict_marker(view, mode, count: int) -> None:
     def f(view, s):
         for i in range(0, count):
             match = view_find(view, _CONFLICT_MARKER_REGEX, s.b + 1)
             if not match:
                 break
 
-            s.a = s.b = match.begin()
+            target = match.begin()
+
+            _resolve_conflict_marker_target(view, mode, s, target)
 
         return s
 
     regions_transformer(view, f)
+
+
+def _resolve_conflict_marker_target(view, mode: str, s, target: int) -> None:
+    if mode == NORMAL:
+        resolve_normal_target(s, target)
+    elif mode == VISUAL:
+        resolve_visual_target(s, target)
+    elif mode == VISUAL_LINE:
+        resolve_visual_line_target(view, s, target)
+    elif mode == INTERNAL_NORMAL:
+        resolve_normal_target(s, target)
 
 
 # Go to the previous [count] lint error.
@@ -551,9 +571,9 @@ class nv_unimpaired_command(TextCommand):
         elif action in ('tabnext', 'tabprevious', 'tabfirst', 'tablast'):
             window_tab_control(self.view.window(), action[3:], count)
         elif action == 'goto_next_conflict_marker':
-            _goto_next_conflict_marker(self.view, count)
+            _goto_next_conflict_marker(self.view, mode, count)
         elif action == 'goto_prev_conflict_marker':
-            _goto_prev_conflict_marker(self.view, count)
+            _goto_prev_conflict_marker(self.view, mode, count)
         elif action == 'context_next':
             _context_next(self.view.window(), count)
         elif action == 'context_previous':

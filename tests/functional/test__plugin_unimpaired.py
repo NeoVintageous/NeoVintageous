@@ -131,6 +131,64 @@ class TestUnimpairedCommands(unittest.FunctionalTestCase):
             444
         """))
 
+    def test_goto_next_conflict_marker_visual(self):
+        self.visual(self.dedent("""
+            1|1|1
+            >>>>>>>>>>>>
+            <<<<<<<<<<<<
+            ============
+            <<<<<<< HEAD
+            222
+            =======
+            333
+            >>>>>>> name
+            444
+        """))
+
+        self.feed(']n')
+
+        self.assertVisual(self.dedent("""
+            1|11
+            >>>>>>>>>>>>
+            <<<<<<<<<<<<
+            ============
+            <|<<<<<< HEAD
+            222
+            =======
+            333
+            >>>>>>> name
+            444
+        """))
+
+    def test_goto_next_conflict_marker_visual_line(self):
+        self.vline(self.dedent("""
+            |111|
+            >>>>>>>>>>>>
+            <<<<<<<<<<<<
+            ============
+            <<<<<<< HEAD
+            222
+            =======
+            333
+            >>>>>>> name
+            444
+        """))
+
+        self.feed(']n')
+
+        self.assertVline(self.dedent("""
+            |111
+            >>>>>>>>>>>>
+            <<<<<<<<<<<<
+            ============
+            <<<<<<< HEAD
+            |222
+            =======
+            333
+            >>>>>>> name
+            444
+        """))
+
     def test_goto_prev_conflict_marker(self):
         self.normal(self.dedent("""
             111
@@ -189,6 +247,52 @@ class TestUnimpairedCommands(unittest.FunctionalTestCase):
             >>>>>>> name
             444
         """))
+
+    def test_goto_prev_conflict_marker_visual(self):
+        self.visual(self.dedent("""
+            111
+            <<<<<<< HEAD
+            222
+            =======
+            333
+            >>>>>>> name
+            4|4|4
+        """))
+
+        self.feed('[n')
+
+        self.assertRVisual(self.dedent("""
+            111
+            <<<<<<< HEAD
+            222
+            =======
+            333
+            |>>>>>>> name
+            44|4
+        """))
+
+    def test_goto_prev_conflict_marker_visual_line(self):
+        self.vline(self.dedent("""
+            111
+            <<<<<<< HEAD
+            222
+            =======
+            333
+            >>>>>>> name
+            |444|
+        """))
+
+        self.feed('[n')
+
+        self.assertRVline(self.dedent("""
+            111
+            <<<<<<< HEAD
+            222
+            =======
+            333
+            |>>>>>>> name
+            444
+            |"""))
 
     @unittest.mock_run_commands('sublime_linter_goto_error')
     def test_n_goto_prev_error(self):
