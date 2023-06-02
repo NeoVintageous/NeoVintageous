@@ -72,3 +72,6 @@ class Test_ctrl_x(unittest.FunctionalTestCase):
 
     def test_should_not_apply_to_numbers_on_previous_line(self):
         self.eq('1\n|', '<C-x>', '1\n|')
+
+    def test_should_increment_multiple_cursor(self):
+        self.eq('|5\n|6\n|7\n', '<C-x>', '|4\n|5\n|6\n')
