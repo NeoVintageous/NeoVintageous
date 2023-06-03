@@ -61,6 +61,11 @@ Surround | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/mast
 Targets | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-targets](https://github.com/wellle/targets.vim)
 Unimpaired | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-unimpaired](https://github.com/tpope/vim-unimpaired)
 
+**Additional plugins, install via Package Control:**
+
+- [Line Numbers](https://packagecontrol.io/packages/NeoVintageousLineNumbers): auto disable relative line numbers in Insert mode.
+- [Highlight Line](https://packagecontrol.io/packages/NeoVintageousHighlightLine): auto disable highlight line in Insert and Visual modes.
+
 ## Contributing
 
 See [CONTRIBUTING.md](.github/CONTRIBUTING.md).
