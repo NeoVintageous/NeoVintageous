@@ -50,7 +50,7 @@ def _parse_line(line: str):
     # 1st form examples:
     #    vi:noai:sw=3 ts=6
     #    vim: tw=77
-    # 2nd form xamples:
+    # 2nd form examples:
     #    /* vim: set ai tw=75: */
     #    /* Vim: set ai tw=75: */
     # See :help modeline
