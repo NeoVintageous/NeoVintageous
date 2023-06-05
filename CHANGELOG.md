@@ -19,7 +19,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 ### Fixed
 
 * Fixed [#885](https://github.com/NeoVintageous/NeoVintageous/issues/885): `'expandtabs'` should be `'expandtab'`
-* Fixed [#866](https://github.com/NeoVintageous/NeoVintageous/issues/866): Could doesn't work when remapping `<C-e>` and `<C-y>`
+* Fixed [#866](https://github.com/NeoVintageous/NeoVintageous/issues/866): Count doesn't work when remapping `<C-e>` and `<C-y>`
 * Fixed [#871](https://github.com/NeoVintageous/NeoVintageous/issues/871): Should be able to paste into multiple cursor
 
 ## 1.29.1 - 2023-05-14
