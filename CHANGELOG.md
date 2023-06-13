@@ -2,6 +2,10 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.30.1 - Unreleased
+
+* Fixed [#887](https://github.com/NeoVintageous/NeoVintageous/issues/887): Using arrow doesn't scroll the view in visual block mode
+
 ## 1.30.0 - 2023-06-05
 
 ### Added

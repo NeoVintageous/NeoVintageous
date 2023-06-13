@@ -859,6 +859,9 @@ class VisualBlockSelection():
 
         return a - 1 if a > ab else a
 
+    def sel_b(self) -> Region:
+        return self.view.sel()[-1] if self.b > self.a else self.view.sel()[0]
+
     def _is_direction(self, direction: int) -> bool:
         return self._direction == direction
 
@@ -949,7 +952,6 @@ class VisualBlockSelection():
         visual_block = self.resolve_target(target)
         if visual_block:
             set_selection(self.view, visual_block)
-            self.view.show(target, False)
 
     def transform_begin(self):
         begin = self.begin()
@@ -1001,6 +1003,10 @@ def resolve_visual_block_begin(view) -> None:
 
 def resolve_visual_block_reverse(view) -> None:
     VisualBlockSelection(view).transform_reverse()
+
+
+def get_visual_block_sel_b(view):
+    return VisualBlockSelection(view).sel_b()
 
 
 class InputParser():

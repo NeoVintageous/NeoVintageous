@@ -41,6 +41,7 @@ from NeoVintageous.nv.settings import set_register
 from NeoVintageous.nv.settings import set_repeat_data
 from NeoVintageous.nv.settings import set_reset_during_init
 from NeoVintageous.nv.settings import set_sequence
+from NeoVintageous.nv.utils import get_visual_block_sel_b
 from NeoVintageous.nv.utils import get_visual_repeat_data
 from NeoVintageous.nv.utils import is_view
 from NeoVintageous.nv.utils import save_previous_selection
@@ -124,9 +125,12 @@ def _scroll_into_view(view, mode: str) -> None:
     if len(sels) < 1:
         return
 
-    # Show the *last* cursor on screen. There is currently no way to
-    # identify the "active" cursor of a multiple cursor selection.
-    sel = sels[-1]
+    if mode == VISUAL_BLOCK:
+        sel = get_visual_block_sel_b(view)
+    else:
+        # Show the *last* cursor on screen. There is currently no way to
+        # identify the "active" cursor of a multiple cursor selection.
+        sel = sels[-1]
 
     target_pt = sel.b
 
