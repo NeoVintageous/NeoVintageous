@@ -2032,8 +2032,8 @@ class nv_vi_z_enter(TextCommand):
     def run(self, edit, mode=None, count=1):
         pt = get_insertion_point_at_b(self.view.sel()[0])
         home_line = self.view.line(pt)
-        taget_pt = self.view.text_to_layout(home_line.begin())
-        self.view.set_viewport_position(taget_pt)
+        target_pt = self.view.text_to_layout(home_line.begin())
+        self.view.set_viewport_position(target_pt)
 
 
 class nv_vi_z_minus(TextCommand):
