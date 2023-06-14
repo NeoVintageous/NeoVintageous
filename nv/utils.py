@@ -953,6 +953,7 @@ class VisualBlockSelection():
         if visual_block:
             set_selection(self.view, visual_block)
 
+    # Transform to single point at begining of visual block.
     def transform_begin(self):
         begin = self.begin()
         self.view.sel().clear()

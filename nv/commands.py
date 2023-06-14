@@ -1249,9 +1249,7 @@ class nv_vi_y(TextCommand):
         registers_op_yank(self.view, register=register, linewise=is_linewise_operation(mode, motion))
 
         if mode == VISUAL_BLOCK:
-            # After a yank the cursor should move to the beginning of a
-            # selection. A visual block is really multiple cursor so we need to
-            # reduce to the beginning selection entering normal mode.
+            # After a yank, the cursor should move to start of the yanked text.
             resolve_visual_block_begin(self.view)
         else:
             def f(view, s):

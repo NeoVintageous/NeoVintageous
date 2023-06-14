@@ -211,7 +211,7 @@ class Test_y(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertLinewiseRegisters('"0', ['fizz\n', 'buzz\n'])
         self.assertRegistersEmpty('-1')
 
-    def test_b_cursor_should_move_to_beggining_of_selection(self):
+    def test_visual_block_cursor_should_move_to_beggining_of_selection(self):
         # Forward/down visual block.
         self.eq('fi|zz bu|zz\nfizz buzz', 'b_y', 'n_fi|zz buzz\nfizz buzz')
         self.eq('fi|zz bu|zz\nfi|zz bu|zz', 'b_y', 'n_fi|zz buzz\nfizz buzz')
