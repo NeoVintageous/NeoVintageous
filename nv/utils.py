@@ -957,7 +957,7 @@ class VisualBlockSelection():
     def transform_begin(self):
         begin = self.begin()
         self.view.sel().clear()
-        self.view.sel().add(begin)
+        self.view.sel().add(Region(begin, begin + 1))
 
     def transform_reverse(self):
         sels = list(self.view.sel())
