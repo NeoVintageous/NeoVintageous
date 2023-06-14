@@ -1242,8 +1242,6 @@ class nv_vi_y(TextCommand):
         if mode == INTERNAL_NORMAL:
             requires_motion(motion)
             run_motion(self.view, motion)
-        elif mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK, SELECT):
-            return
 
         ui_highlight_yank(self.view)
         registers_op_yank(self.view, register=register, linewise=is_linewise_operation(mode, motion))
@@ -1263,9 +1261,6 @@ class nv_vi_y(TextCommand):
 class nv_vi_d(TextCommand):
 
     def run(self, edit, mode=None, count=1, motion=None, register=None):
-        if mode not in (INTERNAL_NORMAL, VISUAL, VISUAL_LINE, VISUAL_BLOCK, SELECT):
-            raise ValueError('wrong mode')
-
         if mode == INTERNAL_NORMAL:
             requires_motion(motion)
 
