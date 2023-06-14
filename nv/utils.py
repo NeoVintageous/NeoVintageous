@@ -953,8 +953,8 @@ class VisualBlockSelection():
         if visual_block:
             set_selection(self.view, visual_block)
 
-    # Transform to single point at begining of visual block.
-    def transform_begin(self):
+    # Reduce to single point at beginning of visual block.
+    def reduce_to_begin(self):
         begin = self.begin()
         self.view.sel().clear()
         self.view.sel().add(Region(begin, begin + 1))
@@ -999,7 +999,7 @@ def resolve_visual_block_target(view, target, count: int) -> None:
 
 
 def resolve_visual_block_begin(view) -> None:
-    VisualBlockSelection(view).transform_begin()
+    VisualBlockSelection(view).reduce_to_begin()
 
 
 def resolve_visual_block_reverse(view) -> None:
