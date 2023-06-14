@@ -41,6 +41,7 @@ from NeoVintageous.nv.ex_cmds import do_ex_cmdline
 from NeoVintageous.nv.ex_cmds import do_ex_command
 from NeoVintageous.nv.feed_key import FeedKeyHandler
 from NeoVintageous.nv.goto import GotoView
+from NeoVintageous.nv.goto import get_linewise_non_blank_target
 from NeoVintageous.nv.history import history_get
 from NeoVintageous.nv.history import history_get_type
 from NeoVintageous.nv.history import history_len
@@ -73,8 +74,8 @@ from NeoVintageous.nv.search import process_word_search_pattern
 from NeoVintageous.nv.settings import append_sequence
 from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_glue_until_normal_mode
-from NeoVintageous.nv.settings import get_last_search_pattern_command
 from NeoVintageous.nv.settings import get_last_search_pattern
+from NeoVintageous.nv.settings import get_last_search_pattern_command
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_normal_insert_count
 from NeoVintageous.nv.settings import get_repeat_data
@@ -3029,11 +3030,14 @@ class nv_vi_gg(TextCommand):
             GotoView(self.view, mode, count).line()
             return
 
+        def t(view) -> int:
+            return next_non_blank(view, 0)
+
         def f(view, s):
             if mode == NORMAL:
-                resolve_normal_target(s, next_non_blank(view, 0))
+                resolve_normal_target(s, t(view))
             elif mode == VISUAL:
-                resolve_visual_target(s, next_non_blank(view, 0))
+                resolve_visual_target(s, t(view))
             elif mode == VISUAL_LINE:
                 resolve_visual_line_target(view, s, 0)
             elif mode == INTERNAL_NORMAL:
@@ -3042,6 +3046,10 @@ class nv_vi_gg(TextCommand):
             return s
 
         with jumplist_updater(self.view):
+            if mode == VISUAL_BLOCK:
+                resolve_visual_block_target(self.view, t(self.view))
+                return
+
             regions_transformer(self.view, f)
 
 
@@ -3051,11 +3059,14 @@ class nv_vi_big_g(TextCommand):
             GotoView(self.view, mode, count).line()
             return
 
+        def t(view) -> int:
+            return get_linewise_non_blank_target(view, target)
+
         def f(view, s):
             if mode == NORMAL:
-                resolve_normal_target(s, next_non_blank(view, view.line(target).a))
+                resolve_normal_target(s, t(view))
             elif mode == VISUAL:
-                resolve_visual_target(s, next_non_blank(view, view.line(target).a))
+                resolve_visual_target(s, t(view))
             elif mode == VISUAL_LINE:
                 resolve_visual_line_target(view, s, target)
             elif mode == INTERNAL_NORMAL:
@@ -3063,8 +3074,13 @@ class nv_vi_big_g(TextCommand):
 
             return s
 
+        target = self.view.size()
+
         with jumplist_updater(self.view):
-            target = self.view.size()
+            if mode == VISUAL_BLOCK:
+                resolve_visual_block_target(self.view, t(self.view))
+                return
+
             regions_transformer(self.view, f)
 
 

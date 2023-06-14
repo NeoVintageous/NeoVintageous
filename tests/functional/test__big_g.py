@@ -21,9 +21,10 @@ from NeoVintageous.tests import unittest
 class Test_G(unittest.FunctionalTestCase):
 
     def test_n(self):
-        self.eq('|1\n2\n3\n4\n', 'n_G', '1\n2\n3\n4\n|')
-        self.eq('1\n2\n|3\n4\n', 'n_G', '1\n2\n3\n4\n|')
-        self.eq('1\n2\n3\n4\n|', 'n_G', '1\n2\n3\n4\n|')
+        self.eq('|1\n2\n3\n4\n', 'n_G', '1\n2\n3\n|4\n')
+        self.eq('|1\n2\n3\n4', 'n_G', '1\n2\n3\n|4')
+        self.eq('1\n2\n|3\n4\n', 'n_G', '1\n2\n3\n|4\n')
+        self.eq('1\n2\n3\n4\n|', 'n_G', '1\n2\n3\n|4\n')
         self.eq('1\n2\n3\n|4\n', 'n_1G', '|1\n2\n3\n4\n')
         self.eq('1\n2\n3\n4|\n', 'n_2G', '1\n|2\n3\n4\n')
         self.eq('|1\n2\n3\n4\n', 'n_3G', '1\n2\n|3\n4\n')
@@ -38,9 +39,12 @@ class Test_G(unittest.FunctionalTestCase):
         self.eq('|1\n2\n3\n\n', 'n_9G', '1\n2\n3\n|\n')
         self.eq('|', 'n_G', '|')
         self.eq('|1\n2\n    fizz', 'n_G', '1\n2\n    |fizz')
+        self.eq('|1\n   2\n', 'n_G', '1\n   |2\n')
+        self.eq('|1\n   2', 'n_G', '1\n   |2')
+        self.eq('|1\n   ', 'n_G', '1\n   |')
 
     def test_v(self):
-        self.eq('1\nab|cd\n3\n456\n', 'v_G', '1\nab|cd\n3\n456\n|')
+        self.eq('1\nab|cd\n3\n456\n', 'v_G', '1\nab|cd\n3\n4|56\n')
         self.eq('1\nab|cd\n3x\n4x\n5x\n6x\n', 'v_5G', '1\nab|cd\n3x\n4x\n5|x\n6x\n')
         self.eq('1\n    22\n3\n4a|bc\n5x|x\nx', 'v_2G', 'r_1\n    |22\n3\n4ab|c\n5xx\nx')
         self.eq('r_1\n    22\n3\n4a|bc\n5x|x\nx', 'v_2G', 'r_1\n    |22\n3\n4abc\n5x|x\nx')
@@ -48,6 +52,7 @@ class Test_G(unittest.FunctionalTestCase):
         self.eq('1\nab|cd\n3x\n4x\n    5x\n6x\n', 'v_5G', '1\nab|cd\n3x\n4x\n    5|x\n6x\n')
         self.eq('fi|zz\n2\n    buzz', 'v_G', 'fi|zz\n2\n    b|uzz')
         self.eq('|1\nfizz\n    buzz', 'v_G', '|1\nfizz\n    b|uzz')
+        self.eq('1|11|1\n22\n     333\n', 'v_G', '1|111\n22\n     3|33\n')
 
     def test_V(self):
         self.eq('1\n|two\n|three\n4\nfive\n', 'V_G', '1\n|two\nthree\n4\nfive\n|')
@@ -71,3 +76,15 @@ class Test_G(unittest.FunctionalTestCase):
     def test_d(self):
         self.eq('1\n2\n|3\n4\n', 'dG', '1\n2\n|')
         self.eq('1\n|2\n3\n4\n5\n6\n7', '5dG', '1\n|6\n7')
+
+    def test_b(self):
+        self.eq('|1|\n2\n3\n', 'b_G', '|1|\n|2|\n|3|\n')
+        self.eq('|111|\n222\n333\n', 'b_G', '|1|11\n|2|22\n|3|33\n')
+        self.eq('1|11|1111\n2222222\n    333\n', 'b_G', '1|1111|11\n2|2222|22\n |   3|33\n')
+        self.eq('1|11|1111\n2222222\n    333', 'b_G', '1|1111|11\n2|2222|22\n |   3|33')
+        self.eq('1111|11|1\n2222222\n  33333\n', 'b_G', 'r_11|111|11\n22|222|22\n  |333|33\n')
+        self.eq('1111|11|1\n2222222\n  33333', 'b_G', 'r_11|111|11\n22|222|22\n  |333|33')
+        self.eq('1\n|2|\n3\n4\n5', 'b_4G', '1\n|2|\n|3|\n|4|\n5')
+        self.eq('1\n|2|\n3\n4\n5\n', 'b_9G', '1\n|2|\n|3|\n|4|\n|5|\n')
+        self.eq('1\n|2|\n3\n4\n5', 'b_9G', '1\n|2|\n|3|\n|4|\n|5|')
+        self.eq('1\n|2|\n3\n   4\n5', 'b_4G', '1\n|2\n||3\n||   4|\n5')

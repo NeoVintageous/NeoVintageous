@@ -45,3 +45,14 @@ class Test_gg(unittest.FunctionalTestCase):
     def test_d(self):
         self.eq('foo\nb|ar', 'dgg', '|')
         self.eq('1x\n2x\n3x\n4|x\n5x', '2dgg', '1x\n|5x')
+
+    def test_b(self):
+        self.eq('1\n2\n|3|\nx\n', 'b_gg', 'u_|1|\n|2|\n|3|\nx\n')
+        self.eq('111\n222\n|333|\nx\n', 'b_gg', 'u_|1|11\n|2|22\n|3|33\nx\n')
+        self.eq('111\n222\n3|33|\nx\n', 'b_gg', 'r_u_|11|1\n|22|2\n|33|3\nx\n')
+        self.eq('1111\n2222\n33|3|3\nx\n', 'b_gg', 'r_u_|111|1\n|222|2\n|333|3\nx\n')
+        self.eq('1111\n\n33|3|3\nx\n', 'b_gg', 'r_u_|111|1\n|\n||333|3\nx\n')
+        self.eq('1\n2222\n33|3|3\nx\n', 'b_gg', 'r_u_|1\n||222|2\n|333|3\nx\n')
+        self.eq('1\n2222\n33|3|3\nx\n', 'b_gg', 'r_u_|1\n||222|2\n|333|3\nx\n')
+        self.eq('  11111\n2222222\n3333|33|3\n', 'b_gg', 'r_u_  |111|11\n22|222|22\n33|333|33\n')
+        self.eq('     11\n2222222\n3|33|3333\n', 'b_gg', 'u_ |    1|1\n2|22222|2\n3|33333|3\n')

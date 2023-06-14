@@ -2,6 +2,19 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.31.0 - Unreleased
+
+### Added
+
+* Added [#888](https://github.com/NeoVintageous/NeoVintageous/issues/888): `gg` in visual block mode
+* Added [#888](https://github.com/NeoVintageous/NeoVintageous/issues/888): `G` in visual block mode
+* Added [#888](https://github.com/NeoVintageous/NeoVintageous/issues/888): `[count]G` in visual block mode
+
+### Fixed
+
+* Fixed [#889](https://github.com/NeoVintageous/NeoVintageous/issues/889): `{visual}G` should extend to first non-blank character
+* Fixed [#890](https://github.com/NeoVintageous/NeoVintageous/issues/890): `G` should extend to first non-blank character
+
 ## 1.30.1 - Unreleased
 
 * Fixed [#887](https://github.com/NeoVintageous/NeoVintageous/issues/887): Using arrow doesn't scroll the view in visual block mode

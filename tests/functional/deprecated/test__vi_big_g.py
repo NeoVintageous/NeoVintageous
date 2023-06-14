@@ -34,7 +34,7 @@ class Test__nv_vi_big_g_InNormalMode(unittest.ViewTestCase):
 
         self.view.run_command('nv_vi_big_g', {'mode': unittest.NORMAL})
 
-        self.assertSelection((8, 8))
+        self.assertSelection((4, 4))
 
 
 class Test__nv_vi_big_g_InVisualMode(unittest.ViewTestCase):
@@ -45,7 +45,7 @@ class Test__nv_vi_big_g_InVisualMode(unittest.ViewTestCase):
 
         self.view.run_command('nv_vi_big_g', {'mode': unittest.VISUAL})
 
-        self.assertSelection((0, 8))
+        self.assertSelection((0, 5))
 
 
 class Test__nv_vi_big_g_InInternalNormalMode(unittest.ViewTestCase):

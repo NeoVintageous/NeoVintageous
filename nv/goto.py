@@ -30,6 +30,7 @@ from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transform_to_normal_mode
 from NeoVintageous.nv.utils import regions_transformer
+from NeoVintageous.nv.utils import resolve_visual_block_target
 from NeoVintageous.nv.utils import resolve_visual_line_target
 from NeoVintageous.nv.utils import resolve_visual_target
 from NeoVintageous.nv.utils import show_if_not_visible
@@ -40,6 +41,7 @@ from NeoVintageous.nv.vim import EOF
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import VISUAL
+from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import status_message
@@ -254,8 +256,20 @@ def goto_line(view, mode: str, line_number: int) -> None:
         return s
 
     with jumplist_updater(view):
-        regions_transformer(view, f)
+        if mode == VISUAL_BLOCK:
+            resolve_visual_block_target(view, get_linewise_non_blank_target(view, dest))
+        else:
+            regions_transformer(view, f)
+
     show_if_not_visible(view)
+
+
+def get_linewise_non_blank_target(view, target: int) -> int:
+    line = view.line(target)
+    if line.size() == 0 and view.substr(line.b) == EOF:
+        line = view.line(target - 1)
+
+    return next_non_blank(view, line.a)
 
 
 def _goto_modification(action: str, view, mode: str, count: int) -> None:

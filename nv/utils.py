@@ -930,7 +930,7 @@ class VisualBlockSelection():
         else:
             for line in lines:
                 # If the line size is less than COL-T, in a REVERSE selection,
-                # then the line is ommited from a REVERSE Visual block.
+                # then the line is omitted from a REVERSE Visual block.
                 if line.size() >= col_t:
                     new_line = Region(
                         min(line.a + col_a + 1, line.b + 1),
@@ -991,11 +991,13 @@ class VisualBlockSelection():
         return vb
 
 
-def resolve_visual_block_target(view, target, count: int) -> None:
+def resolve_visual_block_target(view, target, count: int = 1) -> None:
     visual_block = VisualBlockSelection(view)
-    visual_block.transform_target(
-        target(view, visual_block.insertion_point_b(), count)
-    )
+
+    if not isinstance(target, int):
+        target = target(view, visual_block.insertion_point_b(), count)
+
+    visual_block.transform_target(target)
 
 
 def resolve_visual_block_begin(view) -> None:
