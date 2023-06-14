@@ -181,6 +181,7 @@ from NeoVintageous.nv.vi.units import next_paragraph_start
 from NeoVintageous.nv.vi.units import prev_paragraph_start
 from NeoVintageous.nv.vi.units import word_ends
 from NeoVintageous.nv.vi.units import word_starts
+from NeoVintageous.nv.vim import EOF
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
@@ -734,7 +735,7 @@ class nv_vi_ctrl_r(WindowCommand):
             if (char == '\n' and not view.line(pt).empty()):
                 return Region(pt - 1)
 
-            if char == '\x00' and pt == view.size():
+            if char == EOF and pt == view.size():
                 return Region(s.b - 1)
 
             return s
@@ -1043,7 +1044,7 @@ class nv_enter_visual_line_mode(TextCommand):
             # (currently only handles non multiple-selections).
             if self.view.size() > 0 and len(self.view.sel()) == 1:
                 s = self.view.sel()[0]
-                if self.view.substr(s.b) == '\x00':
+                if self.view.substr(s.b) == EOF:
                     set_selection(self.view, s.b - 1)
 
             # Abort if we are at EOF -- no newline char to hold on to.
@@ -1148,7 +1149,7 @@ class nv_vi_dd(TextCommand):
             new = []
             for pt in old:
                 # If on the last char, then pur cursor on previous line
-                if pt == size and self.view.substr(pt) == '\x00':
+                if pt == size and self.view.substr(pt) == EOF:
                     pt = self.view.text_point(self.view.rowcol(pt)[0], 0)
                 pt = next_non_blank(self.view, pt)
                 new.append(pt)
