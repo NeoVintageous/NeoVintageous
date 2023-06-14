@@ -458,7 +458,7 @@ class ViewTestCase(unittest.TestCase):
                 content.insert(sel.end() + counter, '|')
                 counter += 1
 
-        self.assertEquals(''.join(content), expected, msg)
+        self.assertEquals(expected, ''.join(content), msg)
 
     def _assertContentRegion(self, key: str, expected, msg: str = None) -> None:
         self._assertContentSelection(self.view.get_regions(key), expected, msg)
