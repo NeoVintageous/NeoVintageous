@@ -834,6 +834,33 @@ _FEEDCHAR2KEY = {
 }
 
 
+_SEQ_PARSER = re.compile('(?:([vinVbs])_)?([1-9][0-9]*)?(.+)')
+
+
+_MODE_PREFIXES = (
+    'N_',
+    'R_',
+    'V_',
+    'b_',
+    'i_',
+    'n_',
+    's_',
+    'v_'
+)
+
+
+_MODE_METHODS = {
+    'N': 'internalNormal',
+    'R': 'replace',
+    'V': 'vline',
+    'b': 'vblock',
+    'i': 'insert',
+    'n': 'normal',
+    's': 'vselect',
+    'v': 'visual'
+}
+
+
 class FunctionalTestCase(ViewTestCase):
 
     def feed(self, seq: str, check_user_mappings: bool = False) -> None:
@@ -971,30 +998,10 @@ class FunctionalTestCase(ViewTestCase):
         # >>> eq('|H|ello world!', 'v_w', '|Hello w|orld!')
         # >>> eq('xxx\nbu|zz\nxxx', 'n_cc', 'i_xxx\n|\nxxx')
 
-        def _parse_reversed(text):
-            if text[:2] == 'r_':
-                return text[2:], True
-
-            return text, False
-
-        def _parse_mode(text, default):
-            if text[:2] in modes:
-                return text[2:], text[0]
-
-            return text, default
-
-        def _parse(text, default_mode):
-            text, is_reversed = _parse_reversed(text)
-            text, mode = _parse_mode(text, default_mode)
-
-            return text, mode, is_reversed
-
         if expected is None:
             expected = text
 
-        modes = ('N_', 'R_', 'V_', 'b_', 'i_', 'n_', 's_', 'v_')
-
-        if feed[:2] in modes:
+        if feed[:2] in _MODE_PREFIXES:
             default_mode = feed[0]
         elif feed[:6] == ':\'<,\'>':
             default_mode = 'v'
@@ -1004,19 +1011,8 @@ class FunctionalTestCase(ViewTestCase):
         text, text_mode, reverse_text = _parse(text, default_mode)
         expected, expected_mode, reverse_expected = _parse(expected, default_mode)
 
-        methods = {
-            'N': 'internalNormal',
-            'R': 'replace',
-            'V': 'vline',
-            'b': 'vblock',
-            'i': 'insert',
-            'n': 'normal',
-            's': 'vselect',
-            'v': 'visual',
-        }
-
-        if text_mode in methods:
-            method_name = methods[text_mode]
+        if text_mode in _MODE_METHODS:
+            method_name = _MODE_METHODS[text_mode]
         else:
             self.assertTrue(False, 'invalid text mode')
 
@@ -1032,8 +1028,8 @@ class FunctionalTestCase(ViewTestCase):
 
         self.feed(feed)
 
-        if expected_mode in methods:
-            method_name = methods[expected_mode]
+        if expected_mode in _MODE_METHODS:
+            method_name = _MODE_METHODS[expected_mode]
         else:
             self.assertTrue(False, 'invalid expected mode')
 
@@ -1059,7 +1055,25 @@ class FunctionalTestCase(ViewTestCase):
         return content, direction
 
 
-_SEQ_PARSER = re.compile('(?:([vinVbs])_)?([1-9][0-9]*)?(.+)')
+def _parse(text, default_mode) -> tuple:
+    text, is_reversed = _parse_reversed(text)
+    text, mode = _parse_mode(text, default_mode)
+
+    return text, mode, is_reversed
+
+
+def _parse_reversed(text) -> tuple:
+    if text[:2] == 'r_':
+        return text[2:], True
+
+    return text, False
+
+
+def _parse_mode(text, default) -> tuple:
+    if text[:2] in _MODE_PREFIXES:
+        return text[2:], text[0]
+
+    return text, default
 
 
 def _parse_seq(seq: str) -> tuple:
