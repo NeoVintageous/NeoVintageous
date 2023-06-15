@@ -1975,7 +1975,7 @@ class nv_vi_ga(WindowCommand):
 
 class nv_vi_gt(WindowCommand):
 
-    def run(self, mode=None, count=0):
+    def run(self, mode=None, count=0, register=None):
         if count > 0:
             window_tab_control(self.window, 'goto', index=count)
         else:

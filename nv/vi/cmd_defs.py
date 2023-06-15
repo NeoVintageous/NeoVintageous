@@ -742,13 +742,9 @@ class ViActivateNextTab(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, view):
-        return {
-            'action': 'nv_vi_gt',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view, default=0)
-            }
-        }
+        return _translate_action(view, 'nv_vi_gt', {
+            'count': get_count(view, default=0)
+        })
 
 
 @assign(seqs.CTRL_PAGEUP, ACTION_MODES)
@@ -1543,13 +1539,9 @@ class ViMoveHalfScreenDown(ViMotionDef):
         self.scroll_into_view = False
 
     def translate(self, view):
-        return {
-            'motion': 'nv_vi_ctrl_d',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view, default=0)
-            }
-        }
+        return _translate_motion(view, 'nv_vi_ctrl_d', {
+            'count': get_count(view, default=0)
+        })
 
 
 @assign(seqs.CTRL_U, MOTION_MODES + (INSERT,))
@@ -1560,13 +1552,9 @@ class ViMoveHalfScreenUp(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, view):
-        return {
-            'motion': 'nv_vi_ctrl_u',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view, default=0)
-            }
-        }
+        return _translate_motion(view, 'nv_vi_ctrl_u', {
+            'count': get_count(view, default=0)
+        })
 
 
 @assign(seqs.CTRL_F, MOTION_MODES)
@@ -1890,13 +1878,9 @@ class ViPercent(ViMotionDef):
         self.scroll_into_view = True
 
     def translate(self, view):
-        return {
-            'motion': 'nv_vi_percent',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view, default=0)
-            }
-        }
+        return _translate_motion(view, 'nv_vi_percent', {
+            'count': get_count(view, default=0)
+        })
 
 
 @assign(seqs.BACKSLASH, MOTION_MODES)
@@ -2154,13 +2138,9 @@ class ViGotoBof(ViMotionDef):
         self.updates_xpos = True
 
     def translate(self, view):
-        return {
-            'motion': 'nv_vi_gg',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view) if (get_action_count(view) or get_motion_count(view)) else None
-            }
-        }
+        return _translate_motion(view, 'nv_vi_gg', {
+            'count': get_count(view) if (get_action_count(view) or get_motion_count(view)) else None
+        })
 
 
 @assign(seqs.BIG_G, MOTION_MODES)
@@ -2171,13 +2151,9 @@ class ViGotoEof(ViMotionDef):
         self.updates_xpos = True
 
     def translate(self, view):
-        return {
-            'motion': 'nv_vi_big_g',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view) if (get_action_count(view) or get_motion_count(view)) else None
-            }
-        }
+        return _translate_motion(view, 'nv_vi_big_g', {
+            'count': get_count(view) if (get_action_count(view) or get_motion_count(view)) else None
+        })
 
 
 @assign(seqs.R, ACTION_MODES)
