@@ -30,10 +30,6 @@ from sublime import version
 from sublime import windows as _windows
 
 
-def _is_py35() -> bool:
-    return sys.version_info >= (3, 5)
-
-
 def _is_py38() -> bool:
     return sys.version_info >= (3, 8)
 
@@ -134,15 +130,11 @@ else:
             '\\`', '`')
 
 
-if _is_py35():
-    def merge_dicts(a: dict, b: dict) -> dict:
-        return {**a, **b}
-else:
-    def merge_dicts(a: dict, b: dict) -> dict:
-        x = a.copy()
-        x.update(b)
+def merge_dicts(a: dict, b: dict) -> dict:
+    x = a.copy()
+    x.update(b)
 
-        return x
+    return x
 
 
 # There's no Sublime API to show a corrections select list. The workaround is to
