@@ -78,7 +78,7 @@ class ViDeleteByChars(ViOperatorDef):
 
 
 @assign(seqs.D, (SELECT,))
-class DeleteMultipleCursor(ViOperatorDef):
+class ViDeleteMultipleCursor(ViOperatorDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
@@ -218,7 +218,7 @@ class ViChangeByChars(ViOperatorDef):
 
 
 @assign(seqs.C, (SELECT,))
-class ChangeMultipleCursor(ViOperatorDef):
+class ViChangeMultipleCursor(ViOperatorDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
@@ -1038,7 +1038,7 @@ class ViRestoreVisualSelections(ViOperatorDef):
 
 
 @assign(seqs.GX, ACTION_MODES)
-class NetrwGx(ViOperatorDef):
+class ViNetrwGx(ViOperatorDef):
 
     def translate(self, view):
         return _translate_action(view, 'nv_vi_gx')
@@ -1668,7 +1668,7 @@ class ViPrevMisppelledWord(ViMotionDef):
 
 
 @assign(seqs.RIGHT_SQUARE_BRACKET_S, ACTION_MODES)
-class VINextMispelledWord(ViMotionDef):
+class ViNextMispelledWord(ViMotionDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
