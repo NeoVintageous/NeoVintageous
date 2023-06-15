@@ -90,6 +90,10 @@ class ViOperatorDef(ViCommandDefBase):
         self.scroll_into_view = False
         self.motion_required = False
         self.repeatable = False
+        self.init()
+
+    def init(self):
+        pass
 
 
 class RequiresOneCharMixinDef(ViCommandDefBase):
