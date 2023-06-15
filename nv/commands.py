@@ -517,7 +517,7 @@ class nv_cmdline(WindowCommand):
     def is_enabled(self):
         return bool(self.window.active_view())
 
-    def run(self, initial_text=None):
+    def run(self, mode=None, count=None, register=None, initial_text=None):
         reset_cmdline_completion_state()
         view = self.window.active_view()
         set_reset_during_init(view, False)

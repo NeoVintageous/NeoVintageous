@@ -1334,10 +1334,7 @@ class ViEnterCommandLineMode(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, view):
-        return {
-            'action': 'nv_cmdline',
-            'action_args': {}
-        }
+        return _translate_action(view, 'nv_cmdline')
 
 
 @assign(seqs.CTRL_G, ACTION_MODES)
@@ -2261,10 +2258,7 @@ class ViSearchForward(ViMotionDef):
 
     def translate(self, view):
         if self.accept_input:
-            return {
-                'motion': 'nv_vi_slash',
-                'motion_args': {}
-            }
+            return _translate_motion(view, 'nv_vi_slash')
 
         # We'll end up here, for example, when repeating via '.'.
         return ViSearchForwardImpl(term=self.inp[:-4]).translate(view)
@@ -2309,10 +2303,7 @@ class ViSearchBackward(ViMotionDef):
 
     def translate(self, view):
         if self.accept_input:
-            return {
-                'motion': 'nv_vi_question_mark',
-                'motion_args': {}
-            }
+            return _translate_motion(view, 'nv_vi_question_mark')
         else:
             # We'll end up here, for example, when repeating via '.'.
             return ViSearchBackwardImpl(term=self.inp[:-4]).translate(view)
