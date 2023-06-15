@@ -2529,21 +2529,6 @@ class nv_vi_g_big_h(WindowCommand):
 class nv_vi_ctrl_x_ctrl_l(TextCommand):
     MAX_MATCHES = 20
 
-    def find_matches(self, prefix: str, end: int) -> list:
-        escaped = re.escape(prefix)
-        matches = []  # type: list
-        while end > 0:
-            match = reverse_search(self.view, r'^\s*{0}'.format(escaped), 0, end, flags=0)
-            if (match is None) or (len(matches) == self.MAX_MATCHES):
-                break
-            line = self.view.line(match.begin())
-            end = line.begin()
-            text = self.view.substr(line).lstrip()
-            if text not in matches:
-                matches.append(text)
-
-        return matches
-
     def run(self, edit, mode=None, count=None, register='"'):
         if mode != INSERT:
             raise ValueError('wrong mode')
@@ -2570,6 +2555,21 @@ class nv_vi_ctrl_x_ctrl_l(TextCommand):
         self.view.run_command('nv_view', {'action': 'replace_line', 'replacement': self._matches[s]})
         del self.__dict__['_matches']
         set_selection(self.view, self.view.sel()[0].b)
+
+    def find_matches(self, prefix: str, end: int) -> list:
+        escaped = re.escape(prefix)
+        matches = []  # type: list
+        while end > 0:
+            match = reverse_search(self.view, r'^\s*{0}'.format(escaped), 0, end, flags=0)
+            if (match is None) or (len(matches) == self.MAX_MATCHES):
+                break
+            line = self.view.line(match.begin())
+            end = line.begin()
+            text = self.view.substr(line).lstrip()
+            if text not in matches:
+                matches.append(text)
+
+        return matches
 
 
 class nv_vi_find_in_line(TextCommand):
