@@ -598,7 +598,7 @@ class SequenceCommand(TextCommand):
 
 class nv_vi_g_big_u(TextCommand):
 
-    def run(self, edit, mode=None, count=1, motion=None):
+    def run(self, edit, mode=None, count=1, register=None, motion=None):
         def f(view, s):
             view.replace(edit, s, view.substr(s).upper())
             # Reverse region so that entering NORMAL mode collapses selection.
@@ -618,7 +618,7 @@ class nv_vi_g_big_u(TextCommand):
 
 class nv_vi_gu(TextCommand):
 
-    def run(self, edit, mode=None, count=1, motion=None):
+    def run(self, edit, mode=None, count=1, register=None, motion=None):
         def f(view, s):
             view.replace(edit, s, view.substr(s).lower())
             # Reverse region so that entering NORMAL mode collapses selection.
@@ -638,7 +638,7 @@ class nv_vi_gu(TextCommand):
 
 class nv_vi_gq(TextCommand):
 
-    def run(self, edit, mode=None, count=1, motion=None, linewise=False):
+    def run(self, edit, mode=None, count=1, register=None, motion=None, linewise=False):
         def _wrap_lines(view):
             if view.settings().get('WrapPlus.include_line_endings') is not None:
                 cmd = 'wrap_lines_plus'
@@ -695,7 +695,7 @@ class nv_vi_gq(TextCommand):
 
 class nv_vi_u(WindowCommand):
 
-    def run(self, mode=None, count=1, **kwargs):
+    def run(self, mode=None, count=1, register=None, **kwargs):
         self.view = self.window.active_view()
 
         change_count = self.view.change_count()
@@ -720,7 +720,7 @@ class nv_vi_u(WindowCommand):
 
 class nv_vi_ctrl_r(WindowCommand):
 
-    def run(self, mode=None, count=1, **kwargs):
+    def run(self, mode=None, count=1, register=None, **kwargs):
         self.view = self.window.active_view()
 
         change_count = self.view.change_count()
@@ -778,7 +778,7 @@ class nv_vi_a(TextCommand):
 
 class nv_vi_c(TextCommand):
 
-    def run(self, edit, mode=None, count=1, motion=None, register=None):
+    def run(self, edit, mode=None, count=1, register=None, motion=None):
         if mode is None:
             raise ValueError('mode required')
 
@@ -821,7 +821,7 @@ class nv_vi_c(TextCommand):
 
 class nv_enter_normal_mode(TextCommand):
 
-    def run(self, edit, mode=None, from_init=False):
+    def run(self, edit, mode=None, count=None, register=None, from_init=False):
         self.view.window().run_command('hide_auto_complete')
         self.view.window().run_command('hide_overlay')
 
@@ -976,7 +976,7 @@ class nv_enter_select_mode(TextCommand):
 
 class nv_enter_insert_mode(TextCommand):
 
-    def run(self, edit, mode=None, count=1):
+    def run(self, edit, mode=None, count=1, register=None):
         def f(view, s):
             s.a = s.b = get_insertion_point_at_b(s)
 
@@ -994,7 +994,7 @@ class nv_enter_insert_mode(TextCommand):
 
 class nv_enter_visual_mode(TextCommand):
 
-    def run(self, edit, mode=None, force=False):
+    def run(self, edit, mode=None, count=None, register=None, force=False):
         if get_mode(self.view) == VISUAL and not force:
             enter_normal_mode(self.view, mode)
             return
@@ -1037,7 +1037,7 @@ class nv_enter_visual_mode(TextCommand):
 
 class nv_enter_visual_line_mode(TextCommand):
 
-    def run(self, edit, mode=None, force=False):
+    def run(self, edit, mode=None, count=None, register=None, force=False):
         if get_mode(self.view) == VISUAL_LINE and not force:
             enter_normal_mode(self.view, mode)
             return
@@ -1083,7 +1083,7 @@ class nv_enter_visual_line_mode(TextCommand):
 
 class nv_enter_replace_mode(TextCommand):
 
-    def run(self, edit, **kwargs):
+    def run(self, edit, mode=None, count=None, register=None, **kwargs):
         def f(view, s):
             s.a = s.b
             return s
@@ -1099,7 +1099,7 @@ class nv_enter_replace_mode(TextCommand):
 
 class nv_vi_dot(WindowCommand):
 
-    def run(self, mode=None, count=None, repeat_data=None):
+    def run(self, mode=None, count=None, register=None, repeat_data=None):
         self.view = self.window.active_view()
         reset_command_data(self.view)
 
@@ -1194,7 +1194,7 @@ class nv_vi_cc(TextCommand):
 
 class nv_vi_visual_o(TextCommand):
 
-    def run(self, edit, mode=None, count=1):
+    def run(self, edit, mode=None, count=1, register=None):
         def f(view, s):
             if mode in (VISUAL, VISUAL_LINE):
                 s = Region(s.b, s.a)
@@ -1243,7 +1243,7 @@ class nv_vi_yy(TextCommand):
 
 class nv_vi_y(TextCommand):
 
-    def run(self, edit, mode=None, count=1, motion=None, register=None):
+    def run(self, edit, mode=None, count=1, register=None, motion=None):
         if mode == INTERNAL_NORMAL:
             requires_motion(motion)
             run_motion(self.view, motion)
@@ -1265,7 +1265,8 @@ class nv_vi_y(TextCommand):
 
 class nv_vi_d(TextCommand):
 
-    def run(self, edit, mode=None, count=1, motion=None, register=None):
+    def run(self, edit, mode=None, count=1, register=None, motion=None):
+        print('d count =', count)
         if mode == INTERNAL_NORMAL:
             requires_motion(motion)
 
@@ -1308,7 +1309,7 @@ class nv_vi_d(TextCommand):
 
 class nv_vi_big_a(TextCommand):
 
-    def run(self, edit, mode=None, count=1):
+    def run(self, edit, mode=None, count=1, register=None):
         def f(view, s):
             if mode == VISUAL_BLOCK:
                 if self.view.substr(s.b - 1) == '\n':
@@ -1349,7 +1350,7 @@ class nv_vi_big_a(TextCommand):
 
 class nv_vi_big_i(TextCommand):
 
-    def run(self, edit, mode=None, count=1):
+    def run(self, edit, mode=None, count=1, register=None):
         def f(view, s):
             if mode in (VISUAL, VISUAL_LINE):
                 s = Region(view.line(s.begin()).a)
@@ -1637,7 +1638,7 @@ class nv_vi_r(TextCommand):
 
 class nv_vi_less_than_less_than(TextCommand):
 
-    def run(self, edit, mode=None, count=1):
+    def run(self, edit, mode=None, count=1, register=None):
         regions_transform_extend_to_line_count(self.view, count)
         self.view.run_command('unindent')
         regions_transform_to_first_non_blank(self.view)
@@ -1646,7 +1647,7 @@ class nv_vi_less_than_less_than(TextCommand):
 
 class nv_vi_equal_equal(TextCommand):
 
-    def run(self, edit, mode=None, count=1):
+    def run(self, edit, mode=None, count=1, register=None):
         regions_transform_extend_to_line_count(self.view, count)
         self.view.run_command('reindent', {'force_indent': False})
         regions_transform_to_first_non_blank(self.view)
@@ -1655,7 +1656,7 @@ class nv_vi_equal_equal(TextCommand):
 
 class nv_vi_greater_than_greater_than(TextCommand):
 
-    def run(self, edit, mode=None, count=1):
+    def run(self, edit, mode=None, count=1, register=None):
         regions_transform_extend_to_line_count(self.view, count)
         self.view.run_command('indent')
         regions_transform_to_first_non_blank(self.view)
@@ -1664,7 +1665,7 @@ class nv_vi_greater_than_greater_than(TextCommand):
 
 class nv_vi_greater_than(TextCommand):
 
-    def run(self, edit, mode=None, count=1, motion=None):
+    def run(self, edit, mode=None, count=1, register=None, motion=None):
         if mode == VISUAL_BLOCK:
             translate = self.view.settings().get('translate_tabs_to_spaces')
             size = self.view.settings().get('tab_size')
@@ -1698,7 +1699,7 @@ class nv_vi_greater_than(TextCommand):
 
 class nv_vi_less_than(TextCommand):
 
-    def run(self, edit, mode=None, count=1, motion=None):
+    def run(self, edit, mode=None, count=1, register=None, motion=None):
         if motion:
             run_motion(self.view, motion)
         elif mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
@@ -1716,7 +1717,7 @@ class nv_vi_less_than(TextCommand):
 
 class nv_vi_equal(TextCommand):
 
-    def run(self, edit, mode=None, count=1, motion=None):
+    def run(self, edit, mode=None, count=1, register=None, motion=None):
         if motion:
             run_motion(self.view, motion)
         elif mode not in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
@@ -1733,7 +1734,7 @@ class nv_vi_equal(TextCommand):
 
 class nv_vi_big_o(TextCommand):
 
-    def run(self, edit, mode=None, count=1):
+    def run(self, edit, mode=None, count=1, register=None):
         def f(view, sel, index):
             real_sel = Region(sel.a + index * count, sel.b + index * count)
             start_of_line = view.full_line(real_sel).begin()
@@ -1749,7 +1750,8 @@ class nv_vi_big_o(TextCommand):
 
 
 class nv_vi_o(TextCommand):
-    def run(self, edit, mode=None, count=1):
+
+    def run(self, edit, mode=None, count=1, register=None):
         def f(view, sel, index):
             real_sel = sel if index == 0 else Region(sel.a + index * count, sel.b + index * count)
             end_of_line = view.line(real_sel).end()
@@ -1945,7 +1947,7 @@ class nv_vi_paste(TextCommand):
 
 class nv_vi_ga(WindowCommand):
 
-    def run(self, **kwargs):
+    def run(self, mode=None, count=None, register=None, **kwargs):
         def char_to_notation(char: str) -> str:
             # Convert a char to a key notation. Uses vim key notation.
             # See https://vimhelp.appspot.com/intro.txt.html#key-notation
@@ -1984,7 +1986,7 @@ class nv_vi_gt(WindowCommand):
 
 class nv_vi_g_big_t(WindowCommand):
 
-    def run(self, mode=None, count=1):
+    def run(self, mode=None, count=1, register=None):
         window_tab_control(self.window, 'previous', count)
         enter_normal_mode(self.window, mode)
 
@@ -2016,7 +2018,7 @@ class nv_vi_ctrl_hat(WindowCommand):
 
 class nv_vi_ctrl_right_square_bracket(WindowCommand):
 
-    def run(self, mode=None, count=1):
+    def run(self, mode=None, count=1, register=None):
         view = self.window.active_view()
         if is_help_view(view):
             GotoView(view, mode, count).help()
@@ -2032,7 +2034,7 @@ class nv_vi_ctrl_w(WindowCommand):
 
 class nv_vi_z_enter(TextCommand):
 
-    def run(self, edit, mode=None, count=1):
+    def run(self, edit, mode=None, count=1, register=None):
         pt = get_insertion_point_at_b(self.view.sel()[0])
         home_line = self.view.line(pt)
         target_pt = self.view.text_to_layout(home_line.begin())
@@ -2041,7 +2043,7 @@ class nv_vi_z_enter(TextCommand):
 
 class nv_vi_z_minus(TextCommand):
 
-    def run(self, edit, mode=None, count=1):
+    def run(self, edit, mode=None, count=1, register=None):
         layout_coord = self.view.text_to_layout(self.view.sel()[0].b)
         viewport_extent = self.view.viewport_extent()
         new_pos = (0.0, layout_coord[1] - viewport_extent[1])
@@ -2050,7 +2052,7 @@ class nv_vi_z_minus(TextCommand):
 
 class nv_vi_zz(TextCommand):
 
-    def run(self, edit, mode=None, count=1, first_non_blank=False):
+    def run(self, edit, mode=None, count=1, register=None, first_non_blank=False):
         first_sel = self.view.sel()[0]
         current_position = self.view.text_to_layout(first_sel.b)
         viewport_dim = self.view.viewport_extent()
@@ -2125,7 +2127,7 @@ class nv_vi_modify_numbers(TextCommand):
 
         return []
 
-    def run(self, edit, mode=None, count=1, subtract=False):
+    def run(self, edit, mode=None, count=1, register=None, subtract=False):
         # TODO Implement {Visual}CTRL-A
         # TODO Implement {Visual}CTRL-X
         if mode != INTERNAL_NORMAL:
@@ -2174,7 +2176,7 @@ class nv_vi_select_big_j(TextCommand):
 class nv_vi_big_j(TextCommand):
     WHITE_SPACE = ' \t'
 
-    def run(self, edit, mode=None, count=1, dont_insert_or_remove_spaces=False):
+    def run(self, edit, mode=None, count=1, register=None, dont_insert_or_remove_spaces=False):
         sels = self.view.sel()
         s = Region(sels[0].a, sels[-1].b)
         if mode == INTERNAL_NORMAL:
@@ -2274,7 +2276,7 @@ class nv_vi_big_j(TextCommand):
 
 class nv_vi_gv(TextCommand):
 
-    def run(self, edit, mode=None, count=None):
+    def run(self, edit, mode=None, count=None, register=None):
         visual_sel, visual_sel_mode = get_previous_selection(self.view)
         if not visual_sel or not visual_sel_mode:
             return
@@ -2302,7 +2304,7 @@ class nv_vi_gv(TextCommand):
 
 class nv_vi_gx(TextCommand):
 
-    def run(self, edit, **kwargs):
+    def run(self, edit, mode=None, count=None, register=None, **kwargs):
         url = extract_url(self.view)
         if url:
             webbrowser.open_new_tab(url)
@@ -2373,7 +2375,7 @@ class nv_vi_at(TextCommand):
 
 class nv_enter_visual_block_mode(TextCommand):
 
-    def run(self, edit, mode=None, force=False):
+    def run(self, edit, mode=None, count=None, register=None, force=False):
         if mode in (NORMAL, VISUAL, VISUAL_LINE, INTERNAL_NORMAL):
             VisualBlockSelection.create(self.view)
             set_mode(self.view, VISUAL_BLOCK)
@@ -2412,7 +2414,7 @@ class nv_vi_select_k(WindowCommand):
 
 class nv_vi_tilde(TextCommand):
 
-    def run(self, edit, mode=None, count=1, motion=None):
+    def run(self, edit, mode=None, count=1, register=None, motion=None):
         def select(view, s):
             if mode == VISUAL:
                 return Region(s.end(), s.begin())
@@ -2432,7 +2434,7 @@ class nv_vi_tilde(TextCommand):
 
 class nv_vi_g_tilde(TextCommand):
 
-    def run(self, edit, mode=None, count=1, motion=None):
+    def run(self, edit, mode=None, count=1, register=None, motion=None):
         def f(view, s):
             return Region(s.end(), s.begin())
 
@@ -2459,7 +2461,7 @@ class nv_vi_g_tilde(TextCommand):
 
 class nv_vi_visual_u(TextCommand):
 
-    def run(self, edit, mode=None, count=1):
+    def run(self, edit, mode=None, count=1, register=None):
         for s in self.view.sel():
             self.view.replace(edit, s, self.view.substr(s).lower())
 
@@ -2472,7 +2474,7 @@ class nv_vi_visual_u(TextCommand):
 
 class nv_vi_visual_big_u(TextCommand):
 
-    def run(self, edit, mode=None, count=1):
+    def run(self, edit, mode=None, count=1, register=None):
         for s in self.view.sel():
             self.view.replace(edit, s, self.view.substr(s).upper())
 
@@ -2485,7 +2487,7 @@ class nv_vi_visual_big_u(TextCommand):
 
 class nv_vi_g_tilde_g_tilde(TextCommand):
 
-    def run(self, edit, mode=None, count=1):
+    def run(self, edit, mode=None, count=1, register=None):
         def select(view, s):
             line = view.line(s.b)
 
@@ -2502,7 +2504,7 @@ class nv_vi_g_tilde_g_tilde(TextCommand):
 
 class nv_vi_g_big_u_big_u(TextCommand):
 
-    def run(self, edit, mode=None, count=1):
+    def run(self, edit, mode=None, count=1, register=None):
         def select(view, s):
             return lines(view, s, count)
 
@@ -2517,7 +2519,7 @@ class nv_vi_g_big_u_big_u(TextCommand):
 
 class nv_vi_guu(TextCommand):
 
-    def run(self, edit, mode=None, count=1):
+    def run(self, edit, mode=None, count=1, register=None):
         def select(view, s):
             line = view.line(s.b)
 
@@ -2567,7 +2569,7 @@ class nv_vi_ctrl_x_ctrl_l(TextCommand):
 
         return matches
 
-    def run(self, edit, mode=None, register='"'):
+    def run(self, edit, mode=None, count=None, register='"'):
         if mode != INSERT:
             raise ValueError('wrong mode')
 
