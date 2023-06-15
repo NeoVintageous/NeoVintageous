@@ -205,3 +205,31 @@ class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_b(self):
         self.eq('fixyzzz\nbu|xyz|zz\nfi|xyz|zz\nbu|xyz|zz\nfixyzzz\n', 'b_d', 'n_fixyzzz\nbuzz\nfizz\nbu|zz\nfixyzzz\n')
+
+    def test_dw_to_default_register(self):
+        self.normal('f|izz buzz')
+        self.feed('dw')
+        self.assertNormal('f|buzz')
+        self.assertRegister('"izz ')
+        self.assertRegister('-izz ')
+
+    def test_dw_to_register(self):
+        self.normal('f|izz buzz')
+        self.feed('"')
+        self.feed('a')
+        self.feed('dw')
+        self.assertNormal('f|buzz')
+        self.assertRegister('"izz ')
+        self.assertRegister('aizz ')
+
+    def test_dw_with_motion_count(self):
+        self.normal('1|11 222 333 444 555 666 777 888')
+        self.feed('d')
+        self.feed('2w')
+        self.assertNormal('1|333 444 555 666 777 888')
+
+    def test_dw_operator_count_and_motion_count_should_multiply(self):
+        self.normal('1|11 222 333 444 555 666 777 888')
+        self.feed('2d')
+        self.feed('3w')
+        self.assertNormal('1|777 888')

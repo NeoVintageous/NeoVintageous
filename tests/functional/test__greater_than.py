@@ -31,6 +31,9 @@ class Test_greater_than(unittest.FunctionalTestCase):
 
     def test_ip(self):
         self.eq('x\n\nf|iz|z\nb|uz|z\n\nx', '>ip', 'x\n\n    |fizz\n    buzz\n\nx')
+        self.eq('x\n\n|fizz\nbuzz\n\nfizz\nbuzz\n\nx', '>ip', 'x\n\n    |fizz\n    buzz\n\nfizz\nbuzz\n\nx')
+        self.eq('x\n\n|fizz\nbuzz\n\nfizz\nbuzz\n\nx', '2>ip', 'x\n\n    |fizz\n    buzz\n\nfizz\nbuzz\n\nx')
+        self.eq('x\n\n|fizz\nbuzz\n\nfizz\nbuzz\n\nx', '3>ip', 'x\n\n    |fizz\n    buzz\n\n    fizz\n    buzz\n\nx')
 
     def test_v(self):
         self.eq('|abc\ndef\n', 'v_>', 'n_    |abc\ndef\n')

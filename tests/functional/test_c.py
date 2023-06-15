@@ -64,6 +64,22 @@ class Test_c(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('one |two\nthree four', '2cw', 'i_one | four')
         self.eq('one |two\nthree\nfour', '2cw', 'i_one |\nfour')
 
+    def test_cw_to_default_register(self):
+        self.normal('f|izz buzz')
+        self.feed('cw')
+        self.assertInsert('f| buzz')
+        self.assertRegister('"izz')
+        self.assertRegister('-izz')
+
+    def test_cw_to_register(self):
+        self.normal('f|izz buzz')
+        self.feed('"')
+        self.feed('a')
+        self.feed('cw')
+        self.assertInsert('f| buzz')
+        self.assertRegister('"izz')
+        self.assertRegister('aizz')
+
     def test_ciw(self):
         self.eq('a |fizz b', 'ciw', 'i_a | b')
         self.eq('a fi|zz b', 'ciw', 'i_a | b')
