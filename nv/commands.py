@@ -1267,7 +1267,6 @@ class nv_vi_y(TextCommand):
 class nv_vi_d(TextCommand):
 
     def run(self, edit, mode=None, count=1, register=None, motion=None):
-        print('d count =', count)
         if mode == INTERNAL_NORMAL:
             requires_motion(motion)
 
