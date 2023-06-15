@@ -1287,10 +1287,9 @@ class nv_vi_d(TextCommand):
         if mode == INTERNAL_NORMAL:
             if should_motion_apply_op_transformer(motion):
                 def f(view, s):
-                    if motion:
-                        if 'motion' in motion:
-                            if motion['motion'] in ('nv_vi_e', 'nv_vi_big_e'):
-                                return Region(s.begin())
+                    if motion and 'motion' in motion:
+                        if motion['motion'] in ('nv_vi_e', 'nv_vi_big_e'):
+                            return Region(s.begin())
 
                     return Region(next_non_blank(self.view, s.b))
 
