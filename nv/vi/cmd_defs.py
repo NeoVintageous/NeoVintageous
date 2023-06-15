@@ -103,7 +103,7 @@ class ViInsertLineBefore(ViOperatorDef):
         return _translate_action(view, 'nv_vi_big_o')
 
 
-@assign(seqs.O, ACTION_MODES)
+@assign(seqs.O, (NORMAL,))
 class ViInsertLineAfter(ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -111,12 +111,20 @@ class ViInsertLineAfter(ViOperatorDef):
         self.updates_xpos = False
 
     def translate(self, view):
-        if get_mode(view) in (VISUAL, VISUAL_LINE):
-            return _translate_action(view, 'nv_vi_visual_o')
-        else:
-            set_glue_until_normal_mode(view, True)
+        set_glue_until_normal_mode(view, True)
 
-            return _translate_action(view, 'nv_vi_o')
+        return _translate_action(view, 'nv_vi_o')
+
+
+@assign(seqs.O, (VISUAL, VISUAL_LINE, VISUAL_BLOCK))
+class ViGoToOtherEnd(ViOperatorDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.scroll_into_view = True
+        self.updates_xpos = False
+
+    def translate(self, view):
+        return _translate_action(view, 'nv_vi_visual_o')
 
 
 @assign(seqs.DEL, ACTION_MODES + (SELECT,))
