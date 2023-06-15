@@ -52,6 +52,7 @@ from NeoVintageous.nv.marks import get_mark
 from NeoVintageous.nv.marks import set_mark
 from NeoVintageous.nv.paste import pad_visual_block_paste_contents
 from NeoVintageous.nv.paste import resolve_paste_items_with_view_sel
+from NeoVintageous.nv.polyfill import reveal_side_bar
 from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.polyfill import spell_select
 from NeoVintageous.nv.polyfill import split_by_newlines
@@ -579,6 +580,8 @@ class Neovintageous(WindowCommand):
             toggle_side_bar(self.window)
         elif action == 'toggle_super_keys':
             toggle_super_keys()
+        elif action == 'reveal_side_bar':
+            reveal_side_bar(self.window)
 
 
 # DEPRECATED Use nv_run_cmds instead

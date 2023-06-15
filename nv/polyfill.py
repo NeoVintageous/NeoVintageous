@@ -301,6 +301,11 @@ def toggle_side_bar(window) -> None:
         window.focus_group(window.active_group())
 
 
+def reveal_side_bar(window) -> None:
+    window.run_command('reveal_side_bar')
+    window.run_command('focus_side_bar')
+
+
 @contextmanager
 def save_preferences():
     yield load_settings('Preferences.sublime-settings')

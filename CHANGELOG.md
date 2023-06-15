@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#893](https://github.com/NeoVintageous/NeoVintageous/issues/893): Reveal side bar command for use with mappings: `nnoremap <leader><leader> :Neovintageous action=reveal_side_bar<CR>`
 * Added [#888](https://github.com/NeoVintageous/NeoVintageous/issues/888): `gg` in visual block mode
 * Added [#888](https://github.com/NeoVintageous/NeoVintageous/issues/888): `G` in visual block mode
 * Added [#888](https://github.com/NeoVintageous/NeoVintageous/issues/888): `[count]G` in visual block mode
