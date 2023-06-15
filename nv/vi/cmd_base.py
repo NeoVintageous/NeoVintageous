@@ -80,6 +80,10 @@ class ViMotionDef(ViCommandDefBase):
         super().__init__(*args, **kwargs)
         self.updates_xpos = False
         self.scroll_into_view = False
+        self.init()
+
+    def init(self):
+        pass
 
 
 class ViOperatorDef(ViCommandDefBase):
