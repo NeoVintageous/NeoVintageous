@@ -30,7 +30,7 @@ from sublime import version
 from sublime import windows as _windows
 
 
-def is_py38() -> bool:
+def _is_py38() -> bool:
     return sys.version_info >= (3, 8)
 
 
@@ -118,7 +118,7 @@ def is_file_read_only(file_name: str) -> bool:
 
 # A future compatable regular expression special character escaper. In Python
 # 3.7 only characters that have special meaning in regex patterns are escaped.
-if is_py38():
+if _is_py38():
     def re_escape(pattern: str):
         return re.escape(pattern)
 else:
