@@ -1137,7 +1137,7 @@ class ViJumpBack(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, view):
-        return _translate_action(view, 'jump_back')
+        return _translate_action(view, 'nv_vi_jump_back')
 
 
 @assign(seqs.CTRL_I, ACTION_MODES)
@@ -1149,7 +1149,7 @@ class ViJumpForward(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, view):
-        return _translate_action(view, 'jump_forward')
+        return _translate_action(view, 'nv_vi_jump_forward')
 
 
 @assign(seqs.DOT, ACTION_MODES)

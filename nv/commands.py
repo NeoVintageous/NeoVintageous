@@ -298,6 +298,8 @@ __all__ = [
     'nv_vi_h',
     'nv_vi_hat',
     'nv_vi_j',
+    'nv_vi_jump_back',
+    'nv_vi_jump_forward',
     'nv_vi_k',
     'nv_vi_l',
     'nv_vi_left_brace',
@@ -2930,6 +2932,18 @@ class nv_vi_j(TextCommand):
             return
 
         regions_transformer(self.view, f)
+
+
+class nv_vi_jump_back(TextCommand):
+
+    def run(self, edit, mode=None, count=1, register=None):
+        self.view.run_command('jump_back')
+
+
+class nv_vi_jump_forward(TextCommand):
+
+    def run(self, edit, mode=None, count=1, register=None):
+        self.view.run_command('jump_forward')
 
 
 class nv_vi_k(TextCommand):
