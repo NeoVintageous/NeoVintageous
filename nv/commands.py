@@ -4142,7 +4142,6 @@ class nv_vi_go_to_symbol(TextCommand):
 
             return
 
-        # Local symbol; select.
         location = self.view.text_point(*location)
 
         with jumplist_updater(self.view):

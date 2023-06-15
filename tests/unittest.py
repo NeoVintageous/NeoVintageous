@@ -2104,6 +2104,7 @@ _SEQ2CMD = {
     'f|':           {'command': 'nv_feed_key'},  # noqa: E241
     'gC':           {'command': 'nv_feed_key'},  # noqa: E241
     'gC}':          {'command': 'nv_feed_key'},  # noqa: E241
+    'gD':           {'command': 'nv_feed_key'},  # noqa: E241
     'gE':           {'command': 'nv_feed_key'},  # noqa: E241
     'gH':           {'command': 'nv_feed_key'},  # noqa: E241
     'gJ':           {'command': 'nv_feed_key'},  # noqa: E241
@@ -2120,6 +2121,7 @@ _SEQ2CMD = {
     'gc7G':         {'command': 'nv_feed_key'},  # noqa: E241
     'gcG':          {'command': 'nv_feed_key'},  # noqa: E241
     'gcc':          {'command': 'nv_feed_key'},  # noqa: E241
+    'gd':           {'command': 'nv_feed_key'},  # noqa: E241
     'ge':           {'command': 'nv_feed_key'},  # noqa: E241
     'gf':           {'command': 'nv_feed_key'},  # noqa: E241
     'gg':           {'command': 'nv_feed_key'},  # noqa: E241
