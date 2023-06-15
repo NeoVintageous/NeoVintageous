@@ -710,9 +710,7 @@ class ViDeleteUpToCursor(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, view):
-        return _translate_action(view, 'delete_word', {
-            'forward': False
-        })
+        return _translate_action(view, 'nv_vi_ctrl_w')
 
 
 @assign(seqs.CTRL_W_B, ACTION_MODES)
