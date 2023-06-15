@@ -23,9 +23,17 @@ class Test_ctrl_i(unittest.FunctionalTestCase):
     @unittest.mock_run_commands('jump_forward')
     def test_n_jump_forward(self):
         self.eq('f|izz', '<C-i>', 'f|izz')
-        self.assertRunCommand('jump_forward', {})
+        self.assertRunCommand('jump_forward', {
+            'mode': unittest.INTERNAL_NORMAL,
+            'count': 1,
+            'register': "\""
+        })
 
     @unittest.mock_run_commands('jump_forward')
     def test_v_jump_forward(self):
         self.eq('f|iz|z', 'v_<C-i>', 'f|iz|z')
-        self.assertRunCommand('jump_forward', {})
+        self.assertRunCommand('jump_forward', {
+            'mode': unittest.VISUAL,
+            'count': 1,
+            'register': "\""
+        })
