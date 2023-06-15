@@ -1676,32 +1676,22 @@ class ViRepeatCharSearchForward(ViMotionDef):
     def translate(self, view):
         last_search_cmd = get_last_char_search_command(view)
         if 'sneak' in last_search_cmd:
-            return {
-                'motion': 'nv_sneak',
-                'motion_args': {
-                    'mode': get_mode(view),
-                    'count': get_count(view),
-                    'forward': last_search_cmd == 'sneak_s',
-                    'save': False
-                }
-            }
+            return _translate_motion(view, 'nv_sneak', {
+                'forward': last_search_cmd == 'sneak_s',
+                'save': False
+            })
 
         forward = last_search_cmd in ('vi_t', 'vi_f')
         inclusive = last_search_cmd in ('vi_f', 'vi_big_f')
         skipping = last_search_cmd in ('vi_t', 'vi_big_t')
         motion = 'nv_vi_find_in_line' if forward else 'nv_vi_reverse_find_in_line'
 
-        return {
-            'motion': motion,
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'char': get_last_char_search_character(view),
-                'inclusive': inclusive,
-                'skipping': skipping,
-                'save': False
-            }
-        }
+        return _translate_motion(view, motion, {
+            'char': get_last_char_search_character(view),
+            'inclusive': inclusive,
+            'skipping': skipping,
+            'save': False
+        })
 
 
 @assign(seqs.QUOTE, MOTION_MODES)
@@ -1883,32 +1873,22 @@ class ViRepeatCharSearchBackward(ViMotionDef):
     def translate(self, view):
         last_search_cmd = get_last_char_search_command(view)
         if 'sneak' in last_search_cmd:
-            return {
-                'motion': 'nv_sneak',
-                'motion_args': {
-                    'mode': get_mode(view),
-                    'count': get_count(view),
-                    'forward': last_search_cmd == 'sneak_big_s',
-                    'save': False
-                }
-            }
+            return _translate_motion(view, 'nv_sneak', {
+                'forward': last_search_cmd == 'sneak_big_s',
+                'save': False
+            })
 
         forward = last_search_cmd in ('vi_t', 'vi_f')
         inclusive = last_search_cmd in ('vi_f', 'vi_big_f')
         skipping = last_search_cmd in ('vi_t', 'vi_big_t')
         motion = 'nv_vi_find_in_line' if not forward else 'nv_vi_reverse_find_in_line'
 
-        return {
-            'motion': motion,
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'char': get_last_char_search_character(view),
-                'inclusive': inclusive,
-                'skipping': skipping,
-                'save': False
-            }
-        }
+        return _translate_motion(view, motion, {
+            'char': get_last_char_search_character(view),
+            'inclusive': inclusive,
+            'skipping': skipping,
+            'save': False
+        })
 
 
 @assign(seqs.BAR, MOTION_MODES)
