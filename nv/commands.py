@@ -4091,11 +4091,15 @@ class nv_vi_go_to_symbol(TextCommand):
 
     def find_symbol(self, r, globally=False):
         query = self.view.substr(self.view.word(r))
-        fname = self.view.file_name().replace('\\', '/')
+        fname = self.view.file_name()
+        if not fname:
+            return
 
         locations = self.view.window().lookup_symbol_in_index(query)
         if not locations:
             return
+
+        fname = fname.replace('\\', '/')
 
         try:
             if not globally:
