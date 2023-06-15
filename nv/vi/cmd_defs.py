@@ -765,12 +765,9 @@ class ViDeleteUpToCursor(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, view):
-        return {
-            'action': 'delete_word',
-            'action_args': {
-                'forward': False
-            }
-        }
+        return _translate_action(view, 'delete_word', {
+            'forward': False
+        })
 
 
 @assign(seqs.CTRL_W_B, ACTION_MODES)
@@ -1140,10 +1137,7 @@ class ViJumpBack(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, view):
-        return {
-            'action': 'jump_back',
-            'action_args': {}
-        }
+        return _translate_action(view, 'jump_back')
 
 
 @assign(seqs.CTRL_I, ACTION_MODES)
@@ -1155,10 +1149,7 @@ class ViJumpForward(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, view):
-        return {
-            'action': 'jump_forward',
-            'action_args': {}
-        }
+        return _translate_action(view, 'jump_forward')
 
 
 @assign(seqs.DOT, ACTION_MODES)
