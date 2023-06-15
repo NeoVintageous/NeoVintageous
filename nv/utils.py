@@ -1273,3 +1273,27 @@ def view_count_excluding_help_views(window) -> int:
 def requires_motion(motion) -> None:
     if motion is None:
         raise ValueError('motion data required')
+
+
+def find_next_num(view) -> list:
+    regions = list(view.sel())
+
+    # Modify selections that are inside a number already.
+    for i, r in enumerate(regions):
+        a = r.b
+
+        while view.substr(a).isdigit():
+            a -= 1
+
+        if a != r.b:
+            a += 1
+
+        regions[i] = Region(a)
+
+    lines = [view.substr(Region(r.b, view.line(r.b).b)) for r in regions]
+    number_pattern = re.compile('\\d')
+    matches = [number_pattern.search(text) for text in lines]
+    if all(matches):
+        return [(reg.b + ma.start()) for (reg, ma) in zip(regions, matches)]  # type: ignore
+
+    return []

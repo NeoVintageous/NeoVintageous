@@ -105,6 +105,7 @@ from NeoVintageous.nv.utils import VisualBlockSelection
 from NeoVintageous.nv.utils import calculate_xpos
 from NeoVintageous.nv.utils import extract_file_name
 from NeoVintageous.nv.utils import extract_url
+from NeoVintageous.nv.utils import find_next_num
 from NeoVintageous.nv.utils import fix_eol_cursor
 from NeoVintageous.nv.utils import fixup_eof
 from NeoVintageous.nv.utils import fold
@@ -2096,55 +2097,29 @@ class nv_vi_z(TextCommand):
 
 class nv_vi_modify_numbers(TextCommand):
 
-    DIGIT_PAT = re.compile('(\\D+?)?(-)?(\\d+)(\\D+)?')
-    NUM_PAT = re.compile('\\d')
-
-    def get_editable_data(self, pt):
-        sign = -1 if (self.view.substr(pt - 1) == '-') else 1
-        end = pt
-        while self.view.substr(end).isdigit():
-            end += 1
-
-        return (sign, int(self.view.substr(Region(pt, end))), Region(end, self.view.line(pt).b))
-
-    def find_next_num(self, regions):
-        # Modify selections that are inside a number already.
-        for i, r in enumerate(regions):
-            a = r.b
-
-            while self.view.substr(a).isdigit():
-                a -= 1
-
-            if a != r.b:
-                a += 1
-
-            regions[i] = Region(a)
-
-        lines = [self.view.substr(Region(r.b, self.view.line(r.b).b)) for r in regions]
-        matches = [self.NUM_PAT.search(text) for text in lines]
-        if all(matches):
-            return [(reg.b + ma.start()) for (reg, ma) in zip(regions, matches)]  # type: ignore
-
-        return []
-
     def run(self, edit, mode=None, count=1, register=None, subtract=False):
+        # TODO Implement CTRL-A and CTRL-X  octal, hex, etc. numbers
         # TODO Implement {Visual}CTRL-A
         # TODO Implement {Visual}CTRL-X
         if mode != INTERNAL_NORMAL:
             return
 
-        # TODO Implement CTRL-A and CTRL-X  octal, hex, etc. numbers
-
-        regs = list(self.view.sel())
-        pts = self.find_next_num(regs)
-
+        pts = find_next_num(self.view)
         if not pts:
             return ui_bell()
+
+        def get_editable_data(view, pt: int) -> tuple:
+            sign = -1 if (view.substr(pt - 1) == '-') else 1
+            end = pt
+            while view.substr(end).isdigit():
+                end += 1
+
+            return (sign, int(view.substr(Region(pt, end))), Region(end, view.line(pt).b))
 
         end_sels = []
         count = count if not subtract else -count
         for pt in reversed(pts):
-            sign, num, tail = self.get_editable_data(pt)
+            sign, num, tail = get_editable_data(self.view, pt)
 
             num_as_text = str((sign * num) + count)
             new_text = num_as_text + self.view.substr(tail)
