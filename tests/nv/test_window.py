@@ -601,7 +601,7 @@ class TestSublimeWindowApi(unittest.TestCase):
                     self.window.focus_group(test['active_group'])
                     for count in test['count']:
 
-                        window_control(self.window, actions[direction], count)
+                        window_control(self.window, actions[direction], count=count)
 
                         expected = test[direction]
                         actual = self.window.active_group()

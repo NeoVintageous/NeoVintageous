@@ -629,7 +629,7 @@ def window_tab_control(window, action: str, count: int = 1, index: int = None) -
         raise ValueError('unknown tab control action: %s' % action)
 
 
-def window_control(window, action: str, count: int = 1, **kwargs) -> None:
+def window_control(window, action: str, mode=None, count: int = 1, register=None, **kwargs) -> None:
     if action == 'b':
         _focus_group_bottom_right(window)
     elif action == 'H':

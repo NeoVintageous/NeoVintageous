@@ -750,7 +750,7 @@ class nv_vi_ctrl_r(WindowCommand):
 
 class nv_vi_a(TextCommand):
 
-    def run(self, edit, mode=None, count=1):
+    def run(self, edit, mode=None, count=1, register=None):
         # Abort if the *actual* mode is insert mode. This prevents nv_vi_a from
         # adding spaces between text fragments when used with a count, as in
         # 5aFOO. In that case, we only need to run 'a' the first time, not for
@@ -1367,7 +1367,7 @@ class nv_vi_big_i(TextCommand):
 
 class nv_vi_m(TextCommand):
 
-    def run(self, edit, mode=None, count=1, character=None):
+    def run(self, edit, mode=None, count=1, register=None, character=None):
         set_mark(self.view, character)
 
 
@@ -1799,13 +1799,13 @@ class nv_vi_big_x(TextCommand):
 
 class nv_vi_big_z_big_q(WindowCommand):
 
-    def run(self):
+    def run(self, mode=None, count=None, register=None):
         do_ex_command(self.window, 'quit', {'forceit': True})
 
 
 class nv_vi_big_z_big_z(WindowCommand):
 
-    def run(self):
+    def run(self, mode=None, count=None, register=None):
         do_ex_command(self.window, 'exit')
 
 
@@ -1993,7 +1993,7 @@ class nv_vi_g_big_t(WindowCommand):
 
 class nv_vi_g(TextCommand):
 
-    def run(self, edit, action, **kwargs):
+    def run(self, edit, action, mode=None, count=None, register=None, **kwargs):
         if action == 'f':
             file_name = extract_file_name(self.view)
             if not file_name:
@@ -2007,7 +2007,7 @@ class nv_vi_g(TextCommand):
 
 class nv_vi_ctrl_hat(WindowCommand):
 
-    def run(self, **kwargs):
+    def run(self, mode=None, count=None, register=None, **kwargs):
         alternate_file = get_alternate_file_register()
         if not alternate_file:
             ui_bell('E23: No alternate file')
@@ -2304,7 +2304,7 @@ class nv_vi_ctrl_y(TextCommand):
 
 class nv_vi_q(TextCommand):
 
-    def run(self, edit, mode=None, count=1, name=None):
+    def run(self, edit, mode=None, count=1, register=None, name=None):
         if macros.is_recording():
             macros.stop_recording()
         else:
@@ -2316,7 +2316,7 @@ class nv_vi_q(TextCommand):
 
 class nv_vi_at(TextCommand):
 
-    def run(self, edit, name, mode=None, count=1):
+    def run(self, edit, name, mode=None, count=1, register=None):
         if name == '@':
             name = macros.get_last_used_register_name()
             if not name:
@@ -4090,7 +4090,7 @@ class nv_vi_go_to_symbol(TextCommand):
         except IndexError:
             return
 
-    def run(self, edit, mode=None, count=1, globally=False):
+    def run(self, edit, mode=None, count=1, register=None, globally=False):
 
         def f(view, s):
             if mode == NORMAL:
