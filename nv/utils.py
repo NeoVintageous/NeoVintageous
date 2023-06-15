@@ -1297,3 +1297,26 @@ def find_next_num(view) -> list:
         return [(reg.b + ma.start()) for (reg, ma) in zip(regions, matches)]  # type: ignore
 
     return []
+
+
+def find_symbol(view, r, globally=False):
+    query = view.substr(view.word(r))
+    fname = view.file_name()
+    if not fname:
+        return
+
+    locations = view.window().lookup_symbol_in_index(query)
+    if not locations:
+        return
+
+    fname = fname.replace('\\', '/')
+
+    try:
+        if not globally:
+            location = [hit[2] for hit in locations if fname.endswith(hit[1])][0]
+            return location[0] - 1, location[1] - 1
+        else:
+            # TODO: There might be many symbols with the same name.
+            return locations[0]
+    except IndexError:
+        return

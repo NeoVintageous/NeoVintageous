@@ -106,6 +106,7 @@ from NeoVintageous.nv.utils import calculate_xpos
 from NeoVintageous.nv.utils import extract_file_name
 from NeoVintageous.nv.utils import extract_url
 from NeoVintageous.nv.utils import find_next_num
+from NeoVintageous.nv.utils import find_symbol
 from NeoVintageous.nv.utils import fix_eol_cursor
 from NeoVintageous.nv.utils import fixup_eof
 from NeoVintageous.nv.utils import fold
@@ -4082,37 +4083,8 @@ class nv_vi_select_text_object(TextCommand):
 
 
 class nv_vi_go_to_symbol(TextCommand):
-    """
-    Go to local declaration.
-
-    Differs from Vim because it leverages Sublime Text's ability to actually
-    locate symbols (Vim simply searches from the top of the file).
-    """
-
-    def find_symbol(self, r, globally=False):
-        query = self.view.substr(self.view.word(r))
-        fname = self.view.file_name()
-        if not fname:
-            return
-
-        locations = self.view.window().lookup_symbol_in_index(query)
-        if not locations:
-            return
-
-        fname = fname.replace('\\', '/')
-
-        try:
-            if not globally:
-                location = [hit[2] for hit in locations if fname.endswith(hit[1])][0]
-                return location[0] - 1, location[1] - 1
-            else:
-                # TODO: There might be many symbols with the same name.
-                return locations[0]
-        except IndexError:
-            return
 
     def run(self, edit, mode=None, count=1, register=None, globally=False):
-
         def f(view, s):
             if mode == NORMAL:
                 return Region(location)
@@ -4126,7 +4098,7 @@ class nv_vi_go_to_symbol(TextCommand):
         current_sel = self.view.sel()[0]
         set_selection(self.view, current_sel)
 
-        location = self.find_symbol(current_sel, globally=globally)
+        location = find_symbol(self.view, current_sel, globally=globally)
         if not location:
             return
 
