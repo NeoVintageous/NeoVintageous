@@ -602,7 +602,7 @@ class ViewTestCase(unittest.TestCase):
         if expected is not None and not isinstance(expected, list):
             expected = [expected]
 
-        self.assertEqual(_registers_get(self.view, name), expected, msg or 'register = "' + name)
+        self.assertEqual(_registers_get(self.view, name), expected, msg or 'for register "' + name + '"')
 
         if expected is not None:
             self.assertEqual(_is_register_linewise(name), linewise, msg or 'register (linewise) = "' + name)
