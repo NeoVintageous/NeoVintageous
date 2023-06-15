@@ -1176,8 +1176,6 @@ class ViEnterNormalMode(ViOperatorDef):
 
 @assign(seqs.CTRL_RIGHT_SQUARE_BRACKET, ACTION_MODES)
 class ViJumpToDefinition(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def translate(self, view):
         return _translate_action(view, 'nv_vi_ctrl_right_square_bracket')
@@ -1186,8 +1184,6 @@ class ViJumpToDefinition(ViOperatorDef):
 @assign(seqs.CTRL_W_CTRL_RIGHT_SQUARE_BRACKET, ACTION_MODES)
 @assign(seqs.CTRL_W_RIGHT_SQUARE_BRACKET, ACTION_MODES)
 class ViSplitAndJumpToDefinition(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def translate(self, view):
         return _translate_action(view, 'nv_vi_ctrl_w', {
@@ -1929,8 +1925,6 @@ class ViReverseFindWord(ViMotionDef):
 @assign(seqs.Z, MOTION_MODES)
 @assign(seqs.ZU, MOTION_MODES)
 class ViOpenNameSpace(ViMotionDef):  # TODO This should not be a motion.
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def translate(self, view):
         return {}
@@ -1938,8 +1932,6 @@ class ViOpenNameSpace(ViMotionDef):  # TODO This should not be a motion.
 
 @assign(seqs.DOUBLE_QUOTE, MOTION_MODES)
 class ViOpenRegister(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def translate(self, view):
         return {}
