@@ -1601,20 +1601,12 @@ class nv_vi_x(TextCommand):
 
 class nv_vi_r(TextCommand):
 
-    def make_replacement_text(self, char: str, r: Region) -> str:
-        frags = split_by_newlines(self.view, r)
-        new_frags = []
-        for fr in frags:
-            new_frags.append(char * len(fr))
-
-        return '\n'.join(new_frags)
-
     def run(self, edit, mode=None, count=1, register=None, char=None):
         def f(view, s):
             if mode == INTERNAL_NORMAL:
-                pt = s.b + count
-                text = self.make_replacement_text(char, Region(s.a, pt))
-                view.replace(edit, Region(s.a, pt), text)
+                region = Region(s.a, s.b + count)
+                text = make_replacement_text(view, char, region)
+                view.replace(edit, region, text)
 
                 if char == '\n':
                     return Region(s.b + 1)
@@ -1623,7 +1615,9 @@ class nv_vi_r(TextCommand):
 
             elif mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
                 ends_in_newline = (view.substr(s.end() - 1) == '\n')
-                text = self.make_replacement_text(char, s)
+
+                text = make_replacement_text(view, char, s)
+
                 if ends_in_newline:
                     text += '\n'
 
@@ -1633,6 +1627,14 @@ class nv_vi_r(TextCommand):
                     return Region(s.begin() + 1)
                 else:
                     return Region(s.begin())
+
+        def make_replacement_text(view, char: str, r: Region) -> str:
+            frags = split_by_newlines(view, r)
+            new_frags = []
+            for fr in frags:
+                new_frags.append(char * len(fr))
+
+            return '\n'.join(new_frags)
 
         char = translate_char(char)
         regions_transformer(self.view, f)
