@@ -1855,8 +1855,7 @@ class ViMoveToHardBol(ViMotionDef):
 
 @assign(seqs.GN, MOTION_MODES)
 class ViSearchLastUsedPattern(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
 
@@ -1866,8 +1865,7 @@ class ViSearchLastUsedPattern(ViMotionDef):
 
 @assign(seqs.G_BIG_N, MOTION_MODES)
 class ViSearchLastUsedPatternReverse(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
 
