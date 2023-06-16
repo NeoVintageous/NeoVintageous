@@ -1990,20 +1990,31 @@ class ViSetMark(RequireOneCharMixin, ViOperatorDef):
         })
 
 
-@assign(seqs.T, MOTION_MODES)
-@assign(seqs.F, MOTION_MODES, inclusive=True)
+@assign(seqs.F, MOTION_MODES)
 class ViSearchCharForward(RequireOneCharMixin, ViMotionDef):
-    def __init__(self, inclusive=False, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._serializable.append('inclusive')
         self.scroll_into_view = True
         self.updates_xpos = True
-        self.inclusive = inclusive
 
     def translate(self, view):
         return _translate_motion(view, 'nv_vi_find_in_line', {
             'char': self.inp,
-            'inclusive': self.inclusive
+            'inclusive': True
+        })
+
+
+@assign(seqs.T, MOTION_MODES)
+class ViSearchCharForwardTill(RequireOneCharMixin, ViMotionDef):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.scroll_into_view = True
+        self.updates_xpos = True
+
+    def translate(self, view):
+        return _translate_motion(view, 'nv_vi_find_in_line', {
+            'char': self.inp,
+            'inclusive': False
         })
 
 
