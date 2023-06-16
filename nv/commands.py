@@ -106,6 +106,7 @@ from NeoVintageous.nv.utils import calculate_xpos
 from NeoVintageous.nv.utils import extract_file_name
 from NeoVintageous.nv.utils import extract_url
 from NeoVintageous.nv.utils import find_next_num
+from NeoVintageous.nv.utils import find_symbol
 from NeoVintageous.nv.utils import fix_eol_cursor
 from NeoVintageous.nv.utils import fixup_eof
 from NeoVintageous.nv.utils import fold
@@ -1600,20 +1601,12 @@ class nv_vi_x(TextCommand):
 
 class nv_vi_r(TextCommand):
 
-    def make_replacement_text(self, char: str, r: Region) -> str:
-        frags = split_by_newlines(self.view, r)
-        new_frags = []
-        for fr in frags:
-            new_frags.append(char * len(fr))
-
-        return '\n'.join(new_frags)
-
     def run(self, edit, mode=None, count=1, register=None, char=None):
         def f(view, s):
             if mode == INTERNAL_NORMAL:
-                pt = s.b + count
-                text = self.make_replacement_text(char, Region(s.a, pt))
-                view.replace(edit, Region(s.a, pt), text)
+                region = Region(s.a, s.b + count)
+                text = make_replacement_text(view, char, region)
+                view.replace(edit, region, text)
 
                 if char == '\n':
                     return Region(s.b + 1)
@@ -1622,7 +1615,9 @@ class nv_vi_r(TextCommand):
 
             elif mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
                 ends_in_newline = (view.substr(s.end() - 1) == '\n')
-                text = self.make_replacement_text(char, s)
+
+                text = make_replacement_text(view, char, s)
+
                 if ends_in_newline:
                     text += '\n'
 
@@ -1632,6 +1627,14 @@ class nv_vi_r(TextCommand):
                     return Region(s.begin() + 1)
                 else:
                     return Region(s.begin())
+
+        def make_replacement_text(view, char: str, r: Region) -> str:
+            frags = split_by_newlines(view, r)
+            new_frags = []
+            for fr in frags:
+                new_frags.append(char * len(fr))
+
+            return '\n'.join(new_frags)
 
         char = translate_char(char)
         regions_transformer(self.view, f)
@@ -2030,8 +2033,11 @@ class nv_vi_ctrl_right_square_bracket(WindowCommand):
 
 class nv_vi_ctrl_w(WindowCommand):
 
-    def run(self, **kwargs):
-        window_control(self.window, **kwargs)
+    def run(self, mode=None, **kwargs):
+        if mode == INSERT:
+            self.window.run_command('delete_word', {'forward': False})
+        else:
+            window_control(self.window, mode=mode, **kwargs)
 
 
 class nv_vi_z_enter(TextCommand):
@@ -4079,33 +4085,8 @@ class nv_vi_select_text_object(TextCommand):
 
 
 class nv_vi_go_to_symbol(TextCommand):
-    """
-    Go to local declaration.
-
-    Differs from Vim because it leverages Sublime Text's ability to actually
-    locate symbols (Vim simply searches from the top of the file).
-    """
-
-    def find_symbol(self, r, globally=False):
-        query = self.view.substr(self.view.word(r))
-        fname = self.view.file_name().replace('\\', '/')
-
-        locations = self.view.window().lookup_symbol_in_index(query)
-        if not locations:
-            return
-
-        try:
-            if not globally:
-                location = [hit[2] for hit in locations if fname.endswith(hit[1])][0]
-                return location[0] - 1, location[1] - 1
-            else:
-                # TODO: There might be many symbols with the same name.
-                return locations[0]
-        except IndexError:
-            return
 
     def run(self, edit, mode=None, count=1, register=None, globally=False):
-
         def f(view, s):
             if mode == NORMAL:
                 return Region(location)
@@ -4119,7 +4100,7 @@ class nv_vi_go_to_symbol(TextCommand):
         current_sel = self.view.sel()[0]
         set_selection(self.view, current_sel)
 
-        location = self.find_symbol(current_sel, globally=globally)
+        location = find_symbol(self.view, current_sel, globally=globally)
         if not location:
             return
 
@@ -4135,7 +4116,6 @@ class nv_vi_go_to_symbol(TextCommand):
 
             return
 
-        # Local symbol; select.
         location = self.view.text_point(*location)
 
         with jumplist_updater(self.view):

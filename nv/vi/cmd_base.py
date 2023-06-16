@@ -80,6 +80,10 @@ class ViMotionDef(ViCommandDefBase):
         super().__init__(*args, **kwargs)
         self.updates_xpos = False
         self.scroll_into_view = False
+        self.init()
+
+    def init(self):
+        pass
 
 
 class ViOperatorDef(ViCommandDefBase):
@@ -90,9 +94,13 @@ class ViOperatorDef(ViCommandDefBase):
         self.scroll_into_view = False
         self.motion_required = False
         self.repeatable = False
+        self.init()
+
+    def init(self):
+        pass
 
 
-class RequiresOneCharMixinDef(ViCommandDefBase):
+class RequireOneCharMixin(ViCommandDefBase):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

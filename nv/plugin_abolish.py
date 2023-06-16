@@ -24,7 +24,7 @@ from sublime_plugin import TextCommand
 from NeoVintageous.nv.plugin import register
 from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.vi import seqs
-from NeoVintageous.nv.vi.cmd_base import RequiresOneCharMixinDef
+from NeoVintageous.nv.vi.cmd_base import RequireOneCharMixin
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vim import NORMAL
 
@@ -104,7 +104,7 @@ _ALIASES = {
 
 
 @register(seqs.CR, (NORMAL,))
-class AbolishCoercions(RequiresOneCharMixinDef, ViOperatorDef):
+class AbolishCoercions(RequireOneCharMixin, ViOperatorDef):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.scroll_into_view = True
