@@ -63,8 +63,9 @@ Unimpaired | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/ma
 
 **Additional plugins, install via Package Control:**
 
-- [Line Numbers](https://packagecontrol.io/packages/NeoVintageousLineNumbers): auto disable relative line numbers in Insert mode.
+- [Files](https://packagecontrol.io/packages/NeoVintageousFiles): single key side bar and overlay file commands.
 - [Highlight Line](https://packagecontrol.io/packages/NeoVintageousHighlightLine): auto disable highlight line in Insert and Visual modes.
+- [Line Numbers](https://packagecontrol.io/packages/NeoVintageousLineNumbers): auto disable relative line numbers in Insert mode.
 
 ## Contributing
 
