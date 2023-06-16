@@ -2044,8 +2044,7 @@ class ViITextObject(RequireOneCharMixin, ViMotionDef):
 
 @assign(seqs.BIG_F, MOTION_MODES)
 class ViSearchCharBackward(RequireOneCharMixin, ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
 
@@ -2058,8 +2057,7 @@ class ViSearchCharBackward(RequireOneCharMixin, ViMotionDef):
 
 @assign(seqs.BIG_T, MOTION_MODES)
 class ViSearchCharBackwardTill(RequireOneCharMixin, ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
 
