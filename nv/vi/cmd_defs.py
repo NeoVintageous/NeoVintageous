@@ -1992,8 +1992,7 @@ class ViSetMark(RequireOneCharMixin, ViOperatorDef):
 
 @assign(seqs.F, MOTION_MODES)
 class ViSearchCharForward(RequireOneCharMixin, ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
 
@@ -2006,8 +2005,7 @@ class ViSearchCharForward(RequireOneCharMixin, ViMotionDef):
 
 @assign(seqs.T, MOTION_MODES)
 class ViSearchCharForwardTill(RequireOneCharMixin, ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
 
