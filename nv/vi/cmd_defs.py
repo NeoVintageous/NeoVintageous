@@ -1136,12 +1136,14 @@ class ViEnterVisualBlockMode(ViOperatorDef):
 
 @assign(seqs.GA, ACTION_MODES)
 class ViShowAsciiValueOfChar(ViOperatorDef):
+
     def translate(self, view):
         return _translate_action(view, 'nv_vi_ga')
 
 
 @assign(seqs.GF, (NORMAL,))
 class Vi_gf(ViOperatorDef):
+
     def translate(self, view):
         return _translate_action(view, 'nv_vi_g', {
             'action': 'f'
