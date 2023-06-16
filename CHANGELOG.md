@@ -16,7 +16,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Fixed [#889](https://github.com/NeoVintageous/NeoVintageous/issues/889): `{visual}G` should extend to first non-blank character
 * Fixed [#890](https://github.com/NeoVintageous/NeoVintageous/issues/890): `G` should jump to first non-blank character
 
-## 1.30.1 - Unreleased
+## 1.30.1 - 2023-06-16
 
 * Fixed [#887](https://github.com/NeoVintageous/NeoVintageous/issues/887): Using arrow doesn't scroll the view in visual block mode
 
