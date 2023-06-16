@@ -2138,9 +2138,9 @@ class ViSearchBackward(ViMotionDef):
     def translate(self, view):
         if self.accept_input:
             return _translate_motion(view, 'nv_vi_question_mark')
-        else:
-            # We'll end up here, for example, when repeating via '.'.
-            return ViSearchBackwardImpl(term=self.inp[:-4]).translate(view)
+
+        # We'll end up here, for example, when repeating via '.'.
+        return ViSearchBackwardImpl(term=self.inp[:-4]).translate(view)
 
 
 class ViSearchBackwardImpl(ViMotionDef):
