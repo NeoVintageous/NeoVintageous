@@ -29,7 +29,7 @@ from NeoVintageous.nv.settings import set_glue_until_normal_mode
 from NeoVintageous.nv.settings import set_normal_insert_count
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.vi import seqs
-from NeoVintageous.nv.vi.cmd_base import RequiresOneCharMixinDef
+from NeoVintageous.nv.vi.cmd_base import RequireOneCharMixin
 from NeoVintageous.nv.vi.cmd_base import ViMotionDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vi.keys import assign
@@ -1101,7 +1101,7 @@ class ViScrollByLinesDown(ViMotionDef):
 
 
 @assign(seqs.AT, ACTION_MODES)
-class ViOpenMacrosForRepeating(RequiresOneCharMixinDef, ViOperatorDef):
+class ViOpenMacrosForRepeating(RequireOneCharMixin, ViOperatorDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
@@ -1113,7 +1113,7 @@ class ViOpenMacrosForRepeating(RequiresOneCharMixinDef, ViOperatorDef):
 
 
 @assign(seqs.Q, ACTION_MODES)
-class ViToggleMacroRecorder(RequiresOneCharMixinDef, ViOperatorDef):
+class ViToggleMacroRecorder(RequireOneCharMixin, ViOperatorDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
@@ -1450,7 +1450,7 @@ class ViMoveScreenUp(ViMotionDef):
 
 
 @assign(seqs.BACKTICK, MOTION_MODES)
-class ViGotoExactMarkXpos(RequiresOneCharMixinDef, ViMotionDef):
+class ViGotoExactMarkXpos(RequireOneCharMixin, ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
@@ -1564,7 +1564,7 @@ class ViRepeatCharSearchForward(ViMotionDef):
 
 
 @assign(seqs.QUOTE, MOTION_MODES)
-class ViGotoMark(RequiresOneCharMixinDef, ViMotionDef):
+class ViGotoMark(RequireOneCharMixin, ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
@@ -1969,7 +1969,7 @@ class ViGotoEof(ViMotionDef):
 
 
 @assign(seqs.R, ACTION_MODES)
-class ViReplaceCharacters(RequiresOneCharMixinDef, ViOperatorDef):
+class ViReplaceCharacters(RequireOneCharMixin, ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
@@ -1982,7 +1982,7 @@ class ViReplaceCharacters(RequiresOneCharMixinDef, ViOperatorDef):
 
 
 @assign(seqs.M, ACTION_MODES)
-class ViSetMark(RequiresOneCharMixinDef, ViOperatorDef):
+class ViSetMark(RequireOneCharMixin, ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
 
@@ -1994,7 +1994,7 @@ class ViSetMark(RequiresOneCharMixinDef, ViOperatorDef):
 
 @assign(seqs.T, MOTION_MODES)
 @assign(seqs.F, MOTION_MODES, inclusive=True)
-class ViSearchCharForward(RequiresOneCharMixinDef, ViMotionDef):
+class ViSearchCharForward(RequireOneCharMixin, ViMotionDef):
     def __init__(self, inclusive=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._serializable.append('inclusive')
@@ -2010,7 +2010,7 @@ class ViSearchCharForward(RequiresOneCharMixinDef, ViMotionDef):
 
 
 @assign(seqs.A, (OPERATOR_PENDING, VISUAL, VISUAL_LINE, VISUAL_BLOCK))
-class ViATextObject(RequiresOneCharMixinDef, ViMotionDef):
+class ViATextObject(RequireOneCharMixin, ViMotionDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
@@ -2023,7 +2023,7 @@ class ViATextObject(RequiresOneCharMixinDef, ViMotionDef):
 
 
 @assign(seqs.I, (OPERATOR_PENDING, VISUAL, VISUAL_LINE, VISUAL_BLOCK))
-class ViITextObject(RequiresOneCharMixinDef, ViMotionDef):
+class ViITextObject(RequireOneCharMixin, ViMotionDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
@@ -2037,7 +2037,7 @@ class ViITextObject(RequiresOneCharMixinDef, ViMotionDef):
 
 @assign(seqs.BIG_T, MOTION_MODES)
 @assign(seqs.BIG_F, MOTION_MODES, inclusive=True)
-class ViSearchCharBackward(RequiresOneCharMixinDef, ViMotionDef):
+class ViSearchCharBackward(RequireOneCharMixin, ViMotionDef):
     def __init__(self, inclusive=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._serializable.append('inclusive')

@@ -100,7 +100,7 @@ class ViOperatorDef(ViCommandDefBase):
         pass
 
 
-class RequiresOneCharMixinDef(ViCommandDefBase):
+class RequireOneCharMixin(ViCommandDefBase):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
