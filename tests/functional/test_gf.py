@@ -33,6 +33,7 @@ class Test_gf(unittest.FunctionalTestCase):
         tests = [
             ('x path/to/READ|ME.md y', 'x path/to/READ|ME.md y', 'path/to/README.md'),
             ('|/tmp/fizz.txt', '|/tmp/fizz.txt', '/tmp/fizz.txt'),
+            ('|\\tmp\\fizz.txt', '|\\tmp\\fizz.txt', '\\tmp\\fizz.txt'),
             ('/|tmp/fizz.txt', '/|tmp/fizz.txt', '/tmp/fizz.txt'),
             ('|stop.txt.', '|stop.txt.', 'stop.txt'),
             ('|comma.txt,', '|comma.txt,', 'comma.txt'),
@@ -90,11 +91,16 @@ class Test_gf(unittest.FunctionalTestCase):
         self.eq('|tests/fixtures/foo.txt', 'n_gf', '|tests/fixtures/foo.txt')
         self.assertBell('E447: Cannot find file \'tests/fixtures/foo.txt\' in path')
 
+    @unittest.mock_session()
     @unittest.mock_bell()
     @unittest.mock.patch('sublime.Window.open_file')
     def test_gf_found(self, opener):
         fixture = self.fixturePath('fizz.txt')
-        self.eq('|' + fixture, 'n_gf', '|' + fixture)
+        self.feed(':cd ' + self.rootPath())
+        if unittest.is_windows():
+            self.eq('|tests\\fixtures\\fizz.txt', 'n_gf', '|tests\\fixtures\\fizz.txt')
+        else:
+            self.eq('|tests/fixtures/fizz.txt', 'n_gf', '|tests/fixtures/fizz.txt')
         opener.assert_called_with(fixture, 0)
         self.assertNoBell()
 

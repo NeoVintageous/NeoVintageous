@@ -42,7 +42,6 @@ class Test_gF(unittest.FunctionalTestCase):
         for test in tests:
             self.eq(test[0], 'n_gF', test[1])
             self.assertOpened(opener, test[2], test[3], test[4])
-
         self.assertNoBell()
 
     @unittest.mock_bell()
@@ -53,10 +52,15 @@ class Test_gF(unittest.FunctionalTestCase):
         self.assertMockNotCalled(opener)
         self.assertBell('E446: No file name under cursor', count=2)
 
+    @unittest.mock_session()
     @unittest.mock_bell()
     @unittest.mock.patch('sublime.Window.open_file')
     def test_gF_found(self, opener):
         fixture = self.fixturePath('fizz.txt') + ':3'
-        self.eq('|' + fixture, 'n_gF', '|' + fixture)
+        self.feed(':cd ' + self.rootPath())
+        if unittest.is_windows():
+            self.eq('|tests\\fixtures\\fizz.txt:3', 'n_gF', '|tests\\fixtures\\fizz.txt:3')
+        else:
+            self.eq('|tests/fixtures/fizz.txt:3', 'n_gF', '|tests/fixtures/fizz.txt:3')
         opener.assert_called_with(fixture, 1)
         self.assertNoBell()

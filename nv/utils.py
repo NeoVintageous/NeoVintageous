@@ -424,7 +424,7 @@ def extract_file_name(view, encode_position: bool):
     match = re.match(
         '^\\s*'
         '(?:[a-z]+\\:)?'                    # strip protocol e.g. "open:"
-        '(?P<path>[a-zA-Z0-9\\._/-]+)'      # path
+        '(?P<path>[a-zA-Z0-9\\.\\\\_/-]+)'  # path
         '(?:(?:\\:|@|\\()(?P<row>\\d+))?'   # row
         '(?:\\:(?P<col>\\d+))?',            # col
         text

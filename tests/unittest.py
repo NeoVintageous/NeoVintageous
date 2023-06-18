@@ -99,6 +99,10 @@ def is_osx() -> bool:
     return _platform() == 'osx'
 
 
+def is_windows() -> bool:
+    return _platform() == 'windows'
+
+
 class ViewTestCase(unittest.TestCase):
 
     def setUp(self) -> None:
@@ -251,6 +255,9 @@ class ViewTestCase(unittest.TestCase):
 
     def fixturePath(self, *args) -> str:
         return os.path.join(os.path.dirname(__file__), 'fixtures', *args)
+
+    def rootPath(self) -> str:
+        return os.path.realpath(os.path.dirname(os.path.dirname(__file__)))
 
     def assignFileName(self, rel_file_name) -> None:
         with tempfile.TemporaryDirectory() as tmpdirname:
