@@ -17,6 +17,8 @@
 
 import os
 
+from sublime import ENCODED_POSITION
+
 from NeoVintageous.nv.polyfill import goto_definition_side_by_side
 from NeoVintageous.nv.polyfill import has_dirty_buffers
 from NeoVintageous.nv.polyfill import set_selection
@@ -686,9 +688,9 @@ def window_control(window, action: str, mode=None, count: int = 1, register=None
         raise ValueError('unknown action')
 
 
-def window_open_file(window, file) -> None:
+def window_open_file(window, file: str, row: int = None, col: int = None) -> bool:
     if not file:
-        return
+        return False
 
     if not os.path.isabs(file):
         cwd = get_cmdline_cwd()
@@ -696,5 +698,15 @@ def window_open_file(window, file) -> None:
         if os.path.isdir(cwd):
             file = os.path.join(cwd, file)
 
-    if os.path.isfile(file):
-        window.open_file(file)
+    if not os.path.isfile(file):
+        return False
+
+    flags = 0
+    if row:
+        flags = ENCODED_POSITION
+        file += ':' + str(row)
+        file += ':' + str(col) if col else ''
+
+    window.open_file(file, flags)
+
+    return True

@@ -21,10 +21,11 @@ from NeoVintageous.tests import unittest
 class Test_gf(unittest.FunctionalTestCase):
 
     def assertOpened(self, opener, file: str) -> None:
-        opener.assert_called_with(self.view.window(), file)
+        opener.assert_called_with(self.view.window(), file, None, None)
         # Reset to avoid false-positives in subsequent calls.
         opener.reset_mock()
 
+    @unittest.mock_bell()
     @unittest.mock.patch.dict(unittest.os.environ, {"HOME": "/home"})
     @unittest.mock.patch('NeoVintageous.nv.commands.window_open_file')
     def test_gf(self, opener):
@@ -57,19 +58,45 @@ class Test_gf(unittest.FunctionalTestCase):
             ('/fizz.txt /bu|zz.txt', '/fizz.txt /bu|zz.txt', '/buzz.txt'),
             ('x   /fizz.txt   /buzz|.txt   x', 'x   /fizz.txt   /buzz|.txt   x', '/buzz.txt'),
             ('|parans.txt(1).', '|parans.txt(1).', 'parans.txt'),
+            ('|row.txt(42)', '|row.txt(42)', 'row.txt'),
+            ('|row.txt:42', '|row.txt:42', 'row.txt'),
+            ('|row.txt@42', '|row.txt@42', 'row.txt'),
+            ('|rowcol.txt:4:2', '|rowcol.txt:4:2', 'rowcol.txt'),
         ]
 
         for test in tests:
             self.eq(test[0], 'n_gf', test[1])
             self.assertOpened(opener, test[2])
 
-    @unittest.mock_status_message()
+        self.assertNoBell()
+
+    @unittest.mock_bell()
     @unittest.mock.patch('NeoVintageous.nv.commands.window_open_file')
     def test_gf_no_file_name_under_cursor(self, opener):
         self.eq('|', 'n_gf', '|')
         self.eq('$|$$', 'n_gf', '$|$$')
         self.assertMockNotCalled(opener)
-        self.assertStatusMessage('E446: No file name under cursor', count=2)
+        self.assertBell('E446: No file name under cursor', count=2)
+
+    @unittest.mock_bell()
+    @unittest.mock.patch('NeoVintageous.nv.commands.window_open_file')
+    def test_gf_should_emit_bell_if_file_not_opened(self, opener):
+        opener.return_value = False
+        self.eq('|fizz.txt', 'n_gf', '|fizz.txt')
+        self.assertBell('E447: Cannot find file \'fizz.txt\' in path')
+
+    @unittest.mock_bell()
+    def test_gf_not_found(self):
+        self.eq('|tests/fixtures/foo.txt', 'n_gf', '|tests/fixtures/foo.txt')
+        self.assertBell('E447: Cannot find file \'tests/fixtures/foo.txt\' in path')
+
+    @unittest.mock_bell()
+    @unittest.mock.patch('sublime.Window.open_file')
+    def test_gf_found(self, opener):
+        fixture = self.fixturePath('fizz.txt')
+        self.eq('|' + fixture, 'n_gf', '|' + fixture)
+        opener.assert_called_with(fixture, 0)
+        self.assertNoBell()
 
     @unittest.mock.patch.dict(unittest.os.environ, {"HOME": "/home"})
     @unittest.mock.patch('NeoVintageous.nv.commands.window_open_file')

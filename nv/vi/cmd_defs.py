@@ -1142,11 +1142,20 @@ class ViShowAsciiValueOfChar(ViOperatorDef):
 
 
 @assign(seqs.GF, ACTION_MODES)
-class Vi_gf(ViOperatorDef):
+class Vigf(ViOperatorDef):
 
     def translate(self, view):
         return _translate_action(view, 'nv_vi_g', {
             'action': 'f'
+        })
+
+
+@assign(seqs.G_BIG_F, ACTION_MODES)
+class VigF(ViOperatorDef):
+
+    def translate(self, view):
+        return translate_action(view, 'nv_vi_g', {
+            'action': 'F'
         })
 
 

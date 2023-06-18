@@ -1167,13 +1167,13 @@ def mock_bell():
             self.bell = args[-1]
             self.assert_bell_count = 0
 
-            def _assertBell(msg: str = None) -> None:
+            def _assertBell(msg: str = None, count: int = 1) -> None:
                 if msg is None:
                     self.bell.assert_called_with()
                 else:
                     self.bell.assert_called_with(msg)
 
-                self.assert_bell_count += 1
+                self.assert_bell_count += count
                 self.assertEqual(
                     self.bell.call_count,
                     self.assert_bell_count,
@@ -2104,6 +2104,7 @@ _SEQ2CMD = {
     'gC}':          {'command': 'nv_feed_key'},  # noqa: E241
     'gD':           {'command': 'nv_feed_key'},  # noqa: E241
     'gE':           {'command': 'nv_feed_key'},  # noqa: E241
+    'gF':           {'command': 'nv_feed_key'},  # noqa: E241
     'gH':           {'command': 'nv_feed_key'},  # noqa: E241
     'gJ':           {'command': 'nv_feed_key'},  # noqa: E241
     'gN':           {'command': 'nv_feed_key'},  # noqa: E241

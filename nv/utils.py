@@ -397,7 +397,7 @@ def wrapscan(view, forward: bool = True):
                     break
 
 
-def extract_file_name(view):
+def extract_file_name(view, encode_position: bool):
     sel = view.sel()[-1]
 
     # Expand to non-whitespace under current cursor or after the cursor.
@@ -421,12 +421,28 @@ def extract_file_name(view):
     # Trailing punctuation characters ".,:;!" are ignored.
     text = text.rstrip('.,:;!')
 
-    # Strip preceding text followed by colon e.g. report:/path.
-    match = re.match('^\\s*(?:[a-z]+\\:)?([a-zA-Z0-9\\._/-]+)', text)
+    match = re.match(
+        '^\\s*'
+        '(?:[a-z]+\\:)?'                    # strip protocol e.g. "open:"
+        '(?P<path>[a-zA-Z0-9\\._/-]+)'      # path
+        '(?:(?:\\:|@|\\()(?P<row>\\d+))?'   # row
+        '(?:\\:(?P<col>\\d+))?',            # col
+        text
+    )
 
     if match:
-        file_name = match.group(1)
-        return file_name
+        path = match.group('path')
+        if encode_position:
+            row = match.group('row')
+            col = match.group('col')
+
+            return (
+                path,
+                int(row) if row else row,
+                int(col) if col else col
+            )
+
+        return (path, None, None)
 
 
 def extract_url(view):

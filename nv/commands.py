@@ -1999,16 +1999,18 @@ class nv_vi_g_big_t(WindowCommand):
 
 class nv_vi_g(TextCommand):
 
-    def run(self, edit, action, mode=None, count=None, register=None, **kwargs):
-        if action == 'f':
-            file_name = extract_file_name(self.view)
+    def run(self, edit, action, mode=None, count=None, register=None):
+        if action in ('f', 'F'):
+            file_name = extract_file_name(
+                self.view,
+                encode_position=action == 'F')
             if not file_name:
                 ui_bell('E446: No file name under cursor')
                 return
 
-            window_open_file(self.view.window(), file_name)
-        else:
-            raise ValueError('unknown action')
+            if not window_open_file(self.view.window(), *file_name):
+                ui_bell('E447: Cannot find file \'%s\' in path' % file_name[0])
+                return
 
 
 class nv_vi_ctrl_hat(WindowCommand):
