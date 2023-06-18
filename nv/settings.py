@@ -252,7 +252,6 @@ def get_register(view) -> str:
 
 
 def set_register(view, value: str) -> None:
-    assert len(str(value)) == 1, '`value` must be a character'  # TODO Remove assertion
     set_session_view_value(view, 'register', value)
     set_capture_register(view, False)
 
