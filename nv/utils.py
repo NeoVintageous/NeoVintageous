@@ -1292,7 +1292,7 @@ def find_next_num(view) -> list:
     number_pattern = re.compile('\\d')
     matches = [number_pattern.search(text) for text in lines]
     if all(matches):
-        return [(reg.b + ma.start()) for (reg, ma) in zip(regions, matches)]  # type: ignore
+        return [(reg.b + ma.start()) for (reg, ma) in zip(regions, matches)]  # type: ignore[union-attr]
 
     return []
 

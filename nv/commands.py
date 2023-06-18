@@ -1774,8 +1774,10 @@ class nv_vi_o(TextCommand):
 class nv_vi_big_x(TextCommand):
 
     def run(self, edit, mode=None, count=1, register=None):
+        abort = False
+
         def f(view, s):
-            nonlocal abort  # type: ignore
+            nonlocal abort
             if mode == INTERNAL_NORMAL:
                 if view.line(s.b).empty():
                     abort = True
@@ -1791,7 +1793,6 @@ class nv_vi_big_x(TextCommand):
                 return Region(view.line(s.b).a, view.full_line(s.a - 1).b)
             return Region(s.begin(), s.end())
 
-        abort = False
         regions_transformer(self.view, f)
 
         registers_op_delete(self.view, register=register, linewise=True)
