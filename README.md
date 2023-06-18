@@ -67,6 +67,11 @@ Unimpaired | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/ma
 - [Highlight Line](https://packagecontrol.io/packages/NeoVintageousHighlightLine): auto disable highlight line in Insert and Visual modes.
 - [Line Numbers](https://packagecontrol.io/packages/NeoVintageousLineNumbers): auto disable relative line numbers in Insert mode.
 
+**Enhanced support, install via Package Control:**
+
+- [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter3): required for jump to lint error commands.
+- [Origami](https://github.com/SublimeText/Origami): required for some window commands.
+
 ## Contributing
 
 See [CONTRIBUTING.md](.github/CONTRIBUTING.md).
