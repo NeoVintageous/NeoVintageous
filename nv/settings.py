@@ -270,7 +270,6 @@ def get_xpos(view) -> int:
 
 
 def set_xpos(view, value: int) -> None:
-    assert isinstance(value, int), '`value` must be an int'  # TODO Remove assertion
     set_session_view_value(view, 'xpos', value)
 
 
