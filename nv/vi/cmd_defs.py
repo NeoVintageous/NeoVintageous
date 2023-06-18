@@ -1154,7 +1154,7 @@ class Vigf(ViOperatorDef):
 class VigF(ViOperatorDef):
 
     def translate(self, view):
-        return translate_action(view, 'nv_vi_g', {
+        return _translate_action(view, 'nv_vi_g', {
             'action': 'F'
         })
 
