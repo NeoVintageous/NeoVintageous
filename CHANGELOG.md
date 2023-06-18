@@ -6,6 +6,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `gf` visual, visual line, and visual block mode
+* Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `gf` for Unix the '~' character is expanded, like in "~user/file"
+* Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `gf` environment variables are expanded.
 * Added [#893](https://github.com/NeoVintageous/NeoVintageous/issues/893): Reveal side bar command for use with mappings: `nnoremap <leader><leader> :Neovintageous action=reveal_side_bar<CR>`
 * Added [#888](https://github.com/NeoVintageous/NeoVintageous/issues/888): `gg` in visual block mode
 * Added [#888](https://github.com/NeoVintageous/NeoVintageous/issues/888): `G` in visual block mode
@@ -13,6 +16,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `gf` doesn't work in some cases
 * Fixed [#889](https://github.com/NeoVintageous/NeoVintageous/issues/889): `{visual}G` should extend to first non-blank character
 * Fixed [#890](https://github.com/NeoVintageous/NeoVintageous/issues/890): `G` should jump to first non-blank character
 

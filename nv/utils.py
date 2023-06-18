@@ -56,6 +56,8 @@ from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import is_visual_mode
+from sublime import CLASS_WORD_END
+from sublime import CLASS_WORD_START
 
 
 def is_view(view) -> bool:
@@ -396,23 +398,35 @@ def wrapscan(view, forward: bool = True):
 
 
 def extract_file_name(view):
-    sel = view.sel()[0]
-    line = view.substr(view.line(sel))
-    pos = len(line) - len(line.strip()) + 1
-    col = view.rowcol(sel.b)[1]
+    sel = view.sel()[-1]
 
-    if pos > col:
-        return
+    # Expand to non-whitespace under current cursor or after the cursor.
+    if sel.empty():
+        begin = sel.begin()
 
-    matches = re.findall('[^\\s]+', line)
-    if matches:
-        for match in matches:
-            pos += len(match)
-            if pos >= col:
-                if not re.match('^[a-zA-Z0-9\\._/-]+$', match):
-                    return
+        if view.substr(begin) == ' ':
+            begin = next_non_blank(view, begin)
 
-                return match
+        sel = view.expand_by_class(
+            begin,
+            CLASS_WORD_START | CLASS_WORD_END,
+            separators=" ")
+
+    text = view.substr(sel)
+
+    # For Unix the '~' character is expanded, like in "~user/file".
+    # Environment variables are expanded too |expand-env|.
+    text = expand_path(text)
+
+    # Trailing punctuation characters ".,:;!" are ignored.
+    text = text.rstrip('.,:;!')
+
+    # Strip preceding text followed by colon e.g. report:/path.
+    match = re.match('^\\s*(?:[a-z]+\\:)?([a-zA-Z0-9\\._/-]+)', text)
+
+    if match:
+        file_name = match.group(1)
+        return file_name
 
 
 def extract_url(view):
