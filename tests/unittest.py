@@ -727,7 +727,7 @@ class ViewTestCase(unittest.TestCase):
             self.view.get_status('vim-recording')).strip()
 
     def assertStatusLineEqual(self, expected, msg: str = None) -> None:
-        self.assertEqual(self._statusLine(), expected, msg=msg)
+        self.assertEqual(expected, self._statusLine(), msg=msg)
 
     def assertStatusLineRegex(self, expected_regex: str, msg: str = None) -> None:
         self.assertRegex(self._statusLine(), expected_regex, msg=msg)
