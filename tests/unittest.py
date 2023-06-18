@@ -1139,10 +1139,8 @@ def _make_region(view, a: int, b: int = None) -> Region:
     except (TypeError, ValueError):
         pass
 
-    if isinstance(a, int) and b is None:
+    if b is None:
         pass
-    elif not (isinstance(a, int) and isinstance(b, int)):
-        raise ValueError('a and b arguments must be integers or a tuple (row, col)')
 
     if b is not None:
         return Region(a, b)

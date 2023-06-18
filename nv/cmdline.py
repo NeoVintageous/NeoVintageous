@@ -85,7 +85,7 @@ class Cmdline():
         if self._callbacks and callback in self._callbacks:
             self._callbacks[callback](*args)
 
-    def _is_valid_input(self, cmdline: str) -> bool:
+    def _is_valid_input(self, cmdline) -> bool:
         return isinstance(cmdline, str) and len(cmdline) > 0 and cmdline[0] == self._type
 
     def _filter_input(self, inp: str) -> str:

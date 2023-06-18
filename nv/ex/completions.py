@@ -137,7 +137,7 @@ class _SettingCompletion():
             self._update(edit, cmd, prefix)
 
     def _update(self, edit, cmd: str, prefix: str) -> None:
-        if (_SettingCompletion.prefix is None) and prefix:
+        if (_SettingCompletion.prefix is None) and prefix:  # type: ignore[redundant-expr]
             _SettingCompletion.prefix = prefix
             _SettingCompletion.is_stale = True
         elif _SettingCompletion.prefix is None:
