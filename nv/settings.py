@@ -274,7 +274,11 @@ def set_xpos(view, value: int) -> None:
     set_session_view_value(view, 'xpos', value)
 
 
-def set_repeat_data(view, data: tuple) -> None:
+def set_repeat_data(view, data) -> None:
+    # :param data:
+    #   The repeat data.
+    #   A tuple or list.
+    #
     # The structure of {data}:
     #
     #   (
