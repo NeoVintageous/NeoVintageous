@@ -304,8 +304,6 @@ def set_repeat_data(view, data) -> None:
     #   ( "vi", "x", "mode_normal", (0, 4, "mode_visual") )
     #   ( "native", ("sequence", {"commands": [["insert", {"characters": "fizz"}], ["left_delete", None]]}), "mode_insert", None )  # noqa: 501
     #
-    assert isinstance(data, tuple) or isinstance(data, list), 'bad call'  # TODO remove assertion
-    assert len(data) == 4, 'bad call'  # TODO remove assertion
     set_session_view_value(view, 'repeat_data', data)
 
 
