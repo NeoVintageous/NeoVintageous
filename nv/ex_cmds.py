@@ -78,6 +78,7 @@ from NeoVintageous.nv.utils import adding_regions
 from NeoVintageous.nv.utils import expand_path
 from NeoVintageous.nv.utils import expand_to_realpath
 from NeoVintageous.nv.utils import get_line_count
+from NeoVintageous.nv.utils import glue_undo_groups
 from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import row_at
@@ -740,19 +741,18 @@ def ex_snoremap(lhs: str = None, rhs: str = None, **kwargs) -> None:
 def ex_sort(view, options: str = '', **kwargs) -> None:
     case_sensitive = True if 'i' not in options else False
 
-    view.run_command('mark_undo_groups_for_gluing')
-    view.run_command('sort_lines', {'case_sensitive': case_sensitive})
+    with glue_undo_groups(view):
+        view.run_command('sort_lines', {'case_sensitive': case_sensitive})
 
-    if 'u' in options:
-        view.run_command('permute_lines', {'operation': 'unique'})
+        if 'u' in options:
+            view.run_command('permute_lines', {'operation': 'unique'})
 
-    def f(view, s: Region) -> Region:
-        return Region(next_non_blank(view, s.begin()))
+        def f(view, s: Region) -> Region:
+            return Region(next_non_blank(view, s.begin()))
 
-    regions_transformer(view, f)
-    enter_normal_mode(view)
-    view.show(view.sel()[-1], False)
-    view.run_command('glue_marked_undo_groups')
+        regions_transformer(view, f)
+        enter_normal_mode(view)
+        view.show(view.sel()[-1], False)
 
 
 def ex_split(window, file: str = None, **kwargs) -> None:

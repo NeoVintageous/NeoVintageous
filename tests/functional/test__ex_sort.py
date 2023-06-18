@@ -40,3 +40,10 @@ class Test_ex_sort(unittest.FunctionalTestCase):
         self.eq('9\n|7\n3\n5|\n1', ":'<,'>sort", 'n_9\n|3\n5\n7\n1')
         self.eq('9\n|7\n    3\n5|\n1', ":'<,'>sort", 'n_9\n    |3\n5\n7\n1')
         self.eq('6\n7\n|1\nb\n1\nb\na\nA\na\nB|\n2\n3', ":'<,'>sort iu", 'n_6\n7\n|1\na\nA\nb\nB\n2\n3')
+
+    def test_sort_undo_glues_groups(self):
+        self.normal('|b\n3\na\n3\nb\n3\nA\n1\nB')
+        self.feed(':sort u')
+        self.assertNormal('|1\n3\nA\nB\na\nb')
+        self.feed('u')
+        self.assertNormal('|b\n3\na\n3\nb\n3\nA\n1\nB')

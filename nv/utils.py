@@ -334,6 +334,13 @@ def gluing_undo_groups(view):
 
 
 @contextmanager
+def glue_undo_groups(view):
+    view.run_command('mark_undo_groups_for_gluing')
+    yield
+    view.run_command('glue_marked_undo_groups')
+
+
+@contextmanager
 def adding_regions(view, name: str, regions: list, scope_name: str):
     view.add_regions(name, regions, scope_name)
 
