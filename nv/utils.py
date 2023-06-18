@@ -1318,3 +1318,14 @@ def find_symbol(view, r, globally=False):
             return locations[0]
     except IndexError:
         return
+
+
+def expand_path(path: str) -> str:
+    expanded = os.path.expanduser(path)
+    expanded = os.path.expandvars(expanded)
+
+    return expanded
+
+
+def expand_to_realpath(path: str) -> str:
+    return os.path.realpath(expand_path(path))

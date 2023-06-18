@@ -75,6 +75,8 @@ from NeoVintageous.nv.settings import set_last_substitute_string
 from NeoVintageous.nv.settings import set_setting
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import adding_regions
+from NeoVintageous.nv.utils import expand_path
+from NeoVintageous.nv.utils import expand_to_realpath
 from NeoVintageous.nv.utils import get_line_count
 from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transformer
@@ -185,13 +187,6 @@ def ex_buffers(window, **kwargs) -> None:
     output.show()
 
 
-def _expand_to_realpath(path: str) -> str:
-    expanded_user = os.path.expanduser(path)
-    expanded_vars = os.path.expandvars(expanded_user)
-
-    return os.path.realpath(expanded_vars)
-
-
 @_init_cwd
 def ex_cd(view, path=None, **kwargs) -> None:
     if not path:
@@ -201,7 +196,7 @@ def ex_cd(view, path=None, **kwargs) -> None:
         if fname:
             path = os.path.dirname(fname)
     else:
-        path = _expand_to_realpath(path)
+        path = expand_to_realpath(path)
 
     if not os.path.isdir(path):
         return status_message("E344: Can't find directory \"%s\" in cdpath" % path)
@@ -306,7 +301,7 @@ def ex_double_ampersand(view, edit, flags, count: int, line_range: RangeNode, **
 @_init_cwd
 def ex_edit(window, view, file_name: str = None, forceit: bool = False, **kwargs) -> None:
     if file_name:
-        file_name = os.path.expanduser(os.path.expandvars(file_name))
+        file_name = expand_path(file_name)
 
         if view.is_dirty() and not forceit:
             return status_message("E37: No write since last change")
@@ -1080,7 +1075,7 @@ def _do_write_file(window, view, file_name: str, forceit: bool, line_range: Rang
             return
 
     try:
-        file_path = os.path.abspath(os.path.expandvars(os.path.expanduser(file_name)))
+        file_path = os.path.abspath(expand_path(file_name))
         with open(file_path, 'wt') as f:
             f.write(_get_write_buffer(view, line_range))
 

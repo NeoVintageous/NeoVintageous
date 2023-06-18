@@ -25,6 +25,7 @@ from NeoVintageous.nv.options import get_option_completions
 from NeoVintageous.nv.polyfill import view_to_region
 from NeoVintageous.nv.polyfill import view_to_str
 from NeoVintageous.nv.settings import get_cmdline_cwd
+from NeoVintageous.nv.utils import expand_path
 from NeoVintageous.nv.vim import is_ex_mode
 
 
@@ -45,11 +46,11 @@ _completion_settings = (
 
 def _iter_paths(prefix=None, from_dir=None, only_dirs: bool = False):
     if prefix:
-        start_at = os.path.expandvars(os.path.expanduser(prefix))
+        start_at = expand_path(prefix)
         # TODO: implement env var completion.
         if not prefix.startswith(('%', '$', '~')):
             start_at = os.path.join(from_dir, prefix)
-            start_at = os.path.expandvars(os.path.expanduser(start_at))
+            start_at = expand_path(start_at)
 
         prefix_split = os.path.split(prefix)
         prefix_len = len(prefix_split[1])
@@ -64,7 +65,7 @@ def _iter_paths(prefix=None, from_dir=None, only_dirs: bool = False):
                 yield prefix + (item + suffix)[prefix_len:]
     else:
         prefix = from_dir
-        start_at = os.path.expandvars(os.path.expanduser(prefix))
+        start_at = expand_path(prefix)
         for path in sorted(glob.iglob(start_at + '*')):
             if not only_dirs or os.path.isdir(path):
                 yield path[len(start_at):] + ('' if not os.path.isdir(path) else '/')
