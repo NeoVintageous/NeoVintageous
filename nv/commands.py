@@ -2567,7 +2567,7 @@ class nv_vi_ctrl_x_ctrl_l(TextCommand):
         escaped = re.escape(prefix)
         matches = []  # type: list
         while end > 0:
-            match = reverse_search(self.view, r'^\s*{0}'.format(escaped), 0, end, flags=0)
+            match = reverse_search(self.view, '^\\s*{0}'.format(escaped), 0, end, flags=0)
             if (match is None) or (len(matches) == self.MAX_MATCHES):
                 break
             line = self.view.line(match.begin())
