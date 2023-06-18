@@ -140,9 +140,6 @@ def find_last_in_range(view, term: str, start: int, end: int, flags: int = 0):
 #
 # TODO should word the same as view.find() and return Region(-1, -1), rather than None, when not found
 def reverse_search(view, term: str, start: int, end: int, flags: int = 0):
-    assert isinstance(start, int) or start is None
-    assert isinstance(end, int) or end is None
-
     start = start if (start is not None) else 0
     end = end if (end is not None) else view.size()
 
@@ -174,9 +171,6 @@ def reverse_search(view, term: str, start: int, end: int, flags: int = 0):
 
 
 def reverse_search_by_pt(view, term: str, start: int, end: int, flags: int = 0):
-    assert isinstance(start, int) or start is None
-    assert isinstance(end, int) or end is None
-
     start = start if (start is not None) else 0
     end = end if (end is not None) else view.size()
 

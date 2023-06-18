@@ -277,7 +277,7 @@ class ViewTestCase(unittest.TestCase):
                     if a is None:
                         a = x - i
                     else:
-                        v_sels.append(Region(a, x - i))
+                        v_sels.append(Region(a, x - i))  # type: ignore[unreachable]
                         a = None
 
                 self.view.sel().clear()
@@ -777,7 +777,7 @@ class ViewTestCase(unittest.TestCase):
             def prompt(cmdline, pattern: str) -> None:
                 args = []  # type: list
                 if cmdline._mock_pattern is not None:
-                    args.append(cmdline._mock_pattern)
+                    args.append(cmdline._mock_pattern)  # type: ignore[unreachable]
 
                 cmdline._callbacks[cmdline._mock_event](*args)  # type: ignore[attr-defined]
                 _set_reset_during_init(self.view, True)

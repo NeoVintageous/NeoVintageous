@@ -104,8 +104,8 @@ def _resolve_line_reference(view, line_reference, current: int = 0) -> int:
     for token in line_reference:
         # Make sure a search forward doesn't overlap with
         # a match obtained right before this search.
-        if isinstance(last_token, TokenOfSearch) and isinstance(token, TokenOfSearch):
-            if isinstance(token, TokenSearchForward):
+        if isinstance(last_token, TokenOfSearch) and isinstance(token, TokenOfSearch):  # type: ignore[unreachable]
+            if isinstance(token, TokenSearchForward):  # type: ignore[unreachable]
                 current += 1
 
         current = _resolve_line_number(view, token, current)

@@ -201,7 +201,7 @@ class _FsCompletion():
 
             return
 
-        if (not _FsCompletion.items) or _FsCompletion.is_stale:
+        if (not _FsCompletion.items) or _FsCompletion.is_stale:  # type: ignore[unreachable]
             _FsCompletion.items = _iter_paths(
                 from_dir=_FsCompletion.frozen_dir,
                 prefix=_FsCompletion.prefix,

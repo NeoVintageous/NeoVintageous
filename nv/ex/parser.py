@@ -84,7 +84,7 @@ def parse_command_line(source: str) -> _ParsedCommandLine:
     while True:
         parse_func, command_line = parse_func(state, command_line)
         if parse_func is None:
-            command_line.validate()
+            command_line.validate()  # type: ignore[unreachable]
 
             _log.debug('parsed %s', command_line)
 

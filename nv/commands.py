@@ -426,7 +426,7 @@ class nv_cmdline_feed_key(TextCommand):
         if nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX is None:
             nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = -1 if backwards else 0
         else:
-            nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX += -1 if backwards else 1
+            nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX += -1 if backwards else 1  # type: ignore[unreachable]
 
         count = history_len(firstc)
         if count == 0:
@@ -2612,7 +2612,7 @@ class nv_vi_find_in_line(TextCommand):
 
                 # Count too high or simply no match; break.
                 if match is None:
-                    if mode != INTERNAL_NORMAL:
+                    if mode != INTERNAL_NORMAL:  # type: ignore[unreachable]
                         ui_bell()
                     return s
 

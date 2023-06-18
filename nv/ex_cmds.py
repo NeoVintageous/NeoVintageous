@@ -788,7 +788,8 @@ def ex_substitute(view, edit, line_range: RangeNode,
         return status_message('E33: No previous substitute regular expression')
 
     if replacement is None:
-        return status_message('No substitute replacement string')
+        status_message('No substitute replacement string')  # type: ignore[unreachable]
+        return
 
     set_last_substitute_search_pattern(pattern)
     set_last_substitute_string(replacement)

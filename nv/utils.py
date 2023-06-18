@@ -275,8 +275,6 @@ def get_file_type(view: View) -> str:
         return ''
 
     parts = os.path.splitext(file_name)
-    if not parts:
-        return ''
 
     ext = parts[1]
     if ext and ext[0] == '.':

@@ -243,7 +243,7 @@ class NeoVintageousEvents(EventListener):
                 # The alternate file register is only set to the deactivating
                 # view if the activating one is a normal view. Otherwise the
                 # alternate file could be the currently active view.
-                set_alternate_file_register(self._last_deactivated_file_name)
+                set_alternate_file_register(self._last_deactivated_file_name)  # type: ignore[unreachable]
 
         # Initialise view.
         init_view(view)

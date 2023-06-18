@@ -368,10 +368,8 @@ def _get_text_object_word(view, s: Region, inclusive: bool, count: int) -> Regio
 
     if s.b >= s.a:
         return Region(s.a, w.b)
-    else:
-        return Region(s.a, w.a)
 
-    return s
+    return Region(s.a, w.a)
 
 
 def _get_text_object_big_word(view, s: Region, inclusive: bool, count: int) -> Region:
@@ -586,9 +584,6 @@ def find_sentences_forward(view, start, count: int = 1):
 
 
 def find_sentences_backward(view, start_pt: int, count: int = 1) -> Region:
-    if isinstance(start_pt, Region):
-        start_pt = start_pt.a
-
     pt = prev_non_ws(view, start_pt)
     sen = Region(pt)
     prev = sen
