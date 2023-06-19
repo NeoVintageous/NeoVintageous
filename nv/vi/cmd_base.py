@@ -15,6 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+from NeoVintageous.nv.polyfill import merge_dicts
+from NeoVintageous.nv.settings import get_count
+from NeoVintageous.nv.settings import get_mode
+from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.utils import translate_char
 
@@ -114,3 +118,24 @@ class RequireOneCharMixin(ViCommandDefBase):
         self.inp += translate_char(key)
 
         return True
+
+
+def translate_action(view, command: str, args: dict = None) -> dict:
+    return {
+        'action': command,
+        'action_args': merge_dicts({
+            'mode': get_mode(view),
+            'count': get_count(view),
+            'register': get_register(view)
+        }, args if args else {})
+    }
+
+
+def translate_motion(view, command: str, args: dict = None) -> dict:
+    return {
+        'motion': command,
+        'motion_args': merge_dicts({
+            'mode': get_mode(view),
+            'count': get_count(view),
+        }, args if args else {})
+    }
