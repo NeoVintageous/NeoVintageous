@@ -29,9 +29,7 @@ from NeoVintageous.nv.polyfill import view_rfind_all
 from NeoVintageous.nv.search import add_search_highlighting
 from NeoVintageous.nv.search import clear_search_highlighting
 from NeoVintageous.nv.search import is_smartcase_pattern
-from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_internal_setting
-from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import set_internal_setting
 from NeoVintageous.nv.settings import set_last_char_search_command
@@ -43,6 +41,7 @@ from NeoVintageous.nv.utils import resolve_visual_target
 from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import ViMotionDef
+from NeoVintageous.nv.vi.cmd_base import translate_motion
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
@@ -76,29 +75,19 @@ class SneakInputMotion(ViMotionDef):
 @register(seqs.Z, (OPERATOR_PENDING,))
 class Sneaks(SneakInputMotion):
     def translate(self, view):
-        return {
-            'motion': 'nv_sneak',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'search': self.inp.rstrip()
-            }
-        }
+        return translate_motion(view, 'nv_sneak', {
+            'search': self.inp.rstrip()
+        })
 
 
 @register(seqs.BIG_S, (NORMAL,))
 @register(seqs.BIG_Z, (VISUAL, VISUAL_LINE, OPERATOR_PENDING))
 class SneakS(SneakInputMotion):
     def translate(self, view):
-        return {
-            'motion': 'nv_sneak',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'search': self.inp.rstrip(),
-                'forward': False
-            }
-        }
+        return translate_motion(view, 'nv_sneak', {
+            'search': self.inp.rstrip(),
+            'forward': False
+        })
 
 
 def _get_last_sneak_search(view) -> str:
