@@ -58,9 +58,6 @@ class Test_A(unittest.FunctionalTestCase):
         self.eq('x\na|bc\n|x\nd|ef\n|x', 'b_A', 'i_x\nabc|\nx\ndef|\nx')
         self.assertStatusLineIsInsert()
 
-    def test_s(self):
-        self.eq('|fizz| buzz fizz buzz fizz', 's_A', '|fizz| buzz |fizz| buzz |fizz|')
-
     def test_issue_291_append_multi_line_is_off_by_one_char(self):
         self.eq('|aaaaa\n||bbbbb\n||ccccc|', 'V_A', 'i_aaaaa|\nbbbbb|\nccccc|')
         self.eq('|aaaaa\n||bbbbb\n||ccccc\n|', 'V_A', 'i_aaaaa|\nbbbbb|\nccccc|\n')

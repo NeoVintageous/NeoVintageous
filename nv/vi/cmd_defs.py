@@ -1100,15 +1100,13 @@ class ViInsertAfterChar(ViOperatorDef):
         return translate_action(view, 'nv_vi_a')
 
 
-@assign(seqs.ALT_N, (SELECT,))
-@assign(seqs.BIG_A, ACTION_MODES + (SELECT,))
+@assign(seqs.BIG_A, ACTION_MODES)
 class ViInsertAtEol(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
 
     def translate(self, view):
-        if get_mode(view) != SELECT:
-            set_glue_until_normal_mode(view, True)
+        set_glue_until_normal_mode(view, True)
 
         return translate_action(view, 'nv_vi_big_a')
 

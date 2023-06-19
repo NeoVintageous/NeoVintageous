@@ -56,6 +56,14 @@ class MultipleCursorsAdd(ViOperatorDef):
         self.command = 'nv_vi_select_j'
 
 
+@register(seqs.ALT_N, (SELECT,))
+@register(seqs.BIG_A, (SELECT,))
+class MultipleCursorsAddAll(ViOperatorDef):
+    def init(self):
+        self.scroll_into_view = True
+        self.command = 'nv_vi_big_a'
+
+
 @register(seqs.CTRL_P, (SELECT,))
 @register(seqs.K, (SELECT,))
 @register(seqs.BIG_Q, (SELECT,))
