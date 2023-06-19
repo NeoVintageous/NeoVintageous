@@ -26,8 +26,6 @@ from NeoVintageous.nv.plugin import register
 from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.polyfill import view_find
 from NeoVintageous.nv.polyfill import view_rfind
-from NeoVintageous.nv.settings import get_count
-from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import resolve_normal_target
@@ -36,6 +34,7 @@ from NeoVintageous.nv.utils import resolve_visual_target
 from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
+from NeoVintageous.nv.vi.cmd_base import translate_action
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import VISUAL
@@ -52,224 +51,141 @@ __all__ = [
 @register(seqs.LEFT_SQUARE_BRACKET_L, (NORMAL, VISUAL))
 class UnimpairedContextPrevious(ViOperatorDef):
     def translate(self, view):
-        return {
-            'action': 'nv_unimpaired',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'action': 'context_previous'
-            }
-        }
+        return translate_action(view, 'nv_unimpaired', {
+            'action': 'context_previous'
+        })
 
 
 @register(seqs.RIGHT_SQUARE_BRACKET_L, (NORMAL, VISUAL))
 class UnimpairedContextNext(ViOperatorDef):
     def translate(self, view):
-        return {
-            'action': 'nv_unimpaired',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'action': 'context_next'
-            }
-        }
+        return translate_action(view, 'nv_unimpaired', {
+            'action': 'context_next'
+        })
 
 
 @register(seqs.LEFT_SQUARE_BRACKET_N, (NORMAL, VISUAL, VISUAL_LINE))
 class UnimpairedGotoPrevConflictMarker(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
 
     def translate(self, view):
-        return {
-            'action': 'nv_unimpaired',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'action': 'goto_prev_conflict_marker'
-            }
-        }
+        return translate_action(view, 'nv_unimpaired', {
+            'action': 'goto_prev_conflict_marker'
+        })
 
 
 @register(seqs.RIGHT_SQUARE_BRACKET_N, (NORMAL, VISUAL, VISUAL_LINE))
 class UnimpairedGotoNextConflictMarker(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
 
     def translate(self, view):
-        return {
-            'action': 'nv_unimpaired',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'action': 'goto_next_conflict_marker'
-            }
-        }
+        return translate_action(view, 'nv_unimpaired', {
+            'action': 'goto_next_conflict_marker'
+        })
 
 
 @register(seqs.LEFT_SQUARE_BRACKET_SPACE, (NORMAL,))
 class UnimpairedBlankUp(ViOperatorDef):
     def translate(self, view):
-        return {
-            'action': 'nv_unimpaired',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'action': 'blank_up'
-            }
-        }
+        return translate_action(view, 'nv_unimpaired', {
+            'action': 'blank_up'
+        })
 
 
 @register(seqs.RIGHT_SQUARE_BRACKET_SPACE, (NORMAL,))
 class UnimpairedBlankDown(ViOperatorDef):
     def translate(self, view):
-        return {
-            'action': 'nv_unimpaired',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'action': 'blank_down'
-            }
-        }
+        return translate_action(view, 'nv_unimpaired', {
+            'action': 'blank_down'
+        })
 
 
 @register(seqs.LEFT_SQUARE_BRACKET_B, (NORMAL,))
 class UnimpairedBprevious(ViOperatorDef):
     def translate(self, view):
-        return {
-            'action': 'nv_unimpaired',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'action': 'bprevious'
-            }
-        }
+        return translate_action(view, 'nv_unimpaired', {
+            'action': 'bprevious'
+        })
 
 
 @register(seqs.RIGHT_SQUARE_BRACKET_B, (NORMAL,))
 class UnimpairedBnext(ViOperatorDef):
     def translate(self, view):
-        return {
-            'action': 'nv_unimpaired',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'action': 'bnext'
-            }
-        }
+        return translate_action(view, 'nv_unimpaired', {
+            'action': 'bnext'
+        })
 
 
 @register(seqs.LEFT_SQUARE_BRACKET_BIG_B, (NORMAL,))
 class UnimpairedBfirst(ViOperatorDef):
     def translate(self, view):
-        return {
-            'action': 'nv_unimpaired',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'action': 'bfirst'
-            }
-        }
+        return translate_action(view, 'nv_unimpaired', {
+            'action': 'bfirst'
+        })
 
 
 @register(seqs.RIGHT_SQUARE_BRACKET_BIG_B, (NORMAL,))
 class UnimpairedBlast(ViOperatorDef):
     def translate(self, view):
-        return {
-            'action': 'nv_unimpaired',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'action': 'blast'
-            }
-        }
+        return translate_action(view, 'nv_unimpaired', {
+            'action': 'blast'
+        })
 
 
 @register(seqs.LEFT_SQUARE_BRACKET_E, (NORMAL,))
 class UnimpairedMoveUp(ViOperatorDef):
     def translate(self, view):
-        return {
-            'action': 'nv_unimpaired',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'action': 'move_up'
-            }
-        }
+        return translate_action(view, 'nv_unimpaired', {
+            'action': 'move_up'
+        })
 
 
 @register(seqs.RIGHT_SQUARE_BRACKET_E, (NORMAL,))
 class UnimpairedMoveDown(ViOperatorDef):
     def translate(self, view):
-        return {
-            'action': 'nv_unimpaired',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'action': 'move_down'
-            }
-        }
+        return translate_action(view, 'nv_unimpaired', {
+            'action': 'move_down'
+        })
 
 
 @register(seqs.LEFT_SQUARE_BRACKET_T, (NORMAL,))
 class UnimpairedTabprevious(ViOperatorDef):
     def translate(self, view):
-        return {
-            'action': 'nv_unimpaired',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'action': 'tabprevious'
-            }
-        }
+        return translate_action(view, 'nv_unimpaired', {
+            'action': 'tabprevious'
+        })
 
 
 @register(seqs.RIGHT_SQUARE_BRACKET_T, (NORMAL,))
 class UnimpairedTabnext(ViOperatorDef):
     def translate(self, view):
-        return {
-            'action': 'nv_unimpaired',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'action': 'tabnext'
-            }
-        }
+        return translate_action(view, 'nv_unimpaired', {
+            'action': 'tabnext'
+        })
 
 
 @register(seqs.LEFT_SQUARE_BRACKET_BIG_T, (NORMAL,))
 class UnimpairedTabfirst(ViOperatorDef):
     def translate(self, view):
-        return {
-            'action': 'nv_unimpaired',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'action': 'tabfirst'
-            }
-        }
+        return translate_action(view, 'nv_unimpaired', {
+            'action': 'tabfirst'
+        })
 
 
 @register(seqs.RIGHT_SQUARE_BRACKET_BIG_T, (NORMAL,))
 class UnimpairedTablast(ViOperatorDef):
     def translate(self, view):
-        return {
-            'action': 'nv_unimpaired',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'action': 'tablast'
-            }
-        }
+        return translate_action(view, 'nv_unimpaired', {
+            'action': 'tablast'
+        })
 
 
 class OptionMixin(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
         self.input_parser = InputParser(InputParser.IMMEDIATE)
@@ -288,37 +204,28 @@ class OptionMixin(ViOperatorDef):
 @register(seqs.YO, (NORMAL,))
 class UnimpairedToggle(OptionMixin):
     def translate(self, view):
-        return {
-            'action': 'nv_unimpaired',
-            'action_args': {
-                'action': 'toggle_option',
-                'name': self.inp
-            }
-        }
+        return translate_action(view, 'nv_unimpaired', {
+            'action': 'toggle_option',
+            'name': self.inp
+        })
 
 
 @register(seqs.LEFT_SQUARE_BRACKET_O, (NORMAL,))
 class UnimpairedToggleOn(OptionMixin):
     def translate(self, view):
-        return {
-            'action': 'nv_unimpaired',
-            'action_args': {
-                'action': 'enable_option',
-                'name': self.inp
-            }
-        }
+        return translate_action(view, 'nv_unimpaired', {
+            'action': 'enable_option',
+            'name': self.inp
+        })
 
 
 @register(seqs.RIGHT_SQUARE_BRACKET_O, (NORMAL,))
 class UnimpairedToggleOff(OptionMixin):
     def translate(self, view):
-        return {
-            'action': 'nv_unimpaired',
-            'action_args': {
-                'action': 'disable_option',
-                'name': self.inp
-            }
-        }
+        return translate_action(view, 'nv_unimpaired', {
+            'action': 'disable_option',
+            'name': self.inp
+        })
 
 
 _CONFLICT_MARKER_REGEX = '^(<<<<<<< |=======$|>>>>>>> )'
@@ -557,7 +464,7 @@ def _toggle_option(view, key, value=None) -> None:
 
 
 class nv_unimpaired_command(TextCommand):
-    def run(self, edit, action, mode=None, count=1, **kwargs):
+    def run(self, edit, action, mode=None, count=1, register=None, **kwargs):
         if action == 'move_down':
             _move_down(self.view, count)
         elif action == 'move_up':
