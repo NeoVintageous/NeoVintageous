@@ -22,8 +22,6 @@ from sublime_plugin import TextCommand
 
 from NeoVintageous.nv.plugin import register
 from NeoVintageous.nv.polyfill import set_selection
-from NeoVintageous.nv.settings import get_count
-from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transformer
@@ -31,6 +29,7 @@ from NeoVintageous.nv.utils import regions_transformer_reversed
 from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
+from NeoVintageous.nv.vi.cmd_base import translate_action
 from NeoVintageous.nv.vim import ACTION_MODES
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
@@ -47,63 +46,45 @@ __all__ = [
 
 @register(seqs.GC, ACTION_MODES)
 class CommentaryMotion(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.motion_required = True
         self.repeatable = True
 
     def translate(self, view):
-        return {
-            'action': 'nv_commentary',
-            'action_args': {
-                'action': 'c',
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        return translate_action(view, 'nv_commentary', {
+            'action': 'c',
+        })
 
 
 @register(seqs.GCC, (NORMAL,))
 class CommentaryLines(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
 
     def translate(self, view):
-        return {
-            'action': 'nv_commentary',
-            'action_args': {
-                'action': 'cc',
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        return translate_action(view, 'nv_commentary', {
+            'action': 'cc',
+        })
 
 
 # NOTE The command (gC) is not defined in the original Commentary plugin, it's
 # from a plugin called tComment: https://github.com/tomtom/tcomment_vim.
 @register(seqs.G_BIG_C, ACTION_MODES)
 class CommentaryBlock(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.motion_required = True
         self.repeatable = True
 
     def translate(self, view):
-        return {
-            'action': 'nv_commentary',
-            'action_args': {
-                'action': 'C',
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        return translate_action(view, 'nv_commentary', {
+            'action': 'C',
+        })
 
 
 class nv_commentary_command(TextCommand):
@@ -116,7 +97,7 @@ class nv_commentary_command(TextCommand):
             _do_C(self.view, edit, **kwargs)
 
 
-def _do_c(view, edit, mode, count=1, motion=None):
+def _do_c(view, edit, mode, count=1, register=None, motion=None):
     def f(view, s):
         return Region(s.begin())
 
@@ -140,7 +121,7 @@ def _do_c(view, edit, mode, count=1, motion=None):
     enter_normal_mode(view, mode)
 
 
-def _do_cc(view, edit, mode: str, count: int = 1) -> None:
+def _do_cc(view, edit, mode: str, count: int = 1, register=None) -> None:
     def f(view, s):
         if mode == INTERNAL_NORMAL:
             view.run_command('toggle_comment')
@@ -185,7 +166,7 @@ def _do_cc(view, edit, mode: str, count: int = 1) -> None:
     set_selection(view, pt)
 
 
-def _do_C(view, edit, mode: str, count: int = 1, motion=None) -> None:
+def _do_C(view, edit, mode: str, count: int = 1, register=None, motion=None) -> None:
     def f(view, s):
         return Region(s.begin())
 
