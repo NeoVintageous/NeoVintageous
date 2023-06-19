@@ -18,8 +18,6 @@
 # A port of https://github.com/terryma/vim-multiple-cursors.
 
 from NeoVintageous.nv.plugin import register
-from NeoVintageous.nv.settings import get_count
-from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
 from NeoVintageous.nv.vim import ACTION_MODES
@@ -32,101 +30,54 @@ __all__ = ()
 @register(seqs.CTRL_N, ACTION_MODES)
 @register(seqs.GH, ACTION_MODES)
 class MultipleCursorsStart(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_enter_select_mode',
-            'action_args': {
-                'mode': get_mode(view)
-            }
-        }
+        self.command = 'nv_enter_select_mode'
 
 
 @register(seqs.BIG_J, (SELECT,))
 @register(seqs.ESC, (SELECT,))
 class MultipleCursorsExit(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_select_big_j',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_select_big_j'
 
 
 @register(seqs.CTRL_N, (SELECT,))
 @register(seqs.J, (SELECT,))
 @register(seqs.N, (SELECT,))
 class MultipleCursorsAdd(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_select_j',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_select_j'
 
 
 @register(seqs.CTRL_P, (SELECT,))
 @register(seqs.K, (SELECT,))
 @register(seqs.BIG_Q, (SELECT,))
 class MultipleCursorsRemove(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_select_k',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_select_k'
 
 
 @register(seqs.CTRL_X, (SELECT,))
 @register(seqs.L, (SELECT,))
 @register(seqs.Q, (SELECT,))
 class MultipleCursorsSkip(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'find_under_expand_skip',
-            'action_args': {}
-        }
+        self.command = 'find_under_expand_skip'
 
 
 @register(seqs.G_BIG_H, ACTION_MODES)
 class MultipleCursorsAll(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_g_big_h',
-            'action_args': {}
-        }
+        self.command = 'nv_vi_g_big_h'

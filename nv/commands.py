@@ -964,7 +964,7 @@ class nv_enter_normal_mode(TextCommand):
 
 class nv_enter_select_mode(TextCommand):
 
-    def run(self, edit, mode=None, count=1):
+    def run(self, edit, mode=None, count=1, register=None):
         set_mode(self.view, SELECT)
 
         if mode == INTERNAL_NORMAL:
@@ -2151,7 +2151,7 @@ class nv_vi_modify_numbers(TextCommand):
 
 class nv_vi_select_big_j(TextCommand):
 
-    def run(self, edit, mode=None, count=1):
+    def run(self, edit, mode=None, count=1, register=None):
         if get_setting(self.view, 'multi_cursor_exit_from_visual_mode'):
             set_selection(self.view, self.view.sel()[0])
 
@@ -2374,7 +2374,7 @@ class nv_enter_visual_block_mode(TextCommand):
 # TODO Refactor into nv_vi_j
 class nv_vi_select_j(WindowCommand):
 
-    def run(self, mode=None, count=1):
+    def run(self, mode=None, count=1, register=None):
         if mode != SELECT:
             raise ValueError('wrong mode')
 
@@ -2385,7 +2385,7 @@ class nv_vi_select_j(WindowCommand):
 # TODO Refactor into nv_vi_k
 class nv_vi_select_k(WindowCommand):
 
-    def run(self, mode=None, count=1):
+    def run(self, mode=None, count=1, register=None):
         self.view = self.window.active_view()
         if mode != SELECT:
             raise ValueError('wrong mode')
@@ -2523,7 +2523,7 @@ class nv_vi_guu(TextCommand):
 # mode (supports search results from commands such as /, ?, *, #).
 class nv_vi_g_big_h(WindowCommand):
 
-    def run(self, mode=None, count=1):
+    def run(self, mode=None, count=1, register=None):
         self.view = self.window.active_view()
         search_occurrences = get_search_occurrences(self.view)
         if search_occurrences:
