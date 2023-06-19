@@ -84,10 +84,14 @@ class ViMotionDef(ViCommandDefBase):
         super().__init__(*args, **kwargs)
         self.updates_xpos = False
         self.scroll_into_view = False
+        self.command = ''
         self.init()
 
     def init(self):
         pass
+
+    def translate(self, view):
+        return translate_motion(view, self.command)
 
 
 class ViOperatorDef(ViCommandDefBase):

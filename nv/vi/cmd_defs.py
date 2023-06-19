@@ -975,9 +975,8 @@ class ViRepeat(ViOperatorDef):
 
 @assign(seqs.CTRL_Y, ACTION_MODES)
 class ViScrollByLinesUp(ViMotionDef):
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_ctrl_y')
+    def init(self):
+        self.command = 'nv_vi_ctrl_y'
 
 
 @assign(seqs.BIG_U, (VISUAL, VISUAL_LINE, VISUAL_BLOCK))
@@ -991,9 +990,8 @@ class ViChangeToUpperCaseByCharsVisual(ViOperatorDef):
 
 @assign(seqs.CTRL_E, ACTION_MODES)
 class ViScrollByLinesDown(ViMotionDef):
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_ctrl_e')
+    def init(self):
+        self.command = 'nv_vi_ctrl_e'
 
 
 @assign(seqs.AT, ACTION_MODES)
@@ -1186,9 +1184,7 @@ class ViMoveRightByChars(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_l')
+        self.command = 'nv_vi_l'
 
 
 @assign(seqs.SHIFT_ENTER, MOTION_MODES)
@@ -1196,9 +1192,7 @@ class ViShiftEnterMotion(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_shift_enter')
+        self.command = 'nv_vi_shift_enter'
 
 
 @assign(seqs.B, MOTION_MODES)
@@ -1207,9 +1201,7 @@ class ViMoveByWordsBackward(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_b')
+        self.command = 'nv_vi_b'
 
 
 @assign(seqs.BIG_B, MOTION_MODES)
@@ -1218,9 +1210,7 @@ class ViMoveByBigWordsBackward(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_big_b')
+        self.command = 'nv_vi_big_b'
 
 
 @assign(seqs.BIG_W, MOTION_MODES)
@@ -1229,9 +1219,7 @@ class ViMoveByBigWords(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_big_w')
+        self.command = 'nv_vi_big_w'
 
 
 @assign(seqs.E, MOTION_MODES)
@@ -1239,9 +1227,7 @@ class ViMoveByWordEnds(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_e')
+        self.command = 'nv_vi_e'
 
 
 @assign(seqs.BIG_H, MOTION_MODES)
@@ -1249,9 +1235,7 @@ class ViGotoScreenTop(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_big_h')
+        self.command = 'nv_vi_big_h'
 
 
 @assign(seqs.GE, MOTION_MODES)
@@ -1259,9 +1243,7 @@ class ViMoveByWordEndsBackward(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_ge')
+        self.command = 'nv_vi_ge'
 
 
 @assign(seqs.G_BIG_E, MOTION_MODES)
@@ -1269,9 +1251,7 @@ class ViMoveByBigWordEndsBackward(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_g_big_e')
+        self.command = 'nv_vi_g_big_e'
 
 
 @assign(seqs.BIG_L, MOTION_MODES)
@@ -1279,9 +1259,7 @@ class ViGotoScreenBottom(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_big_l')
+        self.command = 'nv_vi_big_l'
 
 
 @assign(seqs.BIG_M, MOTION_MODES)
@@ -1289,9 +1267,7 @@ class ViGotoScreenMiddle(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_big_m')
+        self.command = 'nv_vi_big_m'
 
 
 @assign(seqs.CTRL_D, MOTION_MODES)
@@ -1325,9 +1301,7 @@ class ViMoveScreenDown(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_ctrl_f')
+        self.command = 'nv_vi_ctrl_f'
 
 
 @assign(seqs.CTRL_B, MOTION_MODES)
@@ -1337,9 +1311,7 @@ class ViMoveScreenUp(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_ctrl_b')
+        self.command = 'nv_vi_ctrl_b'
 
 
 @assign(seqs.BACKTICK, MOTION_MODES)
@@ -1360,9 +1332,7 @@ class ViMoveToEol(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_dollar')
+        self.command = 'nv_vi_dollar'
 
 
 @assign(seqs.ENTER, MOTION_MODES)
@@ -1371,9 +1341,7 @@ class ViMotionEnter(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_enter')
+        self.command = 'nv_vi_enter'
 
 
 @assign(seqs.MINUS, MOTION_MODES)
@@ -1381,9 +1349,7 @@ class ViMoveBackOneLine(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_minus')
+        self.command = 'nv_vi_minus'
 
 
 @assign(seqs.G_UNDERSCORE, MOTION_MODES)
@@ -1391,9 +1357,7 @@ class ViMoveToSoftEol(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_g__')
+        self.command = 'nv_vi_g__'
 
 
 @assign(seqs.G_DOWN, MOTION_MODES)
@@ -1402,9 +1366,7 @@ class ViMoveByScreenLineDown(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_gj')
+        self.command = 'nv_vi_gj'
 
 
 @assign(seqs.G_UP, MOTION_MODES)
@@ -1413,9 +1375,7 @@ class ViMoveByScreenLineUp(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_gk')
+        self.command = 'nv_vi_gk'
 
 
 @assign(seqs.LEFT_BRACE, MOTION_MODES)
@@ -1423,9 +1383,7 @@ class ViMoveByBlockUp(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_left_brace')
+        self.command = 'nv_vi_left_brace'
 
 
 @assign(seqs.SEMICOLON, MOTION_MODES)
@@ -1473,9 +1431,7 @@ class ViMoveByBlockDown(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_right_brace')
+        self.command = 'nv_vi_right_brace'
 
 
 @assign(seqs.LEFT_PAREN, MOTION_MODES)
@@ -1483,9 +1439,7 @@ class ViMoveBySentenceUp(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_left_paren')
+        self.command = 'nv_vi_left_paren'
 
 
 @assign(seqs.RIGHT_PAREN, MOTION_MODES)
@@ -1493,9 +1447,7 @@ class ViMoveBySentenceDown(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_right_paren')
+        self.command = 'nv_vi_right_paren'
 
 
 @assign(seqs.LEFT_SQUARE_BRACKET_LEFT_BRACE, MOTION_MODES)
@@ -1644,9 +1596,7 @@ class ViMoveByLineCols(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_bar')
+        self.command = 'nv_vi_bar'
 
 
 @assign(seqs.BIG_E, MOTION_MODES)
@@ -1654,9 +1604,7 @@ class ViMoveByBigWordEnds(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_big_e')
+        self.command = 'nv_vi_big_e'
 
 
 @assign(seqs.ALT_LEFT, MOTION_MODES)
@@ -1669,9 +1617,7 @@ class ViMoveLeftByChars(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_h')
+        self.command = 'nv_vi_h'
 
 
 @assign(seqs.SHIFT_RIGHT, MOTION_MODES)
@@ -1680,9 +1626,7 @@ class ViMoveByWords(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_w')
+        self.command = 'nv_vi_w'
 
 
 @assign(seqs.CTRL_DOWN, MOTION_MODES)
@@ -1720,9 +1664,7 @@ class ViMoveToBol(ViMotionDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_hat')
+        self.command = 'nv_vi_hat'
 
 
 @assign(seqs.UNDERSCORE, MOTION_MODES)
@@ -1730,9 +1672,7 @@ class ViMoveToSoftBol(ViMotionDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_underscore')
+        self.command = 'nv_vi_underscore'
 
 
 @assign(seqs.KEYPAD_0, MOTION_MODES)
@@ -1741,9 +1681,7 @@ class ViMoveToHardBol(ViMotionDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_zero')
+        self.command = 'nv_vi_zero'
 
 
 @assign(seqs.GN, MOTION_MODES)
@@ -1751,9 +1689,7 @@ class ViSearchLastUsedPattern(ViMotionDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_search')
+        self.command = 'nv_vi_search'
 
 
 @assign(seqs.G_BIG_N, MOTION_MODES)
@@ -1797,9 +1733,7 @@ class ViFindWord(ViMotionDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_star')
+        self.command = 'nv_vi_star'
 
 
 @assign(seqs.OCTOTHORP, MOTION_MODES)
@@ -1807,9 +1741,7 @@ class ViReverseFindWord(ViMotionDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_octothorp')
+        self.command = 'nv_vi_octothorp'
 
 
 @assign(seqs.BIG_Z, MOTION_MODES)
@@ -2062,9 +1994,7 @@ class ViMoveHalfScreenHorizontally(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_gm')
+        self.command = 'nv_vi_gm'
 
 
 @assign(seqs.ZC, ACTION_MODES)
