@@ -38,7 +38,7 @@ if _DEBUG:  # pragma: no cover
         logger.setLevel(logging.DEBUG)
         stream_handler = logging.StreamHandler()
         stream_handler.setFormatter(logging.Formatter(
-            'NeoVintageous: %(levelname)-7s [%(filename)15s:%(lineno)4d] %(message)s'
+            'NeoVintageous.%(levelname)-7s [%(filename)15s:%(lineno)-4d] %(message)s'
         ))
         logger.addHandler(stream_handler)
         logger.debug('debug logger initialised')

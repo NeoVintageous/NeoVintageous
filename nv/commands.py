@@ -488,9 +488,8 @@ class nv_feed_key(WindowCommand):
             _log.exception(e)
             clean_views()
 
-        _log.info(
-            'key completed in %s ms', '{:.2f}'
-            .format((time.time() - start_time) * 1000))
+        _log.info('key evt finished in %s ms', '{:.2f}'
+                  .format((time.time() - start_time) * 1000))
 
 
 class nv_process_notation(WindowCommand):
