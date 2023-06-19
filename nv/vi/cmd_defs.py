@@ -376,11 +376,10 @@ class ViDecrement(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_modify_numbers', {
+        self.command = 'nv_vi_modify_numbers'
+        self.command_args = {
             'subtract': True
-        })
+        }
 
 
 @assign(seqs.CTRL_A, ACTION_MODES)
@@ -398,11 +397,10 @@ class ViJoinLinesNoSeparator(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_big_j', {
+        self.command = 'nv_vi_big_j'
+        self.command_args = {
             'dont_insert_or_remove_spaces': True
-        })
+        }
 
 
 @assign(seqs.V, ACTION_MODES)
@@ -444,11 +442,10 @@ class ViZDot(ViOperatorDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_zz', {
+        self.command = 'nv_vi_zz'
+        self.command_args = {
             'first_non_blank': True
-        })
+        }
 
 
 @assign(seqs.GQ, ACTION_MODES)
@@ -466,11 +463,10 @@ class ViReformatLinewise(ViOperatorDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_gq', {
+        self.command = 'nv_vi_gq'
+        self.command_args = {
             'linewise': True
-        })
+        }
 
 
 @assign(seqs.P, ACTION_MODES + (SELECT,))
@@ -479,11 +475,10 @@ class ViPasteAfter(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_paste', {
+        self.command = 'nv_vi_paste'
+        self.command_args = {
             'before_cursor': False
-        })
+        }
 
 
 @assign(seqs.BIG_P, ACTION_MODES + (SELECT,))
@@ -492,11 +487,10 @@ class ViPasteBefore(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_paste', {
+        self.command = 'nv_vi_paste'
+        self.command_args = {
             'before_cursor': True
-        })
+        }
 
 
 @assign(seqs.RIGHT_SQUARE_BRACKET_BIG_P, ACTION_MODES + (SELECT,))
@@ -506,12 +500,11 @@ class ViPasteAfterAndIndent(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_paste', {
+        self.command = 'nv_vi_paste'
+        self.command_args = {
             'before_cursor': False,
             'adjust_indent': True
-        })
+        }
 
 
 @assign(seqs.LEFT_SQUARE_BRACKET_BIG_P, ACTION_MODES + (SELECT,))
@@ -521,12 +514,11 @@ class ViPasteBeforeAndIndent(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_paste', {
+        self.command = 'nv_vi_paste'
+        self.command_args = {
             'before_cursor': True,
             'adjust_indent': True
-        })
+        }
 
 
 @assign(seqs.GP, ACTION_MODES + (SELECT,))
@@ -535,12 +527,11 @@ class ViPasteAfterWithAdjustedCursor(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_paste', {
+        self.command = 'nv_vi_paste'
+        self.command_args = {
             'before_cursor': False,
             'adjust_cursor': True
-        })
+        }
 
 
 @assign(seqs.G_BIG_P, ACTION_MODES + (SELECT,))
@@ -549,12 +540,11 @@ class ViPasteBeforeWithAdjustedCursor(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_paste', {
+        self.command = 'nv_vi_paste'
+        self.command_args = {
             'before_cursor': True,
             'adjust_cursor': True
-        })
+        }
 
 
 @assign(seqs.BIG_X, ACTION_MODES)
@@ -598,44 +588,40 @@ class ViDeleteUpToCursor(ViOperatorDef):
 class ViMoveCursorToBottomRightWindow(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w', {
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
             'action': 'b'
-        })
+        }
 
 
 @assign(seqs.CTRL_W_BIG_H, ACTION_MODES)
 class ViMoveCurrentWindowToFarLeft(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w', {
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
             'action': 'H'
-        })
+        }
 
 
 @assign(seqs.CTRL_W_BIG_J, ACTION_MODES)
 class ViMoveCurrentWindowToVeryTop(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w', {
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
             'action': 'J'
-        })
+        }
 
 
 @assign(seqs.CTRL_W_BIG_K, ACTION_MODES)
 class ViMoveCurrentWindowToVeryBottom(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w', {
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
             'action': 'K'
-        })
+        }
 
 
 @assign(seqs.CTRL_6, ACTION_MODES)
@@ -650,44 +636,40 @@ class ViGotoAlternateFile(ViOperatorDef):
 class ViMoveCurrentWindowToFarRight(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w', {
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
             'action': 'L'
-        })
+        }
 
 
 @assign(seqs.CTRL_W_C, ACTION_MODES)
 class ViCloseTheCurrentWindow(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w', {
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
             'action': 'c'
-        })
+        }
 
 
 @assign(seqs.CTRL_W_EQUAL, ACTION_MODES)
 class ViMakeAllWindowsAlmostEquallyHighAndWide(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w', {
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
             'action': '='
-        })
+        }
 
 
 @assign(seqs.CTRL_W_GREATER_THAN, ACTION_MODES)
 class ViIncreaseCurrentWindowWidthByN(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w', {
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
             'action': '>',
-        })
+        }
 
 
 @assign(seqs.CTRL_W_H, ACTION_MODES)
@@ -697,11 +679,10 @@ class ViIncreaseCurrentWindowWidthByN(ViOperatorDef):
 class ViMoveCursorToNthWindowLeftOfCurrentOne(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w', {
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
             'action': 'h',
-        })
+        }
 
 
 @assign(seqs.CTRL_W_J, ACTION_MODES)
@@ -710,11 +691,10 @@ class ViMoveCursorToNthWindowLeftOfCurrentOne(ViOperatorDef):
 class ViMoveCursorToNthWindowBelowOfCurrentOne(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w', {
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
             'action': 'j',
-        })
+        }
 
 
 @assign(seqs.CTRL_W_K, ACTION_MODES)
@@ -723,11 +703,10 @@ class ViMoveCursorToNthWindowBelowOfCurrentOne(ViOperatorDef):
 class ViMoveCursorToNthWindowAboveCurrentOne(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w', {
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
             'action': 'k',
-        })
+        }
 
 
 @assign(seqs.CTRL_W_L, ACTION_MODES)
@@ -736,33 +715,30 @@ class ViMoveCursorToNthWindowAboveCurrentOne(ViOperatorDef):
 class ViMoveCursorToNthWindowRightOfCurrentOne(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w', {
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
             'action': 'l',
-        })
+        }
 
 
 @assign(seqs.CTRL_W_LESS_THAN, ACTION_MODES)
 class ViDecreaseCurrentWindowWidthByN(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w', {
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
             'action': '<',
-        })
+        }
 
 
 @assign(seqs.CTRL_W_MINUS, ACTION_MODES)
 class ViDecreaseCurrentWindowHeightByN(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w', {
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
             'action': '-',
-        })
+        }
 
 
 @assign(seqs.CTRL_W_N, ACTION_MODES)
@@ -770,11 +746,10 @@ class ViDecreaseCurrentWindowHeightByN(ViOperatorDef):
 class ViCreateNewWindowAndStartEditingAnEmptyFileInIt(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w', {
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
             'action': 'n',
-        })
+        }
 
 
 @assign(seqs.CTRL_W_O, ACTION_MODES)
@@ -782,33 +757,30 @@ class ViCreateNewWindowAndStartEditingAnEmptyFileInIt(ViOperatorDef):
 class ViMakeTheCurrentWindowTheOnlyOneOnTheScreen(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w', {
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
             'action': 'o'
-        })
+        }
 
 
 @assign(seqs.CTRL_W_BAR, ACTION_MODES)
 class ViSetCurrentWindowWidthToNOrWidestPossible(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w', {
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
             'action': '|',
-        })
+        }
 
 
 @assign(seqs.CTRL_W_PLUS, ACTION_MODES)
 class ViIncreaseCurrentWindowHeightByN(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w', {
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
             'action': '+',
-        })
+        }
 
 
 @assign(seqs.CTRL_W_Q, ACTION_MODES)
@@ -816,11 +788,10 @@ class ViIncreaseCurrentWindowHeightByN(ViOperatorDef):
 class ViQuitTheCurrentWindow(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w', {
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
             'action': 'q'
-        })
+        }
 
 
 @assign(seqs.CTRL_W_S, ACTION_MODES)
@@ -829,11 +800,10 @@ class ViQuitTheCurrentWindow(ViOperatorDef):
 class ViSplitTheCurrentWindowInTwo(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w', {
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
             'action': 's',
-        })
+        }
 
 
 @assign(seqs.CTRL_W_T, ACTION_MODES)
@@ -841,11 +811,10 @@ class ViSplitTheCurrentWindowInTwo(ViOperatorDef):
 class ViMoveCursorToTopLeftWindow(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w', {
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
             'action': 't'
-        })
+        }
 
 
 @assign(seqs.CTRL_W_UNDERSCORE, ACTION_MODES)
@@ -853,11 +822,10 @@ class ViMoveCursorToTopLeftWindow(ViOperatorDef):
 class ViSetCurrentGroupHeightOrHighestPossible(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w', {
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
             'action': '_',
-        })
+        }
 
 
 @assign(seqs.CTRL_W_V, ACTION_MODES)
@@ -865,22 +833,20 @@ class ViSetCurrentGroupHeightOrHighestPossible(ViOperatorDef):
 class ViSplitTheCurrentWindowInTwoVertically(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w', {
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
             'action': 'v',
-        })
+        }
 
 
 @assign(seqs.CTRL_W_BIG_W, ACTION_MODES)
 class ViCtrlW_W(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w', {
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
             'action': 'W',
-        })
+        }
 
 
 @assign(seqs.CTRL_W_X, ACTION_MODES)
@@ -888,11 +854,10 @@ class ViCtrlW_W(ViOperatorDef):
 class ViExchangeCurrentWindowWithNextOrPreviousNthWindow(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w', {
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
             'action': 'x',
-        })
+        }
 
 
 @assign(seqs.BIG_V, ACTION_MODES)
@@ -1003,20 +968,20 @@ class ViShowAsciiValueOfChar(ViOperatorDef):
 
 @assign(seqs.GF, ACTION_MODES)
 class Vigf(ViOperatorDef):
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_g', {
+    def init(self):
+        self.command = 'nv_vi_g'
+        self.command_args = {
             'action': 'f'
-        })
+        }
 
 
 @assign(seqs.G_BIG_F, ACTION_MODES)
 class VigF(ViOperatorDef):
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_g', {
+    def init(self):
+        self.command = 'nv_vi_g'
+        self.command_args = {
             'action': 'F'
-        })
+        }
 
 
 @assign(seqs.I, (NORMAL, SELECT))
@@ -1047,11 +1012,11 @@ class ViJumpToDefinition(ViOperatorDef):
 @assign(seqs.CTRL_W_CTRL_RIGHT_SQUARE_BRACKET, ACTION_MODES)
 @assign(seqs.CTRL_W_RIGHT_SQUARE_BRACKET, ACTION_MODES)
 class ViSplitAndJumpToDefinition(ViOperatorDef):
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w', {
+    def init(self):
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
             'action': ']'
-        })
+        }
 
 
 @assign(seqs.A, (NORMAL,))
@@ -1114,11 +1079,10 @@ class ViCloseFile(ViOperatorDef):
 class ViGotoSymbolInProject(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_go_to_symbol', {
+        self.command = 'nv_vi_go_to_symbol'
+        self.command_args = {
             'globally': True
-        })
+        }
 
 
 @assign(seqs.GD, MOTION_MODES)
@@ -1126,11 +1090,10 @@ class ViGotoSymbolInFile(ViMotionDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_go_to_symbol', {
+        self.command = 'nv_vi_go_to_symbol'
+        self.command_args = {
             'globally': False
-        })
+        }
 
 
 @assign(seqs.ALT_RIGHT, MOTION_MODES)
@@ -1412,12 +1375,11 @@ class ViGotoOpeningBrace(ViMotionDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_left_square_bracket', {
+        self.command = 'nv_vi_left_square_bracket'
+        self.command_args = {
             'action': 'target',
             'target': '{'
-        })
+        }
 
 
 @assign(seqs.LEFT_SQUARE_BRACKET_LEFT_PAREN, MOTION_MODES)
@@ -1425,12 +1387,11 @@ class ViGotoOpeningParen(ViMotionDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_left_square_bracket', {
+        self.command = 'nv_vi_left_square_bracket'
+        self.command_args = {
             'action': 'target',
             'target': '('
-        })
+        }
 
 
 @assign(seqs.LEFT_SQUARE_BRACKET_C, ACTION_MODES)
@@ -1438,11 +1399,10 @@ class ViBackwardToStartOfChange(ViMotionDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_left_square_bracket', {
+        self.command = 'nv_vi_left_square_bracket'
+        self.command_args = {
             'action': 'c',
-        })
+        }
 
 
 @assign(seqs.RIGHT_SQUARE_BRACKET_C, ACTION_MODES)
@@ -1450,11 +1410,10 @@ class ViForwardToStartOfChange(ViMotionDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_right_square_bracket', {
+        self.command = 'nv_vi_right_square_bracket'
+        self.command_args = {
             'action': 'c',
-        })
+        }
 
 
 @assign(seqs.LEFT_SQUARE_BRACKET_S, ACTION_MODES)
@@ -1462,11 +1421,10 @@ class ViPrevMisppelledWord(ViMotionDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_left_square_bracket', {
+        self.command = 'nv_vi_left_square_bracket'
+        self.command_args = {
             'action': 's',
-        })
+        }
 
 
 @assign(seqs.RIGHT_SQUARE_BRACKET_S, ACTION_MODES)
@@ -1474,11 +1432,10 @@ class ViNextMispelledWord(ViMotionDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_right_square_bracket', {
+        self.command = 'nv_vi_right_square_bracket'
+        self.command_args = {
             'action': 's',
-        })
+        }
 
 
 @assign(seqs.RIGHT_SQUARE_BRACKET_RIGHT_BRACE, MOTION_MODES)
@@ -1486,12 +1443,11 @@ class ViGotoClosingBrace(ViMotionDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_right_square_bracket', {
+        self.command = 'nv_vi_right_square_bracket'
+        self.command_args = {
             'action': 'target',
             'target': '}'
-        })
+        }
 
 
 @assign(seqs.RIGHT_SQUARE_BRACKET_RIGHT_PAREN, MOTION_MODES)
@@ -1499,12 +1455,11 @@ class ViGotoClosingParen(ViMotionDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_right_square_bracket', {
+        self.command = 'nv_vi_right_square_bracket'
+        self.command_args = {
             'action': 'target',
             'target': ')'
-        })
+        }
 
 
 @assign(seqs.PERCENT, MOTION_MODES)
@@ -1654,11 +1609,10 @@ class ViSearchLastUsedPatternReverse(ViMotionDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_search', {
+        self.command = 'nv_vi_search'
+        self.command_args = {
             'forward': False
-        })
+        }
 
 
 @assign(seqs.N, MOTION_MODES)
@@ -1666,11 +1620,10 @@ class ViRepeatSearchForward(ViMotionDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_repeat_buffer_search', {
+        self.command = 'nv_vi_repeat_buffer_search'
+        self.command_args = {
             'reverse': False
-        })
+        }
 
 
 @assign(seqs.BIG_N, MOTION_MODES)
@@ -1678,11 +1631,10 @@ class ViRepeatSearchBackward(ViMotionDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_repeat_buffer_search', {
+        self.command = 'nv_vi_repeat_buffer_search'
+        self.command_args = {
             'reverse': True
-        })
+        }
 
 
 @assign(seqs.STAR, MOTION_MODES)

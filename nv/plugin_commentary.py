@@ -29,7 +29,6 @@ from NeoVintageous.nv.utils import regions_transformer_reversed
 from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
-from NeoVintageous.nv.vi.cmd_base import translate_action
 from NeoVintageous.nv.vim import ACTION_MODES
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
@@ -51,11 +50,10 @@ class CommentaryMotion(ViOperatorDef):
         self.scroll_into_view = True
         self.motion_required = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_commentary', {
-            'action': 'c',
-        })
+        self.command = 'nv_commentary'
+        self.command_args = {
+            'action': 'c'
+        }
 
 
 @register(seqs.GCC, (NORMAL,))
@@ -64,11 +62,10 @@ class CommentaryLines(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_commentary', {
-            'action': 'cc',
-        })
+        self.command = 'nv_commentary'
+        self.command_args = {
+            'action': 'cc'
+        }
 
 
 # NOTE The command (gC) is not defined in the original Commentary plugin, it's
@@ -80,11 +77,10 @@ class CommentaryBlock(ViOperatorDef):
         self.scroll_into_view = True
         self.motion_required = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_commentary', {
-            'action': 'C',
-        })
+        self.command = 'nv_commentary'
+        self.command_args = {
+            'action': 'C'
+        }
 
 
 class nv_commentary_command(TextCommand):

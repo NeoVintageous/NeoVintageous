@@ -81,12 +81,11 @@ class StGotoAnything(ViOperatorDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'show_overlay', {
+        self.command = 'show_overlay'
+        self.command_args = {
             'overlay': 'goto',
             'show_files': True
-        })
+        }
 
 
 @register(seqs.COMMAND_BIG_B, ACTION_MODES)
@@ -95,11 +94,10 @@ class StBuildWith(ViOperatorDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'build', {
+        self.command = 'build'
+        self.command_args = {
             'select': True
-        })
+        }
 
 
 @register(seqs.COMMAND_BIG_F, ACTION_MODES)
@@ -108,11 +106,10 @@ class StFindInFiles(ViOperatorDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'show_panel', {
+        self.command = 'show_panel'
+        self.command_args = {
             'panel': 'find_in_files'
-        })
+        }
 
 
 @register(seqs.COMMAND_BIG_P, ACTION_MODES + (INSERT,))
@@ -158,11 +155,10 @@ class StNextResult(ViOperatorDef):
 class StToggleSpellCheck(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'toggle_setting', {
+        self.command = 'toggle_setting'
+        self.command_args = {
             'setting': 'spell_check'
-        })
+        }
 
 
 @register(seqs.F7, ACTION_MODES)
@@ -177,11 +173,10 @@ class StBuild(ViOperatorDef):
 class StSortLines(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'sort_lines', {
+        self.command = 'sort_lines'
+        self.command_args = {
             'case_sensitive': False
-        })
+        }
 
 
 @register(seqs.F11, ACTION_MODES)
@@ -213,12 +208,11 @@ class StGotoSymbol(ViOperatorDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'show_overlay', {
+        self.command = 'show_overlay'
+        self.command_args = {
             'overlay': 'goto',
             'text': '@'
-        })
+        }
 
 
 @register(seqs.SHIFT_F2, ACTION_MODES)

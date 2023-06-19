@@ -86,13 +86,14 @@ class ViMotionDef(ViCommandDefBase):
         self.updates_xpos = False
         self.scroll_into_view = False
         self.command = ''
+        self.command_args = None
         self.init()
 
     def init(self):
         pass
 
     def translate(self, view):
-        return translate_motion(view, self.command)
+        return translate_motion(view, self.command, self.command_args)
 
 
 class ViOperatorDef(ViCommandDefBase):
@@ -105,6 +106,7 @@ class ViOperatorDef(ViCommandDefBase):
         self.repeatable = False
         self.glue_until_normal_mode = False
         self.command = ''
+        self.command_args = None
         self.init()
 
     def init(self):
@@ -114,7 +116,7 @@ class ViOperatorDef(ViCommandDefBase):
         if self.glue_until_normal_mode:
             set_glue_until_normal_mode(view, True)
 
-        return translate_action(view, self.command)
+        return translate_action(view, self.command, self.command_args)
 
 
 class RequireOneCharMixin(ViCommandDefBase):
