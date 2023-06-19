@@ -19,7 +19,6 @@ from NeoVintageous.nv.settings import get_action_count
 from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_last_char_search_character
 from NeoVintageous.nv.settings import get_last_char_search_command
-from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_motion_count
 from NeoVintageous.nv.settings import get_partial_sequence
 from NeoVintageous.nv.settings import get_xpos
@@ -60,22 +59,16 @@ class ViDeleteMultipleCursor(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        set_glue_until_normal_mode(view, True)
-
-        return translate_action(view, 'nv_vi_d')
+        self.glue_until_normal_mode = True
+        self.command = 'nv_vi_d'
 
 
 @assign(seqs.BIG_O, ACTION_MODES)
 class ViInsertLineBefore(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        set_glue_until_normal_mode(view, True)
-
-        return translate_action(view, 'nv_vi_big_o')
+        self.glue_until_normal_mode = True
+        self.command = 'nv_vi_big_o'
 
 
 @assign(seqs.O, (NORMAL,))
@@ -83,11 +76,8 @@ class ViInsertLineAfter(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = False
-
-    def translate(self, view):
-        set_glue_until_normal_mode(view, True)
-
-        return translate_action(view, 'nv_vi_o')
+        self.glue_until_normal_mode = True
+        self.command = 'nv_vi_o'
 
 
 @assign(seqs.O, (VISUAL, VISUAL_LINE, VISUAL_BLOCK))
@@ -112,11 +102,8 @@ class ViRightDeleteChars(ViOperatorDef):
 class ViSubstituteChar(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        set_glue_until_normal_mode(view, True)
-
-        return translate_action(view, 'nv_vi_s')
+        self.glue_until_normal_mode = True
+        self.command = 'nv_vi_s'
 
 
 @assign(seqs.Y, ACTION_MODES)
@@ -173,11 +160,8 @@ class ViChangeByChars(ViOperatorDef):
         self.scroll_into_view = True
         self.motion_required = True
         self.repeatable = True
-
-    def translate(self, view):
-        set_glue_until_normal_mode(view, True)
-
-        return translate_action(view, 'nv_vi_c')
+        self.glue_until_normal_mode = True
+        self.command = 'nv_vi_c'
 
 
 @assign(seqs.C, (SELECT,))
@@ -186,11 +170,8 @@ class ViChangeMultipleCursor(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        set_glue_until_normal_mode(view, True)
-
-        return translate_action(view, 'nv_vi_c')
+        self.glue_until_normal_mode = True
+        self.command = 'nv_vi_c'
 
 
 @assign(seqs.U, (NORMAL,))
@@ -233,11 +214,8 @@ class ViChangeToEol(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        set_glue_until_normal_mode(view, True)
-
-        return translate_action(view, 'nv_vi_big_c')
+        self.glue_until_normal_mode = True
+        self.command = 'nv_vi_big_c'
 
 
 @assign(seqs.G_BIG_U_BIG_U, ACTION_MODES)
@@ -256,11 +234,8 @@ class ViChangeLine(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        set_glue_until_normal_mode(view, True)
-
-        return translate_action(view, 'nv_vi_cc')
+        self.glue_until_normal_mode = True
+        self.command = 'nv_vi_cc'
 
 
 @assign(seqs.DD, ACTION_MODES)
@@ -278,11 +253,8 @@ class ViEnterReplaceMode(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        set_glue_until_normal_mode(view, True)
-
-        return translate_action(view, 'nv_enter_replace_mode')
+        self.glue_until_normal_mode = True
+        self.command = 'nv_enter_replace_mode'
 
 
 @assign(seqs.GREATER_THAN_GREATER_THAN, ACTION_MODES)
@@ -365,11 +337,8 @@ class ViSubstituteByLines(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        set_glue_until_normal_mode(view, True)
-
-        return translate_action(view, 'nv_vi_big_s')
+        self.glue_until_normal_mode = True
+        self.command = 'nv_vi_big_s'
 
 
 @assign(seqs.G_TILDE, ACTION_MODES)
@@ -1055,11 +1024,8 @@ class VigF(ViOperatorDef):
 class ViEnterInserMode(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        set_glue_until_normal_mode(view, True)
-
-        return translate_action(view, 'nv_enter_insert_mode')
+        self.glue_until_normal_mode = True
+        self.command = 'nv_enter_insert_mode'
 
 
 @assign(seqs.V, (SELECT, ))
@@ -1104,22 +1070,16 @@ class ViInsertAfterChar(ViOperatorDef):
 class ViInsertAtEol(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        set_glue_until_normal_mode(view, True)
-
-        return translate_action(view, 'nv_vi_big_a')
+        self.glue_until_normal_mode = True
+        self.command = 'nv_vi_big_a'
 
 
 @assign(seqs.BIG_I, ACTION_MODES + (SELECT,))
 class ViInsertAtBol(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        set_glue_until_normal_mode(view, True)
-
-        return translate_action(view, 'nv_vi_big_i')
+        self.glue_until_normal_mode = True
+        self.command = 'nv_vi_big_i'
 
 
 @assign(seqs.COLON, ACTION_MODES)

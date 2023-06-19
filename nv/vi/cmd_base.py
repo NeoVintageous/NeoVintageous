@@ -19,6 +19,7 @@ from NeoVintageous.nv.polyfill import merge_dicts
 from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_register
+from NeoVintageous.nv.settings import set_glue_until_normal_mode
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.utils import translate_char
 
@@ -102,6 +103,7 @@ class ViOperatorDef(ViCommandDefBase):
         self.scroll_into_view = False
         self.motion_required = False
         self.repeatable = False
+        self.glue_until_normal_mode = False
         self.command = ''
         self.init()
 
@@ -109,6 +111,9 @@ class ViOperatorDef(ViCommandDefBase):
         pass
 
     def translate(self, view):
+        if self.glue_until_normal_mode:
+            set_glue_until_normal_mode(view, True)
+
         return translate_action(view, self.command)
 
 
