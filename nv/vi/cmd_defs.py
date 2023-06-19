@@ -15,11 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from NeoVintageous.nv.settings import get_action_count
 from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_last_char_search_character
 from NeoVintageous.nv.settings import get_last_char_search_command
-from NeoVintageous.nv.settings import get_motion_count
 from NeoVintageous.nv.settings import get_partial_sequence
 from NeoVintageous.nv.settings import get_xpos
 from NeoVintageous.nv.settings import set_glue_until_normal_mode
@@ -1684,7 +1682,7 @@ class ViGotoBof(ViMotionDef):
 
     def translate(self, view):
         return translate_motion(view, 'nv_vi_gg', {
-            'count': get_count(view) if (get_action_count(view) or get_motion_count(view)) else None
+            'count': get_count(view, default=0)
         })
 
 
@@ -1696,7 +1694,7 @@ class ViGotoEof(ViMotionDef):
 
     def translate(self, view):
         return translate_motion(view, 'nv_vi_big_g', {
-            'count': get_count(view) if (get_action_count(view) or get_motion_count(view)) else None
+            'count': get_count(view, default=0)
         })
 
 
