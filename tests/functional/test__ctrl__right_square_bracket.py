@@ -20,7 +20,7 @@ from NeoVintageous.tests import unittest
 
 class Test_ctrl_right_square_bracket(unittest.FunctionalTestCase):
 
-    @unittest.mock_run_commands('goto_definition')
+    @unittest.mock_commands('goto_definition')
     def test_n_goto_definition(self):
         self.eq('fi|zz', 'n_<C-]>', 'fi|zz')
         self.assertRunCommand('goto_definition')

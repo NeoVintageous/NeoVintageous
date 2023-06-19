@@ -176,7 +176,7 @@ class Test_ctrl_w(unittest.FunctionalTestCase):
         self.feed('<C-w>x')
         function.assert_called_once_with(self.view.window(), 1)
 
-    @unittest.mock_run_commands('goto_definition', 'carry_file_to_pane')
+    @unittest.mock_commands('goto_definition', 'carry_file_to_pane')
     def test_ctrl_w_right_bracket(self):
         self.normal('f|izz')
         self.feed('<C-w>]')

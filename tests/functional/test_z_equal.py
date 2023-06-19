@@ -20,7 +20,7 @@ from NeoVintageous.tests import unittest
 
 class Test_z_equal(unittest.FunctionalTestCase):
 
-    @unittest.mock_run_commands('context_menu')
+    @unittest.mock_commands('context_menu')
     @unittest.mock.patch('sublime.View.text_to_window')
     def test_n(self, text_to_window):
         text_to_window.return_value = (1.3, 5.7)

@@ -20,7 +20,7 @@ from NeoVintageous.tests import unittest
 
 class Test_ex_bnext(unittest.FunctionalTestCase):
 
-    @unittest.mock_run_commands('next_view')
+    @unittest.mock_commands('next_view')
     def test_n_bnext(self):
         self.eq('f|izz', ':bnext', 'f|izz')
         self.assertRunCommand('next_view')

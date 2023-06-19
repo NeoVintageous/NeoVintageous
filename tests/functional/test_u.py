@@ -20,7 +20,7 @@ from NeoVintageous.tests import unittest
 
 class Test_u(unittest.FunctionalTestCase):
 
-    @unittest.mock_run_commands('undo')
+    @unittest.mock_commands('undo')
     @unittest.mock_bell()
     def test_n_u_invokes_bell_when_nothing_to_redo(self):
         self.eq('fi|zz', 'n_u', 'fi|zz')
@@ -37,7 +37,7 @@ class Test_u(unittest.FunctionalTestCase):
         self.feed('n_u')
         self.assertNormal('fi|zz buzz\n')
 
-    @unittest.mock_run_commands('undo')
+    @unittest.mock_commands('undo')
     @unittest.mock_bell()
     def test_n_u_count(self):
         self.eq('fi|zz', 'n_3u', 'fi|zz')

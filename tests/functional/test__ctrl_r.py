@@ -20,14 +20,14 @@ from NeoVintageous.tests import unittest
 
 class Test_ctrl_r(unittest.FunctionalTestCase):
 
-    @unittest.mock_run_commands('redo')
+    @unittest.mock_commands('redo')
     @unittest.mock_bell()
     def test_ctrl_r_invokes_bell_when_nothing_to_redo(self):
         self.eq('fi|zz', '<C-r>', 'fi|zz')
         self.assertRunCommand('redo')
         self.assertBell('Already at newest change')
 
-    @unittest.mock_run_commands('redo')
+    @unittest.mock_commands('redo')
     @unittest.mock_bell()
     def test_ctrl_r_count(self):
         self.eq('fi|zz', '3<C-r>', 'fi|zz')

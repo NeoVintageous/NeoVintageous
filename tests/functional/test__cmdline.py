@@ -358,13 +358,13 @@ class TestCmdlineEditing(unittest.FunctionalTestCase):
         self.feed('<C-n>')
         self.assertInsert('/|')
 
-    @unittest.mock_run_commands('hide_panel')
+    @unittest.mock_commands('hide_panel')
     def test_c_ctrl_c(self):
         self.normal(':abc|')
         self.feed('<C-c>')
         self.assertRunCommand('hide_panel', {'cancel': True})
 
-    @unittest.mock_run_commands('hide_panel')
+    @unittest.mock_commands('hide_panel')
     def test_c_ctrl_bracket(self):
         self.normal(':abc|')
         self.feed('<C-[>')

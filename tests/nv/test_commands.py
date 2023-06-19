@@ -528,13 +528,13 @@ class TestFeedKey(unittest.ResetRegisters, unittest.ResetCommandLineOutput, unit
         self.assertNormal('1\nfizz\n3\n4|fizz\n\n5\n6')
         set_reset_during_init(self.view, True)
 
-    @unittest.mock_run_commands('nv_vi_slash')
+    @unittest.mock_commands('nv_vi_slash')
     def test_slash_search_opens_input_panel(self):
         self.normal('|fizz')
         self.feedkey('/')
         self.assertRunCommand('nv_vi_slash')
 
-    @unittest.mock_run_commands('nv_vi_question_mark')
+    @unittest.mock_commands('nv_vi_question_mark')
     def test_question_search_opens_input_panel(self):
         self.normal('|fizz')
         self.feedkey('?')

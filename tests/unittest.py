@@ -1424,14 +1424,14 @@ def mock_ui(screen_rows=None, visible_region=None, em_width=10.0, line_height=22
     return wrapper
 
 
-def mock_run_commands(*methods):
+def mock_commands(*methods):
     """Mock commands.
 
     Useful to mock builtin Sublime Text commands.
 
     Usage:
 
-    @unittest.mock_run_commands('redo', 'hide_panel')
+    @unittest.mock_commands('redo', 'hide_panel')
     def test(self):
 
         # Assert command ran successfully.
