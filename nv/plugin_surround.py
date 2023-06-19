@@ -24,11 +24,11 @@ from sublime_plugin import TextCommand
 
 from NeoVintageous.nv.plugin import register
 from NeoVintageous.nv.polyfill import view_find
-from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
+from NeoVintageous.nv.vi.cmd_base import translate_action
 from NeoVintageous.nv.vi.search import reverse_search
 from NeoVintageous.nv.vi.text_objects import get_text_object_region
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
@@ -84,14 +84,10 @@ class Surroundys(ViOperatorDef):
         return True
 
     def translate(self, view):
-        return {
-            'action': 'nv_surround',
-            'action_args': {
-                'action': 'ys',
-                'mode': get_mode(view),
-                'replacement': self.inp
-            }
-        }
+        return translate_action(view, 'nv_surround', {
+            'action': 'ys',
+            'replacement': self.inp
+        })
 
 
 @register(seqs.YSS, (NORMAL,))
@@ -102,23 +98,19 @@ class Surroundyss(Surroundys):
         self.input_parser = InputParser(InputParser.IMMEDIATE)
 
     def translate(self, view):
-        return {
-            'action': 'nv_surround',
-            'action_args': {
-                'action': 'ys',
-                'mode': get_mode(view),
-                'motion': {
-                    'motion': 'nv_vi_select_text_object',
-                    'motion_args': {
-                        'mode': INTERNAL_NORMAL,
-                        'count': 1,
-                        'inclusive': False,
-                        'text_object': 'l'
-                    }
-                },
-                'replacement': self.inp
-            }
-        }
+        return translate_action(view, 'nv_surround', {
+            'action': 'ys',
+            'motion': {
+                'motion': 'nv_vi_select_text_object',
+                'motion_args': {
+                    'mode': INTERNAL_NORMAL,
+                    'count': 1,
+                    'inclusive': False,
+                    'text_object': 'l'
+                }
+            },
+            'replacement': self.inp
+        })
 
 
 @register(seqs.BIG_S, (VISUAL, VISUAL_LINE, VISUAL_BLOCK))
@@ -152,14 +144,10 @@ class Surroundds(ViOperatorDef):
         return True
 
     def translate(self, view):
-        return {
-            'action': 'nv_surround',
-            'action_args': {
-                'action': 'ds',
-                'mode': get_mode(view),
-                'target': self.inp
-            }
-        }
+        return translate_action(view, 'nv_surround', {
+            'action': 'ds',
+            'target': self.inp
+        })
 
 
 @register(seqs.CS, (NORMAL, OPERATOR_PENDING))
@@ -192,15 +180,11 @@ class Surroundcs(ViOperatorDef):
         return True
 
     def translate(self, view):
-        return {
-            'action': 'nv_surround',
-            'action_args': {
-                'action': 'cs',
-                'mode': get_mode(view),
-                'target': self.inp[0],
-                'replacement': self.inp[1:]
-            }
-        }
+        return translate_action(view, 'nv_surround', {
+            'action': 'cs',
+            'target': self.inp[0],
+            'replacement': self.inp[1:]
+        })
 
 
 class nv_surround_command(TextCommand):
@@ -303,7 +287,7 @@ def _rsynced_regions_transformer(view, f) -> None:
         view_sel.add(new_sel)
 
 
-def _do_cs(view, edit, mode: str, target: str, replacement: str) -> None:
+def _do_cs(view, edit, mode: str, target: str, replacement: str, count=None, register=None) -> None:
     if not target and replacement:
         return
 
@@ -363,7 +347,7 @@ def _do_cs(view, edit, mode: str, target: str, replacement: str) -> None:
     _rsynced_regions_transformer(view, _f)
 
 
-def _do_ds(view, edit, mode: str, target: str) -> None:
+def _do_ds(view, edit, mode: str, target: str, count=None, register=None) -> None:
     if not target:
         return
 
@@ -448,7 +432,7 @@ def _trim_regions(view, start: Region, end: Region) -> tuple:
     return (start, end)
 
 
-def _do_ys(view, edit, mode: str = None, motion=None, replacement: str = '"', count: int = 1) -> None:
+def _do_ys(view, edit, mode: str = None, motion=None, replacement: str = '"', count: int = 1, register=None) -> None:
     def _surround(view, edit, s, replacement: str) -> None:
         replacement_open, replacement_close = _expand_replacements(replacement)
         if replacement_open.startswith('<'):
