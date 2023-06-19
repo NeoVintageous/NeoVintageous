@@ -98,10 +98,14 @@ class ViOperatorDef(ViCommandDefBase):
         self.scroll_into_view = False
         self.motion_required = False
         self.repeatable = False
+        self.command = ''
         self.init()
 
     def init(self):
         pass
+
+    def translate(self, view):
+        return translate_action(view, self.command)
 
 
 class RequireOneCharMixin(ViCommandDefBase):

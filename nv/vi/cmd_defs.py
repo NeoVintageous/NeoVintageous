@@ -51,9 +51,7 @@ class ViDeleteByChars(ViOperatorDef):
         self.scroll_into_view = True
         self.motion_required = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_d')
+        self.command = 'nv_vi_d'
 
 
 @assign(seqs.D, (SELECT,))
@@ -97,9 +95,7 @@ class ViGoToOtherEnd(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = False
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_visual_o')
+        self.command = 'nv_vi_visual_o'
 
 
 @assign(seqs.DEL, ACTION_MODES + (SELECT,))
@@ -109,9 +105,7 @@ class ViRightDeleteChars(ViOperatorDef):
         self.scroll_into_view = True
         self.updates_xpos = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_x')
+        self.command = 'nv_vi_x'
 
 
 @assign(seqs.S, ACTION_MODES + (SELECT,))
@@ -131,9 +125,7 @@ class ViYankByChars(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.motion_required = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_y')
+        self.command = 'nv_vi_y'
 
 
 @assign(seqs.Y, (SELECT,))
@@ -141,9 +133,7 @@ class ViYankSelectByChars(ViOperatorDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_y')
+        self.command = 'nv_vi_y'
 
 
 @assign(seqs.EQUAL, ACTION_MODES)
@@ -153,9 +143,7 @@ class ViReindent(ViOperatorDef):
         self.scroll_into_view = True
         self.motion_required = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_equal')
+        self.command = 'nv_vi_equal'
 
 
 @assign(seqs.GREATER_THAN, ACTION_MODES)
@@ -165,9 +153,7 @@ class ViIndent(ViOperatorDef):
         self.scroll_into_view = True
         self.motion_required = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_greater_than')
+        self.command = 'nv_vi_greater_than'
 
 
 @assign(seqs.LESS_THAN, ACTION_MODES)
@@ -177,9 +163,7 @@ class ViUnindent(ViOperatorDef):
         self.scroll_into_view = True
         self.motion_required = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_less_than')
+        self.command = 'nv_vi_less_than'
 
 
 @assign(seqs.C, ACTION_MODES)
@@ -214,9 +198,7 @@ class ViUndo(ViOperatorDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_u')
+        self.command = 'nv_vi_u'
 
 
 @assign(seqs.U, (VISUAL, VISUAL_LINE, VISUAL_BLOCK))
@@ -225,9 +207,7 @@ class ViChangeToLowerCaseByCharsVisual(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_visual_u')
+        self.command = 'nv_vi_visual_u'
 
 
 @assign(seqs.CTRL_R, ACTION_MODES)
@@ -235,9 +215,7 @@ class ViRedo(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_r')
+        self.command = 'nv_vi_ctrl_r'
 
 
 @assign(seqs.BIG_D, ACTION_MODES)
@@ -246,9 +224,7 @@ class ViDeleteToEol(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_big_d')
+        self.command = 'nv_vi_big_d'
 
 
 @assign(seqs.BIG_C, ACTION_MODES)
@@ -271,9 +247,7 @@ class ViChangeToUpperCaseByLines(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_g_big_u_big_u')
+        self.command = 'nv_vi_g_big_u_big_u'
 
 
 @assign(seqs.CC, ACTION_MODES)
@@ -295,9 +269,7 @@ class ViDeleteLine(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_dd')
+        self.command = 'nv_vi_dd'
 
 
 @assign(seqs.BIG_R, ACTION_MODES)
@@ -319,9 +291,7 @@ class ViIndentLine(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_greater_than_greater_than')
+        self.command = 'nv_vi_greater_than_greater_than'
 
 
 @assign(seqs.GUGU, ACTION_MODES)
@@ -331,9 +301,7 @@ class ViChangeToLowerCaseByLines(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_guu')
+        self.command = 'nv_vi_guu'
 
 
 @assign(seqs.GU, ACTION_MODES)
@@ -343,9 +311,7 @@ class ViChangeToLowerCaseByChars(ViOperatorDef):
         self.scroll_into_view = True
         self.motion_required = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_gu')
+        self.command = 'nv_vi_gu'
 
 
 @assign(seqs.EQUAL_EQUAL, ACTION_MODES)
@@ -354,9 +320,7 @@ class ViReindentLine(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_equal_equal')
+        self.command = 'nv_vi_equal_equal'
 
 
 @assign(seqs.LESS_THAN_LESS_THAN, ACTION_MODES)
@@ -365,9 +329,7 @@ class ViUnindentLine(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_less_than_less_than')
+        self.command = 'nv_vi_less_than_less_than'
 
 
 @assign(seqs.YY, ACTION_MODES)
@@ -376,9 +338,7 @@ class ViYankLine(ViOperatorDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_yy')
+        self.command = 'nv_vi_yy'
 
 
 @assign(seqs.G_TILDE_TILDE, ACTION_MODES)
@@ -387,9 +347,7 @@ class ViInvertCaseByLines(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_g_tilde_g_tilde')
+        self.command = 'nv_vi_g_tilde_g_tilde'
 
 
 @assign(seqs.TILDE, ACTION_MODES)
@@ -398,9 +356,7 @@ class ViForceInvertCaseByChars(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_tilde')
+        self.command = 'nv_vi_tilde'
 
 
 @assign(seqs.BIG_S, ACTION_MODES)
@@ -423,9 +379,7 @@ class ViInvertCaseByChars(ViOperatorDef):
         self.scroll_into_view = True
         self.motion_required = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_g_tilde')
+        self.command = 'nv_vi_g_tilde'
 
 
 @assign(seqs.G_BIG_U, ACTION_MODES)
@@ -435,9 +389,7 @@ class ViChangeToUpperCaseByChars(ViOperatorDef):
         self.scroll_into_view = True
         self.motion_required = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_g_big_u')
+        self.command = 'nv_vi_g_big_u'
 
 
 @assign(seqs.BIG_J, ACTION_MODES)
@@ -446,9 +398,7 @@ class ViJoinLines(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_big_j')
+        self.command = 'nv_vi_big_j'
 
 
 @assign(seqs.CTRL_X, ACTION_MODES)
@@ -470,9 +420,7 @@ class ViIncrement(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_modify_numbers')
+        self.command = 'nv_vi_modify_numbers'
 
 
 @assign(seqs.G_BIG_J, ACTION_MODES)
@@ -493,9 +441,7 @@ class ViEnterVisualMode(ViOperatorDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_enter_visual_mode')
+        self.command = 'nv_enter_visual_mode'
 
 
 @assign(seqs.Z_ENTER, ACTION_MODES)
@@ -504,9 +450,7 @@ class ViScrollToScreenTop(ViOperatorDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_z_enter')
+        self.command = 'nv_vi_z_enter'
 
 
 @assign(seqs.ZB, ACTION_MODES)
@@ -515,9 +459,7 @@ class ViScrollToScreenBottom(ViOperatorDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_z_minus')
+        self.command = 'nv_vi_z_minus'
 
 
 @assign(seqs.ZZ, ACTION_MODES)
@@ -525,9 +467,7 @@ class ViScrollToScreenCenter(ViOperatorDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_zz')
+        self.command = 'nv_vi_zz'
 
 
 @assign(seqs.Z_DOT, ACTION_MODES)
@@ -548,9 +488,7 @@ class ViReformat(ViOperatorDef):
         self.updates_xpos = True
         self.motion_required = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_gq')
+        self.command = 'nv_vi_gq'
 
 
 @assign(seqs.GQGQ, (NORMAL,))
@@ -656,9 +594,7 @@ class ViLeftDeleteChar(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_big_x')
+        self.command = 'nv_vi_big_x'
 
 
 @assign(seqs.CTRL_PAGEDOWN, ACTION_MODES)
@@ -678,18 +614,14 @@ class ViActivateNextTab(ViOperatorDef):
 class ViActivatePreviousTab(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_g_big_t')
+        self.command = 'nv_vi_g_big_t'
 
 
 @assign(seqs.CTRL_W, (INSERT,))
 class ViDeleteUpToCursor(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_w')
+        self.command = 'nv_vi_ctrl_w'
 
 
 @assign(seqs.CTRL_W_B, ACTION_MODES)
@@ -742,9 +674,7 @@ class ViMoveCurrentWindowToVeryBottom(ViOperatorDef):
 class ViGotoAlternateFile(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_hat')
+        self.command = 'nv_vi_ctrl_hat'
 
 
 @assign(seqs.CTRL_W_BIG_L, ACTION_MODES)
@@ -1001,9 +931,7 @@ class ViEnterVisualLineMode(ViOperatorDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_enter_visual_line_mode')
+        self.command = 'nv_enter_visual_line_mode'
 
 
 @assign(seqs.GV, ACTION_MODES)
@@ -1011,16 +939,13 @@ class ViRestoreVisualSelections(ViOperatorDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_gv')
+        self.command = 'nv_vi_gv'
 
 
 @assign(seqs.GX, ACTION_MODES)
 class ViNetrwGx(ViOperatorDef):
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_gx')
+    def init(self):
+        self.command = 'nv_vi_gx'
 
 
 @assign(seqs.CTRL_O, ACTION_MODES)
@@ -1028,9 +953,7 @@ class ViJumpBack(ViOperatorDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_jump_back')
+        self.command = 'nv_vi_jump_back'
 
 
 @assign(seqs.CTRL_I, ACTION_MODES)
@@ -1039,9 +962,7 @@ class ViJumpForward(ViOperatorDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_jump_forward')
+        self.command = 'nv_vi_jump_forward'
 
 
 @assign(seqs.DOT, ACTION_MODES)
@@ -1049,9 +970,7 @@ class ViRepeat(ViOperatorDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_dot')
+        self.command = 'nv_vi_dot'
 
 
 @assign(seqs.CTRL_Y, ACTION_MODES)
@@ -1067,9 +986,7 @@ class ViChangeToUpperCaseByCharsVisual(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_visual_big_u')
+        self.command = 'nv_vi_visual_big_u'
 
 
 @assign(seqs.CTRL_E, ACTION_MODES)
@@ -1108,16 +1025,13 @@ class ViEnterVisualBlockMode(ViOperatorDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_enter_visual_block_mode')
+        self.command = 'nv_enter_visual_block_mode'
 
 
 @assign(seqs.GA, ACTION_MODES)
 class ViShowAsciiValueOfChar(ViOperatorDef):
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ga')
+    def init(self):
+        self.command = 'nv_vi_ga'
 
 
 @assign(seqs.GF, ACTION_MODES)
@@ -1157,16 +1071,13 @@ class ViEnterInserMode(ViOperatorDef):
 class ViEnterNormalMode(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_enter_normal_mode')
+        self.command = 'nv_enter_normal_mode'
 
 
 @assign(seqs.CTRL_RIGHT_SQUARE_BRACKET, ACTION_MODES)
 class ViJumpToDefinition(ViOperatorDef):
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_right_square_bracket')
+    def init(self):
+        self.command = 'nv_vi_ctrl_right_square_bracket'
 
 
 @assign(seqs.CTRL_W_CTRL_RIGHT_SQUARE_BRACKET, ACTION_MODES)
@@ -1220,36 +1131,28 @@ class ViInsertAtBol(ViOperatorDef):
 class ViEnterCommandLineMode(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_cmdline')
+        self.command = 'nv_cmdline'
 
 
 @assign(seqs.CTRL_G, ACTION_MODES)
 class ViShowFileStatus(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_g')
+        self.command = 'nv_vi_ctrl_g'
 
 
 @assign(seqs.BIG_Z_BIG_Q, (NORMAL,))
 class ViExitEditor(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_big_z_big_q')
+        self.command = 'nv_vi_big_z_big_q'
 
 
 @assign(seqs.BIG_Z_BIG_Z, (NORMAL,))
 class ViCloseFile(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_big_z_big_z')
+        self.command = 'nv_vi_big_z_big_z'
 
 
 @assign(seqs.G_BIG_D, ACTION_MODES)
@@ -2151,9 +2054,7 @@ class ViInsertLineWithCommonPrefix(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return translate_action(view, 'nv_vi_ctrl_x_ctrl_l')
+        self.command = 'nv_vi_ctrl_x_ctrl_l'
 
 
 @assign(seqs.GM, MOTION_MODES)
