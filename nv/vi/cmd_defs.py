@@ -20,7 +20,6 @@ from NeoVintageous.nv.settings import get_last_char_search_character
 from NeoVintageous.nv.settings import get_last_char_search_command
 from NeoVintageous.nv.settings import get_partial_sequence
 from NeoVintageous.nv.settings import get_xpos
-from NeoVintageous.nv.settings import set_glue_until_normal_mode
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import RequireOneCharMixin
@@ -1020,11 +1019,8 @@ class ViSplitAndJumpToDefinition(ViOperatorDef):
 class ViInsertAfterChar(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        set_glue_until_normal_mode(view, True)
-
-        return translate_action(view, 'nv_vi_a')
+        self.glue_until_normal_mode = True
+        self.command = 'nv_vi_a'
 
 
 @assign(seqs.BIG_A, ACTION_MODES)
