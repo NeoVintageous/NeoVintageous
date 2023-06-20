@@ -775,7 +775,7 @@ class nv_vi_a(TextCommand):
 
         self.view.window().run_command('nv_enter_insert_mode', {
             'mode': mode,
-            'count': get_normal_insert_count(self.view)
+            'count': count
         })
 
 
