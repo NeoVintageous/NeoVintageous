@@ -24,7 +24,7 @@ class Test_ex_registers(unittest.ResetRegisters, unittest.ResetCommandLineOutput
         self.normal('fi|zz')
         self.feed(':registers')
         output = self.commandLineOutput()
-        self.assertTrue(output.startswith('--- Registers ---'))
+        self.assertTrue(output.startswith('Name Content'))
         self.assertIn('\n"*   \n', output)
         self.assertIn('\n"+   \n', output)
         self.assertTrue(output.endswith('Press ENTER to continue'))

@@ -642,8 +642,8 @@ def ex_registers(window, view, **kwargs) -> None:
             items.append('"{}   {}'.format(k, _truncate('^V'.join(multiple_values), 120)))
 
     items.sort()
-    items.insert(0, '--- Registers ---')
     output = CmdlineOutput(window)
+    output.write('Name Content\n')
     output.write("\n".join(items))
     output.show()
 
