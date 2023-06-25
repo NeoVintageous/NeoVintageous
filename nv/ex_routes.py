@@ -16,6 +16,7 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 from collections import OrderedDict
+from string import ascii_letters
 
 from NeoVintageous.nv.ex.tokens import TokenCommand
 
@@ -222,7 +223,7 @@ def _ex_route_global(state) -> TokenCommand:
     command = _create_route(state, 'global', forcable=True, addressable=True)
 
     sep = state.consume()
-    if sep in tuple('\\"|abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'):
+    if sep in tuple('\\"|' + ascii_letters):
         raise ValueError('bad separator')
 
     state.ignore()

@@ -15,6 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+from string import ascii_lowercase
+
 from sublime import Region
 
 from NeoVintageous.nv.ex.tokens import TokenDigits
@@ -83,7 +85,7 @@ def _resolve_line_number(view, token, current: int) -> int:
                 return row_at(view, sel.b - 1)
             else:
                 return row_at(view, sel.b)
-        elif token.content in tuple('abcdefghijklmnopqrstuvwxyz'):
+        elif token.content in tuple(ascii_lowercase):
             mark = get_mark(view, token.content)
             if not isinstance(mark, Region):
                 raise ValueError('E20: mark not set')

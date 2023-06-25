@@ -16,6 +16,8 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 from functools import wraps
+from string import ascii_lowercase
+from string import ascii_uppercase
 import inspect
 import logging
 import os
