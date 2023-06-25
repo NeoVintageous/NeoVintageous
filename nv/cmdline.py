@@ -27,6 +27,7 @@ def _init_common_panel_settings(panel) -> None:
     _set('auto_match_enabled', False)
     _set('draw_centered', False)
     _set('draw_indent_guides', False)
+    _set('draw_white_space', [])
     _set('gutter', False)
     _set('is_widget', True)
     _set('line_numbers', False)
