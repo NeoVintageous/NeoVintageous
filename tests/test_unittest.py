@@ -538,12 +538,12 @@ class TestFunctionalTestCase_feed(unittest.TestCase):
         self.instance.feed('<Esc>')
         self.window.run_command.assert_called_once_with('nv_feed_key', {'key': '<esc>', 'check_user_mappings': False})
 
-    @unittest.mock.patch('NeoVintageous.tests.unittest._do_ex_cmdline')
+    @unittest.mock.patch('NeoVintageous.tests.unittest.do_ex_cmdline')
     def test_feed_cmdline(self, do_ex_cmdline):
         self.instance.feed(':')
         do_ex_cmdline.assert_called_once_with(self.window, ':')
 
-    @unittest.mock.patch('NeoVintageous.tests.unittest._do_ex_cmdline')
+    @unittest.mock.patch('NeoVintageous.tests.unittest.do_ex_cmdline')
     def test_feed_cmdline_cmd(self, do_ex_cmdline):
         self.instance.feed(':pwd')
         do_ex_cmdline.assert_called_once_with(self.window, ':pwd')

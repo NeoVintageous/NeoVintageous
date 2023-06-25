@@ -36,34 +36,32 @@ from sublime import platform as _platform
 from sublime import set_clipboard as _set_clipboard
 from sublime import version as _version
 
-# Use aliases to indicate that they are not public testing APIs.
-from NeoVintageous.nv import macros as _macros
-from NeoVintageous.nv.cmdline import Cmdline as _Cmdline
-from NeoVintageous.nv.ex_cmds import do_ex_cmdline as _do_ex_cmdline
+from NeoVintageous.nv import macros
+from NeoVintageous.nv.cmdline import Cmdline
+from NeoVintageous.nv.ex_cmds import do_ex_cmdline
 from NeoVintageous.nv.mappings import _mappings
-from NeoVintageous.nv.marks import get_mark as _get_mark
-from NeoVintageous.nv.marks import set_mark as _set_mark
-from NeoVintageous.nv.options import get_option as _get_option
-from NeoVintageous.nv.options import set_option as _set_option
-from NeoVintageous.nv.polyfill import view_to_region as _view_to_region
-from NeoVintageous.nv.polyfill import view_to_str as _view_to_str
+from NeoVintageous.nv.marks import get_mark
+from NeoVintageous.nv.marks import set_mark
+from NeoVintageous.nv.options import get_option
+from NeoVintageous.nv.options import set_option
+from NeoVintageous.nv.polyfill import view_to_region
+from NeoVintageous.nv.polyfill import view_to_str
 from NeoVintageous.nv.registers import _is_register_linewise
-from NeoVintageous.nv.registers import _reset as _registers_reset
-from NeoVintageous.nv.registers import _set_data as _set_register_data
+from NeoVintageous.nv.registers import _reset
+from NeoVintageous.nv.registers import _set_data
 from NeoVintageous.nv.registers import _set_numbered_register
-from NeoVintageous.nv.registers import registers_get as _registers_get
-from NeoVintageous.nv.settings import get_mode as _get_mode
-from NeoVintageous.nv.settings import get_setting as _get_setting
-from NeoVintageous.nv.settings import get_visual_block_direction as _get_visual_block_direction
-from NeoVintageous.nv.settings import get_xpos as _get_xpos
-from NeoVintageous.nv.settings import reset_setting as _reset_setting
+from NeoVintageous.nv.registers import registers_get
+from NeoVintageous.nv.settings import get_mode
+from NeoVintageous.nv.settings import get_setting
+from NeoVintageous.nv.settings import get_visual_block_direction
+from NeoVintageous.nv.settings import get_xpos
+from NeoVintageous.nv.settings import reset_setting
 from NeoVintageous.nv.settings import set_last_search_pattern
-from NeoVintageous.nv.settings import set_mode as _set_mode
-from NeoVintageous.nv.settings import set_reset_during_init as _set_reset_during_init
-from NeoVintageous.nv.settings import set_setting as _set_setting
-from NeoVintageous.nv.settings import set_visual_block_direction as _set_visual_block_direction
-from NeoVintageous.nv.settings import set_xpos as _set_xpos
-
+from NeoVintageous.nv.settings import set_mode
+from NeoVintageous.nv.settings import set_reset_during_init
+from NeoVintageous.nv.settings import set_setting
+from NeoVintageous.nv.settings import set_visual_block_direction
+from NeoVintageous.nv.settings import set_xpos
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import DIRECTION_UP
 from NeoVintageous.nv.vim import INSERT  # noqa: F401
@@ -117,10 +115,10 @@ class ViewTestCase(unittest.TestCase):
         return _platform()
 
     def view_to_region(self):
-        return _view_to_region(self.view)
+        return view_to_region(self.view)
 
     def content(self) -> str:
-        return _view_to_str(self.view)
+        return view_to_str(self.view)
 
     def Region(self, a: int, b: int = None) -> Region:
         # Return a Region with initial values a and b.
@@ -203,13 +201,13 @@ class ViewTestCase(unittest.TestCase):
         return self.view.settings()
 
     def set_setting(self, name: str, value) -> None:
-        _set_setting(self.view, name, value)
+        set_setting(self.view, name, value)
 
     def get_setting(self, name: str):
-        return _get_setting(self.view, name)
+        return get_setting(self.view, name)
 
     def reset_setting(self, name: str) -> None:
-        _reset_setting(self.view, name)
+        reset_setting(self.view, name)
 
     def set_wrap(self, width: int) -> None:
         self.settings().set('word_wrap', True)
@@ -240,12 +238,12 @@ class ViewTestCase(unittest.TestCase):
         self.assertFalse(self.settings().has('vintageous_%s' % name))
 
     def set_option(self, name: str, value, setting: bool = True) -> None:
-        _set_option(self.view, name, value)
+        set_option(self.view, name, value)
         if setting:  # DEPRECATED Options via settings is deprecated
-            _set_setting(self.view, name, value)
+            set_setting(self.view, name, value)
 
     def get_option(self, name: str, view=None):
-        return _get_option(self.view if view is None else view, name)
+        return get_option(self.view if view is None else view, name)
 
     def assertOption(self, name: str, expected, msg: str = None) -> None:
         self.assertEqual(self.get_option(name), expected, msg=msg)
@@ -306,9 +304,9 @@ class ViewTestCase(unittest.TestCase):
 
             if mode == VISUAL_BLOCK:
                 if vblock_direction:
-                    _set_visual_block_direction(self.view, vblock_direction)
+                    set_visual_block_direction(self.view, vblock_direction)
                 elif len(self.view.sel()) > 1:
-                    _set_visual_block_direction(self.view, DIRECTION_DOWN)
+                    set_visual_block_direction(self.view, DIRECTION_DOWN)
         else:
             self.view.run_command('nv_test_write', {'text': text.replace('|', '')})
             sels = [i for i, c in enumerate(text) if c == '|']
@@ -317,13 +315,13 @@ class ViewTestCase(unittest.TestCase):
                 for i, x in enumerate(sels):
                     self.view.sel().add(x - i)
 
-        _set_mode(self.view, mode)
+        set_mode(self.view, mode)
 
     def setNormalMode(self):
-        _set_mode(self.view, NORMAL)
+        set_mode(self.view, NORMAL)
 
     def setVisualMode(self):
-        _set_mode(self.view, VISUAL)
+        set_mode(self.view, VISUAL)
 
     def insert(self, text: str) -> None:
         self._setupView(text, INSERT)
@@ -372,27 +370,27 @@ class ViewTestCase(unittest.TestCase):
         if name.isdigit() and name != '0':
             _set_numbered_register(name, value, linewise)
         else:
-            _set_register_data(name, value, linewise)
+            _set_data(name, value, linewise)
 
     def registerLinewise(self, name: str, value=None) -> None:
         self.register(name, value, linewise=True)
 
     def resetRegisters(self, values=None) -> None:
-        _registers_reset()
+        _reset()
         _set_clipboard('')
 
     def resetMacros(self) -> None:
-        _macros._data.clear()
+        macros._data.clear()
 
     def setMark(self, name: str, pt: int) -> None:
         sels = list(self.view.sel())
         self.select(pt)
-        _set_mark(self.view, name)
+        set_mark(self.view, name)
         self.view.sel().clear()
         self.view.sel().add_all(sels)  # type: ignore[arg-type]
 
     def assertMark(self, name: str, expected) -> None:
-        self._assertContentSelection([_get_mark(self.view, name)], expected)
+        self._assertContentSelection([get_mark(self.view, name)], expected)
 
     def assertMapping(self, mode: int, lhs: str, rhs: str) -> None:
         self.assertIn(lhs, _mappings[mode])
@@ -423,7 +421,7 @@ class ViewTestCase(unittest.TestCase):
         self.assertEqual(self.content(), expected, msg)
 
     def commandLineOutput(self) -> str:
-        return _view_to_str(self.view.window().find_output_panel('Command-line'))  # type: ignore[union-attr]
+        return view_to_str(self.view.window().find_output_panel('Command-line'))  # type: ignore[union-attr]
 
     def assertCommandLineOutput(self, expected, msg: str = None) -> None:
         self.view.window().focus_group(self.view.window().active_group())  # type: ignore[union-attr]
@@ -442,7 +440,7 @@ class ViewTestCase(unittest.TestCase):
     def exPrintOutput(self) -> str:
         v = self.exPrintOutputView()
         if v:
-            return _view_to_str(v)
+            return view_to_str(v)
 
         return ''
 
@@ -556,7 +554,7 @@ class ViewTestCase(unittest.TestCase):
         self.assertSelectionIsReversed()
 
     def _assertMode(self, mode: str) -> None:
-        self.assertEquals(mode, _get_mode(self.view))
+        self.assertEquals(mode, get_mode(self.view))
 
     def assertInsertMode(self) -> None:
         self._assertMode(INSERT)
@@ -609,7 +607,7 @@ class ViewTestCase(unittest.TestCase):
         if expected is not None and not isinstance(expected, list):
             expected = [expected]
 
-        self.assertEqual(_registers_get(self.view, name), expected, msg or 'for register "' + name + '"')
+        self.assertEqual(registers_get(self.view, name), expected, msg or 'for register "' + name + '"')
 
         if expected is not None:
             self.assertEqual(_is_register_linewise(name), linewise, msg or 'register (linewise) = "' + name)
@@ -725,7 +723,7 @@ class ViewTestCase(unittest.TestCase):
         self.assertEqual(self.getVblockDirection(), expected, msg=msg)
 
     def getVblockDirection(self):
-        return _get_visual_block_direction(self.view)
+        return get_visual_block_direction(self.view)
 
     def _statusLine(self) -> str:
         return (
@@ -764,10 +762,10 @@ class ViewTestCase(unittest.TestCase):
         self.assertStatusLineEqual('-- VISUAL BLOCK --', msg)
 
     def assertXpos(self, expected, msg: str = None) -> None:
-        self.assertEqual(_get_xpos(self.view), expected, msg)
+        self.assertEqual(get_xpos(self.view), expected, msg)
 
     def setXpos(self, xpos: int) -> None:
-        _set_xpos(self.view, xpos)
+        set_xpos(self.view, xpos)
 
     def assertMockNotCalled(self, mock) -> None:
         # https://docs.python.org/3/library/unittest.mock.html
@@ -778,7 +776,7 @@ class ViewTestCase(unittest.TestCase):
             self.assertEqual(mock.call_count, 0)
 
     def initCmdlineSearchMock(self, mock, type: str, event: str, pattern: str = None) -> None:
-        class MockCmdlineOnDone(_Cmdline):
+        class MockCmdlineOnDone(Cmdline):
             _mock_pattern = None
 
             def prompt(cmdline, pattern: str) -> None:
@@ -787,7 +785,7 @@ class ViewTestCase(unittest.TestCase):
                     args.append(cmdline._mock_pattern)  # type: ignore[unreachable]
 
                 cmdline._callbacks[cmdline._mock_event](*args)  # type: ignore[attr-defined]
-                _set_reset_during_init(self.view, True)
+                set_reset_during_init(self.view, True)
 
         if type == '?':
             mock.SEARCH_BACKWARD = '?'
@@ -911,7 +909,7 @@ class FunctionalTestCase(ViewTestCase):
         # >>> feed(':2,4yank')
 
         if seq[0] == ':':
-            return _do_ex_cmdline(self.view.window(), seq)
+            return do_ex_cmdline(self.view.window(), seq)
 
         orig_seq = seq
         seq, seq_args = _parse_seq(seq)
