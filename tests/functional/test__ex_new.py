@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -20,7 +20,7 @@ from NeoVintageous.tests import unittest
 
 class Test_ex_new(unittest.FunctionalTestCase):
 
-    @unittest.mock_run_commands('new_file')
+    @unittest.mock_commands('new_file')
     def test_new(self):
         self.eq('f|izz', ':new', 'f|izz')
         self.assertRunCommand('new_file')

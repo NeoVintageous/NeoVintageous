@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -556,7 +556,7 @@ class ViewTestCase(unittest.TestCase):
         self.assertSelectionIsReversed()
 
     def _assertMode(self, mode: str) -> None:
-        self.assertEquals(_get_mode(self.view), mode)
+        self.assertEquals(mode, _get_mode(self.view))
 
     def assertInsertMode(self) -> None:
         self._assertMode(INSERT)
@@ -1424,14 +1424,14 @@ def mock_ui(screen_rows=None, visible_region=None, em_width=10.0, line_height=22
     return wrapper
 
 
-def mock_run_commands(*methods):
+def mock_commands(*methods):
     """Mock commands.
 
     Useful to mock builtin Sublime Text commands.
 
     Usage:
 
-    @unittest.mock_run_commands('redo', 'hide_panel')
+    @unittest.mock_commands('redo', 'hide_panel')
     def test(self):
 
         # Assert command ran successfully.
@@ -1556,15 +1556,35 @@ _SEQ2CMD = {
     ';':            {'command': 'nv_feed_key'},  # noqa: E241
     '<':            {'command': 'nv_feed_key'},  # noqa: E241
     '<<':           {'command': 'nv_feed_key'},  # noqa: E241
+    '<C-0>':        {'command': 'nv_feed_key', 'args': {'key': '<C-0>'}},  # noqa: E241
+    '<C-1>':        {'command': 'nv_feed_key', 'args': {'key': '<C-1>'}},  # noqa: E241
+    '<C-2>':        {'command': 'nv_feed_key', 'args': {'key': '<C-2>'}},  # noqa: E241
+    '<C-3>':        {'command': 'nv_feed_key', 'args': {'key': '<C-3>'}},  # noqa: E241
+    '<C-4>':        {'command': 'nv_feed_key', 'args': {'key': '<C-4>'}},  # noqa: E241
+    '<C-5>':        {'command': 'nv_feed_key', 'args': {'key': '<C-5>'}},  # noqa: E241
+    '<C-6>':        {'command': 'nv_feed_key', 'args': {'key': '<C-6>'}},  # noqa: E241
+    '<C-7>':        {'command': 'nv_feed_key', 'args': {'key': '<C-7>'}},  # noqa: E241
+    '<C-8>':        {'command': 'nv_feed_key', 'args': {'key': '<C-8>'}},  # noqa: E241
+    '<C-9>':        {'command': 'nv_feed_key', 'args': {'key': '<C-9>'}},  # noqa: E241
+    '<C-B>':        {'command': 'nv_feed_key', 'args': {'key': '<C-B>'}},  # noqa: E241
+    '<C-F12>':      {'command': 'nv_feed_key', 'args': {'key': '<C-F12>'}},  # noqa: E241
+    '<C-F2>':       {'command': 'nv_feed_key', 'args': {'key': '<C-F2>'}},  # noqa: E241
+    '<C-F>':        {'command': 'nv_feed_key', 'args': {'key': '<C-F>'}},  # noqa: E241
+    '<C-M-p>':      {'command': 'nv_feed_key', 'args': {'key': '<C-M-p>'}},  # noqa: E241
+    '<C-P>':        {'command': 'nv_feed_key', 'args': {'key': '<C-P>'}},  # noqa: E241
+    '<C-S-f12>':    {'command': 'nv_feed_key', 'args': {'key': '<C-S-f12>'}},  # noqa: E241
+    '<C-S-f2>':     {'command': 'nv_feed_key', 'args': {'key': '<C-S-f2>'}},  # noqa: E241
     '<C-[>':        {'command': 'nv_feed_key', 'args': {'key': '<C-[>'}},  # noqa: E241
     '<C-]>':        {'command': 'nv_feed_key', 'args': {'key': '<C-]>'}},  # noqa: E241
     '<C-^>':        {'command': 'nv_feed_key', 'args': {'key': '<C-^>'}},  # noqa: E241
     '<C-a>':        {'command': 'nv_feed_key', 'args': {'key': '<C-a>'}},  # noqa: E241
+    '<C-b>':        {'command': 'nv_feed_key', 'args': {'key': '<C-b>'}},  # noqa: E241
     '<C-c>':        {'command': 'nv_feed_key', 'args': {'key': '<C-c>'}},  # noqa: E241
     '<C-d>':        {'command': 'nv_feed_key', 'args': {'key': '<C-d>'}},  # noqa: E241
     '<C-e>':        {'command': 'nv_feed_key', 'args': {'key': '<C-e>'}},  # noqa: E241
     '<C-g>':        {'command': 'nv_feed_key', 'args': {'key': '<C-g>'}},  # noqa: E241
     '<C-i>':        {'command': 'nv_feed_key', 'args': {'key': '<C-i>'}},  # noqa: E241
+    '<C-k>':        {'command': 'nv_feed_key', 'args': {'key': '<C-k>'}},  # noqa: E241
     '<C-n>':        {'command': 'nv_feed_key', 'args': {'key': '<C-n>'}},  # noqa: E241
     '<C-o>':        {'command': 'nv_feed_key', 'args': {'key': '<C-o>'}},  # noqa: E241
     '<C-p>':        {'command': 'nv_feed_key', 'args': {'key': '<C-p>'}},  # noqa: E241
@@ -1602,7 +1622,20 @@ _SEQ2CMD = {
     '<C-y>':        {'command': 'nv_feed_key', 'args': {'key': '<C-y>'}},  # noqa: E241
     '<CR>':         {'command': 'nv_feed_key', 'args': {'key': '<cr>'}},  # noqa: E241
     '<Esc>':        {'command': 'nv_feed_key', 'args': {'key': '<esc>'}},  # noqa: E241
+    '<F11>':        {'command': 'nv_feed_key', 'args': {'key': '<F11>'}},  # noqa: E241
+    '<F12>':        {'command': 'nv_feed_key', 'args': {'key': '<F12>'}},  # noqa: E241
+    '<F2>':         {'command': 'nv_feed_key', 'args': {'key': '<F2>'}},  # noqa: E241
+    '<F3>':         {'command': 'nv_feed_key', 'args': {'key': '<F3>'}},  # noqa: E241
+    '<F4>':         {'command': 'nv_feed_key', 'args': {'key': '<F4>'}},  # noqa: E241
+    '<F5>':         {'command': 'nv_feed_key', 'args': {'key': '<F5>'}},  # noqa: E241
+    '<F6>':         {'command': 'nv_feed_key', 'args': {'key': '<F6>'}},  # noqa: E241
+    '<F7>':         {'command': 'nv_feed_key', 'args': {'key': '<F7>'}},  # noqa: E241
+    '<F8>':         {'command': 'nv_feed_key', 'args': {'key': '<F8>'}},  # noqa: E241
+    '<F9>':         {'command': 'nv_feed_key', 'args': {'key': '<F9>'}},  # noqa: E241
     '<M-n>':        {'command': 'nv_feed_key', 'args': {'key': '<M-n>'}},  # noqa: E241
+    '<S-f11>':      {'command': 'nv_feed_key', 'args': {'key': '<S-f11>'}},  # noqa: E241
+    '<S-f2>':       {'command': 'nv_feed_key', 'args': {'key': '<S-f2>'}},  # noqa: E241
+    '<S-f4>':       {'command': 'nv_feed_key', 'args': {'key': '<S-f4>'}},  # noqa: E241
     '<k0>':         {'command': 'nv_feed_key', 'args': {'key': '<k0>'}},  # noqa: E241
     '<k1>':         {'command': 'nv_feed_key', 'args': {'key': '<k1>'}},  # noqa: E241
     '<k2>':         {'command': 'nv_feed_key', 'args': {'key': '<k2>'}},  # noqa: E241

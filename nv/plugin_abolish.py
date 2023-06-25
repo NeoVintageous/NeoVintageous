@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -26,6 +26,7 @@ from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import RequireOneCharMixin
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
+from NeoVintageous.nv.vi.cmd_base import translate_action
 from NeoVintageous.nv.vim import NORMAL
 
 
@@ -105,22 +106,18 @@ _ALIASES = {
 
 @register(seqs.CR, (NORMAL,))
 class AbolishCoercions(RequireOneCharMixin, ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
 
     def translate(self, view):
-        return {
-            'action': 'nv_abolish',
-            'action_args': {
-                'to': self.inp
-            }
-        }
+        return translate_action(view, 'nv_abolish', {
+            'to': self.inp
+        })
 
 
 class nv_abolish_command(TextCommand):
-    def run(self, edit, to=None, mode=None):
+    def run(self, edit, mode=None, count=None, register=None, to=None):
         try:
             to = _ALIASES[to]
         except KeyError:

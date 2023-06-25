@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -20,7 +20,7 @@ from NeoVintageous.tests import unittest
 
 class Test_esc(unittest.FunctionalTestCase):
 
-    @unittest.mock_run_commands('hide_panel')
+    @unittest.mock_commands('hide_panel')
     def test_n_esc(self):
         self.eq('fi|zz', 'n_<Esc>', 'n_fi|zz')
         self.eq('fi|zz bu|zz fi|zz', 'n_<Esc>', 'n_fi|zz buzz fizz')

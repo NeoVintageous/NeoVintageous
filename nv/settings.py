@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -96,6 +96,15 @@ def get_count(view, default: int = 1) -> int:
 
     mcount = get_motion_count(view)
     if mcount:
+        # If the operator count is 0 and the motion has count, the operator
+        # count needs to be adjusted to 1 because the two counts need to be
+        # multiplied and multiplying by 0 is always 0. For example: "gc7G"
+        if c == 0:
+            c = 1
+
+        # If the motion includes a count and the operator also has a
+        # count, the two counts are multiplied.  For example: "2d3w"
+        # deletes six words.
         c *= int(mcount) or 1
 
     if c < 0:

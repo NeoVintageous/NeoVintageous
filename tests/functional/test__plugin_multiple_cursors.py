@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -142,8 +142,9 @@ class TestMultipleCursors(unittest.FunctionalTestCase):
                 self.assertNormal('fizz |fizz |fizz |fizz fizz')
             self.assertStatusLineIsBlank()
 
-    def test_select_all(self):
+    def test_add_all(self):
         for seq in ('A', '<M-n>'):
+            self.eq('|fizz| buzz fizz buzz fizz', 's_' + seq, '|fizz| buzz |fizz| buzz |fizz|')
             self.normal('fizz |fizz| buzz fizz fi zz fizz buzz')
             self.feed('<C-n>')
             self.feed('s_' + seq)

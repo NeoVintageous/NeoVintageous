@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -20,7 +20,7 @@ from NeoVintageous.tests import unittest
 
 class Test_ex_tabfirst(unittest.FunctionalTestCase):
 
-    @unittest.mock_run_commands('select_by_index')
+    @unittest.mock_commands('select_by_index')
     def test_n_tabfirst(self):
         self.eq('f|izz', ':tabfirst', 'f|izz')
         self.assertRunCommand('select_by_index', {'index': 0})

@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -15,6 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+from NeoVintageous.nv.polyfill import merge_dicts
+from NeoVintageous.nv.settings import get_count
+from NeoVintageous.nv.settings import get_mode
+from NeoVintageous.nv.settings import get_register
+from NeoVintageous.nv.settings import set_glue_until_normal_mode
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.utils import translate_char
 
@@ -80,10 +85,15 @@ class ViMotionDef(ViCommandDefBase):
         super().__init__(*args, **kwargs)
         self.updates_xpos = False
         self.scroll_into_view = False
+        self.command = ''
+        self.command_args = None
         self.init()
 
     def init(self):
         pass
+
+    def translate(self, view):
+        return translate_motion(view, self.command, self.command_args)
 
 
 class ViOperatorDef(ViCommandDefBase):
@@ -94,10 +104,19 @@ class ViOperatorDef(ViCommandDefBase):
         self.scroll_into_view = False
         self.motion_required = False
         self.repeatable = False
+        self.glue_until_normal_mode = False
+        self.command = ''
+        self.command_args = None
         self.init()
 
     def init(self):
         pass
+
+    def translate(self, view):
+        if self.glue_until_normal_mode:
+            set_glue_until_normal_mode(view, True)
+
+        return translate_action(view, self.command, self.command_args)
 
 
 class RequireOneCharMixin(ViCommandDefBase):
@@ -114,3 +133,24 @@ class RequireOneCharMixin(ViCommandDefBase):
         self.inp += translate_char(key)
 
         return True
+
+
+def translate_action(view, command: str, args: dict = None) -> dict:
+    return {
+        'action': command,
+        'action_args': merge_dicts({
+            'mode': get_mode(view),
+            'count': get_count(view),
+            'register': get_register(view)
+        }, args if args else {})
+    }
+
+
+def translate_motion(view, command: str, args: dict = None) -> dict:
+    return {
+        'motion': command,
+        'motion_args': merge_dicts({
+            'mode': get_mode(view),
+            'count': get_count(view),
+        }, args if args else {})
+    }
