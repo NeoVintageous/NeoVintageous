@@ -138,6 +138,7 @@ class TestSurround_cs(unittest.FunctionalTestCase):
         self.eq('<li class="x y" id="z">a|bc</li>', 'cst<div<CR>', '|<div class="x y" id="z">abc</div>')
         self.eq('<li class="x y" id="z">a|bc</li>', 'cst<C-t>div<CR>', '|<div class="x y" id="z">\nabc\n</div>')
         self.eq('<li class="x y" id="z">a|bc</li>', 'cst<div>', '|<div>abc</div>')
+        self.eq('<li><a href="/blog">fi|zz</a></li>', 'cst<div>', '<li>|<div>fizz</div></li>')
 
     def test_can_disable_plugin(self):
         self.normal('"x|xx"')

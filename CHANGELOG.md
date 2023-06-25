@@ -17,6 +17,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#892](https://github.com/NeoVintageous/NeoVintageous/issues/892): Change surrounding HTML tags breaks with multiple tags with attributes
 * Fixed [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `gf` doesn't work in some cases
 * Fixed [#889](https://github.com/NeoVintageous/NeoVintageous/issues/889): `{visual}G` should extend to first non-blank character
 * Fixed [#890](https://github.com/NeoVintageous/NeoVintageous/issues/890): `G` should jump to first non-blank character

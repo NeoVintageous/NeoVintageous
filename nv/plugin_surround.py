@@ -326,7 +326,7 @@ def _do_cs(view, edit, mode: str, target: str, replacement: str) -> None:
     def _f(view, s):
         if mode == INTERNAL_NORMAL:
             if target == 't':
-                target_tag_open, target_tag_close = ('<[^>\\/]+>', '<\\/[^>]+>')
+                target_tag_open, target_tag_close = ('<[^>]+>', '<\\/[^>]+>')
                 region_begin = None
                 region_end = view.find(target_tag_close, s.b)
                 if region_end:
