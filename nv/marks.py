@@ -24,7 +24,7 @@ from NeoVintageous.nv.utils import get_insertion_point_at_b
 
 
 def set_mark(view, name: str) -> None:
-    if not _is_valid(name):
+    if not _is_writable(name):
         raise KeyError()
 
     pt = get_insertion_point_at_b(view.sel()[0])
@@ -32,7 +32,7 @@ def set_mark(view, name: str) -> None:
 
 
 def get_mark(view, name: str):
-    if not _is_valid(name):
+    if not _is_readable(name):
         raise KeyError()
 
     # Returns None, list[Region], or tuple[sublime.View, list[Region]]
@@ -49,8 +49,12 @@ def get_mark(view, name: str):
             return marks[0]
 
 
-def _is_valid(name: str) -> bool:
+def _is_writable(name: str) -> bool:
     return name in ascii_letters
+
+
+def _is_readable(name: str) -> bool:
+    return name in ascii_letters + '\'`'
 
 
 def _get_key(name: str) -> str:
