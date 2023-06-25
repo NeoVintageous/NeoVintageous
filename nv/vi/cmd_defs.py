@@ -962,6 +962,7 @@ class ViShowAsciiValueOfChar(ViOperatorDef):
         self.command = 'nv_vi_ga'
 
 
+@assign(seqs.CTRL_W_GF, ACTION_MODES)
 @assign(seqs.GF, ACTION_MODES)
 class Vigf(ViOperatorDef):
     def init(self):
@@ -971,6 +972,7 @@ class Vigf(ViOperatorDef):
         }
 
 
+@assign(seqs.CTRL_W_G_BIG_F, ACTION_MODES)
 @assign(seqs.G_BIG_F, ACTION_MODES)
 class VigF(ViOperatorDef):
     def init(self):
@@ -1648,6 +1650,7 @@ class ViReverseFindWord(ViMotionDef):
 @assign(seqs.BIG_Z, MOTION_MODES)
 @assign(seqs.CTRL_K, MOTION_MODES)
 @assign(seqs.CTRL_W, MOTION_MODES)
+@assign(seqs.CTRL_W_G, MOTION_MODES)
 @assign(seqs.CTRL_X, (INSERT,))
 @assign(seqs.G, MOTION_MODES)
 @assign(seqs.LEFT_SQUARE_BRACKET, MOTION_MODES)
