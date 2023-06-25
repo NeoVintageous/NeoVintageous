@@ -337,3 +337,10 @@ else:
 def goto_definition_side_by_side(window) -> None:
     window.run_command('goto_definition', {'side_by_side': True})
     window.run_command('carry_file_to_pane', {'direction': 'right'})
+
+
+def truncate(string: str, truncate_at: int) -> str:
+    if len(string) > truncate_at:
+        return string[0:truncate_at] + ' ...'
+
+    return string

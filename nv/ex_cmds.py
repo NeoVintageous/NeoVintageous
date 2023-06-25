@@ -53,6 +53,7 @@ from NeoVintageous.nv.polyfill import reload_syntax
 from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
+from NeoVintageous.nv.polyfill import truncate
 from NeoVintageous.nv.polyfill import view_find_all_in_range
 from NeoVintageous.nv.polyfill import view_to_region
 from NeoVintageous.nv.registers import registers_get_all
@@ -614,12 +615,6 @@ def ex_read(view, edit, line_range: RangeNode, cmd: str = None, file_name: str =
 
 
 def ex_registers(window, view, **kwargs) -> None:
-    def _truncate(string: str, truncate_at: int) -> str:
-        if len(string) > truncate_at:
-            return string[0:truncate_at] + ' ...'
-
-        return string
-
     items = []
     registers = registers_get_all(view).items()
     for k, v in registers:
@@ -639,7 +634,7 @@ def ex_registers(window, view, **kwargs) -> None:
                 multiple_values.append(part_value)
 
             # ^V indicates a visual block
-            items.append('"{}   {}'.format(k, _truncate('^V'.join(multiple_values), 120)))
+            items.append('"{}   {}'.format(k, truncate('^V'.join(multiple_values), 120)))
 
     items.sort()
     output = CmdlineOutput(window)
