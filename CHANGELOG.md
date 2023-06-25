@@ -6,6 +6,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#901](https://github.com/NeoVintageous/NeoVintageous/issues/901): `CTRL-W gt` same as `gt`
+* Added [#901](https://github.com/NeoVintageous/NeoVintageous/issues/901): `CTRL-W gT` same as `gT`
 * Added [#881](https://github.com/NeoVintageous/NeoVintageous/issues/881): List all the current marks `:marks`
 * Added [#881](https://github.com/NeoVintageous/NeoVintageous/issues/881): Unknown mark now emits bell
 * Added [#881](https://github.com/NeoVintageous/NeoVintageous/issues/881): Invalid mark now emits bell
