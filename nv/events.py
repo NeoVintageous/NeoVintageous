@@ -142,19 +142,15 @@ class NeoVintageousEvents(EventListener):
 
     _last_deactivated_file_name = None
 
-    def on_query_context(self, view, key: str, operator: int, operand: bool, match_all: bool):
+    def on_query_context(self, view, key: str, operator: int, operand, match_all: bool):
         # Called when determining to trigger a key binding with the given context key.
         #
         # If the plugin knows how to respond to the context, it should return
         # either True of False. If the context is unknown, it should return
         # None.
         #
-        # Args:
-        #   view (View):
-        #   key (str):
-        #   operator (int):
-        #   operand (bool):
-        #   match_all (bool):
+        # Params:
+        #   operand: str|bool
         #
         # Returns:
         #   bool: If the context is known.

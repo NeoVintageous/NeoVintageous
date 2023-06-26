@@ -20,7 +20,7 @@ from NeoVintageous.tests import unittest
 
 class Test_gF(unittest.FunctionalTestCase):
 
-    def assertOpened(self, opener, file: str, row: int, col: int) -> None:
+    def assertOpened(self, opener, file: str, row, col) -> None:
         opener.assert_called_with(self.view.window(), file, row, col)
         # Reset to avoid false-positives in subsequent calls.
         opener.reset_mock()

@@ -22,7 +22,7 @@ from NeoVintageous.tests import unittest
 from NeoVintageous.nv.vi.text_objects import find_prev_lone_bracket
 
 
-test = namedtuple('simple_test', 'content start brackets expected msg')
+test = namedtuple('test', 'content start brackets expected msg')
 
 TESTS = (
     test(content='aaa', start=1, brackets=('\\{', '\\}'), expected=None, msg='should return none'),

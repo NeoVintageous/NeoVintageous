@@ -18,15 +18,15 @@
 from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.ex.nodes import RangeNode
-from NeoVintageous.nv.ex.nodes import TokenDigits
-from NeoVintageous.nv.ex.nodes import TokenDollar
-from NeoVintageous.nv.ex.nodes import TokenDot
-from NeoVintageous.nv.ex.nodes import TokenMark
-from NeoVintageous.nv.ex.nodes import TokenOffset
-from NeoVintageous.nv.ex.nodes import TokenPercent
-from NeoVintageous.nv.ex.nodes import TokenSearchBackward
-from NeoVintageous.nv.ex.nodes import TokenSearchForward
 from NeoVintageous.nv.ex.nodes import _resolve_line_number
+from NeoVintageous.nv.ex.tokens import TokenDigits
+from NeoVintageous.nv.ex.tokens import TokenDollar
+from NeoVintageous.nv.ex.tokens import TokenDot
+from NeoVintageous.nv.ex.tokens import TokenMark
+from NeoVintageous.nv.ex.tokens import TokenOffset
+from NeoVintageous.nv.ex.tokens import TokenPercent
+from NeoVintageous.nv.ex.tokens import TokenSearchBackward
+from NeoVintageous.nv.ex.tokens import TokenSearchForward
 
 
 class TestRangeNode(unittest.TestCase):

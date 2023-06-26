@@ -57,7 +57,7 @@ class TestMarks(unittest.ViewTestCase):
         self.do_can_retrieve_quote_or_backtick_mark_test('\'', jumplist_back)
 
     def do_can_retrieve_quote_or_backtick_mark_from_other_view(self, name, jumplist_back):
-        panel = self.view.window().create_output_panel('test_mark', unlisted=True)
+        panel = self.view.window().create_output_panel('test_mark', unlisted=True)  # type: ignore[union-attr]
         jumplist_back.return_value = (panel, [self.Region(7)])
         self.normal('|fizz\nbuzz\nfizz\nbuzz')
         self.assertEqual(get_mark(self.view, name), (panel, self.Region(7)))

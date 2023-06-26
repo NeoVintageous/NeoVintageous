@@ -19,19 +19,19 @@ import unittest
 
 from NeoVintageous.nv.ex.nodes import RangeNode
 from NeoVintageous.nv.ex.parser import _ParsedCommandLine
-from NeoVintageous.nv.ex.parser import TokenComma
-from NeoVintageous.nv.ex.parser import TokenDigits
-from NeoVintageous.nv.ex.parser import TokenDollar
-from NeoVintageous.nv.ex.parser import TokenDot
-from NeoVintageous.nv.ex.parser import TokenMark
-from NeoVintageous.nv.ex.parser import TokenOffset
-from NeoVintageous.nv.ex.parser import TokenPercent
-from NeoVintageous.nv.ex.parser import TokenSearchBackward
-from NeoVintageous.nv.ex.parser import TokenSearchForward
-from NeoVintageous.nv.ex.parser import TokenSemicolon
 from NeoVintageous.nv.ex.parser import _ParserState
 from NeoVintageous.nv.ex.parser import parse_command_line
+from NeoVintageous.nv.ex.tokens import TokenComma
 from NeoVintageous.nv.ex.tokens import TokenCommand
+from NeoVintageous.nv.ex.tokens import TokenDigits
+from NeoVintageous.nv.ex.tokens import TokenDollar
+from NeoVintageous.nv.ex.tokens import TokenDot
+from NeoVintageous.nv.ex.tokens import TokenMark
+from NeoVintageous.nv.ex.tokens import TokenOffset
+from NeoVintageous.nv.ex.tokens import TokenPercent
+from NeoVintageous.nv.ex.tokens import TokenSearchBackward
+from NeoVintageous.nv.ex.tokens import TokenSearchForward
+from NeoVintageous.nv.ex.tokens import TokenSemicolon
 
 
 class TestParsedCommandLine(unittest.TestCase):

@@ -25,11 +25,11 @@ from NeoVintageous.nv.settings import set_reset_during_init
 class TestFeedKey(unittest.ResetRegisters, unittest.ResetCommandLineOutput, unittest.FunctionalTestCase):
 
     def feedkey(self, key):
-        self.view.window().run_command('nv_feed_key', {'key': key})
+        self.view.window().run_command('nv_feed_key', {'key': key})  # type: ignore[union-attr]
 
     def feedkeys(self, keys):
         for key in keys:
-            self.view.window().run_command('nv_feed_key', {'key': key})
+            self.view.window().run_command('nv_feed_key', {'key': key})  # type: ignore[union-attr]
 
     def setUp(self):
         super().setUp()

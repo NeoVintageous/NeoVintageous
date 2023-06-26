@@ -639,7 +639,7 @@ class ViewTestCase(unittest.TestCase):
 
         self._assertRegister(name, expected, linewise, msg)
 
-    def assertRegisters(self, names: list, expected=None, empty_names: str = '', msg: str = None) -> None:
+    def assertRegisters(self, names: str, expected=None, empty_names: str = '', msg: str = None) -> None:
         """Test that value for the register content for names and expected are equal.
 
         Usage:
@@ -659,7 +659,7 @@ class ViewTestCase(unittest.TestCase):
 
         self._assertRegister(name, expected, linewise=True, msg=msg)
 
-    def assertLinewiseRegisters(self, names: list, expected=None, empty_names: str = '', msg: str = None) -> None:
+    def assertLinewiseRegisters(self, names: str, expected=None, empty_names: str = '', msg: str = None) -> None:
         for name in names:
             self.assertLinewiseRegister(name, expected, msg)
 
@@ -669,7 +669,7 @@ class ViewTestCase(unittest.TestCase):
     def assertRegisterEmpty(self, name: str, msg: str = None) -> None:
         self._assertRegister(name, None, msg=msg)
 
-    def assertRegistersEmpty(self, names: list, msg: str = None) -> None:
+    def assertRegistersEmpty(self, names: str, msg: str = None) -> None:
         for name in names:
             self.assertRegisterEmpty(name, msg)
 

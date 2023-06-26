@@ -100,7 +100,7 @@ TESTS_MODES = (
 
 TESTS = TESTS_MODES
 
-test = namedtuple('simple_test', 'content regions kwargs expected msg')
+test = namedtuple('test', 'content regions kwargs expected msg')
 
 MORE_TESTS = (
     test(content='''aaa

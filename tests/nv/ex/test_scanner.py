@@ -17,21 +17,21 @@
 
 import unittest
 
-from NeoVintageous.nv.ex.scanner import _scan_command
-from NeoVintageous.nv.ex.scanner import _ScannerState
 from NeoVintageous.nv.ex.scanner import Scanner
-from NeoVintageous.nv.ex.scanner import TokenComma
-from NeoVintageous.nv.ex.scanner import TokenDigits
-from NeoVintageous.nv.ex.scanner import TokenDollar
-from NeoVintageous.nv.ex.scanner import TokenDot
-from NeoVintageous.nv.ex.scanner import TokenEof
-from NeoVintageous.nv.ex.scanner import TokenMark
-from NeoVintageous.nv.ex.scanner import TokenOffset
-from NeoVintageous.nv.ex.scanner import TokenPercent
-from NeoVintageous.nv.ex.scanner import TokenSearchBackward
-from NeoVintageous.nv.ex.scanner import TokenSearchForward
-from NeoVintageous.nv.ex.scanner import TokenSemicolon
+from NeoVintageous.nv.ex.scanner import _ScannerState
+from NeoVintageous.nv.ex.scanner import _scan_command
+from NeoVintageous.nv.ex.tokens import TokenComma
 from NeoVintageous.nv.ex.tokens import TokenCommand
+from NeoVintageous.nv.ex.tokens import TokenDigits
+from NeoVintageous.nv.ex.tokens import TokenDollar
+from NeoVintageous.nv.ex.tokens import TokenDot
+from NeoVintageous.nv.ex.tokens import TokenEof
+from NeoVintageous.nv.ex.tokens import TokenMark
+from NeoVintageous.nv.ex.tokens import TokenOffset
+from NeoVintageous.nv.ex.tokens import TokenPercent
+from NeoVintageous.nv.ex.tokens import TokenSearchBackward
+from NeoVintageous.nv.ex.tokens import TokenSearchForward
+from NeoVintageous.nv.ex.tokens import TokenSemicolon
 
 
 class TestScannerState(unittest.TestCase):

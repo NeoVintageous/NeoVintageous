@@ -22,7 +22,7 @@ from NeoVintageous.tests import unittest
 from NeoVintageous.nv.vi.text_objects import find_next_lone_bracket
 
 
-test = namedtuple('simple_test', 'content start brackets expected msg')
+test = namedtuple('test', 'content start brackets expected msg')
 
 TESTS_NEXT_BRACKET = (
     test(content='a\\}bc', start=2, brackets=('\\{', '\\}'), expected=None, msg='should not find escaped bracket at caret position'),  # noqa: E501

@@ -27,13 +27,13 @@ class TestSession(unittest.ViewTestCase):
 
     @unittest.mock_session()
     def test_session_on_close_view(self):
-        self.assertIsNone(session.session_on_close(self.view))
+        session.session_on_close(self.view)
 
     @unittest.mock_session()
     def test_session_on_close_silently_catches_key_errors(self):
         view = unittest.mock.Mock()
         view.id.return_value = -1
-        self.assertIsNone(session.session_on_close(view))
+        session.session_on_close(view)
         view.id.assert_called_once()
 
     @unittest.mock_session()

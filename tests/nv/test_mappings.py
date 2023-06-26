@@ -63,7 +63,7 @@ class TestMappings(unittest.ViewTestCase):
     def test_add_raises_exception(self):
         for mode in ('unknownmode', 0, '', True, False):
             with self.assertRaises(KeyError):
-                mappings_add(mode, 'x', 'y')
+                mappings_add(mode, 'x', 'y')  # type: ignore[arg-type]
         self.assertMappingsEmpty()
 
     @unittest.mock_mappings()
@@ -158,7 +158,7 @@ class TestMappings(unittest.ViewTestCase):
     def test_can_remove_normalised_mapping(self):
         for seq in ('<Space>', '<SPACE>', '<Space>', '<SpAcE>'):
             mappings_add(NORMAL, '<Space>', 'a')
-            self.assertMapping(NORMAL, '<space>', 'a')
+            self.assertMapping(NORMAL, '<space>', 'a')  # type: ignore[arg-type]
             mappings_remove(NORMAL, seq)
             self.assertMappingsEmpty()
 

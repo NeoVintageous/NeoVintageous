@@ -121,7 +121,7 @@ class TestBooleanViewOption(unittest.ViewTestCase):
     def test_set_false_only_mutates_setting_if_dirty(self):
         self.settings().set('spell_check', False)
         option = BooleanViewOption('spell_check')
-        self.view.settings().set = unittest.mock.Mock()
+        self.view.settings().set = unittest.mock.Mock()  # type: ignore[method-assign]
 
         option.set(self.view, False)
         self.assertEqual(0, self.view.settings().set.call_count)
@@ -132,7 +132,7 @@ class TestBooleanViewOption(unittest.ViewTestCase):
     def test_set_true_only_mutates_setting_if_dirty(self):
         self.settings().set('spell_check', True)
         option = BooleanViewOption('spell_check')
-        self.view.settings().set = unittest.mock.Mock()
+        self.view.settings().set = unittest.mock.Mock()  # type: ignore[method-assign]
 
         option.set(self.view, True)
         self.assertEqual(0, self.view.settings().set.call_count)
@@ -155,16 +155,16 @@ class TestBooleanIsVisibleOption(unittest.ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        self.is_menu_visible = self.view.window().is_menu_visible()
-        self.is_minimap_visible = self.view.window().is_minimap_visible()
-        self.is_sidebar_visible = self.view.window().is_sidebar_visible()
-        self.is_status_bar_visible = self.view.window().is_status_bar_visible()
+        self.is_menu_visible = self.view.window().is_menu_visible()  # type: ignore[union-attr]
+        self.is_minimap_visible = self.view.window().is_minimap_visible()  # type: ignore[union-attr]
+        self.is_sidebar_visible = self.view.window().is_sidebar_visible()  # type: ignore[union-attr]
+        self.is_status_bar_visible = self.view.window().is_status_bar_visible()  # type: ignore[union-attr]
 
     def tearDown(self):
-        self.view.window().set_menu_visible(self.is_menu_visible)
-        self.view.window().set_minimap_visible(self.is_minimap_visible)
-        self.view.window().set_sidebar_visible(self.is_sidebar_visible)
-        self.view.window().set_status_bar_visible(self.is_status_bar_visible)
+        self.view.window().set_menu_visible(self.is_menu_visible)  # type: ignore[union-attr]
+        self.view.window().set_minimap_visible(self.is_minimap_visible)  # type: ignore[union-attr]
+        self.view.window().set_sidebar_visible(self.is_sidebar_visible)  # type: ignore[union-attr]
+        self.view.window().set_status_bar_visible(self.is_status_bar_visible)  # type: ignore[union-attr]
         super().tearDown()
 
     def test_is_visible(self):

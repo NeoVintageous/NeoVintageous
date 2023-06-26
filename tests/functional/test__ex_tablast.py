@@ -23,4 +23,6 @@ class Test_ex_tablast(unittest.FunctionalTestCase):
     @unittest.mock_commands('select_by_index')
     def test_n_tablast(self):
         self.eq('f|izz', ':tablast', 'f|izz')
-        self.assertRunCommand('select_by_index', {'index': len(self.view.window().views_in_group(self.view.window().active_group())) - 1})  # noqa: E501
+        self.assertRunCommand('select_by_index', {
+            'index': len(self.view.window().views_in_group(self.view.window().active_group())) - 1  # type: ignore[union-attr] # noqa: E501
+        })
