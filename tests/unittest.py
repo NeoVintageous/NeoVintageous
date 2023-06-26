@@ -254,7 +254,7 @@ class ViewTestCase(unittest.TestCase):
         self.view.assign_syntax(syntax_file)
 
     def fixturePath(self, *args) -> str:
-        return os.path.join(os.path.dirname(__file__), 'fixtures', *args)
+        return os.path.realpath(os.path.join(os.path.dirname(__file__), 'fixtures', *args))
 
     def rootPath(self) -> str:
         return os.path.realpath(os.path.dirname(os.path.dirname(__file__)))
