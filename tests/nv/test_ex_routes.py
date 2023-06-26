@@ -221,7 +221,7 @@ class Test_ex_route_tabnext(unittest.TestCase):
 
 class TestRoutes(unittest.TestCase):
 
-    def _matchRoute(self, string):
+    def matchRoute(self, string):
         for route, command in ex_routes.items():
             match = re.compile(route).match(string)
             if match:
@@ -230,11 +230,11 @@ class TestRoutes(unittest.TestCase):
         return None
 
     def assertNotRoute(self, string):
-        self.assertEquals(self._matchRoute(string), None, 'failed asserting no route for {}'.format(string))
+        self.assertEquals(self.matchRoute(string), None, 'failed asserting no route for {}'.format(string))
 
     def assertRoute(self, expected, values, multiple_matches=False):
         for value in values:
-            match, route, command = self._matchRoute(value)
+            match, route, command = self.matchRoute(value)
             self.assertEqual(command.__name__, expected)
             self.assertEqual(match.group(0), value, 'failed at "{}"'.format(value))
 
