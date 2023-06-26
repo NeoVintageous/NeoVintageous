@@ -539,7 +539,10 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['history all', 'his all'], cmd('history', params={'name': 'all'}))
         self.assertRoute(['history search', 'his search'], cmd('history', params={'name': 'search'}))
         self.assertRoute(['history', 'his'], cmd('history'))
+        self.assertRoute(['inoremap x y', 'ino x y'], cmd('inoremap', params={'lhs': 'x', 'rhs': 'y'}))
+        self.assertRoute(['inoremap', 'ino'], cmd('inoremap'))
         self.assertRoute(['let n=v'], cmd('let', params={'name': 'n', 'value': 'v'}))
+        self.assertRoute(['marks'], cmd('marks'))
         self.assertRoute(['move .', 'm .'], cmd('move', params={'address': '.'}, addressable=True))
         self.assertRoute(['move 3', 'm 3'], cmd('move', params={'address': '3'}, addressable=True))
         self.assertRoute(['move', 'm'], cmd('move', addressable=True))
@@ -566,6 +569,8 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['qall', 'qa'], cmd('qall'))
         self.assertRoute(['quit!', 'q!'], cmd('quit', forced=True))
         self.assertRoute(['quit', 'q'], cmd('quit'))
+        self.assertRoute(['quitall!', 'quita!'], cmd('qall', forced=True))
+        self.assertRoute(['quitall', 'quita'], cmd('qall'))
         self.assertRoute(['read file.txt', 'r file.txt'], cmd('read', addressable=True, params={'file_name': 'file.txt'}))  # noqa: E501
         self.assertRoute(['read!p', 'r!p'], cmd('read', addressable=True, params={'cmd': 'p'}))
         self.assertRoute(['read!print', 'r!print'], cmd('read', addressable=True, params={'cmd': 'print'}))
@@ -632,13 +637,16 @@ class Test_scan_command(unittest.TestCase):
         self.assertRoute(['wall', 'wa'], cmd('wall'))
         self.assertRoute(['wq!'], cmd('wq', forced=True))
         self.assertRoute(['wq'], cmd('wq'))
-        self.assertRoute(['wqall', 'wqa', 'xall', 'xa'], cmd('wqall', forced=False, addressable=True))
         self.assertRoute(['wqall!', 'wqa!', 'xall!', 'xa!'], cmd('wqall', forced=True, addressable=True))
+        self.assertRoute(['wqall', 'wqa', 'xall', 'xa'], cmd('wqall', forced=False, addressable=True))
         self.assertRoute(['wqall'], cmd('wqall', forced=False, addressable=True))
         self.assertRoute(['write file.txt', 'w file.txt'], cmd('write', params={'++': '', 'file_name': 'file.txt', '>>': False, 'cmd': ''}, addressable=True))  # noqa: E501
         self.assertRoute(['write! file.txt', 'w! file.txt'], cmd('write', params={'++': '', 'file_name': 'file.txt', '>>': False, 'cmd': ''}, addressable=True, forced=True))  # noqa: E501
         self.assertRoute(['write!', 'w!'], cmd('write', params={'++': '', 'file_name': '', '>>': False, 'cmd': ''}, addressable=True, forced=True))  # noqa: E501
         self.assertRoute(['write', 'w'], cmd('write', params={'++': '', 'file_name': '', '>>': False, 'cmd': ''}, addressable=True))  # noqa: E501
+        self.assertRoute(['xnoremap x y'], cmd('xnoremap', params={'lhs': 'x', 'rhs': 'y'}))
+        self.assertRoute(['xnoremap', 'xn'], cmd('xnoremap'))
+        self.assertRoute(['xunmap x', 'xu x'], cmd('xunmap', params={'lhs': 'x'}))
         self.assertRoute(['yank x', 'y x'], cmd('yank', params={'register': 'x', 'count': None}, addressable=True))
         self.assertRoute(['yank', 'y'], cmd('yank', params={'register': '"', 'count': None}, addressable=True))
 
