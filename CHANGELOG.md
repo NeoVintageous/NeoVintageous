@@ -12,15 +12,15 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#881](https://github.com/NeoVintageous/NeoVintageous/issues/881): Unknown mark now emits bell
 * Added [#881](https://github.com/NeoVintageous/NeoVintageous/issues/881): Invalid mark now emits bell
 * Added [#896](https://github.com/NeoVintageous/NeoVintageous/issues/896): `CTRL-W gF` same as `gF`
-* Added [#896](https://github.com/NeoVintageous/NeoVintageous/issues/896): `gF` Same as `gf`, except if a :row:col follows the file name, then the cursor is positioned on that line
 * Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `CTRL-W gf` same as `gf`
-* Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `gf` visual, visual line, and visual block mode
+* Added [#896](https://github.com/NeoVintageous/NeoVintageous/issues/896): `gF` same as `gf`, except the cursor is positioned on file:row:col
 * Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `gf` for Unix the '~' character is expanded, like in "~user/file"
 * Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `gf` environment variables are expanded.
-* Added [#893](https://github.com/NeoVintageous/NeoVintageous/issues/893): Reveal side bar command for use with mappings: `nnoremap <leader><leader> :Neovintageous action=reveal_side_bar<CR>`
+* Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `gf` visual, visual line, and visual block mode
+* Added [#893](https://github.com/NeoVintageous/NeoVintageous/issues/893): Reveal side bar command
 * Added [#888](https://github.com/NeoVintageous/NeoVintageous/issues/888): `gg` in visual block mode
-* Added [#888](https://github.com/NeoVintageous/NeoVintageous/issues/888): `G` in visual block mode
 * Added [#888](https://github.com/NeoVintageous/NeoVintageous/issues/888): `[count]G` in visual block mode
+* Added [#888](https://github.com/NeoVintageous/NeoVintageous/issues/888): `G` in visual block mode
 
 ### Fixed
 
