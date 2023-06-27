@@ -38,6 +38,11 @@ class Test_V(unittest.FunctionalTestCase):
         self.eq('|    \n', 'n_V', 'V_|    \n|')
         self.assertStatusLineIsVisualLine()
 
+    def test_n_count_V(self):
+        self.eq('|1\n2\n3\n4\n5', 'n_3V', 'V_|1\n2\n3\n|4\n5')
+        self.eq('1\n|2\n3\n4\n5', 'n_2V', 'V_1\n|2\n3\n|4\n5')
+        self.eq('fizz1\nbu|zz2\nfizz3\nbuzz4\nfizz5\nbuzz6', 'n_3V', 'V_fizz1\n|buzz2\nfizz3\nbuzz4\n|fizz5\nbuzz6')
+
     @unittest.mock_bell()
     def test_n_V_bell_on_empty_content(self):
         self.eq('|', 'n_V', '|')

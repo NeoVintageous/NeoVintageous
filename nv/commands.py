@@ -1076,7 +1076,19 @@ class nv_enter_visual_line_mode(TextCommand):
                         else:
                             return Region(s.a, view.line(s.b).a)
                 else:
-                    return view.full_line(s.b)
+                    line = view.full_line(s.b)
+
+                    s.a = line.a
+
+                    if count and count > 1:
+                        target_row = view.rowcol(line.a)[0] + (count - 1)
+                        target_pt = view.text_point(target_row, 0)
+                        target_line = view.full_line(target_pt)
+                        s.b = target_line.b
+                    else:
+                        s.b = line.b
+
+                    return s
 
             regions_transformer(self.view, f)
 
