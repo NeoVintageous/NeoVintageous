@@ -134,12 +134,7 @@ def _layout_group_width(layout, group: int, width: int = None) -> dict:
 
 
 def _layout_groups_equal(layout):
-    """Make all groups (almost) equally high and wide.
-
-    Uses 'winheight' and 'winwidth' for the current window.  Windows with
-    'winfixheight' set keep their height and windows with 'winfixwidth' set
-    keep their width.
-    """
+    """Make all groups (almost) equally high and wide."""
     cell_count = len(layout['cells'])
     col_count = len(layout['cols'])
     row_count = len(layout['rows'])
@@ -310,9 +305,13 @@ def _exchange_view_by_count(window, count: int = 1) -> None:
 
 
 def _move_active_view_to_far_left(window) -> None:
-    """Move the current view to be at the far left, using the full height of the view.
+    """Move the current view to be at the far left.
 
-    Example of moving window (a=active). Currently only supports 2 row or 2 column layouts.
+    Using the full height of the view.
+
+    Example of moving window (a=active).
+
+    Currently only supports 2 row or 2 column layouts.
      ____________                    _________________
     |   0   |__1_|                  |    |   1   |  2 |
     |_______|__2a|                  |    |_______|__ _|
@@ -537,7 +536,6 @@ def _resize_groups_equally(window) -> None:
 
 
 def _split(window, file: str = None) -> None:
-    """Split current view in two. The result is two viewports on the same file."""
     if file:
         window.run_command('create_pane', {'direction': 'down', 'give_focus': True})
         window.open_file(file)
