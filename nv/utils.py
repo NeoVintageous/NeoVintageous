@@ -33,6 +33,7 @@
 
 from collections import Counter
 from contextlib import contextmanager
+from functools import wraps
 import os
 import re
 
@@ -43,6 +44,7 @@ from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
+from NeoVintageous.nv.settings import get_cmdline_cwd
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import get_visual_block_direction
 from NeoVintageous.nv.settings import set_mode
@@ -1366,3 +1368,18 @@ def expand_path(path: str) -> str:
 
 def expand_to_realpath(path: str) -> str:
     return os.path.realpath(expand_path(path))
+
+
+def current_working_directory(f, *args, **kwargs):
+    @wraps(f)
+    def init(*args, **kwargs) -> None:
+        try:
+            original = os.getcwd()
+            cwd = get_cmdline_cwd()
+            if cwd and os.path.isdir(cwd):
+                os.chdir(cwd)
+            f(*args, **kwargs)
+        finally:
+            if original:
+                os.chdir(original)
+    return init

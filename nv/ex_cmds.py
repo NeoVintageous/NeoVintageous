@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from functools import wraps
 from string import ascii_lowercase
 from string import ascii_uppercase
 import inspect
@@ -79,6 +78,7 @@ from NeoVintageous.nv.settings import set_last_substitute_string
 from NeoVintageous.nv.settings import set_setting
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import adding_regions
+from NeoVintageous.nv.utils import current_working_directory
 from NeoVintageous.nv.utils import expand_path
 from NeoVintageous.nv.utils import expand_to_realpath
 from NeoVintageous.nv.utils import get_line_count
@@ -104,33 +104,6 @@ from NeoVintageous.nv.window import window_tab_control
 
 
 _log = logging.getLogger(__name__)
-
-
-def _init_cwd(f, *args, **kwargs):
-    @wraps(f)
-    def inner(*args, **kwargs) -> None:
-        view = kwargs.get('view')
-        if not view:
-            raise RuntimeError('view is required')
-
-        original_cwd = os.getcwd()
-        _log.debug('original cwd: %s', original_cwd)
-
-        try:
-            cmdline_cwd = get_cmdline_cwd()
-            _log.debug('cmdline cwd: %s', cmdline_cwd)
-
-            if cmdline_cwd and os.path.isdir(cmdline_cwd):
-                _log.debug('changing cwd to %s from %s', cmdline_cwd, original_cwd)
-                os.chdir(cmdline_cwd)
-
-            f(*args, **kwargs)
-        finally:
-            if os.path.isdir(original_cwd):
-                _log.debug('resetting cwd to %s', original_cwd)
-                os.chdir(original_cwd)
-
-    return inner
 
 
 def ex_bfirst(window, **kwargs) -> None:
@@ -192,7 +165,7 @@ def ex_buffers(window, **kwargs) -> None:
     output.show()
 
 
-@_init_cwd
+@current_working_directory
 def ex_cd(view, path=None, **kwargs) -> None:
     if not path:
         path = os.path.expanduser('~')
@@ -303,7 +276,7 @@ def ex_double_ampersand(view, edit, flags, count: int, line_range: RangeNode, **
     ex_substitute(view=view, edit=edit, flags=flags, count=count, line_range=line_range, **kwargs)
 
 
-@_init_cwd
+@current_working_directory
 def ex_edit(window, view, file_name: str = None, forceit: bool = False, **kwargs) -> None:
     if file_name:
         file_name = expand_path(file_name)
@@ -482,7 +455,6 @@ def ex_move(view, edit, line_range: RangeNode, address: str = None, **kwargs) ->
     enter_normal_mode(view)
 
 
-@_init_cwd
 def ex_new(window, **kwargs) -> None:
     window.run_command('new_file')
 
@@ -589,7 +561,7 @@ def ex_print(window, view, line_range: RangeNode, flags: list = None, global_lin
         display.run_command('append', {'characters': characters})
 
 
-@_init_cwd
+@current_working_directory
 def ex_pwd(**kwargs) -> None:
     status_message(os.getcwd())
 
@@ -602,7 +574,7 @@ def ex_quit(**kwargs) -> None:
     window_quit_view(**kwargs)
 
 
-@_init_cwd
+@current_working_directory
 def ex_read(view, edit, line_range: RangeNode, cmd: str = None, file_name: str = None, **kwargs) -> None:
     if cmd:
         content = shell.read(view, cmd).strip()
@@ -711,7 +683,7 @@ def ex_setlocal(**kwargs) -> None:
     ex_set(**kwargs)
 
 
-@_init_cwd
+@current_working_directory
 def ex_shell(view, **kwargs) -> None:
     shell.open(view)
 
@@ -725,7 +697,7 @@ def ex_silent(window, view, command: str = None, **kwargs) -> None:
     reset_setting(view, 'shell_silent')
 
 
-@_init_cwd
+@current_working_directory
 def ex_shell_out(view, edit, cmd: str, line_range: RangeNode, **kwargs) -> None:
     if cmd == '!':
         cmd = get_ex_shell_last_command()
@@ -1048,7 +1020,7 @@ def ex_wall(window, **kwargs) -> None:
         ex_write(window=window, view=view, **kwargs)
 
 
-@_init_cwd
+@current_working_directory
 def ex_wq(**kwargs) -> None:
     ex_write(**kwargs)
     ex_quit(**kwargs)
@@ -1059,7 +1031,7 @@ def ex_wqall(**kwargs) -> None:
     ex_qall(**kwargs)
 
 
-@_init_cwd
+@current_working_directory
 def ex_write(window, view, file_name: str = None, line_range: RangeNode = None, forceit: bool = False, **kwargs) -> None:  # noqa: E501
     if kwargs.get('++') or kwargs.get('cmd'):
         status_message('argument not implemented')
