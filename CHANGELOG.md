@@ -6,10 +6,17 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
-* Added [#904](https://github.com/NeoVintageous/NeoVintageous/issues/904): `V` now accepts a count: `[count]V`
+* Added [#906](https://github.com/NeoVintageous/NeoVintageous/issues/906): `:tabnew` and `:tabedit` Open a new tab page with an empty window, after the current
+* Added [#902](https://github.com/NeoVintageous/NeoVintageous/issues/902): `:vsplit {file}` Like `:split {file}`, but split vertically
+* Added [#903](https://github.com/NeoVintageous/NeoVintageous/issues/903): `:split {file}` Split current window in two and edit the file `{file}` in it
+* Added [#911](https://github.com/NeoVintageous/NeoVintageous/issues/911): `CTRL-w ^` Split the current window in two and edit the alternate file
+* Added [#909](https://github.com/NeoVintageous/NeoVintageous/issues/909): `new {file}` Create a new split and start editing file `{file}` in it
+* Added [#910](https://github.com/NeoVintageous/NeoVintageous/issues/910): `:vnew {file}` Like `:new {file}`, but split vertically
+* Added [#907](https://github.com/NeoVintageous/NeoVintageous/issues/907): `:vnew` Like `:new`, but split vertically
+* Added [#904](https://github.com/NeoVintageous/NeoVintageous/issues/904): `V` Now accepts a count
 * Added [#901](https://github.com/NeoVintageous/NeoVintageous/issues/901): `CTRL-W gt` same as `gt`
 * Added [#901](https://github.com/NeoVintageous/NeoVintageous/issues/901): `CTRL-W gT` same as `gT`
-* Added [#881](https://github.com/NeoVintageous/NeoVintageous/issues/881): List all the current marks `:marks`
+* Added [#881](https://github.com/NeoVintageous/NeoVintageous/issues/881): `:marks` List all the current marks
 * Added [#881](https://github.com/NeoVintageous/NeoVintageous/issues/881): Unknown mark now emits bell
 * Added [#881](https://github.com/NeoVintageous/NeoVintageous/issues/881): Invalid mark now emits bell
 * Added [#896](https://github.com/NeoVintageous/NeoVintageous/issues/896): `CTRL-W gF` same as `gF`
@@ -25,6 +32,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#908](https://github.com/NeoVintageous/NeoVintageous/issues/908): `:new` should split like `:split`
 * Fixed [#905](https://github.com/NeoVintageous/NeoVintageous/issues/905): `:close!` should close last view
 * Fixed [#900](https://github.com/NeoVintageous/NeoVintageous/issues/900): Command-line output should not show white-space characters
 * Fixed [#899](https://github.com/NeoVintageous/NeoVintageous/issues/899): I in multiple cursor mode should glue undo operations

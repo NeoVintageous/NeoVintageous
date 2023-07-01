@@ -16,6 +16,7 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 from NeoVintageous.tests import unittest
+from sublime import FORCE_GROUP
 
 
 class Test_ctrl_w(unittest.FunctionalTestCase):
@@ -116,11 +117,12 @@ class Test_ctrl_w(unittest.FunctionalTestCase):
         self.feed('<C-w>-')
         function.assert_called_once_with(self.view.window(), 1)
 
-    @unittest.mock.patch('NeoVintageous.nv.window._split_with_new_file')
-    def test_ctrl_w_n(self, function):
+    @unittest.mock_commands('create_pane')
+    def test_ctrl_w_n(self):
         self.normal('f|izz')
-        self.feed('<C-w>n')
-        function.assert_called_once_with(self.view.window(), 1)
+        for feed in ('<C-w>n', '<C-w><C-n>', ':new'):
+            self.feed(feed)
+        self.assertRunCommand('create_pane', {'direction': 'down'}, count=3)
 
     @unittest.mock.patch('NeoVintageous.nv.window._close_all_other_views')
     def test_ctrl_w_o(self, function):
@@ -146,11 +148,12 @@ class Test_ctrl_w(unittest.FunctionalTestCase):
         self.feed('<C-w>q')
         function.assert_called_once_with(self.view.window())
 
-    @unittest.mock.patch('NeoVintageous.nv.window._split')
-    def test_ctrl_w_s(self, function):
+    @unittest.mock_commands('clone_file_to_pane')
+    def test_ctrl_w_s(self):
         self.normal('f|izz')
-        self.feed('<C-w>s')
-        function.assert_called_once_with(self.view.window())
+        for feed in ('<C-w>s', '<C-w>S', '<C-w><C-s>', ':split'):
+            self.feed(feed)
+        self.assertRunCommand('clone_file_to_pane', {'direction': 'down'}, count=4)
 
     @unittest.mock.patch('NeoVintageous.nv.window._focus_group_top_left')
     def test_ctrl_w_t(self, function):
@@ -164,11 +167,12 @@ class Test_ctrl_w(unittest.FunctionalTestCase):
         self.feed('<C-w>_')
         function.assert_called_once_with(self.view.window(), 1)
 
-    @unittest.mock.patch('NeoVintageous.nv.window._split_vertically')
-    def test_ctrl_w_v(self, function):
+    @unittest.mock_commands('clone_file_to_pane')
+    def test_ctrl_w_v(self):
         self.normal('f|izz')
-        self.feed('<C-w>v')
-        function.assert_called_once_with(self.view.window(), 1)
+        for feed in ('<C-w>v', '<C-w><C-v>', ':vsplit'):
+            self.feed(feed)
+        self.assertRunCommand('clone_file_to_pane', {'direction': 'right'}, count=3)
 
     @unittest.mock.patch('NeoVintageous.nv.window._exchange_view_by_count')
     def test_ctrl_w_x(self, function):
@@ -182,3 +186,14 @@ class Test_ctrl_w(unittest.FunctionalTestCase):
         self.feed('<C-w>]')
         self.assertRunCommand('goto_definition', {'side_by_side': True})
         self.assertRunCommand('carry_file_to_pane', {'direction': 'right'})
+
+    @unittest.mock.patch('sublime.Window.open_file')
+    @unittest.mock.patch('NeoVintageous.nv.window.get_alternate_file_register')
+    @unittest.mock_commands('create_pane')
+    def test_ctrl_w_hat(self, alternate_file, opener):
+        alternate_file.return_value = '/tmp/buzz.txt'
+        self.normal('f|izz')
+        for feed in ('<C-w>^', '<C-w><C-6>'):
+            self.feed(feed)
+            opener.assert_called_with('/tmp/buzz.txt', FORCE_GROUP)
+        self.assertRunCommand('create_pane', {'direction': 'down'}, count=2)

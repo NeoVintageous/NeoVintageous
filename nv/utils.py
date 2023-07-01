@@ -37,8 +37,10 @@ from functools import wraps
 import os
 import re
 
+from sublime import FORCE_GROUP
 from sublime import Region
 from sublime import View
+from sublime import Window
 
 from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.polyfill import set_selection
@@ -1383,3 +1385,19 @@ def current_working_directory(f, *args, **kwargs):
             if original:
                 os.chdir(original)
     return init
+
+
+@current_working_directory
+def open_file(window: Window, file: str) -> None:
+    file = expand_path(file)
+    if not os.path.isabs(file):
+        file = os.path.join(os.getcwd(), file)
+
+    window.open_file(file, FORCE_GROUP)
+
+
+def create_pane(window, direction: str, file: str = None) -> None:
+    # Uses Origami command.
+    window.run_command('create_pane', {'direction': direction})
+    if file:
+        open_file(window, file)

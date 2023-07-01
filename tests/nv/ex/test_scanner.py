@@ -544,6 +544,9 @@ class TestExCommands(unittest.TestCase):
         self.assertCommand(['move .', 'm .'], cmd('move', params={'address': '.'}, addressable=True))
         self.assertCommand(['move 3', 'm 3'], cmd('move', params={'address': '3'}, addressable=True))
         self.assertCommand(['move', 'm'], cmd('move', addressable=True))
+        self.assertCommand(['new /tmp/fizz/buzz.txt'], cmd('new', params={'file': '/tmp/fizz/buzz.txt'}))  # noqa: E501
+        self.assertCommand(['new file.txt'], cmd('new', params={'file': 'file.txt'}))
+        self.assertCommand(['new tmp/file.txt'], cmd('new', params={'file': 'tmp/file.txt'}))
         self.assertCommand(['new'], cmd('new'))
         self.assertCommand(['nnoremap abc xyz', 'nn abc xyz'], cmd('nnoremap', params={'lhs': 'abc', 'rhs': 'xyz'}))
         self.assertCommand(['nnoremap', 'nn'], cmd('nnoremap'))
@@ -604,7 +607,9 @@ class TestExCommands(unittest.TestCase):
         self.assertCommand(['sort', 'sor'], cmd('sort', addressable=True))
         self.assertCommand(['spellgood fizz', 'spe fizz'], cmd('spellgood', params={'word': 'fizz'}))
         self.assertCommand(['spellundo fizz', 'spellu fizz'], cmd('spellundo', params={'word': 'fizz'}))
+        self.assertCommand(['split /tmp/fizz/buzz.txt', 'sp /tmp/fizz/buzz.txt'], cmd('split', params={'file': '/tmp/fizz/buzz.txt'}))  # noqa: E501
         self.assertCommand(['split file.txt', 'sp file.txt'], cmd('split', params={'file': 'file.txt'}))
+        self.assertCommand(['split tmp/file.txt', 'sp tmp/file.txt'], cmd('split', params={'file': 'tmp/file.txt'}))
         self.assertCommand(['split', 'sp'], cmd('split'))
         self.assertCommand(['substitute', 's'], cmd('substitute', addressable=True))
         self.assertCommand(['substitute/x/', 's/x/'], cmd('substitute', params={'pattern': 'x', 'replacement': '', 'flags': [], 'count': 1}, addressable=True))  # noqa: E501
@@ -626,9 +631,15 @@ class TestExCommands(unittest.TestCase):
         self.assertCommand(['tabonly', 'tabo'], cmd('tabonly'))
         self.assertCommand(['unmap xyz', 'unm xyz'], cmd('unmap', params={'lhs': 'xyz'}))
         self.assertCommand(['unvsplit'], cmd('unvsplit'))
+        self.assertCommand(['vnew /tmp/fizz/buzz.txt'], cmd('vnew', params={'file': '/tmp/fizz/buzz.txt'}))  # noqa: E501
+        self.assertCommand(['vnew file.txt'], cmd('vnew', params={'file': 'file.txt'}))
+        self.assertCommand(['vnew tmp/file.txt'], cmd('vnew', params={'file': 'tmp/file.txt'}))
+        self.assertCommand(['vnew'], cmd('vnew'))
         self.assertCommand(['vnoremap abc xyz', 'vn abc xyz'], cmd('vnoremap', params={'lhs': 'abc', 'rhs': 'xyz'}))
         self.assertCommand(['vnoremap', 'vn'], cmd('vnoremap'))
+        self.assertCommand(['vsplit /tmp/fizz/buzz.txt', 'vs /tmp/fizz/buzz.txt'], cmd('vsplit', params={'file': '/tmp/fizz/buzz.txt'}))  # noqa: E501
         self.assertCommand(['vsplit file.txt', 'vs file.txt'], cmd('vsplit', params={'file': 'file.txt'}))
+        self.assertCommand(['vsplit tmp/file.txt', 'vs tmp/file.txt'], cmd('vsplit', params={'file': 'tmp/file.txt'}))
         self.assertCommand(['vsplit', 'vs'], cmd('vsplit'))
         self.assertCommand(['vunmap xyz', 'vu xyz'], cmd('vunmap', params={'lhs': 'xyz'}))
         self.assertCommand(['wall!', 'wa!'], cmd('wall', forced=True))
@@ -729,7 +740,6 @@ class TestExCommands(unittest.TestCase):
             'foobar',
             'let',
             'ls x ',
-            'new x',
             'newx',
             'only! ',
             'only!x',

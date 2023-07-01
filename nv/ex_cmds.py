@@ -26,8 +26,6 @@ import traceback
 
 from sublime import DIALOG_CANCEL
 from sublime import DIALOG_YES
-from sublime import ENCODED_POSITION
-from sublime import FORCE_GROUP
 from sublime import Region
 from sublime import set_timeout
 from sublime import yes_no_cancel_dialog
@@ -96,6 +94,7 @@ from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import status_message
+from NeoVintageous.nv.window import vnew
 from NeoVintageous.nv.window import window_buffer_control
 from NeoVintageous.nv.window import window_control
 from NeoVintageous.nv.window import window_quit_view
@@ -455,8 +454,8 @@ def ex_move(view, edit, line_range: RangeNode, address: str = None, **kwargs) ->
     enter_normal_mode(view)
 
 
-def ex_new(window, **kwargs) -> None:
-    window.run_command('new_file')
+def ex_new(window, file: str = None, **kwargs) -> None:
+    window_control(window, 'n', file=file)
 
 
 def ex_nnoremap(lhs: str = None, rhs: str = None, **kwargs) -> None:
@@ -902,6 +901,10 @@ def ex_tabnext(window, **kwargs) -> None:
     window_tab_control(window, action='next')
 
 
+def ex_tabnew(window, **kwargs) -> None:
+    window_tab_control(window, action='new')
+
+
 def ex_tabonly(window, **kwargs) -> None:
     window_tab_control(window, action='only')
 
@@ -947,6 +950,10 @@ def ex_unvsplit(window, **kwargs) -> None:
     window.run_command('set_layout', layout_data[groups - 1])
 
 
+def ex_vnew(window, file: str = None, **kwargs) -> None:
+    vnew(window, file=file)
+
+
 def ex_vnoremap(lhs: str = None, rhs: str = None, **kwargs) -> None:
     if not (lhs and rhs):
         return status_message('Listing key mappings is not implemented')
@@ -956,53 +963,8 @@ def ex_vnoremap(lhs: str = None, rhs: str = None, **kwargs) -> None:
     mappings_add(VISUAL_LINE, lhs, rhs)
 
 
-# TODO Refactor like ExSplit
-def ex_vsplit(window, view, file: str = None, **kwargs) -> None:
-    max_splits = 4
-
-    layout_data = {
-        1: {"cells": [[0, 0, 1, 1]],
-            "rows": [0.0, 1.0],
-            "cols": [0.0, 1.0]},
-        2: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1]],
-            "rows": [0.0, 1.0],
-            "cols": [0.0, 0.5, 1.0]},
-        3: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1]],
-            "rows": [0.0, 1.0],
-            "cols": [0.0, 0.33, 0.66, 1.0]},
-        4: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1], [3, 0, 4, 1]],
-            "rows": [0.0, 1.0],
-            "cols": [0.0, 0.25, 0.50, 0.75, 1.0]},
-    }
-
-    groups = window.num_groups()
-    if groups >= max_splits:
-        return status_message('Can\'t create more groups')
-
-    old_view = view
-    pos = ''
-    current_file_name = None
-    if old_view and old_view.file_name():
-        pos = ':{0}:{1}'.format(*old_view.rowcol(old_view.sel()[0].b))
-        current_file_name = old_view.file_name() + pos
-
-    window.run_command('set_layout', layout_data[groups + 1])
-
-    def open_file(window, file: str) -> None:
-        window.open_file(file, group=(window.num_groups() - 1), flags=(FORCE_GROUP | ENCODED_POSITION))
-
-    if file:
-        existing = window.find_open_file(file)
-        pos = ''
-        if existing:
-            pos = ':{0}:{1}'.format(*existing.rowcol(existing.sel()[0].b))
-
-        return open_file(window, file + pos)
-
-    if current_file_name:
-        open_file(window, current_file_name)
-    else:
-        window.new_file()
+def ex_vsplit(window, file: str = None, **kwargs) -> None:
+    window_control(window, 'v', file=file)
 
 
 def ex_vunmap(lhs: str, **kwargs) -> None:

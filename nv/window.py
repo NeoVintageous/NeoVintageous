@@ -22,8 +22,11 @@ from sublime import ENCODED_POSITION
 from NeoVintageous.nv.polyfill import goto_definition_side_by_side
 from NeoVintageous.nv.polyfill import has_dirty_buffers
 from NeoVintageous.nv.polyfill import set_selection
+from NeoVintageous.nv.registers import get_alternate_file_register
 from NeoVintageous.nv.settings import get_cmdline_cwd
 from NeoVintageous.nv.settings import get_exit_when_quiting_last_window
+from NeoVintageous.nv.ui import ui_bell
+from NeoVintageous.nv.utils import create_pane
 from NeoVintageous.nv.vim import status_message
 
 
@@ -537,24 +540,33 @@ def _resize_groups_equally(window) -> None:
 
 def _split(window, file: str = None) -> None:
     if file:
-        window.run_command('create_pane', {'direction': 'down', 'give_focus': True})
-        window.open_file(file)
+        create_pane(window, 'down', file)
     else:
         window.run_command('clone_file_to_pane', {'direction': 'down'})
 
 
-def _split_vertically(window, count: int = None) -> None:
-    window.run_command('clone_file_to_pane', {'direction': 'right'})
+def _vsplit(window, file: str = None) -> None:
+    if file:
+        create_pane(window, 'right', file)
+    else:
+        window.run_command('clone_file_to_pane', {'direction': 'right'})
 
 
-def _split_with_new_file(window, n: int = None) -> None:
-    """Create a new group and start editing an empty file in it.
+def _new(window, file: str = None) -> None:
+    create_pane(window, 'down', file)
 
-    Make new group N high (default is to use half the existing height).
-    Reduces the current group height to create room (and others, if the
-    'equalalways' option is set and 'eadirection' isn't "hor").
-    """
-    window.run_command('create_pane', {'direction': 'down', 'give_focus': True})
+
+def vnew(window, file: str = None) -> None:
+    create_pane(window, 'right', file)
+
+
+def _split_alternate(window):
+    alternate_file = get_alternate_file_register()
+    if not alternate_file:
+        ui_bell('E23: No alternate file')
+        return
+
+    create_pane(window, 'down', alternate_file)
 
 
 def window_buffer_control(window, action: str, count: int = 1) -> None:
@@ -622,6 +634,9 @@ def window_tab_control(window, action: str, count: int = 1, index: int = None) -
 
         window.focus_view(view)
 
+    elif action == 'new':
+        window.run_command('new_file')
+
     elif action == 'close':
         window.run_command('close_by_index', {'group': group_index, 'index': view_index})
 
@@ -661,7 +676,7 @@ def window_control(window, action: str, mode=None, count: int = 1, register=None
     elif action == '-':
         _decrease_group_height(window, count)
     elif action == 'n':
-        _split_with_new_file(window, count)
+        _new(window, **kwargs)
     elif action == 'o':
         _close_all_other_views(window)
     elif action == '|':
@@ -677,11 +692,13 @@ def window_control(window, action: str, mode=None, count: int = 1, register=None
     elif action == '_':
         _set_group_height(window, count)
     elif action == 'v':
-        _split_vertically(window, count)
+        _vsplit(window, **kwargs)
     elif action == 'x':
         _exchange_view_by_count(window, count)
     elif action == ']':
         goto_definition_side_by_side(window)
+    elif action == '^':
+        _split_alternate(window)
     else:
         raise ValueError('unknown action')
 

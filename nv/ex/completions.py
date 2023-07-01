@@ -35,7 +35,7 @@ _completion_types = [
     (re.compile(r'^(?P<cmd>:\s*e(?:dit)?!?)\s+(?P<path>.*)$'), False),
     (re.compile(r'^(?P<cmd>:\s*t(?:abedit)?!?)\s+(?P<path>.*)$'), False),
     (re.compile(r'^(?P<cmd>:\s*t(?:abe)?!?)\s+(?P<path>.*)$'), False),
-    (re.compile(r'^(?P<cmd>:\s*(?:sp(?:lit)?|vs(?:plit)?)!?)\s+(?P<path>.*)$'), False),
+    (re.compile(r'^(?P<cmd>:\s*(?:sp(?:lit)?|vs(?:plit)?|new|vne(?:w)?))\s+(?P<path>.*)$'), False),
 ]
 
 _completion_settings = (
@@ -257,7 +257,7 @@ _CMDLINE_COMPLETIONS = [
     'set', 'setlocal', 'shell', 'silent', 'snoremap', 'sort', 'spellgood',
     'spellundo', 'split', 'substitute', 'sunmap', 'tabNext', 'tabclose',
     'tabfirst', 'tablast', 'tabnext', 'tabonly', 'tabprevious', 'tabrewind',
-    'unmap', 'unvsplit', 'vnoremap', 'vsplit', 'vunmap', 'wall', 'wq', 'wqall',
+    'unmap', 'unvsplit', 'vnew', 'vnoremap', 'vsplit', 'vunmap', 'wall', 'wq', 'wqall',
     'write', 'xall', 'xit', 'yank', 'xnoremap', 'xunmap'
 ]
 

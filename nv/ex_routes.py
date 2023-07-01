@@ -45,6 +45,12 @@ def _create_map_route(state, name: str) -> TokenCommand:
     return _resolve(state, command, r'\s*(?P<lhs>.+?)\s+(?P<rhs>.+?)\s*$')
 
 
+def _create_file_route(state, name: str) -> TokenCommand:
+    command = _create_route(state, name)
+
+    return _resolve(state, command, '\\s+(?P<file>.+)')
+
+
 def _resolve(state, command: TokenCommand, pattern: str) -> TokenCommand:
     m = state.match(pattern)
     if m:
@@ -303,7 +309,7 @@ def _ex_route_move(state) -> TokenCommand:
 
 
 def _ex_route_new(state) -> TokenCommand:
-    return _create_route(state, 'new')
+    return _create_file_route(state, 'new')
 
 
 def _ex_route_nnoremap(state) -> TokenCommand:
@@ -468,10 +474,7 @@ def _ex_route_spellundo(state) -> TokenCommand:
 
 
 def _ex_route_split(state) -> TokenCommand:
-    command = _create_route(state, 'split')
-    _resolve(state, command, r'\s+(?P<file>.+)')
-
-    return command
+    return _create_file_route(state, 'split')
 
 
 def _ex_route_substitute(state) -> TokenCommand:
@@ -558,6 +561,10 @@ def _ex_route_tabnext(state) -> TokenCommand:
     return _create_route(state, 'tabnext', forcable=True)
 
 
+def _ex_route_tabnew(state) -> TokenCommand:
+    return _create_route(state, 'tabnew')
+
+
 def _ex_route_tabonly(state) -> TokenCommand:
     return _create_route(state, 'tabonly', forcable=True)
 
@@ -574,15 +581,16 @@ def _ex_route_unvsplit(state) -> TokenCommand:
     return _create_route(state, 'unvsplit')
 
 
+def _ex_route_vnew(state) -> TokenCommand:
+    return _create_file_route(state, 'vnew')
+
+
 def _ex_route_vnoremap(state) -> TokenCommand:
     return _create_map_route(state, 'vnoremap')
 
 
 def _ex_route_vsplit(state) -> TokenCommand:
-    command = _create_route(state, 'vsplit')
-    _resolve(state, command, r'\s+(?P<file>.+)')
-
-    return command
+    return _create_file_route(state, 'vsplit')
 
 
 def _ex_route_vunmap(state) -> TokenCommand:
@@ -772,6 +780,7 @@ ex_routes[r'sunm(?:ap)?'] = _ex_route_sunmap
 ex_routes[r'tabc(?:lose)?'] = _ex_route_tabclose
 ex_routes[r'tabfir(?:st)?'] = _ex_route_tabfirst
 ex_routes[r'tabl(?:ast)?'] = _ex_route_tablast
+ex_routes[r'tab(?:new|e(?:dit)?)'] = _ex_route_tabnew
 ex_routes[r'tabn(?:ext)?'] = _ex_route_tabnext
 ex_routes[r'tabN(?:ext)?'] = _ex_route_tabprevious
 ex_routes[r'tabo(?:nly)?'] = _ex_route_tabonly
@@ -779,6 +788,7 @@ ex_routes[r'tabp(?:revious)?'] = _ex_route_tabprevious
 ex_routes[r'tabr(?:ewind)?'] = _ex_route_tabfirst
 ex_routes[r'unm(?:ap)?'] = _ex_route_unmap
 ex_routes[r'unvsplit'] = _ex_route_unvsplit
+ex_routes[r'vne(?:w)?'] = _ex_route_vnew
 ex_routes[r'vn(?:oremap)?'] = _ex_route_vnoremap
 ex_routes[r'vs(?:plit)?'] = _ex_route_vsplit
 ex_routes[r'vu(?:nmap)?'] = _ex_route_vunmap

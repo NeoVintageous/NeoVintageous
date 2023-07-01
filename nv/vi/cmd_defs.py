@@ -1019,6 +1019,16 @@ class ViSplitAndJumpToDefinition(ViOperatorDef):
         }
 
 
+@assign(seqs.CTRL_W_HAT, ACTION_MODES)
+@assign(seqs.CTRL_W_CTRL_6, ACTION_MODES)
+class ViSplitAndEditAlternate(ViOperatorDef):
+    def init(self):
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': '^'
+        }
+
+
 @assign(seqs.A, (NORMAL,))
 class ViInsertAfterChar(ViOperatorDef):
     def init(self):
@@ -1044,6 +1054,7 @@ class ViInsertAtBol(ViOperatorDef):
 
 
 @assign(seqs.COLON, ACTION_MODES)
+@assign(seqs.CTRL_W_COLON, ACTION_MODES)
 class ViEnterCommandLineMode(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True

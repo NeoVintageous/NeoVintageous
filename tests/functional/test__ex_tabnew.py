@@ -18,10 +18,10 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_ex_new(unittest.FunctionalTestCase):
+class Test_ex_tabnew(unittest.FunctionalTestCase):
 
-    @unittest.mock_commands('create_pane')
-    def test_new(self):
+    @unittest.mock_commands('new_file')
+    def test_ex_tabnew(self):
         self.normal('f|izz')
-        self.feed(':new')
-        self.assertRunCommand('create_pane', {'direction': 'down'})
+        self.feed(':tabnew')
+        self.assertRunCommand('new_file')
