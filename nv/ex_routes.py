@@ -42,11 +42,7 @@ def _create_word_route(state, name: str, word: str, forcable: bool = False, **kw
 def _create_map_route(state, name: str) -> TokenCommand:
     command = TokenCommand(name)
 
-    m = state.match(r'\s*(?P<lhs>.+?)\s+(?P<rhs>.+?)\s*$')
-    if m:
-        command.params.update(m.groupdict())
-
-    return command
+    return _resolve(state, command, r'\s*(?P<lhs>.+?)\s+(?P<rhs>.+?)\s*$')
 
 
 def _resolve(state, command: TokenCommand, pattern: str) -> TokenCommand:
@@ -80,9 +76,7 @@ def _ex_route_browse(state) -> TokenCommand:
 def _ex_route_buffer(state) -> TokenCommand:
     command = _create_route(state, 'buffer', forcable=True)
 
-    _resolve(state, command, '\\s*(?P<index>[0-9]+)\\s*$')
-
-    return command
+    return _resolve(state, command, '\\s*(?P<index>[0-9]+)\\s*$')
 
 
 def _ex_route_buffers(state) -> TokenCommand:
@@ -272,9 +266,8 @@ def _ex_route_inoremap(state) -> TokenCommand:
 
 def _ex_route_history(state) -> TokenCommand:
     command = _create_route(state, 'history')
-    _resolve(state, command, r'\s*(?P<name>.+)')
 
-    return command
+    return _resolve(state, command, r'\s*(?P<name>.+)')
 
 
 def _ex_route_let(state) -> TokenCommand:
@@ -462,9 +455,8 @@ def _ex_route_sunmap(state) -> TokenCommand:
 
 def _ex_route_sort(state) -> TokenCommand:
     command = _create_route(state, 'sort', addressable=True)
-    _resolve(state, command, r'\s*(?P<options>[iu]+)')
 
-    return command
+    return _resolve(state, command, r'\s*(?P<options>[iu]+)')
 
 
 def _ex_route_spellgood(state) -> TokenCommand:
