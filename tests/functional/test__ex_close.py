@@ -20,12 +20,12 @@ from NeoVintageous.tests import unittest
 
 class Test_ex_close(unittest.FunctionalTestCase):
 
-    @unittest.mock.patch('NeoVintageous.nv.ex_cmds.window_control')
+    @unittest.mock.patch('NeoVintageous.nv.window._close_view')
     def test_close(self, function):
         self.eq('f|izz', ':close', 'f|izz')
-        function.assert_called_once_with(self.view.window(), 'c', close_if_last=False)
+        function.assert_called_once_with(self.view.window(), close_if_last=False)
 
-    @unittest.mock.patch('NeoVintageous.nv.ex_cmds.window_control')
+    @unittest.mock.patch('NeoVintageous.nv.window._close_view')
     def test_force_close(self, function):
         self.eq('f|izz', ':close!', 'f|izz')
-        function.assert_called_once_with(self.view.window(), 'c', close_if_last=True)
+        function.assert_called_once_with(self.view.window(), close_if_last=True)

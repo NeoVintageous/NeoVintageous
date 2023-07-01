@@ -25,6 +25,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#905](https://github.com/NeoVintageous/NeoVintageous/issues/905): `:close!` should close last view
 * Fixed [#900](https://github.com/NeoVintageous/NeoVintageous/issues/900): Command-line output should not show white-space characters
 * Fixed [#899](https://github.com/NeoVintageous/NeoVintageous/issues/899): I in multiple cursor mode should glue undo operations
 * Fixed [#892](https://github.com/NeoVintageous/NeoVintageous/issues/892): Change surrounding HTML tags breaks with multiple tags with attributes

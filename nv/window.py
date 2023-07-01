@@ -240,8 +240,8 @@ def _close_view(window, forceit: bool = False, close_if_last: bool = True, **kwa
         window.run_command('destroy_pane', {'direction': 'self'})
 
 
-def _close_active_view(window) -> None:
-    _close_view(window, close_if_last=False)
+def _close_active_view(window, close_if_last=False) -> None:
+    _close_view(window, close_if_last=close_if_last)
 
 
 def window_quit_view(window, **kwargs) -> None:
@@ -645,7 +645,7 @@ def window_control(window, action: str, mode=None, count: int = 1, register=None
     elif action == 'W':
         window_buffer_control(window, 'goto', count)
     elif action == 'c':
-        _close_active_view(window)
+        _close_active_view(window, **kwargs)
     elif action == '=':
         _resize_groups_equally(window)
     elif action == '>':
