@@ -2719,14 +2719,18 @@ class nv_vi_reverse_find_in_line(TextCommand):
         regions_transformer(self.view, f)
 
 
-class nv_vi_slash(TextCommand):
+class CmdlineSearch():
 
-    def run(self, edit, pattern=''):
+    def __init__(self, view, forward: bool):
+        self.view = view
+        self.forward = forward
+        self.type = Cmdline.SEARCH_FORWARD if self.forward else Cmdline.SEARCH_BACKWARD
+
+    def run(self, edit, pattern: str = '') -> None:
         set_reset_during_init(self.view, False)
-
         self._cmdline = Cmdline(
             self.view,
-            Cmdline.SEARCH_FORWARD,
+            self.type,
             self.on_done,
             self.on_change,
             self.on_cancel
@@ -2734,27 +2738,43 @@ class nv_vi_slash(TextCommand):
 
         self._cmdline.prompt(pattern)
 
-    def on_done(self, pattern: str):
-        history_update(Cmdline.SEARCH_FORWARD + pattern)
+    def on_done(self, pattern: str) -> None:
+        history_update(self.type + pattern)
         nv_cmdline_feed_key.reset_last_history_index()
         clear_search_highlighting(self.view)
         append_sequence(self.view, pattern + '<CR>')
-        set_motion(self.view, ViSearchForwardImpl(term=pattern))
+        if self.forward:
+            set_motion(self.view, ViSearchForwardImpl(term=pattern))
+        else:
+            set_motion(self.view, ViSearchBackwardImpl(term=pattern))
         evaluate_state(self.view)
 
-    def on_change(self, pattern: str):
+    def on_change(self, pattern: str) -> None:
         count = get_count(self.view)
         sel = self.view.sel()[0]
         pattern, flags = process_search_pattern(self.view, pattern)
-        start = get_insertion_point_at_b(sel) + 1
-        end = self.view.size()
 
-        match = find_wrapping(self.view,
-                              term=pattern,
-                              start=start,
-                              end=end,
-                              flags=flags,
-                              times=count)
+        if self.forward:
+            start = get_insertion_point_at_b(sel) + 1
+            end = self.view.size()
+        else:
+            start = 0
+            end = sel.b + 1 if not sel.empty() else sel.b
+
+        if self.forward:
+            match = find_wrapping(self.view,
+                                  term=pattern,
+                                  start=start,
+                                  end=end,
+                                  flags=flags,
+                                  times=count)
+        else:
+            match = reverse_find_wrapping(self.view,
+                                          term=pattern,
+                                          start=start,
+                                          end=end,
+                                          flags=flags,
+                                          times=count)
 
         clear_search_highlighting(self.view)
 
@@ -2764,11 +2784,17 @@ class nv_vi_slash(TextCommand):
         add_search_highlighting(self.view, find_search_occurrences(self.view, pattern, flags), [match])
         show_if_not_visible(self.view, match)
 
-    def on_cancel(self):
+    def on_cancel(self) -> None:
         clear_search_highlighting(self.view)
         reset_command_data(self.view)
         nv_cmdline_feed_key.reset_last_history_index()
         show_if_not_visible(self.view)
+
+
+class nv_vi_slash(TextCommand):
+
+    def run(self, edit, pattern=''):
+        CmdlineSearch(self.view, forward=True).run(pattern)
 
 
 class nv_vi_slash_impl(TextCommand):
@@ -3873,53 +3899,7 @@ class nv_vi_question_mark_impl(TextCommand):
 class nv_vi_question_mark(TextCommand):
 
     def run(self, edit, pattern=''):
-        set_reset_during_init(self.view, False)
-
-        self._cmdline = Cmdline(
-            self.view,
-            Cmdline.SEARCH_BACKWARD,
-            self.on_done,
-            self.on_change,
-            self.on_cancel
-        )
-
-        self._cmdline.prompt(pattern)
-
-    def on_done(self, pattern: str):
-        history_update(Cmdline.SEARCH_BACKWARD + pattern)
-        nv_cmdline_feed_key.reset_last_history_index()
-        clear_search_highlighting(self.view)
-        append_sequence(self.view, pattern + '<CR>')
-        set_motion(self.view, ViSearchBackwardImpl(term=pattern))
-        evaluate_state(self.view)
-
-    def on_change(self, pattern: str):
-        count = get_count(self.view)
-        sel = self.view.sel()[0]
-        pattern, flags = process_search_pattern(self.view, pattern)
-        start = 0
-        end = sel.b + 1 if not sel.empty() else sel.b
-
-        match = reverse_find_wrapping(self.view,
-                                      term=pattern,
-                                      start=start,
-                                      end=end,
-                                      flags=flags,
-                                      times=count)
-
-        clear_search_highlighting(self.view)
-
-        if not match:
-            return status_message('E486: Pattern not found: %s', pattern)
-
-        add_search_highlighting(self.view, find_search_occurrences(self.view, pattern, flags), [match])
-        show_if_not_visible(self.view, match)
-
-    def on_cancel(self):
-        clear_search_highlighting(self.view)
-        reset_command_data(self.view)
-        nv_cmdline_feed_key.reset_last_history_index()
-        show_if_not_visible(self.view)
+        CmdlineSearch(self.view, forward=False).run(pattern)
 
 
 class nv_vi_repeat_buffer_search(TextCommand):
