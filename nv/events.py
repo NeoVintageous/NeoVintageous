@@ -242,7 +242,7 @@ class NeoVintageousEvents(EventListener):
     def on_close(self, view):
         session_on_close(view)
 
-    def on_activated(self, view):
+    def on_activated_async(self, view):
         if is_view(view):
             # This mirrors Vim behaviour. We can't put this functionality in the
             # on_deactivated event because that event is triggered when the
