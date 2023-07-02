@@ -31,10 +31,12 @@ class TestVariables(unittest.TestCase):
 
     def test_special_keys_includes_leader_default(self):
         self.assertTrue(is_key_name('<Leader>'))
+        self.assertTrue(is_key_name('<leader>'))
         self.assertEqual(_defaults[_special['<leader>']], '<bslash>')
 
     def test_special_keys_includes_local_leader_default(self):
         self.assertTrue(is_key_name('<LocalLeader>'))
+        self.assertTrue(is_key_name('<localleader>'))
         self.assertEqual(_defaults[_special['<localleader>']], '<bslash>')
 
     @mock.patch.dict('NeoVintageous.nv.variables._special', {'<testpresent>': 'testpresentvalue'})
