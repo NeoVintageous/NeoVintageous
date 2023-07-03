@@ -347,7 +347,7 @@ class TestCmdlineEditing(unittest.FunctionalTestCase):
         self.feed('<down>')
         self.assertInsert(':|')
         self.feed('<down>')
-        self.assertBell()
+        self.assertBell(count=2)
         self.insert('/|')
         self.feed('<C-p>')
         self.assertInsert('/pattern1|')

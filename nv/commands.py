@@ -42,10 +42,9 @@ from NeoVintageous.nv.ex_cmds import do_ex_command
 from NeoVintageous.nv.feed_key import FeedKeyHandler
 from NeoVintageous.nv.goto import GotoView
 from NeoVintageous.nv.goto import get_linewise_non_blank_target
-from NeoVintageous.nv.history import history_get
-from NeoVintageous.nv.history import history_get_type
-from NeoVintageous.nv.history import history_len
 from NeoVintageous.nv.history import history_update
+from NeoVintageous.nv.history import next_cmdline_history
+from NeoVintageous.nv.history import reset_cmdline_history
 from NeoVintageous.nv.jumplist import jumplist_updater
 from NeoVintageous.nv.macros import add_macro_step
 from NeoVintageous.nv.marks import get_mark
@@ -358,8 +357,6 @@ _log = logging.getLogger(__name__)
 
 class nv_cmdline_feed_key(TextCommand):
 
-    LAST_HISTORY_ITEM_INDEX = None
-
     def run(self, edit, key):
         if self.view.size() == 0:
             raise RuntimeError('expected a non-empty command-line')
@@ -416,56 +413,13 @@ class nv_cmdline_feed_key(TextCommand):
             raise NotImplementedError('unknown key')
 
     def _next_history(self, edit, backwards: bool) -> None:
-        if self.view.size() == 0:
-            raise RuntimeError('expected a non-empty command-line')
-
-        firstc = self.view.substr(0)
-        if not history_get_type(firstc):
-            raise RuntimeError('expected a valid command-line')
-
-        if nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX is None:
-            nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = -1 if backwards else 0
-        else:
-            nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX += -1 if backwards else 1  # type: ignore[unreachable]
-
-        count = history_len(firstc)
-        if count == 0:
-            nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = None
-
-            return ui_bell()
-
-        if abs(nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX) > count:
-            nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = -count
-
-            return ui_bell()
-
-        if nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX >= 0:
-            nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = 0
-
-            if self.view.size() > 1:
-                return self.view.erase(edit, Region(1, self.view.size()))
-            else:
-                return ui_bell()
-
-        if self.view.size() > 1:
-            self.view.erase(edit, Region(1, self.view.size()))
-
-        item = history_get(firstc, nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX)
-        if item:
-            self.view.insert(edit, 1, item)
-
-    @staticmethod
-    def reset_last_history_index() -> None:
-        nv_cmdline_feed_key.LAST_HISTORY_ITEM_INDEX = None
+        if not next_cmdline_history(self.view, edit, backwards):
+            ui_bell()
 
 
 class nv_run_cmds(TextCommand):
 
     def run(self, edit, commands):
-        # Run a list of commands one after the other.
-        #
-        # Args:
-        #   commands (list): A list of commands.
         for cmd, args in commands:
             self.view.run_command(cmd, args)
 
@@ -553,12 +507,12 @@ class nv_cmdline(WindowCommand):
         on_change_cmdline_completion_prefix(self.window, Cmdline.EX + cmdline)
 
     def on_done(self, cmdline):
-        nv_cmdline_feed_key.reset_last_history_index()
+        reset_cmdline_history()
         history_update(Cmdline.EX + cmdline)
         do_ex_cmdline(self.window, Cmdline.EX + cmdline)
 
     def on_cancel(self):
-        nv_cmdline_feed_key.reset_last_history_index()
+        reset_cmdline_history()
 
 
 class nv_view(TextCommand):
@@ -2740,7 +2694,7 @@ class CmdlineSearch():
 
     def on_done(self, pattern: str) -> None:
         history_update(self.type + pattern)
-        nv_cmdline_feed_key.reset_last_history_index()
+        reset_cmdline_history()
         clear_search_highlighting(self.view)
         append_sequence(self.view, pattern + '<CR>')
         if self.forward:
@@ -2787,7 +2741,7 @@ class CmdlineSearch():
     def on_cancel(self) -> None:
         clear_search_highlighting(self.view)
         reset_command_data(self.view)
-        nv_cmdline_feed_key.reset_last_history_index()
+        reset_cmdline_history()
         show_if_not_visible(self.view)
 
 
