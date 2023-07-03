@@ -125,7 +125,7 @@ class Test_slash(unittest.FunctionalTestCase):
 class Test_slash_cmdline_prompt(unittest.FunctionalTestCase):
 
     @unittest.mock.patch('NeoVintageous.nv.commands.history_update')
-    @unittest.mock.patch('NeoVintageous.nv.commands.Cmdline')
+    @unittest.mock.patch('NeoVintageous.nv.cmdline_search.Cmdline')
     def test_on_done(self, cmdline, history_update):
         self.normal('x f|iz x fiz x')
         self.initCmdlineSearchMock(cmdline, '/', 'on_done', 'fiz')
@@ -137,7 +137,7 @@ class Test_slash_cmdline_prompt(unittest.FunctionalTestCase):
 
     @unittest.mock_status_message()
     @unittest.mock.patch('NeoVintageous.nv.commands.get_last_search_pattern')
-    @unittest.mock.patch('NeoVintageous.nv.commands.Cmdline')
+    @unittest.mock.patch('NeoVintageous.nv.cmdline_search.Cmdline')
     def test_on_done_no_previous_pattern(self, cmdline, get_last_search_pattern):
         get_last_search_pattern.return_value = None
         self.normal('x f|iz x fiz x')
@@ -149,7 +149,7 @@ class Test_slash_cmdline_prompt(unittest.FunctionalTestCase):
 
     @unittest.mock_status_message()
     @unittest.mock.patch('NeoVintageous.nv.commands.get_last_search_pattern')
-    @unittest.mock.patch('NeoVintageous.nv.commands.Cmdline')
+    @unittest.mock.patch('NeoVintageous.nv.cmdline_search.Cmdline')
     def test_on_done_with_previous_pattern(self, cmdline, get_last_search_pattern):
         get_last_search_pattern.return_value = 'fi'
         self.normal('x f|iz x fiz x')
@@ -161,7 +161,7 @@ class Test_slash_cmdline_prompt(unittest.FunctionalTestCase):
         self.assertNoStatusMessage()
 
     @unittest.mock.patch('NeoVintageous.nv.commands.history_update')
-    @unittest.mock.patch('NeoVintageous.nv.commands.Cmdline')
+    @unittest.mock.patch('NeoVintageous.nv.cmdline_search.Cmdline')
     def test_on_done_empty_should_repeat_last_search(self, cmdline, history_update):
         self.feed('n_/abc')
         self.normal('x a|bc x abc x')
@@ -173,7 +173,7 @@ class Test_slash_cmdline_prompt(unittest.FunctionalTestCase):
         self.assertSearchIncremental('x abc x abc x')
 
     @unittest.mock.patch('NeoVintageous.nv.commands.history_update')
-    @unittest.mock.patch('NeoVintageous.nv.commands.Cmdline')
+    @unittest.mock.patch('NeoVintageous.nv.cmdline_search.Cmdline')
     def test_on_change(self, cmdline, history_update):
         self.normal('x b|uz x buz x')
         self.initCmdlineSearchMock(cmdline, '/', 'on_change', 'buz')
@@ -185,7 +185,7 @@ class Test_slash_cmdline_prompt(unittest.FunctionalTestCase):
 
     @unittest.mock_status_message()
     @unittest.mock.patch('NeoVintageous.nv.commands.history_update')
-    @unittest.mock.patch('NeoVintageous.nv.commands.Cmdline')
+    @unittest.mock.patch('NeoVintageous.nv.cmdline_search.Cmdline')
     def test_on_change_pattern_not_found(self, cmdline, history_update):
         self.normal('x b|uz x buz x')
         self.initCmdlineSearchMock(cmdline, '/', 'on_change', 'fizz')
@@ -197,7 +197,7 @@ class Test_slash_cmdline_prompt(unittest.FunctionalTestCase):
         self.assertStatusMessage('E486: Pattern not found: fizz')
 
     @unittest.mock.patch('NeoVintageous.nv.commands.history_update')
-    @unittest.mock.patch('NeoVintageous.nv.commands.Cmdline')
+    @unittest.mock.patch('NeoVintageous.nv.cmdline_search.Cmdline')
     def test_on_cancel(self, cmdline, history_update):
         self.normal('x f|oo x foo x')
         self.initCmdlineSearchMock(cmdline, '/', 'on_cancel')

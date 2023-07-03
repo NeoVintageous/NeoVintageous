@@ -33,6 +33,7 @@ from sublime_plugin import WindowCommand
 
 from NeoVintageous.nv import macros
 from NeoVintageous.nv.cmdline import Cmdline
+from NeoVintageous.nv.cmdline_search import CmdlineSearch
 from NeoVintageous.nv.ex.completions import insert_best_cmdline_completion
 from NeoVintageous.nv.ex.completions import on_change_cmdline_completion_prefix
 from NeoVintageous.nv.ex.completions import reset_cmdline_completion_state
@@ -71,8 +72,6 @@ from NeoVintageous.nv.search import find_word_search_occurrences
 from NeoVintageous.nv.search import get_search_occurrences
 from NeoVintageous.nv.search import process_search_pattern
 from NeoVintageous.nv.search import process_word_search_pattern
-from NeoVintageous.nv.settings import append_sequence
-from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_glue_until_normal_mode
 from NeoVintageous.nv.settings import get_last_search_pattern
 from NeoVintageous.nv.settings import get_last_search_pattern_command
@@ -93,9 +92,7 @@ from NeoVintageous.nv.settings import set_reset_during_init
 from NeoVintageous.nv.settings import set_xpos
 from NeoVintageous.nv.settings import toggle_ctrl_keys
 from NeoVintageous.nv.settings import toggle_super_keys
-from NeoVintageous.nv.state import evaluate_state
 from NeoVintageous.nv.state import reset_command_data
-from NeoVintageous.nv.state import set_motion
 from NeoVintageous.nv.state import update_status_line
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.ui import ui_highlight_yank
@@ -162,8 +159,6 @@ from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.utils import unfold
 from NeoVintageous.nv.utils import unfold_all
 from NeoVintageous.nv.utils import update_xpos
-from NeoVintageous.nv.vi.cmd_defs import ViSearchBackwardImpl
-from NeoVintageous.nv.vi.cmd_defs import ViSearchForwardImpl
 from NeoVintageous.nv.vi.search import find_in_range
 from NeoVintageous.nv.vi.search import find_wrapping
 from NeoVintageous.nv.vi.search import reverse_find_wrapping
@@ -2671,78 +2666,6 @@ class nv_vi_reverse_find_in_line(TextCommand):
         char = translate_char(char)
 
         regions_transformer(self.view, f)
-
-
-class CmdlineSearch():
-
-    def __init__(self, view, forward: bool):
-        self.view = view
-        self.forward = forward
-        self.type = Cmdline.SEARCH_FORWARD if self.forward else Cmdline.SEARCH_BACKWARD
-
-    def run(self, edit, pattern: str = '') -> None:
-        set_reset_during_init(self.view, False)
-        self._cmdline = Cmdline(
-            self.view,
-            self.type,
-            self.on_done,
-            self.on_change,
-            self.on_cancel
-        )
-
-        self._cmdline.prompt(pattern)
-
-    def on_done(self, pattern: str) -> None:
-        history_update(self.type + pattern)
-        reset_cmdline_history()
-        clear_search_highlighting(self.view)
-        append_sequence(self.view, pattern + '<CR>')
-        if self.forward:
-            set_motion(self.view, ViSearchForwardImpl(term=pattern))
-        else:
-            set_motion(self.view, ViSearchBackwardImpl(term=pattern))
-        evaluate_state(self.view)
-
-    def on_change(self, pattern: str) -> None:
-        count = get_count(self.view)
-        sel = self.view.sel()[0]
-        pattern, flags = process_search_pattern(self.view, pattern)
-
-        if self.forward:
-            start = get_insertion_point_at_b(sel) + 1
-            end = self.view.size()
-        else:
-            start = 0
-            end = sel.b + 1 if not sel.empty() else sel.b
-
-        if self.forward:
-            match = find_wrapping(self.view,
-                                  term=pattern,
-                                  start=start,
-                                  end=end,
-                                  flags=flags,
-                                  times=count)
-        else:
-            match = reverse_find_wrapping(self.view,
-                                          term=pattern,
-                                          start=start,
-                                          end=end,
-                                          flags=flags,
-                                          times=count)
-
-        clear_search_highlighting(self.view)
-
-        if not match:
-            return status_message('E486: Pattern not found: %s', pattern)
-
-        add_search_highlighting(self.view, find_search_occurrences(self.view, pattern, flags), [match])
-        show_if_not_visible(self.view, match)
-
-    def on_cancel(self) -> None:
-        clear_search_highlighting(self.view)
-        reset_command_data(self.view)
-        reset_cmdline_history()
-        show_if_not_visible(self.view)
 
 
 class nv_vi_slash(TextCommand):
