@@ -600,7 +600,7 @@ def scroll_viewport_position(view, number_of_scroll_lines: int, forward: bool = 
     else:
         viewport_position = (x, y - y_addend)
 
-    view.set_viewport_position(viewport_position, animate=False)
+    view.set_viewport_position(viewport_position)
 
 
 def get_option_scroll(view) -> int:

@@ -32,6 +32,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#913](https://github.com/NeoVintageous/NeoVintageous/issues/913): No animated smooth scrolling with `<C-d>` or `<C-u>`
 * Fixed [#908](https://github.com/NeoVintageous/NeoVintageous/issues/908): `:new` should split like `:split`
 * Fixed [#905](https://github.com/NeoVintageous/NeoVintageous/issues/905): `:close!` should close last view
 * Fixed [#900](https://github.com/NeoVintageous/NeoVintageous/issues/900): Command-line output should not show white-space characters
