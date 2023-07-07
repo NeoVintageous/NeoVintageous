@@ -44,16 +44,24 @@ class Test_ex_marks(unittest.ResetMarks, unittest.ResetCommandLineOutput, unitte
             ' A      3    1       fizz')
 
     def test_lowercase_and_uppercase_mark(self):
-        self.normal('x\n\nf|izz\nbuzz\nx')
+        self.normal('x\n\nf|izz\nbuzz\nping pong\nx')
         self.feed('m')
         self.feed('a')
         self.feed('w')
         self.feed('m')
         self.feed('B')
+        self.feed('j')
+        self.feed('m')
+        self.feed('X')
+        self.feed('w')
+        self.feed('m')
+        self.feed('x')
         self.feed(':marks')
         self.assertMarks(
             ' a      3    1       fizz\n'
-            ' B      4    0       buzz')
+            ' x      5    5  ping pong\n'
+            ' B      4    0       buzz\n'
+            ' X      5    0  ping pong')
 
     @unittest.mock.patch('sublime.View.file_name')
     def test_mark_file_name(self, file_name):
