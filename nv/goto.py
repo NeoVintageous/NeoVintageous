@@ -24,12 +24,14 @@ from sublime import load_resource
 from sublime import version
 
 from NeoVintageous.nv.jumplist import jumplist_updater
+from NeoVintageous.nv.marks import get_mark
 from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.polyfill import view_find
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transform_to_normal_mode
 from NeoVintageous.nv.utils import regions_transformer
+from NeoVintageous.nv.utils import resolve_normal_target
 from NeoVintageous.nv.utils import resolve_visual_block_target
 from NeoVintageous.nv.utils import resolve_visual_line_target
 from NeoVintageous.nv.utils import resolve_visual_target
@@ -429,3 +431,60 @@ class GotoView():
 
     def help(self) -> None:
         goto_help(self.view)
+
+
+def jump_to_mark(view, mode: str, mark: str, to_non_blank: bool = False) -> None:
+    if int(version()) >= 4082 and mark in ("'", '`'):
+        view.run_command('jump_back')
+        return
+
+    if to_non_blank:
+        def f(view, s):
+            if mode == NORMAL:
+                resolve_normal_target(s, next_non_blank(view, view.line(target.b).a))
+            elif mode == VISUAL:
+                resolve_visual_target(s, next_non_blank(view, view.line(target.b).a))
+            elif mode == VISUAL_LINE:
+                resolve_visual_line_target(view, s, next_non_blank(view, view.line(target.b).a))
+            elif mode == INTERNAL_NORMAL:
+                if s.a < target.a:
+                    s = Region(view.full_line(s.b).a, view.line(target.b).b)
+                else:
+                    s = Region(view.full_line(s.b).b, view.line(target.b).a)
+
+            return s
+    else:
+        def f(view, s):
+            if mode == NORMAL:
+                resolve_normal_target(s, target.b)
+            elif mode == VISUAL:
+                resolve_visual_target(s, target.b)
+            elif mode == VISUAL_LINE:
+                resolve_visual_line_target(view, s, target.b)
+            elif mode == INTERNAL_NORMAL:
+                if s.a < target.a:
+                    s = Region(view.full_line(s.b).a, view.line(target.b).b)
+                else:
+                    s = Region(view.full_line(s.b).b, view.line(target.b).a)
+
+            return s
+
+    try:
+        target = get_mark(view, mark)
+    except KeyError:
+        ui_bell('E78: unknown mark')
+        return
+
+    if target is None:
+        ui_bell('E20: mark not set')
+        return
+
+    if isinstance(target, tuple):
+        view, target = target
+        view.window().focus_view(view)
+
+    with jumplist_updater(view):
+        regions_transformer(view, f)
+
+    if not view.visible_region().intersects(target):
+        view.show_at_center(target)

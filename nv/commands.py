@@ -27,7 +27,6 @@ from sublime import ENCODED_POSITION
 from sublime import LITERAL
 from sublime import MONOSPACE_FONT
 from sublime import Region
-from sublime import version
 from sublime_plugin import TextCommand
 from sublime_plugin import WindowCommand
 
@@ -43,12 +42,12 @@ from NeoVintageous.nv.ex_cmds import do_ex_command
 from NeoVintageous.nv.feed_key import FeedKeyHandler
 from NeoVintageous.nv.goto import GotoView
 from NeoVintageous.nv.goto import get_linewise_non_blank_target
+from NeoVintageous.nv.goto import jump_to_mark
 from NeoVintageous.nv.history import history_update
 from NeoVintageous.nv.history import next_cmdline_history
 from NeoVintageous.nv.history import reset_cmdline_history
 from NeoVintageous.nv.jumplist import jumplist_updater
 from NeoVintageous.nv.macros import add_macro_step
-from NeoVintageous.nv.marks import get_mark
 from NeoVintageous.nv.marks import set_mark
 from NeoVintageous.nv.paste import pad_visual_block_paste_contents
 from NeoVintageous.nv.paste import resolve_paste_items_with_view_sel
@@ -1340,87 +1339,13 @@ class nv_vi_m(TextCommand):
 class nv_vi_quote(TextCommand):
 
     def run(self, edit, mode=None, count=1, character=None):
-        if int(version()) >= 4082 and character == "'":
-            self.view.run_command('jump_back')
-            return
-
-        def f(view, s):
-            if mode == NORMAL:
-                resolve_normal_target(s, next_non_blank(view, view.line(target.b).a))
-            elif mode == VISUAL:
-                resolve_visual_target(s, next_non_blank(view, view.line(target.b).a))
-            elif mode == VISUAL_LINE:
-                resolve_visual_line_target(view, s, next_non_blank(view, view.line(target.b).a))
-            elif mode == INTERNAL_NORMAL:
-                if s.a < target.a:
-                    s = Region(view.full_line(s.b).a, view.line(target.b).b)
-                else:
-                    s = Region(view.full_line(s.b).b, view.line(target.b).a)
-
-            return s
-
-        try:
-            target = get_mark(self.view, character)
-        except KeyError:
-            ui_bell('E78: unknown mark')
-            return
-
-        if target is None:
-            ui_bell('E20: mark not set')
-            return
-
-        if isinstance(target, tuple):
-            view, target = target
-            self.view.window().focus_view(view)
-
-        with jumplist_updater(self.view):
-            regions_transformer(self.view, f)
-
-        if not self.view.visible_region().intersects(target):
-            self.view.show_at_center(target)
+        jump_to_mark(self.view, mode, character, to_non_blank=True)
 
 
 class nv_vi_backtick(TextCommand):
 
     def run(self, edit, mode=None, count=1, character=None):
-        if int(version()) >= 4082 and character == '`':
-            self.view.run_command('jump_back')
-            return
-
-        def f(view, s):
-            if mode == NORMAL:
-                resolve_normal_target(s, target.b)
-            elif mode == VISUAL:
-                resolve_visual_target(s, target.b)
-            elif mode == VISUAL_LINE:
-                resolve_visual_line_target(view, s, target.b)
-            elif mode == INTERNAL_NORMAL:
-                if s.a < target.a:
-                    s = Region(view.full_line(s.b).a, view.line(target.b).b)
-                else:
-                    s = Region(view.full_line(s.b).b, view.line(target.b).a)
-
-            return s
-
-        try:
-            target = get_mark(self.view, character)
-        except KeyError:
-            ui_bell('E78: unknown mark')
-            return
-
-        if target is None:
-            ui_bell('E20: mark not set')
-            return
-
-        if isinstance(target, tuple):
-            view, target = target
-            self.view.window().focus_view(view)
-
-        with jumplist_updater(self.view):
-            regions_transformer(self.view, f)
-
-        if not self.view.visible_region().intersects(target):
-            self.view.show_at_center(target)
+        jump_to_mark(self.view, mode, character)
 
 
 class nv_vi_big_d(TextCommand):
