@@ -25,7 +25,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `gf` for Unix the '~' character is expanded, like in "~user/file"
 * Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `gf` environment variables are expanded.
 * Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `gf` visual, visual line, and visual block mode
-* Added [#893](https://github.com/NeoVintageous/NeoVintageous/issues/893): Reveal side bar command
+* Added [#893](https://github.com/NeoVintageous/NeoVintageous/issues/893): Reveal side bar command that makes side bar visible, if not already, and puts focus on it
 * Added [#888](https://github.com/NeoVintageous/NeoVintageous/issues/888): `gg` in visual block mode
 * Added [#888](https://github.com/NeoVintageous/NeoVintageous/issues/888): `[count]G` in visual block mode
 * Added [#888](https://github.com/NeoVintageous/NeoVintageous/issues/888): `G` in visual block mode

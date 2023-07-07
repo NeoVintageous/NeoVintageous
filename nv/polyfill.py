@@ -309,6 +309,9 @@ def toggle_side_bar(window) -> None:
 
 
 def reveal_side_bar(window) -> None:
+    if not window.is_sidebar_visible():
+        toggle_side_bar(window)
+
     window.run_command('reveal_side_bar')
     window.run_command('focus_side_bar')
 
