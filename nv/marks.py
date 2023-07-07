@@ -15,7 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+from collections import OrderedDict
 from string import ascii_letters
+from string import ascii_lowercase
+from string import ascii_uppercase
 
 from sublime import Region
 
@@ -47,6 +50,38 @@ def get_mark(view, name: str):
         marks = _get_regions(view, name)
         if marks:
             return marks[0]
+
+
+def get_marks(view) -> OrderedDict:
+    marks = OrderedDict()
+    for name in ascii_lowercase:
+        region = get_mark(view, name)
+        if region is not None:
+            marks[name] = _get_mark_info(view, region)
+
+    for view in view.window().views():
+        for name in ascii_uppercase:
+            region = get_mark(view, name)
+            if region is not None:
+                marks[name] = _get_mark_info(view, region)
+
+    return marks
+
+
+def _get_mark_info(view, region: Region) -> dict:
+    line_number, col = view.rowcol(region.b)
+    line_number += 1
+
+    if view.file_name():
+        file_or_text = view.file_name()
+    else:
+        file_or_text = view.substr(view.line(region.b))
+
+    return {
+        'line_number': line_number,
+        'col': col,
+        'file_or_text': file_or_text
+    }
 
 
 def _is_writable(name: str) -> bool:

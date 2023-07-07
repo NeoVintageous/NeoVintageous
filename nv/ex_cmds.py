@@ -15,8 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from string import ascii_lowercase
-from string import ascii_uppercase
 import inspect
 import logging
 import os
@@ -41,7 +39,7 @@ from NeoVintageous.nv.goto import goto_help_subject
 from NeoVintageous.nv.history import history
 from NeoVintageous.nv.mappings import mappings_add
 from NeoVintageous.nv.mappings import mappings_remove
-from NeoVintageous.nv.marks import get_mark
+from NeoVintageous.nv.marks import get_marks
 from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.options import set_option
 from NeoVintageous.nv.options import toggle_option
@@ -592,28 +590,13 @@ def ex_marks(view, **kwargs) -> None:
     output = CmdlineOutput(view.window())
     output.write('mark line  col file/text\n')
 
-    def _write_mark(view, name: str, mark: Region) -> None:
-        line_number, col = view.rowcol(mark.b)
-        line_number += 1
-
-        if view.file_name():
-            file_or_text = view.file_name()
-        else:
-            file_or_text = view.substr(view.line(mark.b))
-
-        template = '{:^4} {:>4} {:>4} {:>10}\n'
-        output.write(template.format(name, line_number, col, file_or_text))
-
-    for name in ascii_lowercase:
-        mark = get_mark(view, name)
-        if mark is not None:
-            _write_mark(view, name, mark)
-
-    for view in view.window().views():
-        for name in ascii_uppercase:
-            mark = get_mark(view, name)
-            if mark is not None:
-                _write_mark(view, name, mark)
+    for name, info in get_marks(view).items():
+        output.write('{:^4} {:>4} {:>4} {:>10}\n'.format(
+            name,
+            info['line_number'],
+            info['col'],
+            info['file_or_text'],
+        ))
 
     output.show()
 
