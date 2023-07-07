@@ -1419,6 +1419,9 @@ class nv_vi_backtick(TextCommand):
         with jumplist_updater(self.view):
             regions_transformer(self.view, f)
 
+        if not self.view.visible_region().intersects(target):
+            self.view.show_at_center(target)
+
 
 class nv_vi_big_d(TextCommand):
 
