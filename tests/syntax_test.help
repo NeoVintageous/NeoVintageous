@@ -314,7 +314,7 @@ Inline `code with space` ...
     # ^ -markup.raw
 
 Text: >
-    # ^ punctuation.definition conceal
+    # ^ punctuation.definition
     # ^ -markup.raw
     code...
     # ^^^^^ markup.raw.block
@@ -322,7 +322,7 @@ Text at zero column terminates code block
 # ^ -markup.raw
 
 Text: >
-    # ^ punctuation.definition conceal
+    # ^ punctuation.definition
     # ^ -markup.raw
     code...
     # ^ markup.raw.block
@@ -333,7 +333,7 @@ Text: >
 
                             *E140*  >
   #                         ^^^^^^^ -markup.raw
-  #                                 ^ punctuation.definition conceal
+  #                                 ^ punctuation.definition
   #                                 ^ -markup.raw
   code...
   # ^ markup.raw.block
@@ -360,13 +360,13 @@ Messages
 
 ...text: >
     # ^^ -markup.raw.block
-    #    ^ punctuation.definition conceal
+    #    ^ punctuation.definition
     #    ^ -markup.raw.block
     code...
     # ^ markup.raw.block
 <   Text: >
     # ^^^ -markup.raw.block
-    #     ^ punctuation.definition conceal
+    #     ^ punctuation.definition
     #     ^ -markup.raw.block
     code...
     # ^ markup.raw.block
@@ -378,7 +378,7 @@ Text
 
                 :keepjumps exe "normal " . lnum . "G"
 <
-# <- conceal
+# <-
 
             - the Visual area '< and '>
             - line numbers in placed signs
@@ -408,7 +408,7 @@ i`                          *v_i`* *i`*
 
     We use a computer that became the cummin winter. ~
 #   ^^ string
-#                                                    ^ punctuation.definition conceal
+#                                                    ^ punctuation.definition
               xxxx              xxxx
 <  shiftwidth=4 ~
 #  ^ string
@@ -420,7 +420,7 @@ Text: >
 
     :set iskeyword
 <     iskeyword=@,48-57,_,192-255 ~
-#<- punctuation.definition conceal
+#<- punctuation.definition
 #^^^^^ -markup
 
                                  *E662*

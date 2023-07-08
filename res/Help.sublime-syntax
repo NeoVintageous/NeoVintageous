@@ -9,9 +9,9 @@ contexts:
 
     - match: (\*)([^*\s]+)(\*)
       captures:
-        1: punctuation.definition.link.reference conceal
+        1: punctuation.definition.link.reference
         2: entity.name.neovintageous
-        3: punctuation.definition.link.reference conceal
+        3: punctuation.definition.link.reference
 
     - include: jumptags
 
@@ -67,19 +67,19 @@ contexts:
     - match: '(?:^|\s+)(.+)(~)$'
       captures:
         1: string
-        2: punctuation.definition.raw.end conceal
+        2: punctuation.definition.raw.end
 
     - match: '(?:^|\s)\>\n?$'
-      scope: punctuation.definition.raw.block conceal
+      scope: punctuation.definition.raw.block
       push:
         - match: ^\<\n?$
-          scope: punctuation.definition.raw.block conceal
+          scope: punctuation.definition.raw.block
           pop: true
         - match: ^\<(?=\s)
-          scope: punctuation.definition.raw.block conceal
+          scope: punctuation.definition.raw.block
           pop: true
         - match: ^(?=[^\s<])|^\s*\<$|^\<
-          scope: punctuation.definition.raw.block conceal
+          scope: punctuation.definition.raw.block
           pop: true
         - match: '^.+\n?$'
           scope: markup.raw.block.neovintageous
@@ -87,48 +87,48 @@ contexts:
     # HEADER ... entity
     - match: ^\s+(\*)([^\*]+)(\*)$
       captures:
-        1: punctuation.definition.link.reference conceal
+        1: punctuation.definition.link.reference
         2: entity.name.neovintageous
-        3: punctuation.definition.link.reference conceal
+        3: punctuation.definition.link.reference
     - match: ^([A-Z][A-Za-z\-\s]+)\s+(\*)([^\*]+)(\*)$
       captures:
         1: storage.neovintageous
-        2: punctuation.definition.link.reference conceal
+        2: punctuation.definition.link.reference
         3: entity.name.neovintageous
-        4: punctuation.definition.link.reference conceal
+        4: punctuation.definition.link.reference
 
     # HEADER ... Multiple (2) entities
     - match: ^\s+(\*)([^\*]+)(\*)\s+(\*)([^\*]+)(\*)$
       captures:
-        1: punctuation.definition.link.reference conceal
+        1: punctuation.definition.link.reference
         2: entity.name.neovintageous
-        3: punctuation.definition.link.reference conceal
-        4: punctuation.definition.link.reference conceal
+        3: punctuation.definition.link.reference
+        4: punctuation.definition.link.reference
         5: entity.name.neovintageous
-        6: punctuation.definition.link.reference conceal
+        6: punctuation.definition.link.reference
     - match: ^([A-Z][A-Za-z\-\s]+)\s+(\*)([^\*]+)(\*)\s+(\*)([^\*]+)(\*)$
       captures:
         1: storage.neovintageous
-        2: punctuation.definition.link.reference conceal
+        2: punctuation.definition.link.reference
         3: entity.name.neovintageous
-        4: punctuation.definition.link.reference conceal
-        5: punctuation.definition.link.reference conceal
+        4: punctuation.definition.link.reference
+        5: punctuation.definition.link.reference
         6: entity.name.neovintageous
-        7: punctuation.definition.link.reference conceal
+        7: punctuation.definition.link.reference
 
     # HEADER ... Multiple (3) entities
     - match: ^([A-Z\-\s]+)\s+(\*)([^\*]+)(\*)\s+(\*)([^\*]+)(\*)\s+(\*)([^\*]+)(\*)$
       captures:
         1: storage.neovintageous
-        2: punctuation.definition.link.reference conceal
+        2: punctuation.definition.link.reference
         3: entity.name.neovintageousa
-        4: punctuation.definition.link.reference conceal
-        5: punctuation.definition.link.reference conceal
+        4: punctuation.definition.link.reference
+        5: punctuation.definition.link.reference
         6: entity.name.neovintageousa
-        7: punctuation.definition.link.reference conceal
-        8: punctuation.definition.link.reference conceal
+        7: punctuation.definition.link.reference
+        8: punctuation.definition.link.reference
         9: entity.name.neovintageousa
-        10: punctuation.definition.link.reference conceal
+        10: punctuation.definition.link.reference
 
     # HEADER ... figlet
     - match: ^\s+[\\/_|()`, ]*$
@@ -138,9 +138,9 @@ contexts:
     - match: (\|)([^|\s]+)(\|)
       scope: markup.underline.link
       captures:
-        1: punctuation.definition.link conceal
+        1: punctuation.definition.link
         2: jumptag
-        3: punctuation.definition.link conceal
+        3: punctuation.definition.link
 
     - match: \'[a-z][a-z_]+\'
       scope: string jumptag
