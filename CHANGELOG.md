@@ -15,25 +15,22 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#909](https://github.com/NeoVintageous/NeoVintageous/issues/909): `new {file}` Create a new split and start editing file `{file}` in it
 * Added [#910](https://github.com/NeoVintageous/NeoVintageous/issues/910): `:vnew {file}` Like `:new {file}`, but split vertically
 * Added [#907](https://github.com/NeoVintageous/NeoVintageous/issues/907): `:vnew` Like `:new`, but split vertically
-* Added [#904](https://github.com/NeoVintageous/NeoVintageous/issues/904): `V` Now accepts a count
-* Added [#901](https://github.com/NeoVintageous/NeoVintageous/issues/901): `CTRL-W gt` same as `gt`
-* Added [#901](https://github.com/NeoVintageous/NeoVintageous/issues/901): `CTRL-W gT` same as `gT`
+* Added [#904](https://github.com/NeoVintageous/NeoVintageous/issues/904): `V` is now countable
+* Added [#901](https://github.com/NeoVintageous/NeoVintageous/issues/901): `CTRL-W gt` same as `gt` and `CTRL-W gT` same as `gT`
 * Added [#881](https://github.com/NeoVintageous/NeoVintageous/issues/881): `:marks` List all the current marks
-* Added [#881](https://github.com/NeoVintageous/NeoVintageous/issues/881): Unknown mark now emits bell
-* Added [#881](https://github.com/NeoVintageous/NeoVintageous/issues/881): Invalid mark now emits bell
-* Added [#896](https://github.com/NeoVintageous/NeoVintageous/issues/896): `CTRL-W gF` same as `gF`
-* Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `CTRL-W gf` same as `gf`
-* Added [#896](https://github.com/NeoVintageous/NeoVintageous/issues/896): `gF` same as `gf`, except the cursor is positioned on file:row:col
-* Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `gf` for Unix the '~' character is expanded, like in "~user/file"
+* Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `CTRL-W gf` (same as `gf`) and `CTRL-W gF` (same as `gF`)
+* Added [#896](https://github.com/NeoVintageous/NeoVintageous/issues/896): `gF` same as `gf`, except the cursor is positioned on row:col
+* Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `gf` the '~' character is expanded, like in "~user/file"
 * Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `gf` environment variables are expanded.
-* Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `gf` visual, visual line, and visual block mode
-* Added [#893](https://github.com/NeoVintageous/NeoVintageous/issues/893): Reveal side bar command that makes side bar visible, if not already, and puts focus on it
+* Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `gf` in visual modes
+* Added [#893](https://github.com/NeoVintageous/NeoVintageous/issues/893): Reveal Side Bar command to make side bar visible, if not already, and put focus on it
 * Added [#888](https://github.com/NeoVintageous/NeoVintageous/issues/888): `gg` in visual block mode
-* Added [#888](https://github.com/NeoVintageous/NeoVintageous/issues/888): `[count]G` in visual block mode
+* Added [#888](https://github.com/NeoVintageous/NeoVintageous/issues/888): `G` is now countable in visual block mode
 * Added [#888](https://github.com/NeoVintageous/NeoVintageous/issues/888): `G` in visual block mode
 
 ### Fixed
 
+* Fixed [#881](https://github.com/NeoVintageous/NeoVintageous/issues/881): Invalid and unknown marks should emit a bell
 * Fixed [#914](https://github.com/NeoVintageous/NeoVintageous/issues/914): `{backtick}{a-z}` jump to mark should center screen if cursor off screen
 * Fixed [#913](https://github.com/NeoVintageous/NeoVintageous/issues/913): No animated smooth scrolling with `<C-d>` or `<C-u>`
 * Fixed [#908](https://github.com/NeoVintageous/NeoVintageous/issues/908): `:new` should split like `:split`
