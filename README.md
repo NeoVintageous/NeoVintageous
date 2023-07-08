@@ -72,6 +72,11 @@ Unimpaired | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/ma
 - [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter3): required for jump to lint error commands.
 - [Origami](https://github.com/SublimeText/Origami): required for some window commands.
 
+**Additional keyboard layouts, manual installation:**
+
+- [Dvorak](https://github.com/gerardroche/NeoVintageousDvorak): Dvorak key mappings.
+- [Colemak](https://github.com/gerardroche/NeoVintageousColemak): Colemak key mappings.
+
 ## Contributing
 
 See [CONTRIBUTING.md](.github/CONTRIBUTING.md).
