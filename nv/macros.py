@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -15,6 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+from string import ascii_letters
+from string import digits
+
 from NeoVintageous.nv.polyfill import erase_status
 from NeoVintageous.nv.polyfill import set_status
 from NeoVintageous.nv.session import get_session_value
@@ -26,11 +29,11 @@ _data = {}  # type: dict
 
 
 def is_readable(name: str) -> bool:
-    return name in tuple('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".=*+@')
+    return name in tuple(digits + ascii_letters + '".=*+@')
 
 
 def is_writable(name: str) -> bool:
-    return name in tuple('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"')
+    return name in tuple(digits + ascii_letters + '"')
 
 
 def is_recording() -> bool:

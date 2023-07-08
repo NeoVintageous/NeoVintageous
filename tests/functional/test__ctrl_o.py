@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -20,12 +20,12 @@ from NeoVintageous.tests import unittest
 
 class Test_ctrl_o(unittest.FunctionalTestCase):
 
-    @unittest.mock_run_commands('jump_back')
+    @unittest.mock_commands('jump_back')
     def test_n_jump_back(self):
         self.eq('f|izz', '<C-o>', 'f|izz')
-        self.assertRunCommand('jump_back', {})
+        self.assertRunCommand('jump_back')
 
-    @unittest.mock_run_commands('jump_back')
+    @unittest.mock_commands('jump_back')
     def test_v_jump_back(self):
         self.eq('f|iz|z', 'v_<C-o>', 'f|iz|z')
-        self.assertRunCommand('jump_back', {})
+        self.assertRunCommand('jump_back')

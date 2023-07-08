@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -25,8 +25,9 @@ class Test__nv_vi_ctrl_r(unittest.ViewTestCase):
         self.select(4)
 
         self.view.run_command('nv_vi_dd', {'mode': unittest.INTERNAL_NORMAL})
-        self.view.window().run_command('nv_vi_u')
-        self.view.window().run_command('nv_vi_ctrl_r')  # passing mode is irrelevant
+        self.view.window().run_command('nv_vi_u')  # type: ignore[union-attr]
+        # passing mode is irrelevant
+        self.view.window().run_command('nv_vi_ctrl_r')  # type: ignore[union-attr]
 
         self.assertContent('abc\nabc\nabc')
         self.assertSelection(4)
@@ -36,8 +37,9 @@ class Test__nv_vi_ctrl_r(unittest.ViewTestCase):
         self.select(12)
 
         self.view.run_command('nv_vi_big_d', {'mode': unittest.INTERNAL_NORMAL})
-        self.view.window().run_command('nv_vi_u')
-        self.view.window().run_command('nv_vi_ctrl_r')  # passing mode is irrelevant
+        self.view.window().run_command('nv_vi_u')  # type: ignore[union-attr]
+        # passing mode is irrelevant
+        self.view.window().run_command('nv_vi_ctrl_r')  # type: ignore[union-attr]
 
         self.assertContent('abc\nxxx foo \nabc\nabc')
         self.assertSelection(11)

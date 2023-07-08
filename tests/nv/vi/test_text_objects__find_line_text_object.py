@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -22,7 +22,7 @@ from NeoVintageous.tests import unittest
 from NeoVintageous.nv.vi.text_objects import find_line_text_object
 
 
-test = namedtuple('simple_test', 'start expected msg content')
+test = namedtuple('test', 'start expected msg content')
 
 # cursor is at "|"
 TESTS_INDENT = (

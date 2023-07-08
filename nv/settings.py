@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -96,6 +96,15 @@ def get_count(view, default: int = 1) -> int:
 
     mcount = get_motion_count(view)
     if mcount:
+        # If the operator count is 0 and the motion has count, the operator
+        # count needs to be adjusted to 1 because the two counts need to be
+        # multiplied and multiplying by 0 is always 0. For example: "gc7G"
+        if c == 0:
+            c = 1
+
+        # If the motion includes a count and the operator also has a
+        # count, the two counts are multiplied.  For example: "2d3w"
+        # deletes six words.
         c *= int(mcount) or 1
 
     if c < 0:
@@ -252,7 +261,6 @@ def get_register(view) -> str:
 
 
 def set_register(view, value: str) -> None:
-    assert len(str(value)) == 1, '`value` must be a character'  # TODO Remove assertion
     set_session_view_value(view, 'register', value)
     set_capture_register(view, False)
 
@@ -270,11 +278,14 @@ def get_xpos(view) -> int:
 
 
 def set_xpos(view, value: int) -> None:
-    assert isinstance(value, int), '`value` must be an int'  # TODO Remove assertion
     set_session_view_value(view, 'xpos', value)
 
 
-def set_repeat_data(view, data: tuple) -> None:
+def set_repeat_data(view, data) -> None:
+    # :param data:
+    #   The repeat data.
+    #   A tuple or list.
+    #
     # The structure of {data}:
     #
     #   (
@@ -300,8 +311,6 @@ def set_repeat_data(view, data: tuple) -> None:
     #   ( "vi", "x", "mode_normal", (0, 4, "mode_visual") )
     #   ( "native", ("sequence", {"commands": [["insert", {"characters": "fizz"}], ["left_delete", None]]}), "mode_insert", None )  # noqa: 501
     #
-    assert isinstance(data, tuple) or isinstance(data, list), 'bad call'  # TODO remove assertion
-    assert len(data) == 4, 'bad call'  # TODO remove assertion
     set_session_view_value(view, 'repeat_data', data)
 
 

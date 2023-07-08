@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -28,49 +28,49 @@ class Test_J(unittest.FunctionalTestCase):
         self.eq('|aaa\nbbb\nccc', 'J', 'aaa| bbb\nccc')
         self.eq('|aaa\nbbb\nccc', '1J', 'aaa| bbb\nccc')
         self.eq('|aaa\nbbb\nccc', '2J', 'aaa| bbb\nccc')
-        self.eq('|aaa\nbbb\nccc', '3J', 'aaa| bbb ccc'),  # TODO Fix: cursor position is incorrect
-        self.eq('|aaa\nbbb\nccc', '9J', 'aaa| bbb ccc'),  # TODO Fix: cursor position is incorrect
+        self.eq('|aaa\nbbb\nccc', '3J', 'aaa| bbb ccc')  # TODO Fix: cursor position is incorrect
+        self.eq('|aaa\nbbb\nccc', '9J', 'aaa| bbb ccc')  # TODO Fix: cursor position is incorrect
         self.eq('|aaa\n    bbb', 'J', 'aaa| bbb')
         self.eq('|aaa\n    bbb', '1J', 'aaa| bbb')
         self.eq('|aaa\n    bbb', '2J', 'aaa| bbb')
         self.eq('|aaa\n    bbb', '9J', 'aaa| bbb')
-        self.eq('|abc\nabc\nabc', 'J', 'N_abc| abc\nabc'),
-        self.eq('|abc\n    abc\nabc', 'J', 'N_abc| abc\nabc'),
-        self.eq('|abc\nabc\nabc', '2J', 'N_abc| abc\nabc'),
-        self.eq('|abc\n    abc\nabc', '2J', 'N_abc| abc\nabc'),
-        self.eq('|abc\nabc\nabc', '3J', 'N_abc| abc abc'),
-        self.eq('|abc\n    abc\n    abc', '3J', 'N_abc| abc abc'),
-        self.eq('|abc\nabc\nabc\nabc\nabc', '5J', 'N_abc| abc abc abc abc'),
-        self.eq('|abc\n    abc\n    abc\n    abc\n    abc', '5J', 'N_abc| abc abc abc abc'),
-        self.eq('|abc\n\n', '3J', 'N_abc| '),
-        self.eq('|\n\nabc', '3J', 'N_|abc'),
-        self.eq('|abc \n    abc  \n  abc', '3J', 'N_abc |abc  abc'),
-        self.eq('|   abc\nabc   ', 'J', 'N_   abc| abc   '),
+        self.eq('|abc\nabc\nabc', 'J', 'N_abc| abc\nabc')
+        self.eq('|abc\n    abc\nabc', 'J', 'N_abc| abc\nabc')
+        self.eq('|abc\nabc\nabc', '2J', 'N_abc| abc\nabc')
+        self.eq('|abc\n    abc\nabc', '2J', 'N_abc| abc\nabc')
+        self.eq('|abc\nabc\nabc', '3J', 'N_abc| abc abc')
+        self.eq('|abc\n    abc\n    abc', '3J', 'N_abc| abc abc')
+        self.eq('|abc\nabc\nabc\nabc\nabc', '5J', 'N_abc| abc abc abc abc')
+        self.eq('|abc\n    abc\n    abc\n    abc\n    abc', '5J', 'N_abc| abc abc abc abc')
+        self.eq('|abc\n\n', '3J', 'N_abc| ')
+        self.eq('|\n\nabc', '3J', 'N_|abc')
+        self.eq('|abc \n    abc  \n  abc', '3J', 'N_abc |abc  abc')
+        self.eq('|   abc\nabc   ', 'J', 'N_   abc| abc   ')
 
     def test_v(self):
-        self.eq('|abc\na|bc\nabc', 'v_J', 'n_abc| abc\nabc'),
-        self.eq('a|bc\n    a|bc\nabc', 'v_J', 'n_abc| abc\nabc'),
-        self.eq('a|bc\na|bc\nabc', 'v_J', 'n_abc| abc\nabc'),
-        self.eq('ab|c\n    abc|\nabc', 'v_J', 'n_abc| abc\nabc'),
-        self.eq('r_|abc\nabc|\nabc', 'v_J', 'n_abc| abc\nabc'),
-        self.eq('r_|abc\n    abc|\nabc', 'v_J', 'n_abc| abc\nabc'),
-        self.eq('r_|abc\nabc|\nabc', 'v_J', 'n_abc| abc\nabc'),
-        self.eq('r_|abc\n    abc|\nabc', 'v_J', 'n_abc| abc\nabc'),
-        self.eq('|abc\n|abc\nabc', 'v_J', 'n_abc| abc\nabc'),
-        self.eq('a|bc\n  |  abc\nabc', 'v_J', 'n_abc| abc\nabc'),
-        self.eq('|abc\nabc\n|abc', 'v_J', 'n_abc| abc\nabc'),
-        self.eq('|abc\n    abc\n|abc', 'v_J', 'n_abc| abc\nabc'),
-        self.eq('|abc\nabc\na|bc', 'v_J', 'n_abc| abc abc'),
-        self.eq('ab|c\n    abc\na|bc', 'v_J', 'n_abc| abc abc'),
-        self.eq('a|bc\nabc\nabc|', 'v_J', 'n_abc| abc abc'),
-        self.eq('ab|c\n    abc\na|bc', 'v_J', 'n_abc| abc abc'),
-        self.eq('|a|bc\nabc\nabc', 'v_3J', 'n_abc| abc\nabc'),
-        self.eq('|a|bc\n    abc\nabc', 'v_3J', 'n_abc| abc\nabc'),
-        self.eq('|   abc\nabc   |', 'v_J', 'n_   abc| abc   '),
-        self.eq('|    abc\n\n\n|', 'v_J', 'n_    abc| \n'),
+        self.eq('|abc\na|bc\nabc', 'v_J', 'n_abc| abc\nabc')
+        self.eq('a|bc\n    a|bc\nabc', 'v_J', 'n_abc| abc\nabc')
+        self.eq('a|bc\na|bc\nabc', 'v_J', 'n_abc| abc\nabc')
+        self.eq('ab|c\n    abc|\nabc', 'v_J', 'n_abc| abc\nabc')
+        self.eq('r_|abc\nabc|\nabc', 'v_J', 'n_abc| abc\nabc')
+        self.eq('r_|abc\n    abc|\nabc', 'v_J', 'n_abc| abc\nabc')
+        self.eq('r_|abc\nabc|\nabc', 'v_J', 'n_abc| abc\nabc')
+        self.eq('r_|abc\n    abc|\nabc', 'v_J', 'n_abc| abc\nabc')
+        self.eq('|abc\n|abc\nabc', 'v_J', 'n_abc| abc\nabc')
+        self.eq('a|bc\n  |  abc\nabc', 'v_J', 'n_abc| abc\nabc')
+        self.eq('|abc\nabc\n|abc', 'v_J', 'n_abc| abc\nabc')
+        self.eq('|abc\n    abc\n|abc', 'v_J', 'n_abc| abc\nabc')
+        self.eq('|abc\nabc\na|bc', 'v_J', 'n_abc| abc abc')
+        self.eq('ab|c\n    abc\na|bc', 'v_J', 'n_abc| abc abc')
+        self.eq('a|bc\nabc\nabc|', 'v_J', 'n_abc| abc abc')
+        self.eq('ab|c\n    abc\na|bc', 'v_J', 'n_abc| abc abc')
+        self.eq('|a|bc\nabc\nabc', 'v_3J', 'n_abc| abc\nabc')
+        self.eq('|a|bc\n    abc\nabc', 'v_3J', 'n_abc| abc\nabc')
+        self.eq('|   abc\nabc   |', 'v_J', 'n_   abc| abc   ')
+        self.eq('|    abc\n\n\n|', 'v_J', 'n_    abc| \n')
 
     def test_b(self):
-        self.eq('| |   abc  \n| |  abc\nabc', 'b_J', 'n_    abc  |abc\nabc'),
+        self.eq('| |   abc  \n| |  abc\nabc', 'b_J', 'n_    abc  |abc\nabc')
 
 
 class Test_J_c_syntax(unittest.FunctionalTestCase):

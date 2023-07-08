@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -44,6 +44,22 @@ class Test_x(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_x_multiple_selections(self):
         self.eq('a|xb|xc|xd', 'x', 'a|b|c|d')
+
+    def test_x_to_default_register(self):
+        self.normal('f|izz\n')
+        self.feed('x')
+        self.assertNormal('f|zz\n')
+        self.assertRegister('"i')
+        self.assertRegister('-i')
+
+    def test_x_to_register(self):
+        self.normal('f|izz\n')
+        self.feed('"')
+        self.feed('a')
+        self.feed('x')
+        self.assertNormal('f|zz\n')
+        self.assertRegister('"i')
+        self.assertRegister('ai')
 
     def test_v_x(self):
         self.eq('|a', 'v_x', 'n_|')

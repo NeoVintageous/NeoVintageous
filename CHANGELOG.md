@@ -2,6 +2,49 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.31.0 - Unreleased
+
+### Added
+
+* Added [#916](https://github.com/NeoVintageous/NeoVintageous/issues/916): Marks are now persisted on restarts
+* Added [#880](https://github.com/NeoVintageous/NeoVintageous/issues/880): Support for uppercase global marks
+* Added [#906](https://github.com/NeoVintageous/NeoVintageous/issues/906): `:tabnew` and `:tabedit` Open a new tab page with an empty window, after the current
+* Added [#902](https://github.com/NeoVintageous/NeoVintageous/issues/902): `:vsplit {file}` Like `:split {file}`, but split vertically
+* Added [#903](https://github.com/NeoVintageous/NeoVintageous/issues/903): `:split {file}` Split current window in two and edit the file `{file}` in it
+* Added [#911](https://github.com/NeoVintageous/NeoVintageous/issues/911): `CTRL-w ^` Split the current window in two and edit the alternate file
+* Added [#909](https://github.com/NeoVintageous/NeoVintageous/issues/909): `new {file}` Create a new split and start editing file `{file}` in it
+* Added [#910](https://github.com/NeoVintageous/NeoVintageous/issues/910): `:vnew {file}` Like `:new {file}`, but split vertically
+* Added [#907](https://github.com/NeoVintageous/NeoVintageous/issues/907): `:vnew` Like `:new`, but split vertically
+* Added [#904](https://github.com/NeoVintageous/NeoVintageous/issues/904): `V` Now accepts a count
+* Added [#901](https://github.com/NeoVintageous/NeoVintageous/issues/901): `CTRL-W gt` same as `gt`
+* Added [#901](https://github.com/NeoVintageous/NeoVintageous/issues/901): `CTRL-W gT` same as `gT`
+* Added [#881](https://github.com/NeoVintageous/NeoVintageous/issues/881): `:marks` List all the current marks
+* Added [#881](https://github.com/NeoVintageous/NeoVintageous/issues/881): Unknown mark now emits bell
+* Added [#881](https://github.com/NeoVintageous/NeoVintageous/issues/881): Invalid mark now emits bell
+* Added [#896](https://github.com/NeoVintageous/NeoVintageous/issues/896): `CTRL-W gF` same as `gF`
+* Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `CTRL-W gf` same as `gf`
+* Added [#896](https://github.com/NeoVintageous/NeoVintageous/issues/896): `gF` same as `gf`, except the cursor is positioned on file:row:col
+* Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `gf` for Unix the '~' character is expanded, like in "~user/file"
+* Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `gf` environment variables are expanded.
+* Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `gf` visual, visual line, and visual block mode
+* Added [#893](https://github.com/NeoVintageous/NeoVintageous/issues/893): Reveal side bar command that makes side bar visible, if not already, and puts focus on it
+* Added [#888](https://github.com/NeoVintageous/NeoVintageous/issues/888): `gg` in visual block mode
+* Added [#888](https://github.com/NeoVintageous/NeoVintageous/issues/888): `[count]G` in visual block mode
+* Added [#888](https://github.com/NeoVintageous/NeoVintageous/issues/888): `G` in visual block mode
+
+### Fixed
+
+* Fixed [#914](https://github.com/NeoVintageous/NeoVintageous/issues/914): `{backtick}{a-z}` jump to mark should center screen if cursor off screen
+* Fixed [#913](https://github.com/NeoVintageous/NeoVintageous/issues/913): No animated smooth scrolling with `<C-d>` or `<C-u>`
+* Fixed [#908](https://github.com/NeoVintageous/NeoVintageous/issues/908): `:new` should split like `:split`
+* Fixed [#905](https://github.com/NeoVintageous/NeoVintageous/issues/905): `:close!` should close last view
+* Fixed [#900](https://github.com/NeoVintageous/NeoVintageous/issues/900): Command-line output should not show white-space characters
+* Fixed [#899](https://github.com/NeoVintageous/NeoVintageous/issues/899): I in multiple cursor mode should glue undo operations
+* Fixed [#892](https://github.com/NeoVintageous/NeoVintageous/issues/892): Change surrounding HTML tags breaks with multiple tags with attributes
+* Fixed [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `gf` doesn't work in some cases
+* Fixed [#889](https://github.com/NeoVintageous/NeoVintageous/issues/889): `{visual}G` should extend to first non-blank character
+* Fixed [#890](https://github.com/NeoVintageous/NeoVintageous/issues/890): `G` should jump to first non-blank character
+
 ## 1.30.1 - 2023-06-16
 
 * Fixed [#887](https://github.com/NeoVintageous/NeoVintageous/issues/887): Using arrow doesn't scroll the view in visual block mode

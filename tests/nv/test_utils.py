@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -20,7 +20,6 @@ from sublime import Region
 from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.utils import VisualBlockSelection
-from NeoVintageous.nv.utils import extract_file_name
 from NeoVintageous.nv.utils import extract_url
 from NeoVintageous.nv.utils import resolve_visual_line_target
 from NeoVintageous.nv.utils import resolve_visual_target
@@ -47,31 +46,6 @@ class TestTranslateChar(unittest.TestCase):
         self.assertEqual(translate_char('<tab>'), '\t')
         self.assertEqual(translate_char('a'), 'a')
         self.assertEqual(translate_char('w'), 'w')
-
-
-class TestExtractFileName(unittest.ViewTestCase):
-
-    def assertExtractFileName(self, expected, text):
-        self.normal(text)
-        self.assertEqual(extract_file_name(self.view), expected)
-
-    def test_extract_file_name(self):
-        tests = {
-            '|': None,
-            'REA|DME.md': 'README.md',
-            ' REA|DME.md ': 'README.md',
-            '\nREA|DME.md\n': 'README.md',
-            'path/to/REA|DME.md': 'path/to/README.md',
-            ' pat|h/to/README.md ': 'path/to/README.md',
-            '\npath|/to/README.md\n': 'path/to/README.md',
-        }
-
-        for text, expected in tests.items():
-            self.assertExtractFileName(expected, text)
-
-    def test_invalid(self):
-        self.assertExtractFileName(None, '|')
-        self.assertExtractFileName(None, '$|$$')
 
 
 class TestExtractUrl(unittest.ViewTestCase):

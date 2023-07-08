@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -103,7 +103,7 @@ class TestCommandToken(unittest.TestCase):
 
     def test_requires_name(self):
         with self.assertRaisesRegex(TypeError, 'name'):
-            TokenCommand()  # type: ignore
+            TokenCommand()  # type: ignore[call-arg]
 
     def test_to_str(self):
         cmd = str(TokenCommand('fizz'))

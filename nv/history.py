@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -14,6 +14,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
+
+from sublime import Region
 
 from NeoVintageous.nv.session import set_session_value
 
@@ -303,3 +305,57 @@ def history(name: str) -> str:
                 buf.append('%6d  %s' % (number, contents[number]))
 
     return '\n'.join(buf)
+
+
+_cmdline_history = {
+    'index': None
+}  # type: dict
+
+
+def reset_cmdline_history() -> None:
+    _cmdline_history['index'] = None
+
+
+def next_cmdline_history(view, edit, backwards: bool) -> bool:
+    if view.size() == 0:
+        raise RuntimeError('expected a non-empty command-line')
+
+    firstc = view.substr(0)
+    if not history_get_type(firstc):
+        raise RuntimeError('expected a valid command-line')
+
+    if _cmdline_history['index'] is None:
+        _cmdline_history['index'] = -1 if backwards else 0
+    else:
+        _cmdline_history['index'] += -1 if backwards else 1
+
+    if not isinstance(_cmdline_history['index'], int):
+        return False
+
+    count = history_len(firstc)
+    if count == 0:
+        _cmdline_history['index'] = None
+
+        return False
+
+    if abs(_cmdline_history['index']) > count:
+        _cmdline_history['index'] = -count
+
+        return False
+
+    if _cmdline_history['index'] >= 0:
+        _cmdline_history['index'] = 0
+
+        if view.size() > 1:
+            return view.erase(edit, Region(1, view.size()))
+        else:
+            return False
+
+    if view.size() > 1:
+        view.erase(edit, Region(1, view.size()))
+
+    item = history_get(firstc, _cmdline_history['index'])
+    if item:
+        view.insert(edit, 1, item)
+
+    return True

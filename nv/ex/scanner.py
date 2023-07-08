@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -180,7 +180,7 @@ class Scanner:
             (next_func, items) = next_func(self.state)
             yield from items
             if not next_func:  # type: ignore[truthy-function]
-                break
+                break  # type: ignore[unreachable]
 
 
 def _scan_range(state) -> tuple:

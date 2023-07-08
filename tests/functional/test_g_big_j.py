@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -28,8 +28,8 @@ class Test_gJ(unittest.FunctionalTestCase):
         self.eq('|aaa\nbbb\nccc', 'gJ', 'aaa|bbb\nccc')
         self.eq('|aaa\nbbb\nccc', '1gJ', 'aaa|bbb\nccc')
         self.eq('|aaa\nbbb\nccc', '2gJ', 'aaa|bbb\nccc')
-        self.eq('|aaa\nbbb\nccc', '3gJ', 'aaa|bbbccc'),  # TODO Fix: cursor position is incorrect
-        self.eq('|aaa\nbbb\nccc', '9gJ', 'aaa|bbbccc'),  # TODO Fix: cursor position is incorrect
+        self.eq('|aaa\nbbb\nccc', '3gJ', 'aaa|bbbccc')  # TODO Fix: cursor position is incorrect
+        self.eq('|aaa\nbbb\nccc', '9gJ', 'aaa|bbbccc')  # TODO Fix: cursor position is incorrect
         self.eq('|aaa\n    bbb', 'gJ', 'aaa|    bbb')
         self.eq('|aaa\n    bbb', '1gJ', 'aaa|    bbb')
         self.eq('|aaa\n    bbb', '2gJ', 'aaa|    bbb')

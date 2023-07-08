@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+from string import ascii_uppercase
 from unittest import TestCase  # noqa: F401
 from unittest import expectedFailure  # noqa: F401
 from unittest import mock  # noqa: F401
@@ -36,34 +37,33 @@ from sublime import platform as _platform
 from sublime import set_clipboard as _set_clipboard
 from sublime import version as _version
 
-# Use aliases to indicate that they are not public testing APIs.
-from NeoVintageous.nv import macros as _macros
-from NeoVintageous.nv.cmdline import Cmdline as _Cmdline
-from NeoVintageous.nv.ex_cmds import do_ex_cmdline as _do_ex_cmdline
+from NeoVintageous.nv import macros
+from NeoVintageous.nv.cmdline import Cmdline
+from NeoVintageous.nv.ex_cmds import do_ex_cmdline
 from NeoVintageous.nv.mappings import _mappings
-from NeoVintageous.nv.marks import get_mark as _get_mark
-from NeoVintageous.nv.marks import set_mark as _set_mark
-from NeoVintageous.nv.options import get_option as _get_option
-from NeoVintageous.nv.options import set_option as _set_option
-from NeoVintageous.nv.polyfill import view_to_region as _view_to_region
-from NeoVintageous.nv.polyfill import view_to_str as _view_to_str
+from NeoVintageous.nv.marks import _get_key
+from NeoVintageous.nv.marks import get_mark
+from NeoVintageous.nv.marks import set_mark
+from NeoVintageous.nv.options import get_option
+from NeoVintageous.nv.options import set_option
+from NeoVintageous.nv.polyfill import view_to_region
+from NeoVintageous.nv.polyfill import view_to_str
 from NeoVintageous.nv.registers import _is_register_linewise
-from NeoVintageous.nv.registers import _reset as _registers_reset
-from NeoVintageous.nv.registers import _set_data as _set_register_data
+from NeoVintageous.nv.registers import _reset
+from NeoVintageous.nv.registers import _set_data
 from NeoVintageous.nv.registers import _set_numbered_register
-from NeoVintageous.nv.registers import registers_get as _registers_get
-from NeoVintageous.nv.settings import get_mode as _get_mode
-from NeoVintageous.nv.settings import get_setting as _get_setting
-from NeoVintageous.nv.settings import get_visual_block_direction as _get_visual_block_direction
-from NeoVintageous.nv.settings import get_xpos as _get_xpos
-from NeoVintageous.nv.settings import reset_setting as _reset_setting
+from NeoVintageous.nv.registers import registers_get
+from NeoVintageous.nv.settings import get_mode
+from NeoVintageous.nv.settings import get_setting
+from NeoVintageous.nv.settings import get_visual_block_direction
+from NeoVintageous.nv.settings import get_xpos
+from NeoVintageous.nv.settings import reset_setting
 from NeoVintageous.nv.settings import set_last_search_pattern
-from NeoVintageous.nv.settings import set_mode as _set_mode
-from NeoVintageous.nv.settings import set_reset_during_init as _set_reset_during_init
-from NeoVintageous.nv.settings import set_setting as _set_setting
-from NeoVintageous.nv.settings import set_visual_block_direction as _set_visual_block_direction
-from NeoVintageous.nv.settings import set_xpos as _set_xpos
-
+from NeoVintageous.nv.settings import set_mode
+from NeoVintageous.nv.settings import set_reset_during_init
+from NeoVintageous.nv.settings import set_setting
+from NeoVintageous.nv.settings import set_visual_block_direction
+from NeoVintageous.nv.settings import set_xpos
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import DIRECTION_UP
 from NeoVintageous.nv.vim import INSERT  # noqa: F401
@@ -99,6 +99,10 @@ def is_osx() -> bool:
     return _platform() == 'osx'
 
 
+def is_windows() -> bool:
+    return _platform() == 'windows'
+
+
 class ViewTestCase(unittest.TestCase):
 
     def setUp(self) -> None:
@@ -113,10 +117,10 @@ class ViewTestCase(unittest.TestCase):
         return _platform()
 
     def view_to_region(self):
-        return _view_to_region(self.view)
+        return view_to_region(self.view)
 
     def content(self) -> str:
-        return _view_to_str(self.view)
+        return view_to_str(self.view)
 
     def Region(self, a: int, b: int = None) -> Region:
         # Return a Region with initial values a and b.
@@ -199,13 +203,13 @@ class ViewTestCase(unittest.TestCase):
         return self.view.settings()
 
     def set_setting(self, name: str, value) -> None:
-        _set_setting(self.view, name, value)
+        set_setting(self.view, name, value)
 
     def get_setting(self, name: str):
-        return _get_setting(self.view, name)
+        return get_setting(self.view, name)
 
     def reset_setting(self, name: str) -> None:
-        _reset_setting(self.view, name)
+        reset_setting(self.view, name)
 
     def set_wrap(self, width: int) -> None:
         self.settings().set('word_wrap', True)
@@ -236,12 +240,12 @@ class ViewTestCase(unittest.TestCase):
         self.assertFalse(self.settings().has('vintageous_%s' % name))
 
     def set_option(self, name: str, value, setting: bool = True) -> None:
-        _set_option(self.view, name, value)
+        set_option(self.view, name, value)
         if setting:  # DEPRECATED Options via settings is deprecated
-            _set_setting(self.view, name, value)
+            set_setting(self.view, name, value)
 
     def get_option(self, name: str, view=None):
-        return _get_option(self.view if view is None else view, name)
+        return get_option(self.view if view is None else view, name)
 
     def assertOption(self, name: str, expected, msg: str = None) -> None:
         self.assertEqual(self.get_option(name), expected, msg=msg)
@@ -250,7 +254,10 @@ class ViewTestCase(unittest.TestCase):
         self.view.assign_syntax(syntax_file)
 
     def fixturePath(self, *args) -> str:
-        return os.path.join(os.path.dirname(__file__), 'fixtures', *args)
+        return os.path.realpath(os.path.join(os.path.dirname(__file__), 'fixtures', *args))
+
+    def rootPath(self) -> str:
+        return os.path.realpath(os.path.dirname(os.path.dirname(__file__)))
 
     def assignFileName(self, rel_file_name) -> None:
         with tempfile.TemporaryDirectory() as tmpdirname:
@@ -277,7 +284,7 @@ class ViewTestCase(unittest.TestCase):
                     if a is None:
                         a = x - i
                     else:
-                        v_sels.append(Region(a, x - i))
+                        v_sels.append(Region(a, x - i))  # type: ignore[unreachable]
                         a = None
 
                 self.view.sel().clear()
@@ -299,9 +306,9 @@ class ViewTestCase(unittest.TestCase):
 
             if mode == VISUAL_BLOCK:
                 if vblock_direction:
-                    _set_visual_block_direction(self.view, vblock_direction)
+                    set_visual_block_direction(self.view, vblock_direction)
                 elif len(self.view.sel()) > 1:
-                    _set_visual_block_direction(self.view, DIRECTION_DOWN)
+                    set_visual_block_direction(self.view, DIRECTION_DOWN)
         else:
             self.view.run_command('nv_test_write', {'text': text.replace('|', '')})
             sels = [i for i, c in enumerate(text) if c == '|']
@@ -310,13 +317,13 @@ class ViewTestCase(unittest.TestCase):
                 for i, x in enumerate(sels):
                     self.view.sel().add(x - i)
 
-        _set_mode(self.view, mode)
+        set_mode(self.view, mode)
 
     def setNormalMode(self):
-        _set_mode(self.view, NORMAL)
+        set_mode(self.view, NORMAL)
 
     def setVisualMode(self):
-        _set_mode(self.view, VISUAL)
+        set_mode(self.view, VISUAL)
 
     def insert(self, text: str) -> None:
         self._setupView(text, INSERT)
@@ -365,27 +372,34 @@ class ViewTestCase(unittest.TestCase):
         if name.isdigit() and name != '0':
             _set_numbered_register(name, value, linewise)
         else:
-            _set_register_data(name, value, linewise)
+            _set_data(name, value, linewise)
 
     def registerLinewise(self, name: str, value=None) -> None:
         self.register(name, value, linewise=True)
 
     def resetRegisters(self, values=None) -> None:
-        _registers_reset()
+        _reset()
         _set_clipboard('')
 
+    def resetMarks(self):
+        window = self.view.window()
+        if window:
+            for view in window.views():
+                for character in ascii_uppercase:
+                    view.erase_regions(_get_key(character))
+
     def resetMacros(self) -> None:
-        _macros._data.clear()
+        macros._data.clear()
 
     def setMark(self, name: str, pt: int) -> None:
         sels = list(self.view.sel())
         self.select(pt)
-        _set_mark(self.view, name)
+        set_mark(self.view, name)
         self.view.sel().clear()
         self.view.sel().add_all(sels)  # type: ignore[arg-type]
 
     def assertMark(self, name: str, expected) -> None:
-        self._assertContentSelection([_get_mark(self.view, name)], expected)
+        self._assertContentSelection([get_mark(self.view, name)], expected)
 
     def assertMapping(self, mode: int, lhs: str, rhs: str) -> None:
         self.assertIn(lhs, _mappings[mode])
@@ -416,7 +430,7 @@ class ViewTestCase(unittest.TestCase):
         self.assertEqual(self.content(), expected, msg)
 
     def commandLineOutput(self) -> str:
-        return _view_to_str(self.view.window().find_output_panel('Command-line'))  # type: ignore[union-attr]
+        return view_to_str(self.view.window().find_output_panel('Command-line'))  # type: ignore[union-attr]
 
     def assertCommandLineOutput(self, expected, msg: str = None) -> None:
         self.view.window().focus_group(self.view.window().active_group())  # type: ignore[union-attr]
@@ -435,7 +449,7 @@ class ViewTestCase(unittest.TestCase):
     def exPrintOutput(self) -> str:
         v = self.exPrintOutputView()
         if v:
-            return _view_to_str(v)
+            return view_to_str(v)
 
         return ''
 
@@ -458,7 +472,7 @@ class ViewTestCase(unittest.TestCase):
                 content.insert(sel.end() + counter, '|')
                 counter += 1
 
-        self.assertEquals(''.join(content), expected, msg)
+        self.assertEquals(expected, ''.join(content), msg)
 
     def _assertContentRegion(self, key: str, expected, msg: str = None) -> None:
         self._assertContentSelection(self.view.get_regions(key), expected, msg)
@@ -549,7 +563,7 @@ class ViewTestCase(unittest.TestCase):
         self.assertSelectionIsReversed()
 
     def _assertMode(self, mode: str) -> None:
-        self.assertEquals(_get_mode(self.view), mode)
+        self.assertEquals(mode, get_mode(self.view))
 
     def assertInsertMode(self) -> None:
         self._assertMode(INSERT)
@@ -602,7 +616,7 @@ class ViewTestCase(unittest.TestCase):
         if expected is not None and not isinstance(expected, list):
             expected = [expected]
 
-        self.assertEqual(_registers_get(self.view, name), expected, msg or 'register = "' + name)
+        self.assertEqual(registers_get(self.view, name), expected, msg or 'for register "' + name + '"')
 
         if expected is not None:
             self.assertEqual(_is_register_linewise(name), linewise, msg or 'register (linewise) = "' + name)
@@ -625,7 +639,7 @@ class ViewTestCase(unittest.TestCase):
 
         self._assertRegister(name, expected, linewise, msg)
 
-    def assertRegisters(self, names: list, expected=None, empty_names: str = '', msg: str = None) -> None:
+    def assertRegisters(self, names: str, expected=None, empty_names: str = '', msg: str = None) -> None:
         """Test that value for the register content for names and expected are equal.
 
         Usage:
@@ -645,7 +659,7 @@ class ViewTestCase(unittest.TestCase):
 
         self._assertRegister(name, expected, linewise=True, msg=msg)
 
-    def assertLinewiseRegisters(self, names: list, expected=None, empty_names: str = '', msg: str = None) -> None:
+    def assertLinewiseRegisters(self, names: str, expected=None, empty_names: str = '', msg: str = None) -> None:
         for name in names:
             self.assertLinewiseRegister(name, expected, msg)
 
@@ -655,7 +669,7 @@ class ViewTestCase(unittest.TestCase):
     def assertRegisterEmpty(self, name: str, msg: str = None) -> None:
         self._assertRegister(name, None, msg=msg)
 
-    def assertRegistersEmpty(self, names: list, msg: str = None) -> None:
+    def assertRegistersEmpty(self, names: str, msg: str = None) -> None:
         for name in names:
             self.assertRegisterEmpty(name, msg)
 
@@ -718,7 +732,7 @@ class ViewTestCase(unittest.TestCase):
         self.assertEqual(self.getVblockDirection(), expected, msg=msg)
 
     def getVblockDirection(self):
-        return _get_visual_block_direction(self.view)
+        return get_visual_block_direction(self.view)
 
     def _statusLine(self) -> str:
         return (
@@ -727,7 +741,7 @@ class ViewTestCase(unittest.TestCase):
             self.view.get_status('vim-recording')).strip()
 
     def assertStatusLineEqual(self, expected, msg: str = None) -> None:
-        self.assertEqual(self._statusLine(), expected, msg=msg)
+        self.assertEqual(expected, self._statusLine(), msg=msg)
 
     def assertStatusLineRegex(self, expected_regex: str, msg: str = None) -> None:
         self.assertRegex(self._statusLine(), expected_regex, msg=msg)
@@ -757,10 +771,10 @@ class ViewTestCase(unittest.TestCase):
         self.assertStatusLineEqual('-- VISUAL BLOCK --', msg)
 
     def assertXpos(self, expected, msg: str = None) -> None:
-        self.assertEqual(_get_xpos(self.view), expected, msg)
+        self.assertEqual(get_xpos(self.view), expected, msg)
 
     def setXpos(self, xpos: int) -> None:
-        _set_xpos(self.view, xpos)
+        set_xpos(self.view, xpos)
 
     def assertMockNotCalled(self, mock) -> None:
         # https://docs.python.org/3/library/unittest.mock.html
@@ -771,16 +785,16 @@ class ViewTestCase(unittest.TestCase):
             self.assertEqual(mock.call_count, 0)
 
     def initCmdlineSearchMock(self, mock, type: str, event: str, pattern: str = None) -> None:
-        class MockCmdlineOnDone(_Cmdline):
+        class MockCmdlineOnDone(Cmdline):
             _mock_pattern = None
 
             def prompt(cmdline, pattern: str) -> None:
                 args = []  # type: list
                 if cmdline._mock_pattern is not None:
-                    args.append(cmdline._mock_pattern)
+                    args.append(cmdline._mock_pattern)  # type: ignore[unreachable]
 
                 cmdline._callbacks[cmdline._mock_event](*args)  # type: ignore[attr-defined]
-                _set_reset_during_init(self.view, True)
+                set_reset_during_init(self.view, True)
 
         if type == '?':
             mock.SEARCH_BACKWARD = '?'
@@ -834,6 +848,33 @@ _FEEDCHAR2KEY = {
 }
 
 
+_SEQ_PARSER = re.compile('(?:([vinVbs])_)?([1-9][0-9]*)?(.+)')
+
+
+_MODE_PREFIXES = (
+    'N_',
+    'R_',
+    'V_',
+    'b_',
+    'i_',
+    'n_',
+    's_',
+    'v_'
+)
+
+
+_MODE_METHODS = {
+    'N': 'internalNormal',
+    'R': 'replace',
+    'V': 'vline',
+    'b': 'vblock',
+    'i': 'insert',
+    'n': 'normal',
+    's': 'vselect',
+    'v': 'visual'
+}
+
+
 class FunctionalTestCase(ViewTestCase):
 
     def feed(self, seq: str, check_user_mappings: bool = False) -> None:
@@ -877,7 +918,7 @@ class FunctionalTestCase(ViewTestCase):
         # >>> feed(':2,4yank')
 
         if seq[0] == ':':
-            return _do_ex_cmdline(self.view.window(), seq)
+            return do_ex_cmdline(self.view.window(), seq)
 
         orig_seq = seq
         seq, seq_args = _parse_seq(seq)
@@ -971,30 +1012,10 @@ class FunctionalTestCase(ViewTestCase):
         # >>> eq('|H|ello world!', 'v_w', '|Hello w|orld!')
         # >>> eq('xxx\nbu|zz\nxxx', 'n_cc', 'i_xxx\n|\nxxx')
 
-        def _parse_reversed(text):
-            if text[:2] == 'r_':
-                return text[2:], True
-
-            return text, False
-
-        def _parse_mode(text, default):
-            if text[:2] in modes:
-                return text[2:], text[0]
-
-            return text, default
-
-        def _parse(text, default_mode):
-            text, is_reversed = _parse_reversed(text)
-            text, mode = _parse_mode(text, default_mode)
-
-            return text, mode, is_reversed
-
         if expected is None:
             expected = text
 
-        modes = ('N_', 'R_', 'V_', 'b_', 'i_', 'n_', 's_', 'v_')
-
-        if feed[:2] in modes:
+        if feed[:2] in _MODE_PREFIXES:
             default_mode = feed[0]
         elif feed[:6] == ':\'<,\'>':
             default_mode = 'v'
@@ -1004,19 +1025,8 @@ class FunctionalTestCase(ViewTestCase):
         text, text_mode, reverse_text = _parse(text, default_mode)
         expected, expected_mode, reverse_expected = _parse(expected, default_mode)
 
-        methods = {
-            'N': 'internalNormal',
-            'R': 'replace',
-            'V': 'vline',
-            'b': 'vblock',
-            'i': 'insert',
-            'n': 'normal',
-            's': 'vselect',
-            'v': 'visual',
-        }
-
-        if text_mode in methods:
-            method_name = methods[text_mode]
+        if text_mode in _MODE_METHODS:
+            method_name = _MODE_METHODS[text_mode]
         else:
             self.assertTrue(False, 'invalid text mode')
 
@@ -1032,8 +1042,8 @@ class FunctionalTestCase(ViewTestCase):
 
         self.feed(feed)
 
-        if expected_mode in methods:
-            method_name = methods[expected_mode]
+        if expected_mode in _MODE_METHODS:
+            method_name = _MODE_METHODS[expected_mode]
         else:
             self.assertTrue(False, 'invalid expected mode')
 
@@ -1059,7 +1069,25 @@ class FunctionalTestCase(ViewTestCase):
         return content, direction
 
 
-_SEQ_PARSER = re.compile('(?:([vinVbs])_)?([1-9][0-9]*)?(.+)')
+def _parse(text, default_mode) -> tuple:
+    text, is_reversed = _parse_reversed(text)
+    text, mode = _parse_mode(text, default_mode)
+
+    return text, mode, is_reversed
+
+
+def _parse_reversed(text) -> tuple:
+    if text[:2] == 'r_':
+        return text[2:], True
+
+    return text, False
+
+
+def _parse_mode(text, default) -> tuple:
+    if text[:2] in _MODE_PREFIXES:
+        return text[2:], text[0]
+
+    return text, default
 
 
 def _parse_seq(seq: str) -> tuple:
@@ -1115,6 +1143,13 @@ class ResetRegisters(FunctionalTestCase):
         self.resetRegisters()
 
 
+class ResetMarks(FunctionalTestCase):
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.resetMarks()
+
+
 # DEPRECATED Use newer APIs.
 def _make_region(view, a: int, b: int = None) -> Region:
     try:
@@ -1125,10 +1160,8 @@ def _make_region(view, a: int, b: int = None) -> Region:
     except (TypeError, ValueError):
         pass
 
-    if isinstance(a, int) and b is None:
+    if b is None:
         pass
-    elif not (isinstance(a, int) and isinstance(b, int)):
-        raise ValueError('a and b arguments must be integers or a tuple (row, col)')
 
     if b is not None:
         return Region(a, b)
@@ -1155,13 +1188,13 @@ def mock_bell():
             self.bell = args[-1]
             self.assert_bell_count = 0
 
-            def _assertBell(msg: str = None) -> None:
+            def _assertBell(msg: str = None, count: int = 1) -> None:
                 if msg is None:
                     self.bell.assert_called_with()
                 else:
                     self.bell.assert_called_with(msg)
 
-                self.assert_bell_count += 1
+                self.assert_bell_count += count
                 self.assertEqual(
                     self.bell.call_count,
                     self.assert_bell_count,
@@ -1405,14 +1438,14 @@ def mock_ui(screen_rows=None, visible_region=None, em_width=10.0, line_height=22
     return wrapper
 
 
-def mock_run_commands(*methods):
+def mock_commands(*methods):
     """Mock commands.
 
     Useful to mock builtin Sublime Text commands.
 
     Usage:
 
-    @unittest.mock_run_commands('redo', 'hide_panel')
+    @unittest.mock_commands('redo', 'hide_panel')
     def test(self):
 
         # Assert command ran successfully.
@@ -1537,15 +1570,35 @@ _SEQ2CMD = {
     ';':            {'command': 'nv_feed_key'},  # noqa: E241
     '<':            {'command': 'nv_feed_key'},  # noqa: E241
     '<<':           {'command': 'nv_feed_key'},  # noqa: E241
+    '<C-0>':        {'command': 'nv_feed_key', 'args': {'key': '<C-0>'}},  # noqa: E241
+    '<C-1>':        {'command': 'nv_feed_key', 'args': {'key': '<C-1>'}},  # noqa: E241
+    '<C-2>':        {'command': 'nv_feed_key', 'args': {'key': '<C-2>'}},  # noqa: E241
+    '<C-3>':        {'command': 'nv_feed_key', 'args': {'key': '<C-3>'}},  # noqa: E241
+    '<C-4>':        {'command': 'nv_feed_key', 'args': {'key': '<C-4>'}},  # noqa: E241
+    '<C-5>':        {'command': 'nv_feed_key', 'args': {'key': '<C-5>'}},  # noqa: E241
+    '<C-6>':        {'command': 'nv_feed_key', 'args': {'key': '<C-6>'}},  # noqa: E241
+    '<C-7>':        {'command': 'nv_feed_key', 'args': {'key': '<C-7>'}},  # noqa: E241
+    '<C-8>':        {'command': 'nv_feed_key', 'args': {'key': '<C-8>'}},  # noqa: E241
+    '<C-9>':        {'command': 'nv_feed_key', 'args': {'key': '<C-9>'}},  # noqa: E241
+    '<C-B>':        {'command': 'nv_feed_key', 'args': {'key': '<C-B>'}},  # noqa: E241
+    '<C-F12>':      {'command': 'nv_feed_key', 'args': {'key': '<C-F12>'}},  # noqa: E241
+    '<C-F2>':       {'command': 'nv_feed_key', 'args': {'key': '<C-F2>'}},  # noqa: E241
+    '<C-F>':        {'command': 'nv_feed_key', 'args': {'key': '<C-F>'}},  # noqa: E241
+    '<C-M-p>':      {'command': 'nv_feed_key', 'args': {'key': '<C-M-p>'}},  # noqa: E241
+    '<C-P>':        {'command': 'nv_feed_key', 'args': {'key': '<C-P>'}},  # noqa: E241
+    '<C-S-f12>':    {'command': 'nv_feed_key', 'args': {'key': '<C-S-f12>'}},  # noqa: E241
+    '<C-S-f2>':     {'command': 'nv_feed_key', 'args': {'key': '<C-S-f2>'}},  # noqa: E241
     '<C-[>':        {'command': 'nv_feed_key', 'args': {'key': '<C-[>'}},  # noqa: E241
     '<C-]>':        {'command': 'nv_feed_key', 'args': {'key': '<C-]>'}},  # noqa: E241
     '<C-^>':        {'command': 'nv_feed_key', 'args': {'key': '<C-^>'}},  # noqa: E241
     '<C-a>':        {'command': 'nv_feed_key', 'args': {'key': '<C-a>'}},  # noqa: E241
+    '<C-b>':        {'command': 'nv_feed_key', 'args': {'key': '<C-b>'}},  # noqa: E241
     '<C-c>':        {'command': 'nv_feed_key', 'args': {'key': '<C-c>'}},  # noqa: E241
     '<C-d>':        {'command': 'nv_feed_key', 'args': {'key': '<C-d>'}},  # noqa: E241
     '<C-e>':        {'command': 'nv_feed_key', 'args': {'key': '<C-e>'}},  # noqa: E241
     '<C-g>':        {'command': 'nv_feed_key', 'args': {'key': '<C-g>'}},  # noqa: E241
     '<C-i>':        {'command': 'nv_feed_key', 'args': {'key': '<C-i>'}},  # noqa: E241
+    '<C-k>':        {'command': 'nv_feed_key', 'args': {'key': '<C-k>'}},  # noqa: E241
     '<C-n>':        {'command': 'nv_feed_key', 'args': {'key': '<C-n>'}},  # noqa: E241
     '<C-o>':        {'command': 'nv_feed_key', 'args': {'key': '<C-o>'}},  # noqa: E241
     '<C-p>':        {'command': 'nv_feed_key', 'args': {'key': '<C-p>'}},  # noqa: E241
@@ -1555,6 +1608,10 @@ _SEQ2CMD = {
     '<C-w>':        {'command': 'nv_feed_key', 'args': {'key': '<C-w>'}},  # noqa: E241
     '<C-w>+':       {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', '+']}},  # noqa: E241
     '<C-w>-':       {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', '-']}},  # noqa: E241
+    '<C-w><C-6>':   {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', '<C-6>']}},  # noqa: E241
+    '<C-w><C-n>':   {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', '<C-n>']}},  # noqa: E241
+    '<C-w><C-s>':   {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', '<C-s>']}},  # noqa: E241
+    '<C-w><C-v>':   {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', '<C-v>']}},  # noqa: E241
     '<C-w><bar>':   {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', '<bar>']}},  # noqa: E241
     '<C-w><lt>':    {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', '<lt>']}},  # noqa: E241
     '<C-w>=':       {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', '=']}},  # noqa: E241
@@ -1563,8 +1620,10 @@ _SEQ2CMD = {
     '<C-w>J':       {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', 'J']}},  # noqa: E241
     '<C-w>K':       {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', 'K']}},  # noqa: E241
     '<C-w>L':       {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', 'L']}},  # noqa: E241
+    '<C-w>S':       {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', 'S']}},  # noqa: E241
     '<C-w>W':       {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', 'W']}},  # noqa: E241
     '<C-w>]':       {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', ']']}},  # noqa: E241
+    '<C-w>^':       {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', '^']}},  # noqa: E241
     '<C-w>_':       {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', '_']}},  # noqa: E241
     '<C-w>b':       {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', 'b']}},  # noqa: E241
     '<C-w>c':       {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', 'c']}},  # noqa: E241
@@ -1583,7 +1642,20 @@ _SEQ2CMD = {
     '<C-y>':        {'command': 'nv_feed_key', 'args': {'key': '<C-y>'}},  # noqa: E241
     '<CR>':         {'command': 'nv_feed_key', 'args': {'key': '<cr>'}},  # noqa: E241
     '<Esc>':        {'command': 'nv_feed_key', 'args': {'key': '<esc>'}},  # noqa: E241
+    '<F11>':        {'command': 'nv_feed_key', 'args': {'key': '<F11>'}},  # noqa: E241
+    '<F12>':        {'command': 'nv_feed_key', 'args': {'key': '<F12>'}},  # noqa: E241
+    '<F2>':         {'command': 'nv_feed_key', 'args': {'key': '<F2>'}},  # noqa: E241
+    '<F3>':         {'command': 'nv_feed_key', 'args': {'key': '<F3>'}},  # noqa: E241
+    '<F4>':         {'command': 'nv_feed_key', 'args': {'key': '<F4>'}},  # noqa: E241
+    '<F5>':         {'command': 'nv_feed_key', 'args': {'key': '<F5>'}},  # noqa: E241
+    '<F6>':         {'command': 'nv_feed_key', 'args': {'key': '<F6>'}},  # noqa: E241
+    '<F7>':         {'command': 'nv_feed_key', 'args': {'key': '<F7>'}},  # noqa: E241
+    '<F8>':         {'command': 'nv_feed_key', 'args': {'key': '<F8>'}},  # noqa: E241
+    '<F9>':         {'command': 'nv_feed_key', 'args': {'key': '<F9>'}},  # noqa: E241
     '<M-n>':        {'command': 'nv_feed_key', 'args': {'key': '<M-n>'}},  # noqa: E241
+    '<S-f11>':      {'command': 'nv_feed_key', 'args': {'key': '<S-f11>'}},  # noqa: E241
+    '<S-f2>':       {'command': 'nv_feed_key', 'args': {'key': '<S-f2>'}},  # noqa: E241
+    '<S-f4>':       {'command': 'nv_feed_key', 'args': {'key': '<S-f4>'}},  # noqa: E241
     '<k0>':         {'command': 'nv_feed_key', 'args': {'key': '<k0>'}},  # noqa: E241
     '<k1>':         {'command': 'nv_feed_key', 'args': {'key': '<k1>'}},  # noqa: E241
     '<k2>':         {'command': 'nv_feed_key', 'args': {'key': '<k2>'}},  # noqa: E241
@@ -1678,6 +1750,7 @@ _SEQ2CMD = {
     '[s':           {'command': 'nv_feed_key'},  # noqa: E241
     '[t':           {'command': 'nv_feed_key'},  # noqa: E241
     '[{':           {'command': 'nv_feed_key'},  # noqa: E241
+    '\'':           {'command': 'nv_feed_key'},  # noqa: E241
     '\'a':          {'command': 'nv_feed_key'},  # noqa: E241
     '\'p':          {'command': 'nv_feed_key'},  # noqa: E241
     '\'x':          {'command': 'nv_feed_key'},  # noqa: E241
@@ -1706,6 +1779,7 @@ _SEQ2CMD = {
     ']}':           {'command': 'nv_feed_key'},  # noqa: E241
     '^':            {'command': 'nv_feed_key'},  # noqa: E241
     '_':            {'command': 'nv_feed_key'},  # noqa: E241
+    '`':            {'command': 'nv_feed_key'},  # noqa: E241
     '`a':           {'command': 'nv_feed_key'},  # noqa: E241
     '`p':           {'command': 'nv_feed_key'},  # noqa: E241
     '`x':           {'command': 'nv_feed_key'},  # noqa: E241
@@ -2090,7 +2164,9 @@ _SEQ2CMD = {
     'f|':           {'command': 'nv_feed_key'},  # noqa: E241
     'gC':           {'command': 'nv_feed_key'},  # noqa: E241
     'gC}':          {'command': 'nv_feed_key'},  # noqa: E241
+    'gD':           {'command': 'nv_feed_key'},  # noqa: E241
     'gE':           {'command': 'nv_feed_key'},  # noqa: E241
+    'gF':           {'command': 'nv_feed_key'},  # noqa: E241
     'gH':           {'command': 'nv_feed_key'},  # noqa: E241
     'gJ':           {'command': 'nv_feed_key'},  # noqa: E241
     'gN':           {'command': 'nv_feed_key'},  # noqa: E241
@@ -2106,6 +2182,7 @@ _SEQ2CMD = {
     'gc7G':         {'command': 'nv_feed_key'},  # noqa: E241
     'gcG':          {'command': 'nv_feed_key'},  # noqa: E241
     'gcc':          {'command': 'nv_feed_key'},  # noqa: E241
+    'gd':           {'command': 'nv_feed_key'},  # noqa: E241
     'ge':           {'command': 'nv_feed_key'},  # noqa: E241
     'gf':           {'command': 'nv_feed_key'},  # noqa: E241
     'gg':           {'command': 'nv_feed_key'},  # noqa: E241
@@ -2171,6 +2248,7 @@ _SEQ2CMD = {
     'j':            {'command': 'nv_feed_key'},  # noqa: E241
     'k':            {'command': 'nv_feed_key'},  # noqa: E241
     'l':            {'command': 'nv_feed_key'},  # noqa: E241
+    'm':            {'command': 'nv_feed_key'},  # noqa: E241
     'ma':           {'command': 'nv_feed_key'},  # noqa: E241
     'mx':           {'command': 'nv_feed_key'},  # noqa: E241
     'n':            {'command': 'nv_feed_key'},  # noqa: E241
@@ -2182,6 +2260,7 @@ _SEQ2CMD = {
     'qA':           {'command': 'nv_feed_key'},  # noqa: E241
     'qa':           {'command': 'nv_feed_key'},  # noqa: E241
     'qx':           {'command': 'nv_feed_key'},  # noqa: E241
+    'r':            {'command': 'nv_feed_key'},  # noqa: E241
     'r<cr>':        {'command': 'nv_feed_key', 'args': {'keys': ['r', '<cr>']}},  # noqa: E241
     'r<k0>':        {'command': 'nv_feed_key', 'args': {'keys': ['r', '<k0>']}},  # noqa: E241
     'r<k1>':        {'command': 'nv_feed_key', 'args': {'keys': ['r', '<k1>']}},  # noqa: E241

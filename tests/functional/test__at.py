@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -20,13 +20,7 @@ from NeoVintageous.tests import unittest
 
 class Test_at(unittest.FunctionalTestCase):
 
-    def setUp(self):
-        super().setUp()
-
-    def tearDown(self):
-        super().tearDown()
-        self.resetMacros()
-
+    @unittest.mock_session()
     @unittest.mock_bell()
     def test_invalid_register_name(self):
         self.normal('fi|zz')
@@ -34,6 +28,7 @@ class Test_at(unittest.FunctionalTestCase):
         self.assertBell("E354: Invalid register name: '-'")
         self.assertStatusLineIsNormal()
 
+    @unittest.mock_session()
     @unittest.mock_bell()
     def test_invalid_register_name__percent__(self):
         self.normal('fi|zz')
@@ -41,6 +36,7 @@ class Test_at(unittest.FunctionalTestCase):
         self.assertBell("E354: Invalid register name: '%'")
         self.assertStatusLineIsNormal()
 
+    @unittest.mock_session()
     @unittest.mock_bell()
     def test_invalid_register_name__hash__(self):
         self.normal('fi|zz')
@@ -48,6 +44,7 @@ class Test_at(unittest.FunctionalTestCase):
         self.assertBell("E354: Invalid register name: '#'")
         self.assertStatusLineIsNormal()
 
+    @unittest.mock_session()
     @unittest.mock_bell()
     def test_invalid_register_name__exclaimation__(self):
         self.normal('fi|zz')
@@ -63,6 +60,7 @@ class Test_at(unittest.FunctionalTestCase):
         self.assertBell('E748: No previously used register')
         self.assertStatusLineIsNormal()
 
+    @unittest.mock_session()
     @unittest.mock_bell()
     def test_no_such_macro(self):
         self.normal('fi|zz')

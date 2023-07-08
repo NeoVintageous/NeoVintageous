@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -57,9 +57,6 @@ class Test_A(unittest.FunctionalTestCase):
         self.eq('x\n1|11|1\nx\n2|22|2\nx', 'b_A', 'i_x\n111|1\nx\n222|2\nx')
         self.eq('x\na|bc\n|x\nd|ef\n|x', 'b_A', 'i_x\nabc|\nx\ndef|\nx')
         self.assertStatusLineIsInsert()
-
-    def test_s(self):
-        self.eq('|fizz| buzz fizz buzz fizz', 's_A', '|fizz| buzz |fizz| buzz |fizz|')
 
     def test_issue_291_append_multi_line_is_off_by_one_char(self):
         self.eq('|aaaaa\n||bbbbb\n||ccccc|', 'V_A', 'i_aaaaa|\nbbbbb|\nccccc|')

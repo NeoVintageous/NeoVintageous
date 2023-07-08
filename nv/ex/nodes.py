@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -14,6 +14,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
+
+from string import ascii_lowercase
 
 from sublime import Region
 
@@ -83,7 +85,7 @@ def _resolve_line_number(view, token, current: int) -> int:
                 return row_at(view, sel.b - 1)
             else:
                 return row_at(view, sel.b)
-        elif token.content in tuple('abcdefghijklmnopqrstuvwxyz'):
+        elif token.content in tuple(ascii_lowercase):
             mark = get_mark(view, token.content)
             if not isinstance(mark, Region):
                 raise ValueError('E20: mark not set')
@@ -104,8 +106,8 @@ def _resolve_line_reference(view, line_reference, current: int = 0) -> int:
     for token in line_reference:
         # Make sure a search forward doesn't overlap with
         # a match obtained right before this search.
-        if isinstance(last_token, TokenOfSearch) and isinstance(token, TokenOfSearch):
-            if isinstance(token, TokenSearchForward):
+        if isinstance(last_token, TokenOfSearch) and isinstance(token, TokenOfSearch):  # type: ignore[unreachable]
+            if isinstance(token, TokenSearchForward):  # type: ignore[unreachable]
                 current += 1
 
         current = _resolve_line_number(view, token, current)

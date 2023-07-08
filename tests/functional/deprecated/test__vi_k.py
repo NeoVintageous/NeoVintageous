@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -97,7 +97,7 @@ class Test__nv_vi_h(unittest.ViewTestCase):
                 self.assertEqual(data.expected, actual, msg)
 
 
-test = namedtuple('simple_test', 'content regions kwargs expected msg')
+test = namedtuple('test', 'content regions kwargs expected msg')
 
 MORE_TESTS = (
     test(content='''aaa

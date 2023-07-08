@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -221,7 +221,7 @@ class Test_ex_route_tabnext(unittest.TestCase):
 
 class TestRoutes(unittest.TestCase):
 
-    def _matchRoute(self, string):
+    def matchRoute(self, string):
         for route, command in ex_routes.items():
             match = re.compile(route).match(string)
             if match:
@@ -230,11 +230,11 @@ class TestRoutes(unittest.TestCase):
         return None
 
     def assertNotRoute(self, string):
-        self.assertEquals(self._matchRoute(string), None, 'failed asserting no route for {}'.format(string))
+        self.assertEquals(self.matchRoute(string), None, 'failed asserting no route for {}'.format(string))
 
     def assertRoute(self, expected, values, multiple_matches=False):
         for value in values:
-            match, route, command = self._matchRoute(value)
+            match, route, command = self.matchRoute(value)
             self.assertEqual(command.__name__, expected)
             self.assertEqual(match.group(0), value, 'failed at "{}"'.format(value))
 
@@ -267,6 +267,7 @@ class TestRoutes(unittest.TestCase):
         self.assertRoute('_ex_route_history', ['history', 'his'])
         self.assertRoute('_ex_route_inoremap', ['inoremap', 'ino'])
         self.assertRoute('_ex_route_let', ['let '])
+        self.assertRoute('_ex_route_marks', ['marks'])
         self.assertRoute('_ex_route_move', ['move', 'm'])
         self.assertRoute('_ex_route_new', ['new'])
         self.assertRoute('_ex_route_nnoremap', ['nnoremap', 'nn'])
@@ -297,10 +298,12 @@ class TestRoutes(unittest.TestCase):
         self.assertRoute('_ex_route_tabclose', ['tabclose', 'tabc'])
         self.assertRoute('_ex_route_tabfirst', ['tabfirst', 'tabfir', 'tabrewind', 'tabr'])
         self.assertRoute('_ex_route_tablast', ['tablast', 'tabl'])
+        self.assertRoute('_ex_route_tabnew', ['tabnew', 'tabedit', 'tabe'])
         self.assertRoute('_ex_route_tabnext', ['tabnext', 'tabn'])
         self.assertRoute('_ex_route_tabonly', ['tabonly', 'tabo'])
         self.assertRoute('_ex_route_tabprevious', ['tabNext', 'tabN', 'tabprevious', 'tabp'])
         self.assertRoute('_ex_route_unmap', ['unmap', 'unm'])
+        self.assertRoute('_ex_route_vnew', ['vnew', 'vne'])
         self.assertRoute('_ex_route_vnoremap', ['vnoremap', 'vn'])
         self.assertRoute('_ex_route_vsplit', ['vsplit', 'vs'])
         self.assertRoute('_ex_route_vunmap', ['vunmap', 'vu'])

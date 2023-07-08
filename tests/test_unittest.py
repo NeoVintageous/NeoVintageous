@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -538,12 +538,12 @@ class TestFunctionalTestCase_feed(unittest.TestCase):
         self.instance.feed('<Esc>')
         self.window.run_command.assert_called_once_with('nv_feed_key', {'key': '<esc>', 'check_user_mappings': False})
 
-    @unittest.mock.patch('NeoVintageous.tests.unittest._do_ex_cmdline')
+    @unittest.mock.patch('NeoVintageous.tests.unittest.do_ex_cmdline')
     def test_feed_cmdline(self, do_ex_cmdline):
         self.instance.feed(':')
         do_ex_cmdline.assert_called_once_with(self.window, ':')
 
-    @unittest.mock.patch('NeoVintageous.tests.unittest._do_ex_cmdline')
+    @unittest.mock.patch('NeoVintageous.tests.unittest.do_ex_cmdline')
     def test_feed_cmdline_cmd(self, do_ex_cmdline):
         self.instance.feed(':pwd')
         do_ex_cmdline.assert_called_once_with(self.window, ':pwd')
@@ -640,25 +640,25 @@ class TestFunctionalTestCase_eq(unittest.TestCase):
         self.window = unittest.mock.Mock()
         self.view.window.return_value = self.window
         self.instance = FunctionalTestCaseStub(self.view)
-        self.instance.feed = unittest.mock.Mock()
-        self.instance.normal = unittest.mock.Mock()
-        self.instance.insert = unittest.mock.Mock()
-        self.instance.internalNormal = unittest.mock.Mock()
-        self.instance.rinternalNormal = unittest.mock.Mock()
-        self.instance.vselect = unittest.mock.Mock()
-        self.instance.rvselect = unittest.mock.Mock()
-        self.instance.visual = unittest.mock.Mock()
-        self.instance.vline = unittest.mock.Mock()
-        self.instance.vblock = unittest.mock.Mock()
-        self.instance.assertNormal = unittest.mock.Mock()
-        self.instance.assertInsert = unittest.mock.Mock()
-        self.instance.assertInternalNormal = unittest.mock.Mock()
-        self.instance.assertRInternalNormal = unittest.mock.Mock()
-        self.instance.assertVselect = unittest.mock.Mock()
-        self.instance.assertRVselect = unittest.mock.Mock()
-        self.instance.assertVisual = unittest.mock.Mock()
-        self.instance.assertVline = unittest.mock.Mock()
-        self.instance.assertVblock = unittest.mock.Mock()
+        self.instance.feed = unittest.mock.Mock()  # type: ignore[method-assign]
+        self.instance.normal = unittest.mock.Mock()  # type: ignore[method-assign]
+        self.instance.insert = unittest.mock.Mock()  # type: ignore[method-assign]
+        self.instance.internalNormal = unittest.mock.Mock()  # type: ignore[method-assign]
+        self.instance.rinternalNormal = unittest.mock.Mock()  # type: ignore[method-assign]
+        self.instance.vselect = unittest.mock.Mock()  # type: ignore[method-assign]
+        self.instance.rvselect = unittest.mock.Mock()  # type: ignore[method-assign]
+        self.instance.visual = unittest.mock.Mock()  # type: ignore[method-assign]
+        self.instance.vline = unittest.mock.Mock()  # type: ignore[method-assign]
+        self.instance.vblock = unittest.mock.Mock()  # type: ignore[method-assign]
+        self.instance.assertNormal = unittest.mock.Mock()  # type: ignore[method-assign]
+        self.instance.assertInsert = unittest.mock.Mock()  # type: ignore[method-assign]
+        self.instance.assertInternalNormal = unittest.mock.Mock()  # type: ignore[method-assign]
+        self.instance.assertRInternalNormal = unittest.mock.Mock()  # type: ignore[method-assign]
+        self.instance.assertVselect = unittest.mock.Mock()  # type: ignore[method-assign]
+        self.instance.assertRVselect = unittest.mock.Mock()  # type: ignore[method-assign]
+        self.instance.assertVisual = unittest.mock.Mock()  # type: ignore[method-assign]
+        self.instance.assertVline = unittest.mock.Mock()  # type: ignore[method-assign]
+        self.instance.assertVblock = unittest.mock.Mock()  # type: ignore[method-assign]
 
     def assert_insert(self, *args):
         self.instance.insert.assert_called_once_with(*args)

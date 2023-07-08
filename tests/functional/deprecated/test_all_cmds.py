@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -86,7 +86,7 @@ def _process_notation(text, sel_start_token='^', sel_end_token='$'):
             if start is None:
                 start = pos - deletions
             else:
-                selections.append(Region(start, pos - deletions))
+                selections.append(Region(start, pos - deletions))  # type: ignore[unreachable]
                 start = None
             deletions += 1
         elif c == sel_end_token:
@@ -202,11 +202,11 @@ class CommandTestCase(unittest.TestCase):
                 yield CommandTest.from_text(test, spec_path, i)
 
     def append(self, text):
-        self.view.run_command('append', {'characters': text})
+        self.view.run_command('append', {'characters': text})  # type: ignore[has-type]
 
     def reset(self):
         if getattr(self, "view", None):
-            self.view.close()
+            self.view.close()  # type: ignore[has-type]
 
         self.view = active_window().new_file()
         self.view.set_scratch(True)

@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -81,7 +81,7 @@ class FeedKeyHandler():
         self.check_user_mappings = check_user_mappings
         self.mode = get_mode(self.view)
         _log.info(
-            'key evt: %s %s count=%s eval=%s mappings=%s',
+            'key evt: %s/%s/%s eval=%s mappings=%s',
             key,
             self.mode,
             repeat_count,
@@ -110,9 +110,12 @@ class FeedKeyHandler():
 
     def _handle_escape(self) -> bool:
         if self.key.lower() == '<esc>':
-            if (self.mode == INSERT and
-                    self.view.is_auto_complete_visible() and
-                    not get_setting(self.view, 'auto_complete_exit_from_insert_mode')):
+            should_hide_auto_complete_on_escape = (
+                self.mode == INSERT and
+                self.view.is_auto_complete_visible() and
+                not get_setting(self.view, 'auto_complete_exit_from_insert_mode'))
+
+            if should_hide_auto_complete_on_escape:
                 self.view.window().run_command('hide_auto_complete')
             elif self.mode == SELECT:
                 self.view.run_command('nv_vi_select_big_j', {'mode': self.mode})

@@ -360,8 +360,9 @@ CTRL-W V
 
 TOGGLE SIDEBAR                            *toggle-sidebar* *nv-toggle-sidebar*
 
-To map a side bar toggle add a mapping: >
+Example mapping: >
 
+    let mapleader=,
     nnoremap <leader>d :Neovintageous action=toggle_side_bar<CR>
 
 Then add a key binding (this is for when the side bar has focus).
@@ -374,6 +375,26 @@ Menu → Preferences → Key Bindings: >
         "args": {"action": "toggle_side_bar"},
         "context": [{"key": "control", "operand": "sidebar_tree"}]
     }
+
+==============================================================================
+
+REVEAL SIDEBAR                            *reveal-sidebar* *nv-reveal-sidebar*
+
+Example mapping: >
+
+    let mapleader=,
+    nnoremap <leader>, :Neovintageous action=reveal_side_bar<CR>
+
+Then add a key binding (this is for when the side bar has focus).
+
+Menu → Preferences → Key Bindings: >
+
+    {
+        "keys": [",", ","],
+        "command": "focus_group",
+        "args": {"group": 0},
+        "context": [{"key": "control", "operand": "sidebar_tree"}]
+    },
 
 ==============================================================================
 

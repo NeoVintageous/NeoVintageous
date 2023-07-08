@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -46,7 +46,7 @@ def _mock_ex_copy(view, edit, address, line_range, *args, **kwargs):
     _mock['edit'] = edit
     _mock['address'] = address
     _mock['line_range'] = line_range
-    _mock['args'] = args
+    _mock['args'] = args  # type: ignore[assignment]
     _mock['kwargs'] = kwargs
 
 
@@ -54,44 +54,44 @@ def _mock_ex_help(window, subject=None, forceit=False, *args, **kwargs):
     _mock['window'] = window
     _mock['subject'] = subject
     _mock['forceit'] = forceit
-    _mock['args'] = args
+    _mock['args'] = args  # type: ignore[assignment]
     _mock['kwargs'] = kwargs
 
 
 def _mock_ex_with_edit(edit, *args, **kwargs):
     _mock['edit'] = edit
-    _mock['args'] = args
+    _mock['args'] = args  # type: ignore[assignment]
     _mock['kwargs'] = kwargs
 
 
 def _mock_ex_with_no_args(*args, **kwargs):
-    _mock['args'] = args
+    _mock['args'] = args  # type: ignore[assignment]
     _mock['kwargs'] = kwargs
 
 
 def _mock_ex_with_view(view, *args, **kwargs):
     _mock['view'] = view
-    _mock['args'] = args
+    _mock['args'] = args  # type: ignore[assignment]
     _mock['kwargs'] = kwargs
 
 
 def _mock_ex_with_view_and_edit(view, edit, *args, **kwargs):
     _mock['view'] = view
     _mock['edit'] = edit
-    _mock['args'] = args
+    _mock['args'] = args  # type: ignore[assignment]
     _mock['kwargs'] = kwargs
 
 
 def _mock_ex_with_window(window, *args, **kwargs):
     _mock['window'] = window
-    _mock['args'] = args
+    _mock['args'] = args  # type: ignore[assignment]
     _mock['kwargs'] = kwargs
 
 
 def _mock_ex_with_window_and_view(window, view, *args, **kwargs):
     _mock['window'] = window
     _mock['view'] = view
-    _mock['args'] = args
+    _mock['args'] = args  # type: ignore[assignment]
     _mock['kwargs'] = kwargs
 
 

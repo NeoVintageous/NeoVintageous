@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -71,3 +71,19 @@ class Test_s(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_s(self):
         self.eq('a|fizz|b', 's_s', 'i_a|b')
+
+    def test_s_to_default_register(self):
+        self.normal('f|izz\n')
+        self.feed('s')
+        self.assertInsert('f|zz\n')
+        self.assertRegister('"i')
+        self.assertRegister('-i')
+
+    def test_s_to_register(self):
+        self.normal('f|izz\n')
+        self.feed('"')
+        self.feed('a')
+        self.feed('s')
+        self.assertInsert('f|zz\n')
+        self.assertRegister('"i')
+        self.assertRegister('ai')

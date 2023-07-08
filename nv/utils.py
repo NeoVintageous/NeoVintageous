@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -14,7 +14,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -33,16 +33,20 @@
 
 from collections import Counter
 from contextlib import contextmanager
+from functools import wraps
 import os
 import re
 
+from sublime import FORCE_GROUP
 from sublime import Region
 from sublime import View
+from sublime import Window
 
 from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
+from NeoVintageous.nv.settings import get_cmdline_cwd
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import get_visual_block_direction
 from NeoVintageous.nv.settings import set_mode
@@ -56,6 +60,8 @@ from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import is_visual_mode
+from sublime import CLASS_WORD_END
+from sublime import CLASS_WORD_START
 
 
 def is_view(view) -> bool:
@@ -275,8 +281,6 @@ def get_file_type(view: View) -> str:
         return ''
 
     parts = os.path.splitext(file_name)
-    if not parts:
-        return ''
 
     ext = parts[1]
     if ext and ext[0] == '.':
@@ -331,6 +335,13 @@ def gluing_undo_groups(view):
 
     view.run_command('glue_marked_undo_groups')
     set_processing_notation(view, False)
+
+
+@contextmanager
+def glue_undo_groups(view):
+    view.run_command('mark_undo_groups_for_gluing')
+    yield
+    view.run_command('glue_marked_undo_groups')
 
 
 @contextmanager
@@ -397,24 +408,52 @@ def wrapscan(view, forward: bool = True):
                     break
 
 
-def extract_file_name(view):
-    sel = view.sel()[0]
-    line = view.substr(view.line(sel))
-    pos = len(line) - len(line.strip()) + 1
-    col = view.rowcol(sel.b)[1]
+def extract_file_name(view, encode_position: bool):
+    sel = view.sel()[-1]
 
-    if pos > col:
-        return
+    # Expand to non-whitespace under current cursor or after the cursor.
+    if sel.empty():
+        begin = sel.begin()
 
-    matches = re.findall('[^\\s]+', line)
-    if matches:
-        for match in matches:
-            pos += len(match)
-            if pos >= col:
-                if not re.match('^[a-zA-Z0-9\\._/-]+$', match):
-                    return
+        if view.substr(begin) == ' ':
+            begin = next_non_blank(view, begin)
 
-                return match
+        sel = view.expand_by_class(
+            begin,
+            CLASS_WORD_START | CLASS_WORD_END,
+            separators=" ")
+
+    text = view.substr(sel)
+
+    # For Unix the '~' character is expanded, like in "~user/file".
+    # Environment variables are expanded too |expand-env|.
+    text = expand_path(text)
+
+    # Trailing punctuation characters ".,:;!" are ignored.
+    text = text.rstrip('.,:;!')
+
+    match = re.match(
+        '^\\s*'
+        '(?:[a-z]+\\:)?'                    # strip protocol e.g. "open:"
+        '(?P<path>[a-zA-Z0-9\\.\\\\_/-]+)'  # path
+        '(?:(?:\\:|@|\\()(?P<row>\\d+))?'   # row
+        '(?:\\:(?P<col>\\d+))?',            # col
+        text
+    )
+
+    if match:
+        path = match.group('path')
+        if encode_position:
+            row = match.group('row')
+            col = match.group('col')
+
+            return (
+                path,
+                int(row) if row else row,
+                int(col) if col else col
+            )
+
+        return (path, None, None)
 
 
 def extract_url(view):
@@ -561,7 +600,7 @@ def scroll_viewport_position(view, number_of_scroll_lines: int, forward: bool = 
     else:
         viewport_position = (x, y - y_addend)
 
-    view.set_viewport_position(viewport_position, animate=False)
+    view.set_viewport_position(viewport_position)
 
 
 def get_option_scroll(view) -> int:
@@ -930,7 +969,7 @@ class VisualBlockSelection():
         else:
             for line in lines:
                 # If the line size is less than COL-T, in a REVERSE selection,
-                # then the line is ommited from a REVERSE Visual block.
+                # then the line is omitted from a REVERSE Visual block.
                 if line.size() >= col_t:
                     new_line = Region(
                         min(line.a + col_a + 1, line.b + 1),
@@ -953,10 +992,11 @@ class VisualBlockSelection():
         if visual_block:
             set_selection(self.view, visual_block)
 
-    def transform_begin(self):
+    # Reduce to single point at beginning of visual block.
+    def reduce_to_begin(self):
         begin = self.begin()
         self.view.sel().clear()
-        self.view.sel().add(begin)
+        self.view.sel().add(Region(begin, begin + 1))
 
     def transform_reverse(self):
         sels = list(self.view.sel())
@@ -990,15 +1030,17 @@ class VisualBlockSelection():
         return vb
 
 
-def resolve_visual_block_target(view, target, count: int) -> None:
+def resolve_visual_block_target(view, target, count: int = 1) -> None:
     visual_block = VisualBlockSelection(view)
-    visual_block.transform_target(
-        target(view, visual_block.insertion_point_b(), count)
-    )
+
+    if not isinstance(target, int):
+        target = target(view, visual_block.insertion_point_b(), count)
+
+    visual_block.transform_target(target)
 
 
 def resolve_visual_block_begin(view) -> None:
-    VisualBlockSelection(view).transform_begin()
+    VisualBlockSelection(view).reduce_to_begin()
 
 
 def resolve_visual_block_reverse(view) -> None:
@@ -1270,3 +1312,92 @@ def view_count_excluding_help_views(window) -> int:
 def requires_motion(motion) -> None:
     if motion is None:
         raise ValueError('motion data required')
+
+
+def find_next_num(view) -> list:
+    regions = list(view.sel())
+
+    # Modify selections that are inside a number already.
+    for i, r in enumerate(regions):
+        a = r.b
+
+        while view.substr(a).isdigit():
+            a -= 1
+
+        if a != r.b:
+            a += 1
+
+        regions[i] = Region(a)
+
+    lines = [view.substr(Region(r.b, view.line(r.b).b)) for r in regions]
+    number_pattern = re.compile('\\d')
+    matches = [number_pattern.search(text) for text in lines]
+    if all(matches):
+        return [(reg.b + ma.start()) for (reg, ma) in zip(regions, matches)]  # type: ignore[union-attr]
+
+    return []
+
+
+def find_symbol(view, r, globally=False):
+    query = view.substr(view.word(r))
+    fname = view.file_name()
+    if not fname:
+        return
+
+    locations = view.window().lookup_symbol_in_index(query)
+    if not locations:
+        return
+
+    fname = fname.replace('\\', '/')
+
+    try:
+        if not globally:
+            location = [hit[2] for hit in locations if fname.endswith(hit[1])][0]
+            return location[0] - 1, location[1] - 1
+        else:
+            # TODO: There might be many symbols with the same name.
+            return locations[0]
+    except IndexError:
+        return
+
+
+def expand_path(path: str) -> str:
+    expanded = os.path.expanduser(path)
+    expanded = os.path.expandvars(expanded)
+
+    return expanded
+
+
+def expand_to_realpath(path: str) -> str:
+    return os.path.realpath(expand_path(path))
+
+
+def current_working_directory(f, *args, **kwargs):
+    @wraps(f)
+    def init(*args, **kwargs) -> None:
+        try:
+            original = os.getcwd()
+            cwd = get_cmdline_cwd()
+            if cwd and os.path.isdir(cwd):
+                os.chdir(cwd)
+            f(*args, **kwargs)
+        finally:
+            if original:
+                os.chdir(original)
+    return init
+
+
+@current_working_directory
+def open_file(window: Window, file: str) -> None:
+    file = expand_path(file)
+    if not os.path.isabs(file):
+        file = os.path.join(os.getcwd(), file)
+
+    window.open_file(file, FORCE_GROUP)
+
+
+def create_pane(window, direction: str, file: str = None) -> None:
+    # Uses Origami command.
+    window.run_command('create_pane', {'direction': direction})
+    if file:
+        open_file(window, file)

@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -24,7 +24,7 @@ class Test_ex_registers(unittest.ResetRegisters, unittest.ResetCommandLineOutput
         self.normal('fi|zz')
         self.feed(':registers')
         output = self.commandLineOutput()
-        self.assertTrue(output.startswith('--- Registers ---'))
+        self.assertTrue(output.startswith('Name Content'))
         self.assertIn('\n"*   \n', output)
         self.assertIn('\n"+   \n', output)
         self.assertTrue(output.endswith('Press ENTER to continue'))

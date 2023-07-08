@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -347,7 +347,7 @@ class TestCmdlineEditing(unittest.FunctionalTestCase):
         self.feed('<down>')
         self.assertInsert(':|')
         self.feed('<down>')
-        self.assertBell()
+        self.assertBell(count=2)
         self.insert('/|')
         self.feed('<C-p>')
         self.assertInsert('/pattern1|')
@@ -358,13 +358,13 @@ class TestCmdlineEditing(unittest.FunctionalTestCase):
         self.feed('<C-n>')
         self.assertInsert('/|')
 
-    @unittest.mock_run_commands('hide_panel')
+    @unittest.mock_commands('hide_panel')
     def test_c_ctrl_c(self):
         self.normal(':abc|')
         self.feed('<C-c>')
         self.assertRunCommand('hide_panel', {'cancel': True})
 
-    @unittest.mock_run_commands('hide_panel')
+    @unittest.mock_commands('hide_panel')
     def test_c_ctrl_bracket(self):
         self.normal(':abc|')
         self.feed('<C-[>')

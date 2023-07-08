@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -26,7 +26,7 @@ class TestCmdline(unittest.ViewTestCase):
         super().setUp()
         self.window = unittest.mock.Mock()
         self.window.show_input_panel.return_value = self.view
-        self.view.window = lambda: self.window
+        self.view.window = lambda: self.window  # type: ignore[method-assign]
         self.on_done = unittest.mock.Mock()
         self.on_change = unittest.mock.Mock()
         self.on_cancel = unittest.mock.Mock()

@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -20,7 +20,7 @@ from NeoVintageous.tests import unittest
 
 class Test_ex_cquit(unittest.FunctionalTestCase):
 
-    @unittest.mock_run_commands('exit')
+    @unittest.mock_commands('exit')
     def test_cquit(self):
         self.eq('f|izz', ':cquit', 'f|izz')
         self.assertRunCommand('exit')

@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -294,39 +294,41 @@ class TestUnimpairedCommands(unittest.FunctionalTestCase):
             444
             |"""))
 
-    @unittest.mock_run_commands('sublime_linter_goto_error')
+    @unittest.mock_commands('sublime_linter_goto_error')
     def test_n_goto_prev_error(self):
         self.eq('fi|zz', 'n_[l', 'fi|zz')
         self.assertRunCommand('sublime_linter_goto_error', {'direction': 'previous', 'count': 1})
         self.eq('fi|zz', 'n_3[l', 'fi|zz')
         self.assertRunCommand('sublime_linter_goto_error', {'direction': 'previous', 'count': 3})
 
-    @unittest.mock_run_commands('sublime_linter_goto_error')
+    @unittest.mock_commands('sublime_linter_goto_error')
     def test_n_goto_next_error(self):
         self.eq('fi|zz', 'n_]l', 'fi|zz')
         self.assertRunCommand('sublime_linter_goto_error', {'direction': 'next', 'count': 1})
         self.eq('fi|zz', 'n_5]l', 'fi|zz')
         self.assertRunCommand('sublime_linter_goto_error', {'direction': 'next', 'count': 5})
 
-    @unittest.mock_run_commands('prev_view')
+    @unittest.mock_commands('prev_view')
     def test_n_bprevious(self):
         self.eq('f|izz', 'n_[b', 'f|izz')
         self.assertRunCommand('prev_view')
 
-    @unittest.mock_run_commands('next_view')
+    @unittest.mock_commands('next_view')
     def test_n_bnext(self):
         self.eq('f|izz', 'n_]b', 'f|izz')
         self.assertRunCommand('next_view')
 
-    @unittest.mock_run_commands('select_by_index')
+    @unittest.mock_commands('select_by_index')
     def test_n_bfirst(self):
         self.eq('f|izz', 'n_[B', 'f|izz')
         self.assertRunCommand('select_by_index', {'index': 0})
 
-    @unittest.mock_run_commands('select_by_index')
+    @unittest.mock_commands('select_by_index')
     def test_n_blast(self):
         self.eq('f|izz', 'n_]B', 'f|izz')
-        self.assertRunCommand('select_by_index', {'index': len(self.view.window().views_in_group(self.view.window().num_groups() - 1)) - 1})  # noqa: E501
+        self.assertRunCommand('select_by_index', {
+            'index': len(self.view.window().views_in_group(self.view.window().num_groups() - 1)) - 1  # type: ignore[union-attr] # noqa: E501
+        })
 
     @unittest.mock.patch('NeoVintageous.nv.plugin_unimpaired.window_tab_control')
     def test_n_tprevious(self, window_tab_control):
@@ -338,31 +340,33 @@ class TestUnimpairedCommands(unittest.FunctionalTestCase):
         self.eq('f|izz', 'n_]t', 'f|izz')
         window_tab_control.assert_called_once_with(self.view.window(), 'next', 1)
 
-    @unittest.mock_run_commands('select_by_index')
+    @unittest.mock_commands('select_by_index')
     def test_n_tfirst(self):
         self.eq('f|izz', 'n_[T', 'f|izz')
         self.assertRunCommand('select_by_index', {'index': 0})
 
-    @unittest.mock_run_commands('select_by_index')
+    @unittest.mock_commands('select_by_index')
     def test_n_tlast(self):
         self.eq('f|izz', 'n_]T', 'f|izz')
-        self.assertRunCommand('select_by_index', {'index': len(self.view.window().views_in_group(self.view.window().active_group())) - 1})  # noqa: E501
+        self.assertRunCommand('select_by_index', {
+            'index': len(self.view.window().views_in_group(self.view.window().active_group())) - 1  # type: ignore[union-attr] # noqa: E501
+        })
 
 
 class TestUnimpairedToggles(unittest.FunctionalTestCase):
 
     def setUp(self):
         super().setUp()
-        self.is_menu_visible = self.view.window().is_menu_visible()
-        self.is_minimap_visible = self.view.window().is_minimap_visible()
-        self.is_sidebar_visible = self.view.window().is_sidebar_visible()
-        self.is_status_bar_visible = self.view.window().is_status_bar_visible()
+        self.is_menu_visible = self.view.window().is_menu_visible()  # type: ignore[union-attr]
+        self.is_minimap_visible = self.view.window().is_minimap_visible()  # type: ignore[union-attr]
+        self.is_sidebar_visible = self.view.window().is_sidebar_visible()  # type: ignore[union-attr]
+        self.is_status_bar_visible = self.view.window().is_status_bar_visible()  # type: ignore[union-attr]
 
     def tearDown(self):
-        self.view.window().set_menu_visible(self.is_menu_visible)
-        self.view.window().set_minimap_visible(self.is_minimap_visible)
-        self.view.window().set_sidebar_visible(self.is_sidebar_visible)
-        self.view.window().set_status_bar_visible(self.is_status_bar_visible)
+        self.view.window().set_menu_visible(self.is_menu_visible)  # type: ignore[union-attr]
+        self.view.window().set_minimap_visible(self.is_minimap_visible)  # type: ignore[union-attr]
+        self.view.window().set_sidebar_visible(self.is_sidebar_visible)  # type: ignore[union-attr]
+        self.view.window().set_status_bar_visible(self.is_status_bar_visible)  # type: ignore[union-attr]
         super().tearDown()
 
     def test_toggle_basic_options(self):

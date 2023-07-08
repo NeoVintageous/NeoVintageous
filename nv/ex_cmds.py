@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from functools import wraps
 import inspect
 import logging
 import os
@@ -25,8 +24,6 @@ import traceback
 
 from sublime import DIALOG_CANCEL
 from sublime import DIALOG_YES
-from sublime import ENCODED_POSITION
-from sublime import FORCE_GROUP
 from sublime import Region
 from sublime import set_timeout
 from sublime import yes_no_cancel_dialog
@@ -42,6 +39,7 @@ from NeoVintageous.nv.goto import goto_help_subject
 from NeoVintageous.nv.history import history
 from NeoVintageous.nv.mappings import mappings_add
 from NeoVintageous.nv.mappings import mappings_remove
+from NeoVintageous.nv.marks import get_marks
 from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.options import set_option
 from NeoVintageous.nv.options import toggle_option
@@ -53,6 +51,7 @@ from NeoVintageous.nv.polyfill import reload_syntax
 from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
+from NeoVintageous.nv.polyfill import truncate
 from NeoVintageous.nv.polyfill import view_find_all_in_range
 from NeoVintageous.nv.polyfill import view_to_region
 from NeoVintageous.nv.registers import registers_get_all
@@ -75,7 +74,11 @@ from NeoVintageous.nv.settings import set_last_substitute_string
 from NeoVintageous.nv.settings import set_setting
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import adding_regions
+from NeoVintageous.nv.utils import current_working_directory
+from NeoVintageous.nv.utils import expand_path
+from NeoVintageous.nv.utils import expand_to_realpath
 from NeoVintageous.nv.utils import get_line_count
+from NeoVintageous.nv.utils import glue_undo_groups
 from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import row_at
@@ -89,6 +92,7 @@ from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import status_message
+from NeoVintageous.nv.window import vnew
 from NeoVintageous.nv.window import window_buffer_control
 from NeoVintageous.nv.window import window_control
 from NeoVintageous.nv.window import window_quit_view
@@ -97,33 +101,6 @@ from NeoVintageous.nv.window import window_tab_control
 
 
 _log = logging.getLogger(__name__)
-
-
-def _init_cwd(f, *args, **kwargs):
-    @wraps(f)
-    def inner(*args, **kwargs) -> None:
-        view = kwargs.get('view')
-        if not view:
-            raise RuntimeError('view is required')
-
-        original_cwd = os.getcwd()
-        _log.debug('original cwd: %s', original_cwd)
-
-        try:
-            cmdline_cwd = get_cmdline_cwd()
-            _log.debug('cmdline cwd: %s', cmdline_cwd)
-
-            if cmdline_cwd and os.path.isdir(cmdline_cwd):
-                _log.debug('changing cwd to %s from %s', cmdline_cwd, original_cwd)
-                os.chdir(cmdline_cwd)
-
-            f(*args, **kwargs)
-        finally:
-            if os.path.isdir(original_cwd):
-                _log.debug('resetting cwd to %s', original_cwd)
-                os.chdir(original_cwd)
-
-    return inner
 
 
 def ex_bfirst(window, **kwargs) -> None:
@@ -185,14 +162,7 @@ def ex_buffers(window, **kwargs) -> None:
     output.show()
 
 
-def _expand_to_realpath(path: str) -> str:
-    expanded_user = os.path.expanduser(path)
-    expanded_vars = os.path.expandvars(expanded_user)
-
-    return os.path.realpath(expanded_vars)
-
-
-@_init_cwd
+@current_working_directory
 def ex_cd(view, path=None, **kwargs) -> None:
     if not path:
         path = os.path.expanduser('~')
@@ -201,7 +171,7 @@ def ex_cd(view, path=None, **kwargs) -> None:
         if fname:
             path = os.path.dirname(fname)
     else:
-        path = _expand_to_realpath(path)
+        path = expand_to_realpath(path)
 
     if not os.path.isdir(path):
         return status_message("E344: Can't find directory \"%s\" in cdpath" % path)
@@ -303,10 +273,10 @@ def ex_double_ampersand(view, edit, flags, count: int, line_range: RangeNode, **
     ex_substitute(view=view, edit=edit, flags=flags, count=count, line_range=line_range, **kwargs)
 
 
-@_init_cwd
+@current_working_directory
 def ex_edit(window, view, file_name: str = None, forceit: bool = False, **kwargs) -> None:
     if file_name:
-        file_name = os.path.expanduser(os.path.expandvars(file_name))
+        file_name = expand_path(file_name)
 
         if view.is_dirty() and not forceit:
             return status_message("E37: No write since last change")
@@ -482,9 +452,8 @@ def ex_move(view, edit, line_range: RangeNode, address: str = None, **kwargs) ->
     enter_normal_mode(view)
 
 
-@_init_cwd
-def ex_new(window, **kwargs) -> None:
-    window.run_command('new_file')
+def ex_new(window, file: str = None, **kwargs) -> None:
+    window_control(window, 'n', file=file)
 
 
 def ex_nnoremap(lhs: str = None, rhs: str = None, **kwargs) -> None:
@@ -589,7 +558,7 @@ def ex_print(window, view, line_range: RangeNode, flags: list = None, global_lin
         display.run_command('append', {'characters': characters})
 
 
-@_init_cwd
+@current_working_directory
 def ex_pwd(**kwargs) -> None:
     status_message(os.getcwd())
 
@@ -602,7 +571,7 @@ def ex_quit(**kwargs) -> None:
     window_quit_view(**kwargs)
 
 
-@_init_cwd
+@current_working_directory
 def ex_read(view, edit, line_range: RangeNode, cmd: str = None, file_name: str = None, **kwargs) -> None:
     if cmd:
         content = shell.read(view, cmd).strip()
@@ -617,13 +586,22 @@ def ex_read(view, edit, line_range: RangeNode, cmd: str = None, file_name: str =
         ui_bell(':read [file] is not yet implemeneted; please open an issue')
 
 
+def ex_marks(view, **kwargs) -> None:
+    output = CmdlineOutput(view.window())
+    output.write('mark line  col file/text\n')
+
+    for name, info in get_marks(view).items():
+        output.write('{:^4} {:>4} {:>4} {:>10}\n'.format(
+            name,
+            info['line_number'],
+            info['col'],
+            info['file_or_text'],
+        ))
+
+    output.show()
+
+
 def ex_registers(window, view, **kwargs) -> None:
-    def _truncate(string: str, truncate_at: int) -> str:
-        if len(string) > truncate_at:
-            return string[0:truncate_at] + ' ...'
-
-        return string
-
     items = []
     registers = registers_get_all(view).items()
     for k, v in registers:
@@ -643,11 +621,11 @@ def ex_registers(window, view, **kwargs) -> None:
                 multiple_values.append(part_value)
 
             # ^V indicates a visual block
-            items.append('"{}   {}'.format(k, _truncate('^V'.join(multiple_values), 120)))
+            items.append('"{}   {}'.format(k, truncate('^V'.join(multiple_values), 120)))
 
     items.sort()
-    items.insert(0, '--- Registers ---')
     output = CmdlineOutput(window)
+    output.write('Name Content\n')
     output.write("\n".join(items))
     output.show()
 
@@ -687,7 +665,7 @@ def ex_setlocal(**kwargs) -> None:
     ex_set(**kwargs)
 
 
-@_init_cwd
+@current_working_directory
 def ex_shell(view, **kwargs) -> None:
     shell.open(view)
 
@@ -701,7 +679,7 @@ def ex_silent(window, view, command: str = None, **kwargs) -> None:
     reset_setting(view, 'shell_silent')
 
 
-@_init_cwd
+@current_working_directory
 def ex_shell_out(view, edit, cmd: str, line_range: RangeNode, **kwargs) -> None:
     if cmd == '!':
         cmd = get_ex_shell_last_command()
@@ -745,19 +723,18 @@ def ex_snoremap(lhs: str = None, rhs: str = None, **kwargs) -> None:
 def ex_sort(view, options: str = '', **kwargs) -> None:
     case_sensitive = True if 'i' not in options else False
 
-    view.run_command('mark_undo_groups_for_gluing')
-    view.run_command('sort_lines', {'case_sensitive': case_sensitive})
+    with glue_undo_groups(view):
+        view.run_command('sort_lines', {'case_sensitive': case_sensitive})
 
-    if 'u' in options:
-        view.run_command('permute_lines', {'operation': 'unique'})
+        if 'u' in options:
+            view.run_command('permute_lines', {'operation': 'unique'})
 
-    def f(view, s: Region) -> Region:
-        return Region(next_non_blank(view, s.begin()))
+        def f(view, s: Region) -> Region:
+            return Region(next_non_blank(view, s.begin()))
 
-    regions_transformer(view, f)
-    enter_normal_mode(view)
-    view.show(view.sel()[-1], False)
-    view.run_command('glue_marked_undo_groups')
+        regions_transformer(view, f)
+        enter_normal_mode(view)
+        view.show(view.sel()[-1], False)
 
 
 def ex_split(window, file: str = None, **kwargs) -> None:
@@ -788,7 +765,8 @@ def ex_substitute(view, edit, line_range: RangeNode,
         return status_message('E33: No previous substitute regular expression')
 
     if replacement is None:
-        return status_message('No substitute replacement string')
+        status_message('No substitute replacement string')  # type: ignore[unreachable]
+        return
 
     set_last_substitute_search_pattern(pattern)
     set_last_substitute_string(replacement)
@@ -906,6 +884,10 @@ def ex_tabnext(window, **kwargs) -> None:
     window_tab_control(window, action='next')
 
 
+def ex_tabnew(window, **kwargs) -> None:
+    window_tab_control(window, action='new')
+
+
 def ex_tabonly(window, **kwargs) -> None:
     window_tab_control(window, action='only')
 
@@ -951,6 +933,10 @@ def ex_unvsplit(window, **kwargs) -> None:
     window.run_command('set_layout', layout_data[groups - 1])
 
 
+def ex_vnew(window, file: str = None, **kwargs) -> None:
+    vnew(window, file=file)
+
+
 def ex_vnoremap(lhs: str = None, rhs: str = None, **kwargs) -> None:
     if not (lhs and rhs):
         return status_message('Listing key mappings is not implemented')
@@ -960,53 +946,8 @@ def ex_vnoremap(lhs: str = None, rhs: str = None, **kwargs) -> None:
     mappings_add(VISUAL_LINE, lhs, rhs)
 
 
-# TODO Refactor like ExSplit
-def ex_vsplit(window, view, file: str = None, **kwargs) -> None:
-    max_splits = 4
-
-    layout_data = {
-        1: {"cells": [[0, 0, 1, 1]],
-            "rows": [0.0, 1.0],
-            "cols": [0.0, 1.0]},
-        2: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1]],
-            "rows": [0.0, 1.0],
-            "cols": [0.0, 0.5, 1.0]},
-        3: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1]],
-            "rows": [0.0, 1.0],
-            "cols": [0.0, 0.33, 0.66, 1.0]},
-        4: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1], [3, 0, 4, 1]],
-            "rows": [0.0, 1.0],
-            "cols": [0.0, 0.25, 0.50, 0.75, 1.0]},
-    }
-
-    groups = window.num_groups()
-    if groups >= max_splits:
-        return status_message('Can\'t create more groups')
-
-    old_view = view
-    pos = ''
-    current_file_name = None
-    if old_view and old_view.file_name():
-        pos = ':{0}:{1}'.format(*old_view.rowcol(old_view.sel()[0].b))
-        current_file_name = old_view.file_name() + pos
-
-    window.run_command('set_layout', layout_data[groups + 1])
-
-    def open_file(window, file: str) -> None:
-        window.open_file(file, group=(window.num_groups() - 1), flags=(FORCE_GROUP | ENCODED_POSITION))
-
-    if file:
-        existing = window.find_open_file(file)
-        pos = ''
-        if existing:
-            pos = ':{0}:{1}'.format(*existing.rowcol(existing.sel()[0].b))
-
-        return open_file(window, file + pos)
-
-    if current_file_name:
-        open_file(window, current_file_name)
-    else:
-        window.new_file()
+def ex_vsplit(window, file: str = None, **kwargs) -> None:
+    window_control(window, 'v', file=file)
 
 
 def ex_vunmap(lhs: str, **kwargs) -> None:
@@ -1024,7 +965,7 @@ def ex_wall(window, **kwargs) -> None:
         ex_write(window=window, view=view, **kwargs)
 
 
-@_init_cwd
+@current_working_directory
 def ex_wq(**kwargs) -> None:
     ex_write(**kwargs)
     ex_quit(**kwargs)
@@ -1035,7 +976,7 @@ def ex_wqall(**kwargs) -> None:
     ex_qall(**kwargs)
 
 
-@_init_cwd
+@current_working_directory
 def ex_write(window, view, file_name: str = None, line_range: RangeNode = None, forceit: bool = False, **kwargs) -> None:  # noqa: E501
     if kwargs.get('++') or kwargs.get('cmd'):
         status_message('argument not implemented')
@@ -1079,7 +1020,7 @@ def _do_write_file(window, view, file_name: str, forceit: bool, line_range: Rang
             return
 
     try:
-        file_path = os.path.abspath(os.path.expandvars(os.path.expanduser(file_name)))
+        file_path = os.path.abspath(expand_path(file_name))
         with open(file_path, 'wt') as f:
             f.write(_get_write_buffer(view, line_range))
 

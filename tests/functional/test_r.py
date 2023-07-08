@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -37,3 +37,17 @@ class Test_r(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('ab|12\n34\n5\n|cd', 'v_rx', 'n_ab|xx\nxx\nx\ncd')
         self.eq('r_ab|12\n34\n5\n|cd', 'v_rx', 'n_ab|xx\nxx\nx\ncd')
         self.eq('fi|zz bu|zz', 'v_r<cr>', 'n_fi\n|\n\n\n\nzz')
+
+    def test_V(self):
+        self.eq('y\n|fizz\n|y', 'V_rx', 'n_y\n|xxxx\ny')
+
+    def test_b(self):
+        self.eq('y\nf|iz|z\nb|uz|z\ny', 'b_rx', 'n_y\nfxxz\nb|xxz\ny')
+
+    @unittest.mock_bell()
+    def test_operator_mode_is_noop(self):
+        self.normal('|a')
+        self.feed('d')
+        self.feed('r')
+        self.assertNormal('|a')
+        self.assertBell()

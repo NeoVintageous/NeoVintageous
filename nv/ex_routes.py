@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -16,6 +16,7 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 from collections import OrderedDict
+from string import ascii_letters
 
 from NeoVintageous.nv.ex.tokens import TokenCommand
 
@@ -41,11 +42,13 @@ def _create_word_route(state, name: str, word: str, forcable: bool = False, **kw
 def _create_map_route(state, name: str) -> TokenCommand:
     command = TokenCommand(name)
 
-    m = state.match(r'\s*(?P<lhs>.+?)\s+(?P<rhs>.+?)\s*$')
-    if m:
-        command.params.update(m.groupdict())
+    return _resolve(state, command, r'\s*(?P<lhs>.+?)\s+(?P<rhs>.+?)\s*$')
 
-    return command
+
+def _create_file_route(state, name: str) -> TokenCommand:
+    command = _create_route(state, name)
+
+    return _resolve(state, command, '\\s+(?P<file>.+)')
 
 
 def _resolve(state, command: TokenCommand, pattern: str) -> TokenCommand:
@@ -79,9 +82,7 @@ def _ex_route_browse(state) -> TokenCommand:
 def _ex_route_buffer(state) -> TokenCommand:
     command = _create_route(state, 'buffer', forcable=True)
 
-    _resolve(state, command, '\\s*(?P<index>[0-9]+)\\s*$')
-
-    return command
+    return _resolve(state, command, '\\s*(?P<index>[0-9]+)\\s*$')
 
 
 def _ex_route_buffers(state) -> TokenCommand:
@@ -222,7 +223,7 @@ def _ex_route_global(state) -> TokenCommand:
     command = _create_route(state, 'global', forcable=True, addressable=True)
 
     sep = state.consume()
-    if sep in tuple('\\"|abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'):
+    if sep in tuple('\\"|' + ascii_letters):
         raise ValueError('bad separator')
 
     state.ignore()
@@ -271,9 +272,8 @@ def _ex_route_inoremap(state) -> TokenCommand:
 
 def _ex_route_history(state) -> TokenCommand:
     command = _create_route(state, 'history')
-    _resolve(state, command, r'\s*(?P<name>.+)')
 
-    return command
+    return _resolve(state, command, r'\s*(?P<name>.+)')
 
 
 def _ex_route_let(state) -> TokenCommand:
@@ -291,6 +291,10 @@ def _ex_route_let(state) -> TokenCommand:
     return command
 
 
+def _ex_route_marks(state) -> TokenCommand:
+    return _create_route(state, 'marks')
+
+
 def _ex_route_move(state) -> TokenCommand:
     command = _create_route(state, 'move', addressable=True)
 
@@ -305,7 +309,7 @@ def _ex_route_move(state) -> TokenCommand:
 
 
 def _ex_route_new(state) -> TokenCommand:
-    return _create_route(state, 'new')
+    return _create_file_route(state, 'new')
 
 
 def _ex_route_nnoremap(state) -> TokenCommand:
@@ -457,9 +461,8 @@ def _ex_route_sunmap(state) -> TokenCommand:
 
 def _ex_route_sort(state) -> TokenCommand:
     command = _create_route(state, 'sort', addressable=True)
-    _resolve(state, command, r'\s*(?P<options>[iu]+)')
 
-    return command
+    return _resolve(state, command, r'\s*(?P<options>[iu]+)')
 
 
 def _ex_route_spellgood(state) -> TokenCommand:
@@ -471,10 +474,7 @@ def _ex_route_spellundo(state) -> TokenCommand:
 
 
 def _ex_route_split(state) -> TokenCommand:
-    command = _create_route(state, 'split')
-    _resolve(state, command, r'\s+(?P<file>.+)')
-
-    return command
+    return _create_file_route(state, 'split')
 
 
 def _ex_route_substitute(state) -> TokenCommand:
@@ -561,6 +561,10 @@ def _ex_route_tabnext(state) -> TokenCommand:
     return _create_route(state, 'tabnext', forcable=True)
 
 
+def _ex_route_tabnew(state) -> TokenCommand:
+    return _create_route(state, 'tabnew')
+
+
 def _ex_route_tabonly(state) -> TokenCommand:
     return _create_route(state, 'tabonly', forcable=True)
 
@@ -577,15 +581,16 @@ def _ex_route_unvsplit(state) -> TokenCommand:
     return _create_route(state, 'unvsplit')
 
 
+def _ex_route_vnew(state) -> TokenCommand:
+    return _create_file_route(state, 'vnew')
+
+
 def _ex_route_vnoremap(state) -> TokenCommand:
     return _create_map_route(state, 'vnoremap')
 
 
 def _ex_route_vsplit(state) -> TokenCommand:
-    command = _create_route(state, 'vsplit')
-    _resolve(state, command, r'\s+(?P<file>.+)')
-
-    return command
+    return _create_file_route(state, 'vsplit')
 
 
 def _ex_route_vunmap(state) -> TokenCommand:
@@ -744,6 +749,7 @@ ex_routes[r'his(?:tory)?'] = _ex_route_history
 ex_routes[r'h(?:elp)?'] = _ex_route_help
 ex_routes[r'ino(?:remap)?'] = _ex_route_inoremap
 ex_routes[r'let\s'] = _ex_route_let
+ex_routes[r'marks'] = _ex_route_marks
 ex_routes[r'm(?:ove)?(?=[^a]|$)'] = _ex_route_move
 ex_routes[r'new'] = _ex_route_new
 ex_routes[r'nn(?:oremap)?'] = _ex_route_nnoremap
@@ -774,6 +780,7 @@ ex_routes[r'sunm(?:ap)?'] = _ex_route_sunmap
 ex_routes[r'tabc(?:lose)?'] = _ex_route_tabclose
 ex_routes[r'tabfir(?:st)?'] = _ex_route_tabfirst
 ex_routes[r'tabl(?:ast)?'] = _ex_route_tablast
+ex_routes[r'tab(?:new|e(?:dit)?)'] = _ex_route_tabnew
 ex_routes[r'tabn(?:ext)?'] = _ex_route_tabnext
 ex_routes[r'tabN(?:ext)?'] = _ex_route_tabprevious
 ex_routes[r'tabo(?:nly)?'] = _ex_route_tabonly
@@ -781,6 +788,7 @@ ex_routes[r'tabp(?:revious)?'] = _ex_route_tabprevious
 ex_routes[r'tabr(?:ewind)?'] = _ex_route_tabfirst
 ex_routes[r'unm(?:ap)?'] = _ex_route_unmap
 ex_routes[r'unvsplit'] = _ex_route_unvsplit
+ex_routes[r'vne(?:w)?'] = _ex_route_vnew
 ex_routes[r'vn(?:oremap)?'] = _ex_route_vnoremap
 ex_routes[r'vs(?:plit)?'] = _ex_route_vsplit
 ex_routes[r'vu(?:nmap)?'] = _ex_route_vunmap

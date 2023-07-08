@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -21,6 +21,7 @@ from NeoVintageous.nv.plugin import register
 from NeoVintageous.nv.settings import set_reset_during_init
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
+from NeoVintageous.nv.vi.cmd_base import translate_action
 from NeoVintageous.nv.vim import ACTION_MODES
 from NeoVintageous.nv.vim import INSERT
 
@@ -30,30 +31,18 @@ __all__ = ()
 
 @register(seqs.CTRL_ALT_P, ACTION_MODES)
 class StQuickSwitchProject(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'prompt_select_workspace',
-            'action_args': {}
-        }
+        self.command = 'prompt_select_workspace'
 
 
 @register(seqs.CTRL_0, ACTION_MODES)
 class StFocusSideBar(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'focus_side_bar',
-            'action_args': {}
-        }
+        self.command = 'focus_side_bar'
 
 
 @register(seqs.CTRL_1, ACTION_MODES, group=0)
@@ -73,309 +62,194 @@ class StFocusGroup(ViOperatorDef):
         self.scroll_into_view = True
 
     def translate(self, view):
-        return {
-            'action': 'focus_group',
-            'action_args': {
-                'group': self._group
-            }
-        }
+        return translate_action(view, 'focus_group', {
+            'group': self._group
+        })
 
 
 @register(seqs.CTRL_K_CTRL_B, ACTION_MODES)
 class StToggleSideBar(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'toggle_side_bar',
-            'action_args': {}
-        }
+        self.command = 'toggle_side_bar'
 
 
 @register(seqs.COMMAND_P, ACTION_MODES)
 @register(seqs.CTRL_P, ACTION_MODES)
 class StGotoAnything(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'show_overlay',
-            'action_args': {
-                'overlay': 'goto',
-                'show_files': True
-            }
+        self.command = 'show_overlay'
+        self.command_args = {
+            'overlay': 'goto',
+            'show_files': True
         }
 
 
 @register(seqs.COMMAND_BIG_B, ACTION_MODES)
 @register(seqs.CTRL_BIG_B, ACTION_MODES)
 class StBuildWith(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'build',
-            'action_args': {
-                'select': True
-            }
+        self.command = 'build'
+        self.command_args = {
+            'select': True
         }
 
 
 @register(seqs.COMMAND_BIG_F, ACTION_MODES)
 @register(seqs.CTRL_BIG_F, ACTION_MODES)
 class StFindInFiles(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'show_panel',
-            'action_args': {
-                'panel': 'find_in_files'
-            }
+        self.command = 'show_panel'
+        self.command_args = {
+            'panel': 'find_in_files'
         }
 
 
 @register(seqs.COMMAND_BIG_P, ACTION_MODES + (INSERT,))
 @register(seqs.CTRL_BIG_P, ACTION_MODES + (INSERT,))
 class StCommandPalette(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
 
     def translate(self, view):
         set_reset_during_init(view, False)
 
-        return {
-            'action': 'show_overlay',
-            'action_args': {
-                'overlay': 'command_palette'
-            }
-        }
+        return translate_action(view, 'show_overlay', {
+            'overlay': 'command_palette'
+        })
 
 
 @register(seqs.F2, ACTION_MODES)
 class StNextBookmark(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'next_bookmark',
-            'action_args': {}
-        }
+        self.command = 'next_bookmark'
 
 
 @register(seqs.F3, ACTION_MODES)
 class StFindNext(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'find_next',
-            'action_args': {}
-        }
+        self.command = 'find_next'
 
 
 @register(seqs.F4, ACTION_MODES)
 class StNextResult(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'next_result',
-            'action_args': {}
-        }
+        self.command = 'next_result'
 
 
 @register(seqs.F6, ACTION_MODES)
 class StToggleSpellCheck(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'toggle_setting',
-            'action_args': {
-                'setting': 'spell_check'
-            }
+        self.command = 'toggle_setting'
+        self.command_args = {
+            'setting': 'spell_check'
         }
 
 
 @register(seqs.F7, ACTION_MODES)
 class StBuild(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'build',
-            'action_args': {}
-        }
+        self.command = 'build'
 
 
 @register(seqs.F9, ACTION_MODES)
 class StSortLines(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'sort_lines',
-            'action_args': {
-                'case_sensitive': False
-            }
+        self.command = 'sort_lines'
+        self.command_args = {
+            'case_sensitive': False
         }
 
 
 @register(seqs.F11, ACTION_MODES)
 class StToggleFullScreen(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'toggle_full_screen',
-            'action_args': {}
-        }
+        self.command = 'toggle_full_screen'
 
 
 @register(seqs.F12, ACTION_MODES)
 class StGotoDefinition(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'goto_definition',
-            'action_args': {}
-        }
+        self.command = 'goto_definition'
 
 
 @register(seqs.CTRL_F2, ACTION_MODES)
 class StToggleBookmark(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'toggle_bookmark',
-            'action_args': {}
-        }
+        self.command = 'toggle_bookmark'
 
 
 @register(seqs.CTRL_F12, ACTION_MODES)
 class StGotoSymbol(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'show_overlay',
-            'action_args': {
-                'overlay': 'goto',
-                'text': '@'
-            }
+        self.command = 'show_overlay'
+        self.command_args = {
+            'overlay': 'goto',
+            'text': '@'
         }
 
 
 @register(seqs.SHIFT_F2, ACTION_MODES)
 class StPrevBookmark(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'prev_bookmark',
-            'action_args': {}
-        }
+        self.command = 'prev_bookmark'
 
 
 @register(seqs.SHIFT_F4, ACTION_MODES)
 class StPrevResult(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'prev_result',
-            'action_args': {}
-        }
+        self.command = 'prev_result'
 
 
 @register(seqs.SHIFT_F11, ACTION_MODES)
 class StToggleDistractionFree(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'toggle_distraction_free',
-            'action_args': {}
-        }
+        self.command = 'toggle_distraction_free'
 
 
 @register(seqs.CTRL_SHIFT_F2, ACTION_MODES)
 class StClearBookmarks(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'clear_bookmarks',
-            'action_args': {}
-        }
+        self.command = 'clear_bookmarks'
 
 
 @register(seqs.CTRL_SHIFT_F12, ACTION_MODES)
 class StGotoSymbolInProject(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'goto_symbol_in_project',
-            'action_args': {}
-        }
+        self.command = 'goto_symbol_in_project'

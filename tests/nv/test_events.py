@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -255,18 +255,18 @@ class TestAltKeyEnabled(unittest.ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        self.view.window = unittest.mock.Mock()
+        self.view.window = unittest.mock.Mock()  # type: ignore[method-assign]
         self.events = NeoVintageousEvents()
 
     def test_winaltkeys_yes(self):
         self.set_option('winaltkeys', 'yes', setting=False)
         self.settings().set('command_mode', True)
 
-        self.view.window().is_menu_visible.return_value = False
+        self.view.window().is_menu_visible.return_value = False  # type: ignore[union-attr]
         self.assertEqual(False, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'f', True))
         self.assertEqual(False, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'x', True))
 
-        self.view.window().is_menu_visible.return_value = True
+        self.view.window().is_menu_visible.return_value = True  # type: ignore[union-attr]
         self.assertEqual(False, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'f', True))
         self.assertEqual(False, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'x', True))
 
@@ -274,11 +274,11 @@ class TestAltKeyEnabled(unittest.ViewTestCase):
         self.set_option('winaltkeys', 'no', setting=False)
         self.settings().set('command_mode', True)
 
-        self.view.window().is_menu_visible.return_value = False
+        self.view.window().is_menu_visible.return_value = False  # type: ignore[union-attr]
         self.assertEqual(True, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'f', True))
         self.assertEqual(True, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'x', True))
 
-        self.view.window().is_menu_visible.return_value = True
+        self.view.window().is_menu_visible.return_value = True  # type: ignore[union-attr]
         self.assertEqual(True, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'f', True))
         self.assertEqual(True, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'x', True))
 
@@ -286,11 +286,11 @@ class TestAltKeyEnabled(unittest.ViewTestCase):
         self.set_option('winaltkeys', 'menu', setting=False)
         self.settings().set('command_mode', True)
 
-        self.view.window().is_menu_visible.return_value = False
+        self.view.window().is_menu_visible.return_value = False  # type: ignore[union-attr]
         self.assertEqual(True, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'f', True))
         self.assertEqual(True, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'x', True))
 
-        self.view.window().is_menu_visible.return_value = True
+        self.view.window().is_menu_visible.return_value = True  # type: ignore[union-attr]
         self.assertEqual(False, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'f', True))
         self.assertEqual(True, self.events.on_query_context(self.view, 'nv_winaltkeys', OP_EQUAL, 'x', True))
 

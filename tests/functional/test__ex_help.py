@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -26,12 +26,12 @@ from NeoVintageous.tests import unittest
 class Test_ex_help(unittest.FunctionalTestCase):
 
     def get_active_help_view(self):
-        av = self.view.window().active_view()
+        av = self.view.window().active_view()  # type: ignore[union-attr]
         if is_help_view(av):
             return av
 
     def close_active_help_views(self):
-        for view in self.view.window().views():
+        for view in self.view.window().views():  # type: ignore[union-attr]
             if is_help_view(view):
                 view.close()
 

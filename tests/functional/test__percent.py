@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -65,7 +65,7 @@ class Test_percent(unittest.FunctionalTestCase):
         self.eq('a |{\nb\n}\nc', 'v_%', 'a |{\nb\n}|\nc')
         self.eq('a {\nb\n|}\nc', 'v_%', 'r_a |{\nb\n}|\nc')
         self.eq('a|123{|\nb\n}\nc', 'v_%', 'a|123{\nb\n}|\nc')
-        self.eq('abc (a|bc) abc', 'v_%', 'r_abc |(ab|c) abc'),
+        self.eq('abc (a|bc) abc', 'v_%', 'r_abc |(ab|c) abc')
         self.eq('abc (a|bc) abc', 'v_%', 'r_abc |(ab|c) abc')
         self.eq('|0(|2)4', 'v_%', '|0(2)|4')
         self.eq('0|(|2)4', 'v_%', '0|(2)|4')

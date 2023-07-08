@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -27,6 +27,8 @@ class Test_less_than(unittest.FunctionalTestCase):
 
     def test_v(self):
         self.eq('    |abc\ndef\n', 'v_<', 'n_  |abc\ndef\n')
+        self.eq('    |abc\ndef\n', 'v_2<', 'n_|abc\ndef\n')
+        self.eq('        |abc\ndef\n', 'v_3<', 'n_  |abc\ndef\n')
         self.eq('|    abc\ndef\n', 'v_<', 'n_  |abc\ndef\n')
         self.eq('  x\n    fi|zz\n    bu|zz\n  x', 'v_<', 'n_  x\n  |fizz\n  buzz\n  x')
         self.eq('  x\n    fi|zz\n  bu|zz\n  x', 'v_<', 'n_  x\n  |fizz\nbuzz\n  x')

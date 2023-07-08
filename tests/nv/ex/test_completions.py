@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -24,8 +24,6 @@ from NeoVintageous.nv.ex.completions import _wants_setting_completions
 class TestWantsCompletions(unittest.TestCase):
 
     def test_wants_setting_completions(self):
-        self.assertFalse(_wants_setting_completions('foobar'))
-        self.assertFalse(_wants_setting_completions(':set'))
         self.assertTrue(_wants_setting_completions(':se '))
         self.assertTrue(_wants_setting_completions(':set '))
         self.assertTrue(_wants_setting_completions(':set '))
@@ -34,9 +32,19 @@ class TestWantsCompletions(unittest.TestCase):
         self.assertTrue(_wants_setting_completions(':setlocal '))
         self.assertTrue(_wants_setting_completions(':setlocal name'))
 
+    def test_does_not_want_setting_completions(self):
+        self.assertFalse(_wants_setting_completions('foobar'))
+        self.assertFalse(_wants_setting_completions(':set'))
+
     def test_wants_fs_completions(self):
-        self.assertFalse(_wants_fs_completions('foobar'))
-        self.assertFalse(_wants_fs_completions(':write'))
+        self.assertTrue(_wants_fs_completions(':split '))
+        self.assertTrue(_wants_fs_completions(':vsplit '))
+        self.assertTrue(_wants_fs_completions(':new '))
+        self.assertTrue(_wants_fs_completions(':vnew '))
         self.assertTrue(_wants_fs_completions(':w '))
         self.assertTrue(_wants_fs_completions(':write '))
         self.assertTrue(_wants_fs_completions(':write path'))
+
+    def test_does_not_want_fs_completions(self):
+        self.assertFalse(_wants_fs_completions(':write'))
+        self.assertFalse(_wants_fs_completions('foobar'))

@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -27,6 +27,7 @@ def _init_common_panel_settings(panel) -> None:
     _set('auto_match_enabled', False)
     _set('draw_centered', False)
     _set('draw_indent_guides', False)
+    _set('draw_white_space', [])
     _set('gutter', False)
     _set('is_widget', True)
     _set('line_numbers', False)
@@ -85,7 +86,7 @@ class Cmdline():
         if self._callbacks and callback in self._callbacks:
             self._callbacks[callback](*args)
 
-    def _is_valid_input(self, cmdline: str) -> bool:
+    def _is_valid_input(self, cmdline) -> bool:
         return isinstance(cmdline, str) and len(cmdline) > 0 and cmdline[0] == self._type
 
     def _filter_input(self, inp: str) -> str:

@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -16,6 +16,8 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 from collections import deque
+from string import ascii_lowercase
+from string import digits
 import itertools
 import traceback
 
@@ -49,13 +51,13 @@ _UNNAMED = '"'
 # 2. 10 numbered registers
 _LAST_YANK = '0'
 _LAST_DELETE = '1'
-_NUMBERED = tuple('0123456789')
+_NUMBERED = tuple(digits)
 
 # 3 The small delete register
 _SMALL_DELETE = '-'
 
 # 4. 26 named registers
-_NAMED = tuple('abcdefghijklmnopqrstuvwxyz')
+_NAMED = tuple(ascii_lowercase)
 
 # 5. Three read-only registers
 _LAST_EXECUTED_COMMAND = ':'

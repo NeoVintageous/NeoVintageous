@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -20,14 +20,14 @@ from NeoVintageous.tests import unittest
 
 class Test_zg(unittest.FunctionalTestCase):
 
-    @unittest.mock_run_commands('add_word')
+    @unittest.mock_commands('add_word')
     def test_n(self):
         self.eq('x fi|zz x', 'n_zg', 'x fi|zz x')
         self.assertRunCommand('add_word', {'word': 'fizz'})
         self.eq('x bu|zz x', 'n_zg', 'x bu|zz x')
         self.assertRunCommand('add_word', {'word': 'buzz'})
 
-    @unittest.mock_run_commands('add_word')
+    @unittest.mock_commands('add_word')
     def test_v(self):
         self.eq('x |fi|zz x', 'v_zg', 'x |fi|zz x')
         self.assertRunCommand('add_word', {'word': 'fi'})

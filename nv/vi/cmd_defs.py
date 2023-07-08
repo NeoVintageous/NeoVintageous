@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -15,22 +15,18 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from NeoVintageous.nv.settings import get_action_count
 from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_last_char_search_character
 from NeoVintageous.nv.settings import get_last_char_search_command
-from NeoVintageous.nv.settings import get_mode
-from NeoVintageous.nv.settings import get_motion_count
 from NeoVintageous.nv.settings import get_partial_sequence
-from NeoVintageous.nv.settings import get_register
 from NeoVintageous.nv.settings import get_xpos
-from NeoVintageous.nv.settings import set_glue_until_normal_mode
-from NeoVintageous.nv.settings import set_normal_insert_count
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.vi import seqs
-from NeoVintageous.nv.vi.cmd_base import RequiresOneCharMixinDef
+from NeoVintageous.nv.vi.cmd_base import RequireOneCharMixin
 from NeoVintageous.nv.vi.cmd_base import ViMotionDef
 from NeoVintageous.nv.vi.cmd_base import ViOperatorDef
+from NeoVintageous.nv.vi.cmd_base import translate_action
+from NeoVintageous.nv.vi.cmd_base import translate_motion
 from NeoVintageous.nv.vi.keys import assign
 from NeoVintageous.nv.vim import ACTION_MODES
 from NeoVintageous.nv.vim import INSERT
@@ -45,1166 +41,632 @@ from NeoVintageous.nv.vim import VISUAL_LINE
 
 @assign(seqs.D, ACTION_MODES)
 class ViDeleteByChars(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.motion_required = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_d',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'register': get_register(view)
-            }
-        }
+        self.command = 'nv_vi_d'
 
 
 @assign(seqs.D, (SELECT,))
-class DeleteMultipleCursor(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+class ViDeleteMultipleCursor(ViOperatorDef):
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        set_glue_until_normal_mode(view, True)
-
-        return {
-            'action': 'nv_vi_d',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'register': get_register(view)
-            }
-        }
+        self.glue_until_normal_mode = True
+        self.command = 'nv_vi_d'
 
 
 @assign(seqs.BIG_O, ACTION_MODES)
 class ViInsertLineBefore(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        set_glue_until_normal_mode(view, True)
-
-        return {
-            'action': 'nv_vi_big_o',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.glue_until_normal_mode = True
+        self.command = 'nv_vi_big_o'
 
 
-@assign(seqs.O, ACTION_MODES)
+@assign(seqs.O, (NORMAL,))
 class ViInsertLineAfter(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = False
+        self.glue_until_normal_mode = True
+        self.command = 'nv_vi_o'
 
-    def translate(self, view):
-        if get_mode(view) in (VISUAL, VISUAL_LINE):
-            return {
-                'action': 'nv_vi_visual_o',
-                'action_args': {
-                    'mode': get_mode(view),
-                    'count': 1
-                }
-            }
-        else:
-            set_glue_until_normal_mode(view, True)
 
-            return {
-                'action': 'nv_vi_o',
-                'action_args': {
-                    'mode': get_mode(view),
-                    'count': get_count(view)
-                }
-            }
+@assign(seqs.O, (VISUAL, VISUAL_LINE, VISUAL_BLOCK))
+class ViGoToOtherEnd(ViOperatorDef):
+    def init(self):
+        self.scroll_into_view = True
+        self.updates_xpos = False
+        self.command = 'nv_vi_visual_o'
 
 
 @assign(seqs.DEL, ACTION_MODES + (SELECT,))
 @assign(seqs.X, ACTION_MODES + (SELECT,))
 class ViRightDeleteChars(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_x',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'register': get_register(view)
-            }
-        }
+        self.command = 'nv_vi_x'
 
 
 @assign(seqs.S, ACTION_MODES + (SELECT,))
 class ViSubstituteChar(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        set_glue_until_normal_mode(view, True)
-
-        return {
-            'action': 'nv_vi_s',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'register': get_register(view)
-            }
-        }
+        self.glue_until_normal_mode = True
+        self.command = 'nv_vi_s'
 
 
 @assign(seqs.Y, ACTION_MODES)
 class ViYankByChars(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.motion_required = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_y',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'register': get_register(view)
-            }
-        }
+        self.command = 'nv_vi_y'
 
 
 @assign(seqs.Y, (SELECT,))
 class ViYankSelectByChars(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_y',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'register': get_register(view)
-            }
-        }
+        self.command = 'nv_vi_y'
 
 
 @assign(seqs.EQUAL, ACTION_MODES)
 class ViReindent(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.motion_required = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_equal',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_equal'
 
 
 @assign(seqs.GREATER_THAN, ACTION_MODES)
 class ViIndent(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.motion_required = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_greater_than',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_greater_than'
 
 
 @assign(seqs.LESS_THAN, ACTION_MODES)
 class ViUnindent(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.motion_required = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_less_than',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_less_than'
 
 
 @assign(seqs.C, ACTION_MODES)
 class ViChangeByChars(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.motion_required = True
         self.repeatable = True
-
-    def translate(self, view):
-        set_glue_until_normal_mode(view, True)
-
-        return {
-            'action': 'nv_vi_c',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'register': get_register(view)
-            }
-        }
+        self.glue_until_normal_mode = True
+        self.command = 'nv_vi_c'
 
 
 @assign(seqs.C, (SELECT,))
-class ChangeMultipleCursor(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+class ViChangeMultipleCursor(ViOperatorDef):
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        set_glue_until_normal_mode(view, True)
-
-        return {
-            'action': 'nv_vi_c',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'register': get_register(view)
-            }
-        }
+        self.glue_until_normal_mode = True
+        self.command = 'nv_vi_c'
 
 
 @assign(seqs.U, (NORMAL,))
 class ViUndo(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_u',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_u'
 
 
 @assign(seqs.U, (VISUAL, VISUAL_LINE, VISUAL_BLOCK))
 class ViChangeToLowerCaseByCharsVisual(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_visual_u',
-            'action_args': {
-                'count': get_count(view),
-                'mode': get_mode(view)
-            }
-        }
+        self.command = 'nv_vi_visual_u'
 
 
 @assign(seqs.CTRL_R, ACTION_MODES)
 class ViRedo(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_r',
-            'action_args': {
-                'count': get_count(view),
-                'mode': get_mode(view)
-            }
-        }
+        self.command = 'nv_vi_ctrl_r'
 
 
 @assign(seqs.BIG_D, ACTION_MODES)
 class ViDeleteToEol(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_big_d',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'register': get_register(view)
-            }
-        }
+        self.command = 'nv_vi_big_d'
 
 
 @assign(seqs.BIG_C, ACTION_MODES)
 class ViChangeToEol(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        set_glue_until_normal_mode(view, True)
-
-        return {
-            'action': 'nv_vi_big_c',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'register': get_register(view)
-            }
-        }
+        self.glue_until_normal_mode = True
+        self.command = 'nv_vi_big_c'
 
 
 @assign(seqs.G_BIG_U_BIG_U, ACTION_MODES)
 @assign(seqs.G_BIG_U_G_BIG_U, ACTION_MODES)
 class ViChangeToUpperCaseByLines(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_g_big_u_big_u',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_g_big_u_big_u'
 
 
 @assign(seqs.CC, ACTION_MODES)
 class ViChangeLine(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        set_glue_until_normal_mode(view, True)
-
-        return {
-            'action': 'nv_vi_cc',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'register': get_register(view)
-            }
-        }
+        self.glue_until_normal_mode = True
+        self.command = 'nv_vi_cc'
 
 
 @assign(seqs.DD, ACTION_MODES)
 class ViDeleteLine(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_dd',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'register': get_register(view)
-            }
-        }
+        self.command = 'nv_vi_dd'
 
 
 @assign(seqs.BIG_R, ACTION_MODES)
 class ViEnterReplaceMode(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        set_glue_until_normal_mode(view, True)
-
-        return {
-            'action': 'nv_enter_replace_mode',
-            'action_args': {}
-        }
+        self.glue_until_normal_mode = True
+        self.command = 'nv_enter_replace_mode'
 
 
 @assign(seqs.GREATER_THAN_GREATER_THAN, ACTION_MODES)
 class ViIndentLine(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_greater_than_greater_than',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_greater_than_greater_than'
 
 
 @assign(seqs.GUGU, ACTION_MODES)
 @assign(seqs.GUU, ACTION_MODES)
 class ViChangeToLowerCaseByLines(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_guu',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_guu'
 
 
 @assign(seqs.GU, ACTION_MODES)
 class ViChangeToLowerCaseByChars(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.motion_required = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_gu',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_gu'
 
 
 @assign(seqs.EQUAL_EQUAL, ACTION_MODES)
 class ViReindentLine(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_equal_equal',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_equal_equal'
 
 
 @assign(seqs.LESS_THAN_LESS_THAN, ACTION_MODES)
 class ViUnindentLine(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_less_than_less_than',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_less_than_less_than'
 
 
 @assign(seqs.YY, ACTION_MODES)
 @assign(seqs.BIG_Y, ACTION_MODES)
 class ViYankLine(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_yy',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'register': get_register(view)
-            }
-        }
+        self.command = 'nv_vi_yy'
 
 
 @assign(seqs.G_TILDE_TILDE, ACTION_MODES)
 class ViInvertCaseByLines(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_g_tilde_g_tilde',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_g_tilde_g_tilde'
 
 
 @assign(seqs.TILDE, ACTION_MODES)
 class ViForceInvertCaseByChars(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_tilde',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_tilde'
 
 
 @assign(seqs.BIG_S, ACTION_MODES)
 class ViSubstituteByLines(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        set_glue_until_normal_mode(view, True)
-
-        return {
-            'action': 'nv_vi_big_s',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'register': get_register(view)
-            }
-        }
+        self.glue_until_normal_mode = True
+        self.command = 'nv_vi_big_s'
 
 
 @assign(seqs.G_TILDE, ACTION_MODES)
 class ViInvertCaseByChars(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.motion_required = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_g_tilde',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_g_tilde'
 
 
 @assign(seqs.G_BIG_U, ACTION_MODES)
 class ViChangeToUpperCaseByChars(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.motion_required = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_g_big_u',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_g_big_u'
 
 
 @assign(seqs.BIG_J, ACTION_MODES)
 class ViJoinLines(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_big_j',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_big_j'
 
 
 @assign(seqs.CTRL_X, ACTION_MODES)
 class ViDecrement(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_modify_numbers',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'subtract': True
-            }
+        self.command = 'nv_vi_modify_numbers'
+        self.command_args = {
+            'subtract': True
         }
 
 
 @assign(seqs.CTRL_A, ACTION_MODES)
 class ViIncrement(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_modify_numbers',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_modify_numbers'
 
 
 @assign(seqs.G_BIG_J, ACTION_MODES)
 class ViJoinLinesNoSeparator(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_big_j',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'dont_insert_or_remove_spaces': True
-            }
+        self.command = 'nv_vi_big_j'
+        self.command_args = {
+            'dont_insert_or_remove_spaces': True
         }
 
 
 @assign(seqs.V, ACTION_MODES)
 class ViEnterVisualMode(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_enter_visual_mode',
-            'action_args': {
-                'mode': get_mode(view)
-            }
-        }
+        self.command = 'nv_enter_visual_mode'
 
 
 @assign(seqs.Z_ENTER, ACTION_MODES)
 @assign(seqs.ZT, ACTION_MODES)
 class ViScrollToScreenTop(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_z_enter',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_z_enter'
 
 
 @assign(seqs.ZB, ACTION_MODES)
 @assign(seqs.Z_MINUS, ACTION_MODES)
 class ViScrollToScreenBottom(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_z_minus',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_z_minus'
 
 
 @assign(seqs.ZZ, ACTION_MODES)
 class ViScrollToScreenCenter(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_zz',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_zz'
 
 
 @assign(seqs.Z_DOT, ACTION_MODES)
 class ViZDot(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_zz',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'first_non_blank': True
-            }
+        self.command = 'nv_vi_zz'
+        self.command_args = {
+            'first_non_blank': True
         }
 
 
 @assign(seqs.GQ, ACTION_MODES)
 class ViReformat(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.motion_required = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_gq',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_gq'
 
 
 @assign(seqs.GQGQ, (NORMAL,))
 @assign(seqs.GQQ, (NORMAL,))
 class ViReformatLinewise(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_gq',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'linewise': True
-            }
+        self.command = 'nv_vi_gq'
+        self.command_args = {
+            'linewise': True
         }
 
 
 @assign(seqs.P, ACTION_MODES + (SELECT,))
 class ViPasteAfter(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_paste',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'register': get_register(view),
-                'before_cursor': False
-            }
+        self.command = 'nv_vi_paste'
+        self.command_args = {
+            'before_cursor': False
         }
 
 
 @assign(seqs.BIG_P, ACTION_MODES + (SELECT,))
 class ViPasteBefore(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_paste',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'register': get_register(view),
-                'before_cursor': True
-            }
+        self.command = 'nv_vi_paste'
+        self.command_args = {
+            'before_cursor': True
         }
 
 
 @assign(seqs.RIGHT_SQUARE_BRACKET_BIG_P, ACTION_MODES + (SELECT,))
 @assign(seqs.RIGHT_SQUARE_BRACKET_P, ACTION_MODES + (SELECT,))
 class ViPasteAfterAndIndent(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_paste',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'register': get_register(view),
-                'before_cursor': False,
-                'adjust_indent': True
-            }
+        self.command = 'nv_vi_paste'
+        self.command_args = {
+            'before_cursor': False,
+            'adjust_indent': True
         }
 
 
 @assign(seqs.LEFT_SQUARE_BRACKET_BIG_P, ACTION_MODES + (SELECT,))
 @assign(seqs.LEFT_SQUARE_BRACKET_P, ACTION_MODES + (SELECT,))
 class ViPasteBeforeAndIndent(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_paste',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'register': get_register(view),
-                'before_cursor': True,
-                'adjust_indent': True
-            }
+        self.command = 'nv_vi_paste'
+        self.command_args = {
+            'before_cursor': True,
+            'adjust_indent': True
         }
 
 
 @assign(seqs.GP, ACTION_MODES + (SELECT,))
 class ViPasteAfterWithAdjustedCursor(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_paste',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'register': get_register(view),
-                'before_cursor': False,
-                'adjust_cursor': True
-            }
+        self.command = 'nv_vi_paste'
+        self.command_args = {
+            'before_cursor': False,
+            'adjust_cursor': True
         }
 
 
 @assign(seqs.G_BIG_P, ACTION_MODES + (SELECT,))
 class ViPasteBeforeWithAdjustedCursor(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_paste',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'register': get_register(view),
-                'before_cursor': True,
-                'adjust_cursor': True
-            }
+        self.command = 'nv_vi_paste'
+        self.command_args = {
+            'before_cursor': True,
+            'adjust_cursor': True
         }
 
 
 @assign(seqs.BIG_X, ACTION_MODES)
 class ViLeftDeleteChar(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_big_x',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'register': get_register(view)
-            }
-        }
+        self.command = 'nv_vi_big_x'
 
 
 @assign(seqs.CTRL_PAGEDOWN, ACTION_MODES)
+@assign(seqs.CTRL_W_GT, ACTION_MODES)
 @assign(seqs.GT, ACTION_MODES)
 class ViActivateNextTab(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
 
     def translate(self, view):
-        return {
-            'action': 'nv_vi_gt',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view, default=0)
-            }
-        }
+        return translate_action(view, 'nv_vi_gt', {
+            'count': get_count(view, default=0)
+        })
 
 
 @assign(seqs.CTRL_PAGEUP, ACTION_MODES)
+@assign(seqs.CTRL_W_G_BIG_T, ACTION_MODES)
 @assign(seqs.G_BIG_T, ACTION_MODES)
 class ViActivatePreviousTab(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_g_big_t',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_g_big_t'
 
 
 @assign(seqs.CTRL_W, (INSERT,))
 class ViDeleteUpToCursor(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'delete_word',
-            'action_args': {
-                'forward': False
-            }
-        }
+        self.command = 'nv_vi_ctrl_w'
 
 
 @assign(seqs.CTRL_W_B, ACTION_MODES)
 @assign(seqs.CTRL_W_CTRL_B, ACTION_MODES)
 class ViMoveCursorToBottomRightWindow(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_w',
-            'action_args': {
-                'action': 'b'
-            }
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': 'b'
         }
 
 
 @assign(seqs.CTRL_W_BIG_H, ACTION_MODES)
 class ViMoveCurrentWindowToFarLeft(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_w',
-            'action_args': {
-                'action': 'H'
-            }
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': 'H'
         }
 
 
 @assign(seqs.CTRL_W_BIG_J, ACTION_MODES)
 class ViMoveCurrentWindowToVeryTop(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_w',
-            'action_args': {
-                'action': 'J'
-            }
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': 'J'
         }
 
 
 @assign(seqs.CTRL_W_BIG_K, ACTION_MODES)
 class ViMoveCurrentWindowToVeryBottom(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_w',
-            'action_args': {
-                'action': 'K'
-            }
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': 'K'
         }
 
 
 @assign(seqs.CTRL_6, ACTION_MODES)
 @assign(seqs.CTRL_HAT, ACTION_MODES)
 class ViGotoAlternateFile(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_hat',
-            'action_args': {}
-        }
+        self.command = 'nv_vi_ctrl_hat'
 
 
 @assign(seqs.CTRL_W_BIG_L, ACTION_MODES)
 class ViMoveCurrentWindowToFarRight(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_w',
-            'action_args': {
-                'action': 'L'
-            }
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': 'L'
         }
 
 
 @assign(seqs.CTRL_W_C, ACTION_MODES)
 class ViCloseTheCurrentWindow(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_w',
-            'action_args': {
-                'action': 'c'
-            }
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': 'c'
         }
 
 
 @assign(seqs.CTRL_W_EQUAL, ACTION_MODES)
 class ViMakeAllWindowsAlmostEquallyHighAndWide(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_w',
-            'action_args': {
-                'action': '='
-            }
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': '='
         }
 
 
 @assign(seqs.CTRL_W_GREATER_THAN, ACTION_MODES)
 class ViIncreaseCurrentWindowWidthByN(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_w',
-            'action_args': {
-                'action': '>',
-                'count': get_count(view)
-            }
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': '>',
         }
 
 
@@ -1213,17 +675,11 @@ class ViIncreaseCurrentWindowWidthByN(ViOperatorDef):
 @assign(seqs.CTRL_W_LEFT, ACTION_MODES)
 @assign(seqs.CTRL_W_BACKSPACE, ACTION_MODES)
 class ViMoveCursorToNthWindowLeftOfCurrentOne(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_w',
-            'action_args': {
-                'action': 'h',
-                'count': get_count(view)
-            }
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': 'h',
         }
 
 
@@ -1231,17 +687,11 @@ class ViMoveCursorToNthWindowLeftOfCurrentOne(ViOperatorDef):
 @assign(seqs.CTRL_W_CTRL_J, ACTION_MODES)
 @assign(seqs.CTRL_W_DOWN, ACTION_MODES)
 class ViMoveCursorToNthWindowBelowOfCurrentOne(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_w',
-            'action_args': {
-                'action': 'j',
-                'count': get_count(view)
-            }
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': 'j',
         }
 
 
@@ -1249,17 +699,11 @@ class ViMoveCursorToNthWindowBelowOfCurrentOne(ViOperatorDef):
 @assign(seqs.CTRL_W_CTRL_K, ACTION_MODES)
 @assign(seqs.CTRL_W_UP, ACTION_MODES)
 class ViMoveCursorToNthWindowAboveCurrentOne(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_w',
-            'action_args': {
-                'action': 'k',
-                'count': get_count(view)
-            }
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': 'k',
         }
 
 
@@ -1267,130 +711,84 @@ class ViMoveCursorToNthWindowAboveCurrentOne(ViOperatorDef):
 @assign(seqs.CTRL_W_CTRL_L, ACTION_MODES)
 @assign(seqs.CTRL_W_RIGHT, ACTION_MODES)
 class ViMoveCursorToNthWindowRightOfCurrentOne(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_w',
-            'action_args': {
-                'action': 'l',
-                'count': get_count(view)
-            }
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': 'l',
         }
 
 
 @assign(seqs.CTRL_W_LESS_THAN, ACTION_MODES)
 class ViDecreaseCurrentWindowWidthByN(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_w',
-            'action_args': {
-                'action': '<',
-                'count': get_count(view)
-            }
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': '<',
         }
 
 
 @assign(seqs.CTRL_W_MINUS, ACTION_MODES)
 class ViDecreaseCurrentWindowHeightByN(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_w',
-            'action_args': {
-                'action': '-',
-                'count': get_count(view)
-            }
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': '-',
         }
 
 
 @assign(seqs.CTRL_W_N, ACTION_MODES)
 @assign(seqs.CTRL_W_CTRL_N, ACTION_MODES)
 class ViCreateNewWindowAndStartEditingAnEmptyFileInIt(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_w',
-            'action_args': {
-                'action': 'n',
-                'count': get_count(view)
-            }
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': 'n',
         }
 
 
 @assign(seqs.CTRL_W_O, ACTION_MODES)
 @assign(seqs.CTRL_W_CTRL_O, ACTION_MODES)
 class ViMakeTheCurrentWindowTheOnlyOneOnTheScreen(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_w',
-            'action_args': {
-                'action': 'o'
-            }
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': 'o'
         }
 
 
 @assign(seqs.CTRL_W_BAR, ACTION_MODES)
 class ViSetCurrentWindowWidthToNOrWidestPossible(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_w',
-            'action_args': {
-                'action': '|',
-                'count': get_count(view)
-            }
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': '|',
         }
 
 
 @assign(seqs.CTRL_W_PLUS, ACTION_MODES)
 class ViIncreaseCurrentWindowHeightByN(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_w',
-            'action_args': {
-                'action': '+',
-                'count': get_count(view)
-            }
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': '+',
         }
 
 
 @assign(seqs.CTRL_W_Q, ACTION_MODES)
 @assign(seqs.CTRL_W_CTRL_Q, ACTION_MODES)
 class ViQuitTheCurrentWindow(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_w',
-            'action_args': {
-                'action': 'q'
-            }
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': 'q'
         }
 
 
@@ -1398,324 +796,201 @@ class ViQuitTheCurrentWindow(ViOperatorDef):
 @assign(seqs.CTRL_W_BIG_S, ACTION_MODES)
 @assign(seqs.CTRL_W_CTRL_S, ACTION_MODES)
 class ViSplitTheCurrentWindowInTwo(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_w',
-            'action_args': {
-                'action': 's',
-                'count': get_count(view)
-            }
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': 's',
         }
 
 
 @assign(seqs.CTRL_W_T, ACTION_MODES)
 @assign(seqs.CTRL_W_CTRL_T, ACTION_MODES)
 class ViMoveCursorToTopLeftWindow(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_w',
-            'action_args': {
-                'action': 't'
-            }
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': 't'
         }
 
 
 @assign(seqs.CTRL_W_UNDERSCORE, ACTION_MODES)
 @assign(seqs.CTRL_W_CTRL_UNDERSCORE, ACTION_MODES)
 class ViSetCurrentGroupHeightOrHighestPossible(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_w',
-            'action_args': {
-                'action': '_',
-                'count': get_count(view)
-            }
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': '_',
         }
 
 
 @assign(seqs.CTRL_W_V, ACTION_MODES)
 @assign(seqs.CTRL_W_CTRL_V, ACTION_MODES)
 class ViSplitTheCurrentWindowInTwoVertically(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_w',
-            'action_args': {
-                'action': 'v',
-                'count': get_count(view)
-            }
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': 'v',
         }
 
 
 @assign(seqs.CTRL_W_BIG_W, ACTION_MODES)
 class ViCtrlW_W(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_w',
-            'action_args': {
-                'action': 'W',
-                'count': get_count(view)
-            }
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': 'W',
         }
 
 
 @assign(seqs.CTRL_W_X, ACTION_MODES)
 @assign(seqs.CTRL_W_CTRL_X, ACTION_MODES)
 class ViExchangeCurrentWindowWithNextOrPreviousNthWindow(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_w',
-            'action_args': {
-                'action': 'x',
-                'count': get_count(view)
-            }
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': 'x',
         }
 
 
 @assign(seqs.BIG_V, ACTION_MODES)
 class ViEnterVisualLineMode(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_enter_visual_line_mode',
-            'action_args': {
-                'mode': get_mode(view)
-            }
-        }
+        self.command = 'nv_enter_visual_line_mode'
 
 
 @assign(seqs.GV, ACTION_MODES)
 class ViRestoreVisualSelections(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_gv',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_gv'
 
 
 @assign(seqs.GX, ACTION_MODES)
-class NetrwGx(ViOperatorDef):
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_gx',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+class ViNetrwGx(ViOperatorDef):
+    def init(self):
+        self.command = 'nv_vi_gx'
 
 
 @assign(seqs.CTRL_O, ACTION_MODES)
 class ViJumpBack(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'jump_back',
-            'action_args': {}
-        }
+        self.command = 'nv_vi_jump_back'
 
 
 @assign(seqs.CTRL_I, ACTION_MODES)
 @assign(seqs.TAB, ACTION_MODES)
 class ViJumpForward(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'jump_forward',
-            'action_args': {}
-        }
+        self.command = 'nv_vi_jump_forward'
 
 
 @assign(seqs.DOT, ACTION_MODES)
 class ViRepeat(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_dot',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_dot'
 
 
 @assign(seqs.CTRL_Y, ACTION_MODES)
 class ViScrollByLinesUp(ViMotionDef):
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_ctrl_y',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+    def init(self):
+        self.command = 'nv_vi_ctrl_y'
 
 
 @assign(seqs.BIG_U, (VISUAL, VISUAL_LINE, VISUAL_BLOCK))
 class ViChangeToUpperCaseByCharsVisual(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.repeatable = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_visual_big_u',
-            'action_args': {
-                'count': get_count(view),
-                'mode': get_mode(view)
-            }
-        }
+        self.command = 'nv_vi_visual_big_u'
 
 
 @assign(seqs.CTRL_E, ACTION_MODES)
 class ViScrollByLinesDown(ViMotionDef):
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_ctrl_e',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+    def init(self):
+        self.command = 'nv_vi_ctrl_e'
 
 
 @assign(seqs.AT, ACTION_MODES)
-class ViOpenMacrosForRepeating(RequiresOneCharMixinDef, ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+class ViOpenMacrosForRepeating(RequireOneCharMixin, ViOperatorDef):
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
 
     def translate(self, view):
-        return {
-            'action': 'nv_vi_at',
-            'action_args': {
-                'name': self.inp,
-                'count': get_count(view)
-            }
-        }
+        return translate_action(view, 'nv_vi_at', {
+            'name': self.inp
+        })
 
 
 @assign(seqs.Q, ACTION_MODES)
-class ViToggleMacroRecorder(RequiresOneCharMixinDef, ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+class ViToggleMacroRecorder(RequireOneCharMixin, ViOperatorDef):
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
 
     def translate(self, view):
-        return {
-            'action': 'nv_vi_q',
-            'action_args': {
-                'name': self.inp
-            }
-        }
+        return translate_action(view, 'nv_vi_q', {
+            'name': self.inp
+        })
 
 
 @assign(seqs.CTRL_V, ACTION_MODES)
 class ViEnterVisualBlockMode(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_enter_visual_block_mode',
-            'action_args': {
-                'mode': get_mode(view)
-            }
-        }
+        self.command = 'nv_enter_visual_block_mode'
 
 
 @assign(seqs.GA, ACTION_MODES)
 class ViShowAsciiValueOfChar(ViOperatorDef):
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ga',
-            'action_args': {}
+    def init(self):
+        self.command = 'nv_vi_ga'
+
+
+@assign(seqs.CTRL_W_GF, ACTION_MODES)
+@assign(seqs.GF, ACTION_MODES)
+class Vigf(ViOperatorDef):
+    def init(self):
+        self.command = 'nv_vi_g'
+        self.command_args = {
+            'action': 'f'
         }
 
 
-@assign(seqs.GF, (NORMAL,))
-class Vi_gf(ViOperatorDef):
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_g',
-            'action_args': {
-                'action': 'f'
-            }
+@assign(seqs.CTRL_W_G_BIG_F, ACTION_MODES)
+@assign(seqs.G_BIG_F, ACTION_MODES)
+class VigF(ViOperatorDef):
+    def init(self):
+        self.command = 'nv_vi_g'
+        self.command_args = {
+            'action': 'F'
         }
 
 
 @assign(seqs.I, (NORMAL, SELECT))
 @assign(seqs.INSERT, (NORMAL, SELECT))
 class ViEnterInserMode(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        set_glue_until_normal_mode(view, True)
-
-        return {
-            'action': 'nv_enter_insert_mode',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.glue_until_normal_mode = True
+        self.command = 'nv_enter_insert_mode'
 
 
 @assign(seqs.V, (SELECT, ))
@@ -1723,188 +998,108 @@ class ViEnterInserMode(ViOperatorDef):
 @assign(seqs.CTRL_C, ACTION_MODES + (INSERT, SELECT))
 @assign(seqs.CTRL_LEFT_SQUARE_BRACKET, ACTION_MODES + (INSERT, SELECT))
 class ViEnterNormalMode(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_enter_normal_mode',
-            'action_args': {
-                'mode': get_mode(view)
-            }
-        }
+        self.command = 'nv_enter_normal_mode'
 
 
 @assign(seqs.CTRL_RIGHT_SQUARE_BRACKET, ACTION_MODES)
 class ViJumpToDefinition(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_right_square_bracket',
-            'action_args': {}
-        }
+    def init(self):
+        self.command = 'nv_vi_ctrl_right_square_bracket'
 
 
 @assign(seqs.CTRL_W_CTRL_RIGHT_SQUARE_BRACKET, ACTION_MODES)
 @assign(seqs.CTRL_W_RIGHT_SQUARE_BRACKET, ACTION_MODES)
 class ViSplitAndJumpToDefinition(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': ']'
+        }
 
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_w',
-            'action_args': {
-                'action': ']'
-            }
+
+@assign(seqs.CTRL_W_HAT, ACTION_MODES)
+@assign(seqs.CTRL_W_CTRL_6, ACTION_MODES)
+class ViSplitAndEditAlternate(ViOperatorDef):
+    def init(self):
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': '^'
         }
 
 
 @assign(seqs.A, (NORMAL,))
 class ViInsertAfterChar(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        set_glue_until_normal_mode(view, True)
-        set_normal_insert_count(view, get_count(view))
-
-        return {
-            'action': 'nv_vi_a',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': 1
-            }
-        }
+        self.glue_until_normal_mode = True
+        self.command = 'nv_vi_a'
 
 
-@assign(seqs.ALT_N, (SELECT,))
-@assign(seqs.BIG_A, ACTION_MODES + (SELECT,))
+@assign(seqs.BIG_A, ACTION_MODES)
 class ViInsertAtEol(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        if get_mode(view) != SELECT:
-            set_glue_until_normal_mode(view, True)
-
-        return {
-            'action': 'nv_vi_big_a',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.glue_until_normal_mode = True
+        self.command = 'nv_vi_big_a'
 
 
 @assign(seqs.BIG_I, ACTION_MODES + (SELECT,))
 class ViInsertAtBol(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        if get_mode(view) != SELECT:
-            set_glue_until_normal_mode(view, True)
-
-        return {
-            'action': 'nv_vi_big_i',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.glue_until_normal_mode = True
+        self.command = 'nv_vi_big_i'
 
 
 @assign(seqs.COLON, ACTION_MODES)
+@assign(seqs.CTRL_W_COLON, ACTION_MODES)
 class ViEnterCommandLineMode(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_cmdline',
-            'action_args': {}
-        }
+        self.command = 'nv_cmdline'
 
 
 @assign(seqs.CTRL_G, ACTION_MODES)
 class ViShowFileStatus(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_g',
-            'action_args': {}
-        }
+        self.command = 'nv_vi_ctrl_g'
 
 
 @assign(seqs.BIG_Z_BIG_Q, (NORMAL,))
 class ViExitEditor(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_big_z_big_q',
-            'action_args': {}
-        }
+        self.command = 'nv_vi_big_z_big_q'
 
 
 @assign(seqs.BIG_Z_BIG_Z, (NORMAL,))
 class ViCloseFile(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_big_z_big_z',
-            'action_args': {}
-        }
+        self.command = 'nv_vi_big_z_big_z'
 
 
 @assign(seqs.G_BIG_D, ACTION_MODES)
 class ViGotoSymbolInProject(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_go_to_symbol',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'globally': True
-            }
+        self.command = 'nv_vi_go_to_symbol'
+        self.command_args = {
+            'globally': True
         }
 
 
 @assign(seqs.GD, MOTION_MODES)
 class ViGotoSymbolInFile(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_go_to_symbol',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'globally': False
-            }
+        self.command = 'nv_vi_go_to_symbol'
+        self.command_args = {
+            'globally': False
         }
 
 
@@ -1913,411 +1108,214 @@ class ViGotoSymbolInFile(ViMotionDef):
 @assign(seqs.RIGHT, MOTION_MODES)
 @assign(seqs.SPACE, MOTION_MODES)
 class ViMoveRightByChars(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_l',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_l'
 
 
 @assign(seqs.SHIFT_ENTER, MOTION_MODES)
 class ViShiftEnterMotion(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_shift_enter',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_shift_enter'
 
 
 @assign(seqs.B, MOTION_MODES)
 @assign(seqs.SHIFT_LEFT, MOTION_MODES)
 class ViMoveByWordsBackward(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_b',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_b'
 
 
 @assign(seqs.BIG_B, MOTION_MODES)
 @assign(seqs.CTRL_LEFT, MOTION_MODES)
 class ViMoveByBigWordsBackward(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_big_b',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_big_b'
 
 
 @assign(seqs.BIG_W, MOTION_MODES)
 @assign(seqs.CTRL_RIGHT, MOTION_MODES)
 class ViMoveByBigWords(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_big_w',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_big_w'
 
 
 @assign(seqs.E, MOTION_MODES)
 class ViMoveByWordEnds(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_e',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_e'
 
 
 @assign(seqs.BIG_H, MOTION_MODES)
 class ViGotoScreenTop(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_big_h',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_big_h'
 
 
 @assign(seqs.GE, MOTION_MODES)
 class ViMoveByWordEndsBackward(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_ge',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_ge'
 
 
 @assign(seqs.G_BIG_E, MOTION_MODES)
 class ViMoveByBigWordEndsBackward(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_g_big_e',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_g_big_e'
 
 
 @assign(seqs.BIG_L, MOTION_MODES)
 class ViGotoScreenBottom(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_big_l',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_big_l'
 
 
 @assign(seqs.BIG_M, MOTION_MODES)
 class ViGotoScreenMiddle(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_big_m',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_big_m'
 
 
 @assign(seqs.CTRL_D, MOTION_MODES)
 class ViMoveHalfScreenDown(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = False
 
     def translate(self, view):
-        return {
-            'motion': 'nv_vi_ctrl_d',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view, default=0)
-            }
-        }
+        return translate_motion(view, 'nv_vi_ctrl_d', {
+            'count': get_count(view, default=0)
+        })
 
 
 @assign(seqs.CTRL_U, MOTION_MODES + (INSERT,))
 class ViMoveHalfScreenUp(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
 
     def translate(self, view):
-        return {
-            'motion': 'nv_vi_ctrl_u',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view, default=0)
-            }
-        }
+        return translate_motion(view, 'nv_vi_ctrl_u', {
+            'count': get_count(view, default=0)
+        })
 
 
 @assign(seqs.CTRL_F, MOTION_MODES)
 @assign(seqs.PAGE_DOWN, MOTION_MODES)
 @assign(seqs.SHIFT_DOWN, MOTION_MODES)
 class ViMoveScreenDown(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_ctrl_f',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_ctrl_f'
 
 
 @assign(seqs.CTRL_B, MOTION_MODES)
 @assign(seqs.PAGE_UP, MOTION_MODES)
 @assign(seqs.SHIFT_UP, MOTION_MODES)
 class ViMoveScreenUp(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_ctrl_b',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_ctrl_b'
 
 
 @assign(seqs.BACKTICK, MOTION_MODES)
-class ViGotoExactMarkXpos(RequiresOneCharMixinDef, ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+class ViGotoExactMarkXpos(RequireOneCharMixin, ViMotionDef):
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
 
     def translate(self, view):
-        return {
-            'motion': 'nv_vi_backtick',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'character': self.inp
-            }
-        }
+        return translate_motion(view, 'nv_vi_backtick', {
+            'character': self.inp
+        })
 
 
 @assign(seqs.DOLLAR, MOTION_MODES)
 @assign(seqs.END, MOTION_MODES)
 class ViMoveToEol(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_dollar',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_dollar'
 
 
 @assign(seqs.ENTER, MOTION_MODES)
 @assign(seqs.PLUS, MOTION_MODES)
 class ViMotionEnter(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_enter',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_enter'
 
 
 @assign(seqs.MINUS, MOTION_MODES)
 class ViMoveBackOneLine(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_minus',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_minus'
 
 
 @assign(seqs.G_UNDERSCORE, MOTION_MODES)
 class ViMoveToSoftEol(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_g__',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_g__'
 
 
 @assign(seqs.G_DOWN, MOTION_MODES)
 @assign(seqs.GJ, MOTION_MODES)
 class ViMoveByScreenLineDown(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_gj',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_gj'
 
 
 @assign(seqs.G_UP, MOTION_MODES)
 @assign(seqs.GK, MOTION_MODES)
 class ViMoveByScreenLineUp(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_gk',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_gk'
 
 
 @assign(seqs.LEFT_BRACE, MOTION_MODES)
 class ViMoveByBlockUp(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_left_brace',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_left_brace'
 
 
 @assign(seqs.SEMICOLON, MOTION_MODES)
 class ViRepeatCharSearchForward(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2325,273 +1323,168 @@ class ViRepeatCharSearchForward(ViMotionDef):
     def translate(self, view):
         last_search_cmd = get_last_char_search_command(view)
         if 'sneak' in last_search_cmd:
-            return {
-                'motion': 'nv_sneak',
-                'motion_args': {
-                    'mode': get_mode(view),
-                    'count': get_count(view),
-                    'forward': last_search_cmd == 'sneak_s',
-                    'save': False
-                }
-            }
+            return translate_motion(view, 'nv_sneak', {
+                'forward': last_search_cmd == 'sneak_s',
+                'save': False
+            })
 
         forward = last_search_cmd in ('vi_t', 'vi_f')
         inclusive = last_search_cmd in ('vi_f', 'vi_big_f')
         skipping = last_search_cmd in ('vi_t', 'vi_big_t')
         motion = 'nv_vi_find_in_line' if forward else 'nv_vi_reverse_find_in_line'
 
-        return {
-            'motion': motion,
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'char': get_last_char_search_character(view),
-                'inclusive': inclusive,
-                'skipping': skipping,
-                'save': False
-            }
-        }
+        return translate_motion(view, motion, {
+            'char': get_last_char_search_character(view),
+            'inclusive': inclusive,
+            'skipping': skipping,
+            'save': False
+        })
 
 
 @assign(seqs.QUOTE, MOTION_MODES)
-class ViGotoMark(RequiresOneCharMixinDef, ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+class ViGotoMark(RequireOneCharMixin, ViMotionDef):
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
 
     def translate(self, view):
-        return {
-            'motion': 'nv_vi_quote',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'character': self.inp
-            }
-        }
+        return translate_motion(view, 'nv_vi_quote', {
+            'character': self.inp
+        })
 
 
 @assign(seqs.RIGHT_BRACE, MOTION_MODES)
 class ViMoveByBlockDown(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_right_brace',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_right_brace'
 
 
 @assign(seqs.LEFT_PAREN, MOTION_MODES)
 class ViMoveBySentenceUp(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_left_paren',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_left_paren'
 
 
 @assign(seqs.RIGHT_PAREN, MOTION_MODES)
 class ViMoveBySentenceDown(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_right_paren',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_right_paren'
 
 
 @assign(seqs.LEFT_SQUARE_BRACKET_LEFT_BRACE, MOTION_MODES)
 class ViGotoOpeningBrace(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_left_square_bracket',
-            'motion_args': {
-                'action': 'target',
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'target': '{'
-            }
+        self.command = 'nv_vi_left_square_bracket'
+        self.command_args = {
+            'action': 'target',
+            'target': '{'
         }
 
 
 @assign(seqs.LEFT_SQUARE_BRACKET_LEFT_PAREN, MOTION_MODES)
 class ViGotoOpeningParen(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_left_square_bracket',
-            'motion_args': {
-                'action': 'target',
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'target': '('
-            }
+        self.command = 'nv_vi_left_square_bracket'
+        self.command_args = {
+            'action': 'target',
+            'target': '('
         }
 
 
 @assign(seqs.LEFT_SQUARE_BRACKET_C, ACTION_MODES)
 class ViBackwardToStartOfChange(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_left_square_bracket',
-            'motion_args': {
-                'action': 'c',
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
+        self.command = 'nv_vi_left_square_bracket'
+        self.command_args = {
+            'action': 'c',
         }
 
 
 @assign(seqs.RIGHT_SQUARE_BRACKET_C, ACTION_MODES)
 class ViForwardToStartOfChange(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_right_square_bracket',
-            'motion_args': {
-                'action': 'c',
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
+        self.command = 'nv_vi_right_square_bracket'
+        self.command_args = {
+            'action': 'c',
         }
 
 
 @assign(seqs.LEFT_SQUARE_BRACKET_S, ACTION_MODES)
 class ViPrevMisppelledWord(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_left_square_bracket',
-            'motion_args': {
-                'action': 's',
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
+        self.command = 'nv_vi_left_square_bracket'
+        self.command_args = {
+            'action': 's',
         }
 
 
 @assign(seqs.RIGHT_SQUARE_BRACKET_S, ACTION_MODES)
-class VINextMispelledWord(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+class ViNextMispelledWord(ViMotionDef):
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_right_square_bracket',
-            'motion_args': {
-                'action': 's',
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
+        self.command = 'nv_vi_right_square_bracket'
+        self.command_args = {
+            'action': 's',
         }
 
 
 @assign(seqs.RIGHT_SQUARE_BRACKET_RIGHT_BRACE, MOTION_MODES)
 class ViGotoClosingBrace(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_right_square_bracket',
-            'motion_args': {
-                'action': 'target',
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'target': '}'
-            }
+        self.command = 'nv_vi_right_square_bracket'
+        self.command_args = {
+            'action': 'target',
+            'target': '}'
         }
 
 
 @assign(seqs.RIGHT_SQUARE_BRACKET_RIGHT_PAREN, MOTION_MODES)
 class ViGotoClosingParen(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_right_square_bracket',
-            'motion_args': {
-                'action': 'target',
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'target': ')'
-            }
+        self.command = 'nv_vi_right_square_bracket'
+        self.command_args = {
+            'action': 'target',
+            'target': ')'
         }
 
 
 @assign(seqs.PERCENT, MOTION_MODES)
 class ViPercent(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
 
     def translate(self, view):
-        return {
-            'motion': 'nv_vi_percent',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view, default=0)
-            }
-        }
+        return translate_motion(view, 'nv_vi_percent', {
+            'count': get_count(view, default=0)
+        })
 
 
 @assign(seqs.BACKSLASH, MOTION_MODES)
 @assign(seqs.COMMA, MOTION_MODES)
 class ViRepeatCharSearchBackward(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
 
@@ -2599,66 +1492,38 @@ class ViRepeatCharSearchBackward(ViMotionDef):
     def translate(self, view):
         last_search_cmd = get_last_char_search_command(view)
         if 'sneak' in last_search_cmd:
-            return {
-                'motion': 'nv_sneak',
-                'motion_args': {
-                    'mode': get_mode(view),
-                    'count': get_count(view),
-                    'forward': last_search_cmd == 'sneak_big_s',
-                    'save': False
-                }
-            }
+            return translate_motion(view, 'nv_sneak', {
+                'forward': last_search_cmd == 'sneak_big_s',
+                'save': False
+            })
 
         forward = last_search_cmd in ('vi_t', 'vi_f')
         inclusive = last_search_cmd in ('vi_f', 'vi_big_f')
         skipping = last_search_cmd in ('vi_t', 'vi_big_t')
         motion = 'nv_vi_find_in_line' if not forward else 'nv_vi_reverse_find_in_line'
 
-        return {
-            'motion': motion,
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'char': get_last_char_search_character(view),
-                'inclusive': inclusive,
-                'skipping': skipping,
-                'save': False
-            }
-        }
+        return translate_motion(view, motion, {
+            'char': get_last_char_search_character(view),
+            'inclusive': inclusive,
+            'skipping': skipping,
+            'save': False
+        })
 
 
 @assign(seqs.BAR, MOTION_MODES)
 class ViMoveByLineCols(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_bar',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_bar'
 
 
 @assign(seqs.BIG_E, MOTION_MODES)
 class ViMoveByBigWordEnds(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_big_e',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_big_e'
 
 
 @assign(seqs.ALT_LEFT, MOTION_MODES)
@@ -2668,37 +1533,19 @@ class ViMoveByBigWordEnds(ViMotionDef):
 @assign(seqs.H, MOTION_MODES)
 @assign(seqs.LEFT, MOTION_MODES)
 class ViMoveLeftByChars(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_h',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_h'
 
 
 @assign(seqs.SHIFT_RIGHT, MOTION_MODES)
 @assign(seqs.W, MOTION_MODES)
 class ViMoveByWords(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_w',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_w'
 
 
 @assign(seqs.CTRL_DOWN, MOTION_MODES)
@@ -2707,19 +1554,13 @@ class ViMoveByWords(ViMotionDef):
 @assign(seqs.DOWN, MOTION_MODES)
 @assign(seqs.J, MOTION_MODES)
 class ViMoveDownByLines(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
 
     def translate(self, view):
-        return {
-            'motion': 'nv_vi_j',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'xpos': get_xpos(view)
-            }
-        }
+        return translate_motion(view, 'nv_vi_j', {
+            'xpos': get_xpos(view)
+        })
 
 
 @assign(seqs.CTRL_P, MOTION_MODES)
@@ -2727,168 +1568,102 @@ class ViMoveDownByLines(ViMotionDef):
 @assign(seqs.K, MOTION_MODES)
 @assign(seqs.UP, MOTION_MODES)
 class ViMoveUpByLines(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
 
     def translate(self, view):
-        return {
-            'motion': 'nv_vi_k',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'xpos': get_xpos(view)
-            }
-        }
+        return translate_motion(view, 'nv_vi_k', {
+            'xpos': get_xpos(view)
+        })
 
 
 @assign(seqs.HAT, MOTION_MODES)
 @assign(seqs.HOME, MOTION_MODES)
 class ViMoveToBol(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_hat',
-            'motion_args': {
-                'count': get_count(view),
-                'mode': get_mode(view)
-            }
-        }
+        self.command = 'nv_vi_hat'
 
 
 @assign(seqs.UNDERSCORE, MOTION_MODES)
 class ViMoveToSoftBol(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_underscore',
-            'motion_args': {
-                'count': get_count(view),
-                'mode': get_mode(view)
-            }
-        }
+        self.command = 'nv_vi_underscore'
 
 
 @assign(seqs.KEYPAD_0, MOTION_MODES)
 @assign(seqs.ZERO, MOTION_MODES)
 class ViMoveToHardBol(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_zero',
-            'motion_args': {
-                'count': get_count(view),
-                'mode': get_mode(view)
-            }
-        }
+        self.command = 'nv_vi_zero'
 
 
 @assign(seqs.GN, MOTION_MODES)
-@assign(seqs.G_BIG_N, MOTION_MODES, forward=False)
 class ViSearchLastUsedPattern(ViMotionDef):
-    def __init__(self, *args, forward=True, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._serializable.append('forward')
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-        self.forward = forward
+        self.command = 'nv_vi_search'
 
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_search',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'forward': self.forward
-            }
+
+@assign(seqs.G_BIG_N, MOTION_MODES)
+class ViSearchLastUsedPatternReverse(ViMotionDef):
+    def init(self):
+        self.scroll_into_view = True
+        self.updates_xpos = True
+        self.command = 'nv_vi_search'
+        self.command_args = {
+            'forward': False
         }
 
 
 @assign(seqs.N, MOTION_MODES)
 class ViRepeatSearchForward(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_repeat_buffer_search',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'reverse': False
-            }
+        self.command = 'nv_vi_repeat_buffer_search'
+        self.command_args = {
+            'reverse': False
         }
 
 
 @assign(seqs.BIG_N, MOTION_MODES)
 class ViRepeatSearchBackward(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_repeat_buffer_search',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'reverse': True
-            }
+        self.command = 'nv_vi_repeat_buffer_search'
+        self.command_args = {
+            'reverse': True
         }
 
 
 @assign(seqs.STAR, MOTION_MODES)
 class ViFindWord(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_star',
-            'motion_args': {
-                'count': get_count(view),
-                'mode': get_mode(view)
-            }
-        }
+        self.command = 'nv_vi_star'
 
 
 @assign(seqs.OCTOTHORP, MOTION_MODES)
 class ViReverseFindWord(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_octothorp',
-            'motion_args': {
-                'count': get_count(view),
-                'mode': get_mode(view)
-            }
-        }
+        self.command = 'nv_vi_octothorp'
 
 
 @assign(seqs.BIG_Z, MOTION_MODES)
 @assign(seqs.CTRL_K, MOTION_MODES)
 @assign(seqs.CTRL_W, MOTION_MODES)
+@assign(seqs.CTRL_W_G, MOTION_MODES)
 @assign(seqs.CTRL_X, (INSERT,))
 @assign(seqs.G, MOTION_MODES)
 @assign(seqs.LEFT_SQUARE_BRACKET, MOTION_MODES)
@@ -2896,8 +1671,6 @@ class ViReverseFindWord(ViMotionDef):
 @assign(seqs.Z, MOTION_MODES)
 @assign(seqs.ZU, MOTION_MODES)
 class ViOpenNameSpace(ViMotionDef):  # TODO This should not be a motion.
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def translate(self, view):
         return {}
@@ -2905,8 +1678,6 @@ class ViOpenNameSpace(ViMotionDef):  # TODO This should not be a motion.
 
 @assign(seqs.DOUBLE_QUOTE, MOTION_MODES)
 class ViOpenRegister(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
     def translate(self, view):
         return {}
@@ -2915,161 +1686,133 @@ class ViOpenRegister(ViMotionDef):
 @assign(seqs.CTRL_HOME, MOTION_MODES)
 @assign(seqs.GG, MOTION_MODES)
 class ViGotoBof(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
 
     def translate(self, view):
-        return {
-            'motion': 'nv_vi_gg',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view) if (get_action_count(view) or get_motion_count(view)) else None
-            }
-        }
+        return translate_motion(view, 'nv_vi_gg', {
+            'count': get_count(view, default=0)
+        })
 
 
 @assign(seqs.BIG_G, MOTION_MODES)
 class ViGotoEof(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
 
     def translate(self, view):
-        return {
-            'motion': 'nv_vi_big_g',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view) if (get_action_count(view) or get_motion_count(view)) else None
-            }
-        }
+        return translate_motion(view, 'nv_vi_big_g', {
+            'count': get_count(view, default=0)
+        })
 
 
 @assign(seqs.R, ACTION_MODES)
-class ViReplaceCharacters(RequiresOneCharMixinDef, ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+class ViReplaceCharacters(RequireOneCharMixin, ViOperatorDef):
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
         self.repeatable = True
 
     def translate(self, view):
-        return {
-            'action': 'nv_vi_r',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'register': get_register(view),
-                'char': self.inp
-            }
-        }
+        return translate_action(view, 'nv_vi_r', {
+            'char': self.inp
+        })
 
 
 @assign(seqs.M, ACTION_MODES)
-class ViSetMark(RequiresOneCharMixinDef, ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+class ViSetMark(RequireOneCharMixin, ViOperatorDef):
+    def init(self):
         self.scroll_into_view = True
 
     def translate(self, view):
-        return {
-            'action': 'nv_vi_m',
-            'action_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'character': self.inp
-            }
-        }
+        return translate_action(view, 'nv_vi_m', {
+            'character': self.inp
+        })
+
+
+@assign(seqs.F, MOTION_MODES)
+class ViSearchCharForward(RequireOneCharMixin, ViMotionDef):
+    def init(self):
+        self.scroll_into_view = True
+        self.updates_xpos = True
+
+    def translate(self, view):
+        return translate_motion(view, 'nv_vi_find_in_line', {
+            'char': self.inp,
+            'inclusive': True
+        })
 
 
 @assign(seqs.T, MOTION_MODES)
-@assign(seqs.F, MOTION_MODES, inclusive=True)
-class ViSearchCharForward(RequiresOneCharMixinDef, ViMotionDef):
-    def __init__(self, inclusive=False, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._serializable.append('inclusive')
+class ViSearchCharForwardTill(RequireOneCharMixin, ViMotionDef):
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-        self.inclusive = inclusive
 
     def translate(self, view):
-        return {
-            'motion': 'nv_vi_find_in_line',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'char': self.inp,
-                'inclusive': self.inclusive
-            }
-        }
+        return translate_motion(view, 'nv_vi_find_in_line', {
+            'char': self.inp,
+            'inclusive': False
+        })
 
 
 @assign(seqs.A, (OPERATOR_PENDING, VISUAL, VISUAL_LINE, VISUAL_BLOCK))
-class ViATextObject(RequiresOneCharMixinDef, ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+class ViATextObject(RequireOneCharMixin, ViMotionDef):
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
 
     def translate(self, view):
-        return {
-            'motion': 'nv_vi_select_text_object',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'text_object': self.inp,
-                'inclusive': True
-            }
-        }
+        return translate_motion(view, 'nv_vi_select_text_object', {
+            'text_object': self.inp,
+            'inclusive': True
+        })
 
 
 @assign(seqs.I, (OPERATOR_PENDING, VISUAL, VISUAL_LINE, VISUAL_BLOCK))
-class ViITextObject(RequiresOneCharMixinDef, ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+class ViITextObject(RequireOneCharMixin, ViMotionDef):
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
 
     def translate(self, view):
-        return {
-            'motion': 'nv_vi_select_text_object',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'text_object': self.inp,
-                'inclusive': False
-            }
-        }
+        return translate_motion(view, 'nv_vi_select_text_object', {
+            'text_object': self.inp,
+            'inclusive': False
+        })
+
+
+@assign(seqs.BIG_F, MOTION_MODES)
+class ViSearchCharBackward(RequireOneCharMixin, ViMotionDef):
+    def init(self):
+        self.scroll_into_view = True
+        self.updates_xpos = True
+
+    def translate(self, view):
+        return translate_motion(view, 'nv_vi_reverse_find_in_line', {
+            'char': self.inp,
+            'inclusive': True
+        })
 
 
 @assign(seqs.BIG_T, MOTION_MODES)
-@assign(seqs.BIG_F, MOTION_MODES, inclusive=True)
-class ViSearchCharBackward(RequiresOneCharMixinDef, ViMotionDef):
-    def __init__(self, inclusive=False, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._serializable.append('inclusive')
+class ViSearchCharBackwardTill(RequireOneCharMixin, ViMotionDef):
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-        self.inclusive = inclusive
 
     def translate(self, view):
-        return {
-            'motion': 'nv_vi_reverse_find_in_line',
-            'motion_args': {
-                'char': self.inp,
-                'mode': get_mode(view),
-                'count': get_count(view),
-                'inclusive': self.inclusive
-            }
-        }
+        return translate_motion(view, 'nv_vi_reverse_find_in_line', {
+            'char': self.inp,
+            'inclusive': False
+        })
 
 
 @assign(seqs.SLASH, MOTION_MODES)
 class ViSearchForward(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
         self.input_parser = InputParser(
@@ -3092,10 +1835,7 @@ class ViSearchForward(ViMotionDef):
 
     def translate(self, view):
         if self.accept_input:
-            return {
-                'motion': 'nv_vi_slash',
-                'motion_args': {}
-            }
+            return translate_motion(view, 'nv_vi_slash')
 
         # We'll end up here, for example, when repeating via '.'.
         return ViSearchForwardImpl(term=self.inp[:-4]).translate(view)
@@ -3109,20 +1849,14 @@ class ViSearchForwardImpl(ViMotionDef):
         self.updates_xpos = True
 
     def translate(self, view):
-        return {
-            'motion': 'nv_vi_slash_impl',
-            'motion_args': {
-                'pattern': self.inp,
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        return translate_motion(view, 'nv_vi_slash_impl', {
+            'pattern': self.inp,
+        })
 
 
 @assign(seqs.QUESTION_MARK, MOTION_MODES)
 class ViSearchBackward(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
         self.input_parser = InputParser(
@@ -3145,13 +1879,10 @@ class ViSearchBackward(ViMotionDef):
 
     def translate(self, view):
         if self.accept_input:
-            return {
-                'motion': 'nv_vi_question_mark',
-                'motion_args': {}
-            }
-        else:
-            # We'll end up here, for example, when repeating via '.'.
-            return ViSearchBackwardImpl(term=self.inp[:-4]).translate(view)
+            return translate_motion(view, 'nv_vi_question_mark')
+
+        # We'll end up here, for example, when repeating via '.'.
+        return ViSearchBackwardImpl(term=self.inp[:-4]).translate(view)
 
 
 class ViSearchBackwardImpl(ViMotionDef):
@@ -3162,48 +1893,25 @@ class ViSearchBackwardImpl(ViMotionDef):
         self.inp = term
 
     def translate(self, view):
-        return {
-            'motion': 'nv_vi_question_mark_impl',
-            'motion_args': {
-                'pattern': self.inp,
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        return translate_motion(view, 'nv_vi_question_mark_impl', {
+            'pattern': self.inp,
+        })
 
 
 @assign(seqs.CTRL_X_CTRL_L, (INSERT,))
 class ViInsertLineWithCommonPrefix(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
-
-    def translate(self, view):
-        return {
-            'action': 'nv_vi_ctrl_x_ctrl_l',
-            'action_args': {
-                'mode': get_mode(view),
-                'register': get_register(view)
-            }
-        }
+        self.command = 'nv_vi_ctrl_x_ctrl_l'
 
 
 @assign(seqs.GM, MOTION_MODES)
 class ViMoveHalfScreenHorizontally(ViMotionDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return {
-            'motion': 'nv_vi_gm',
-            'motion_args': {
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        self.command = 'nv_vi_gm'
 
 
 @assign(seqs.ZC, ACTION_MODES)
@@ -3220,17 +1928,11 @@ class ViMoveHalfScreenHorizontally(ViMotionDef):
 @assign(seqs.Z_LEFT, ACTION_MODES)
 @assign(seqs.Z_RIGHT, ACTION_MODES)
 class Viz(ViOperatorDef):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True
 
     def translate(self, view):
-        return {
-            'action': 'nv_vi_z',
-            'action_args': {
-                'action': get_partial_sequence(view)[1:],
-                'mode': get_mode(view),
-                'count': get_count(view)
-            }
-        }
+        return translate_action(view, 'nv_vi_z', {
+            'action': get_partial_sequence(view)[1:],
+        })

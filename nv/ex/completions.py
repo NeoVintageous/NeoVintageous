@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -25,6 +25,7 @@ from NeoVintageous.nv.options import get_option_completions
 from NeoVintageous.nv.polyfill import view_to_region
 from NeoVintageous.nv.polyfill import view_to_str
 from NeoVintageous.nv.settings import get_cmdline_cwd
+from NeoVintageous.nv.utils import expand_path
 from NeoVintageous.nv.vim import is_ex_mode
 
 
@@ -34,7 +35,7 @@ _completion_types = [
     (re.compile(r'^(?P<cmd>:\s*e(?:dit)?!?)\s+(?P<path>.*)$'), False),
     (re.compile(r'^(?P<cmd>:\s*t(?:abedit)?!?)\s+(?P<path>.*)$'), False),
     (re.compile(r'^(?P<cmd>:\s*t(?:abe)?!?)\s+(?P<path>.*)$'), False),
-    (re.compile(r'^(?P<cmd>:\s*(?:sp(?:lit)?|vs(?:plit)?)!?)\s+(?P<path>.*)$'), False),
+    (re.compile(r'^(?P<cmd>:\s*(?:sp(?:lit)?|vs(?:plit)?|new|vne(?:w)?))\s+(?P<path>.*)$'), False),
 ]
 
 _completion_settings = (
@@ -45,11 +46,11 @@ _completion_settings = (
 
 def _iter_paths(prefix=None, from_dir=None, only_dirs: bool = False):
     if prefix:
-        start_at = os.path.expandvars(os.path.expanduser(prefix))
+        start_at = expand_path(prefix)
         # TODO: implement env var completion.
         if not prefix.startswith(('%', '$', '~')):
             start_at = os.path.join(from_dir, prefix)
-            start_at = os.path.expandvars(os.path.expanduser(start_at))
+            start_at = expand_path(start_at)
 
         prefix_split = os.path.split(prefix)
         prefix_len = len(prefix_split[1])
@@ -64,7 +65,7 @@ def _iter_paths(prefix=None, from_dir=None, only_dirs: bool = False):
                 yield prefix + (item + suffix)[prefix_len:]
     else:
         prefix = from_dir
-        start_at = os.path.expandvars(os.path.expanduser(prefix))
+        start_at = expand_path(prefix)
         for path in sorted(glob.iglob(start_at + '*')):
             if not only_dirs or os.path.isdir(path):
                 yield path[len(start_at):] + ('' if not os.path.isdir(path) else '/')
@@ -137,7 +138,7 @@ class _SettingCompletion():
             self._update(edit, cmd, prefix)
 
     def _update(self, edit, cmd: str, prefix: str) -> None:
-        if (_SettingCompletion.prefix is None) and prefix:
+        if (_SettingCompletion.prefix is None) and prefix:  # type: ignore[redundant-expr]
             _SettingCompletion.prefix = prefix
             _SettingCompletion.is_stale = True
         elif _SettingCompletion.prefix is None:
@@ -201,7 +202,7 @@ class _FsCompletion():
 
             return
 
-        if (not _FsCompletion.items) or _FsCompletion.is_stale:
+        if (not _FsCompletion.items) or _FsCompletion.is_stale:  # type: ignore[unreachable]
             _FsCompletion.items = _iter_paths(
                 from_dir=_FsCompletion.frozen_dir,
                 prefix=_FsCompletion.prefix,
@@ -251,12 +252,12 @@ _CMDLINE_COMPLETIONS = [
     'bNext', 'bfirst', 'blast', 'bnext', 'bprevious', 'brewind', 'browse',
     'buffer', 'buffers', 'cd', 'close', 'copy', 'cquit', 'delete', 'edit',
     'exit', 'file', 'files', 'global', 'help', 'history', 'inoremap', 'let',
-    'ls', 'move', 'new', 'nnoremap', 'nohlsearch', 'noremap', 'nunmap', 'only',
-    'onoremap', 'ounmap', 'print', 'pwd', 'qall', 'quit', 'read', 'registers',
+    'ls', 'marks', 'move', 'new', 'nnoremap', 'nohlsearch', 'noremap', 'nunmap', 'only',
+    'onoremap', 'ounmap', 'print', 'pwd', 'qall', 'quit', 'quitall', 'read', 'registers',
     'set', 'setlocal', 'shell', 'silent', 'snoremap', 'sort', 'spellgood',
     'spellundo', 'split', 'substitute', 'sunmap', 'tabNext', 'tabclose',
     'tabfirst', 'tablast', 'tabnext', 'tabonly', 'tabprevious', 'tabrewind',
-    'unmap', 'unvsplit', 'vnoremap', 'vsplit', 'vunmap', 'wall', 'wq', 'wqall',
+    'unmap', 'unvsplit', 'vnew', 'vnoremap', 'vsplit', 'vunmap', 'wall', 'wq', 'wqall',
     'write', 'xall', 'xit', 'yank', 'xnoremap', 'xunmap'
 ]
 

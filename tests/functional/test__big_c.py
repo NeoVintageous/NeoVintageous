@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -60,3 +60,19 @@ class Test_C(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertLinewiseRegister('1two\n')
         self.assertRegisterEmpty('-')
         self.assertRegisterEmpty('0')
+
+    def test_C_to_default_register(self):
+        self.normal('f|izz\n')
+        self.feed('C')
+        self.assertInsert('f|\n')
+        self.assertRegister('"izz')
+        self.assertRegister('-izz')
+
+    def test_C_to_register(self):
+        self.normal('f|izz\n')
+        self.feed('"')
+        self.feed('a')
+        self.feed('C')
+        self.assertInsert('f|\n')
+        self.assertRegister('"izz')
+        self.assertRegister('aizz')

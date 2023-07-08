@@ -32,3 +32,15 @@ xx   a^Vb^Vc
 
 Press ENTER to continue
 " ^^^^^^^^^^^^^^^^^^^^^ markup.raw.inline
+
+Name Content
+"^^^^^^^^^^^ entity.name.cmdline-output
+
+   Name Content
+"^^^^^^^^^^^^^^ -entity.name.cmdline-output
+
+mark line  col file/text
+"^^^^^^^^^^^^^^^^^^^^^^^ entity.name.cmdline-output
+
+    mark line  col file/text
+"^^^^^^^^^^^^^^^^^^^^^^^^^^^ -entity.name.cmdline-output

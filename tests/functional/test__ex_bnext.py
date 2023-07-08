@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -20,7 +20,7 @@ from NeoVintageous.tests import unittest
 
 class Test_ex_bnext(unittest.FunctionalTestCase):
 
-    @unittest.mock_run_commands('next_view')
+    @unittest.mock_commands('next_view')
     def test_n_bnext(self):
         self.eq('f|izz', ':bnext', 'f|izz')
         self.assertRunCommand('next_view')

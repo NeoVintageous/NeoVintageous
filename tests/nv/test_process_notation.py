@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -24,10 +24,10 @@ class TestProcessNotationHandler(unittest.ViewTestCase):
 
     def test_can_instantiate(self):
         self.normal('fi|zz')
-        handler = ProcessNotationHandler(self.view, 'w', None, True)
+        handler = ProcessNotationHandler(self.view, 'w', 0, True)
         self.assertIsInstance(handler, ProcessNotationHandler)
         self.assertEqual(self.view, handler.view)
         self.assertEqual(self.view.window(), handler.window)
         self.assertEqual('w', handler.keys)
-        self.assertEqual(None, handler.repeat_count)
+        self.assertEqual(0, handler.repeat_count)
         self.assertEqual(True, handler.check_user_mappings)

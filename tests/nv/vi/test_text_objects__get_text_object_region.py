@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -23,4 +23,4 @@ from NeoVintageous.nv.vi.text_objects import get_text_object_region
 class Test_get_text_object_region(unittest.ViewTestCase):
 
     def test_text_object_does_nothing_and_returns_selection(self):
-        self.assertEqual(get_text_object_region(self.view, '__expected__', 'foobar'), '__expected__')  # type: ignore
+        self.assertEqual(get_text_object_region(self.view, '__expected__', 'foobar'), '__expected__')  # type: ignore[arg-type] # noqa: E501

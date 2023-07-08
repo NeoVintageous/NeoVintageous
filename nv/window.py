@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -17,11 +17,16 @@
 
 import os
 
+from sublime import ENCODED_POSITION
+
 from NeoVintageous.nv.polyfill import goto_definition_side_by_side
 from NeoVintageous.nv.polyfill import has_dirty_buffers
 from NeoVintageous.nv.polyfill import set_selection
+from NeoVintageous.nv.registers import get_alternate_file_register
 from NeoVintageous.nv.settings import get_cmdline_cwd
 from NeoVintageous.nv.settings import get_exit_when_quiting_last_window
+from NeoVintageous.nv.ui import ui_bell
+from NeoVintageous.nv.utils import create_pane
 from NeoVintageous.nv.vim import status_message
 
 
@@ -132,12 +137,7 @@ def _layout_group_width(layout, group: int, width: int = None) -> dict:
 
 
 def _layout_groups_equal(layout):
-    """Make all groups (almost) equally high and wide.
-
-    Uses 'winheight' and 'winwidth' for the current window.  Windows with
-    'winfixheight' set keep their height and windows with 'winfixwidth' set
-    keep their width.
-    """
+    """Make all groups (almost) equally high and wide."""
     cell_count = len(layout['cells'])
     col_count = len(layout['cols'])
     row_count = len(layout['rows'])
@@ -238,8 +238,8 @@ def _close_view(window, forceit: bool = False, close_if_last: bool = True, **kwa
         window.run_command('destroy_pane', {'direction': 'self'})
 
 
-def _close_active_view(window) -> None:
-    _close_view(window, close_if_last=False)
+def _close_active_view(window, close_if_last=False) -> None:
+    _close_view(window, close_if_last=close_if_last)
 
 
 def window_quit_view(window, **kwargs) -> None:
@@ -308,9 +308,13 @@ def _exchange_view_by_count(window, count: int = 1) -> None:
 
 
 def _move_active_view_to_far_left(window) -> None:
-    """Move the current view to be at the far left, using the full height of the view.
+    """Move the current view to be at the far left.
 
-    Example of moving window (a=active). Currently only supports 2 row or 2 column layouts.
+    Using the full height of the view.
+
+    Example of moving window (a=active).
+
+    Currently only supports 2 row or 2 column layouts.
      ____________                    _________________
     |   0   |__1_|                  |    |   1   |  2 |
     |_______|__2a|                  |    |_______|__ _|
@@ -535,26 +539,34 @@ def _resize_groups_equally(window) -> None:
 
 
 def _split(window, file: str = None) -> None:
-    """Split current view in two. The result is two viewports on the same file."""
     if file:
-        window.run_command('create_pane', {'direction': 'down', 'give_focus': True})
-        window.open_file(file)
+        create_pane(window, 'down', file)
     else:
         window.run_command('clone_file_to_pane', {'direction': 'down'})
 
 
-def _split_vertically(window, count: int = None) -> None:
-    window.run_command('clone_file_to_pane', {'direction': 'right'})
+def _vsplit(window, file: str = None) -> None:
+    if file:
+        create_pane(window, 'right', file)
+    else:
+        window.run_command('clone_file_to_pane', {'direction': 'right'})
 
 
-def _split_with_new_file(window, n: int = None) -> None:
-    """Create a new group and start editing an empty file in it.
+def _new(window, file: str = None) -> None:
+    create_pane(window, 'down', file)
 
-    Make new group N high (default is to use half the existing height).
-    Reduces the current group height to create room (and others, if the
-    'equalalways' option is set and 'eadirection' isn't "hor").
-    """
-    window.run_command('create_pane', {'direction': 'down', 'give_focus': True})
+
+def vnew(window, file: str = None) -> None:
+    create_pane(window, 'right', file)
+
+
+def _split_alternate(window):
+    alternate_file = get_alternate_file_register()
+    if not alternate_file:
+        ui_bell('E23: No alternate file')
+        return
+
+    create_pane(window, 'down', alternate_file)
 
 
 def window_buffer_control(window, action: str, count: int = 1) -> None:
@@ -622,6 +634,9 @@ def window_tab_control(window, action: str, count: int = 1, index: int = None) -
 
         window.focus_view(view)
 
+    elif action == 'new':
+        window.run_command('new_file')
+
     elif action == 'close':
         window.run_command('close_by_index', {'group': group_index, 'index': view_index})
 
@@ -629,7 +644,7 @@ def window_tab_control(window, action: str, count: int = 1, index: int = None) -
         raise ValueError('unknown tab control action: %s' % action)
 
 
-def window_control(window, action: str, count: int = 1, **kwargs) -> None:
+def window_control(window, action: str, mode=None, count: int = 1, register=None, **kwargs) -> None:
     if action == 'b':
         _focus_group_bottom_right(window)
     elif action == 'H':
@@ -643,7 +658,7 @@ def window_control(window, action: str, count: int = 1, **kwargs) -> None:
     elif action == 'W':
         window_buffer_control(window, 'goto', count)
     elif action == 'c':
-        _close_active_view(window)
+        _close_active_view(window, **kwargs)
     elif action == '=':
         _resize_groups_equally(window)
     elif action == '>':
@@ -661,7 +676,7 @@ def window_control(window, action: str, count: int = 1, **kwargs) -> None:
     elif action == '-':
         _decrease_group_height(window, count)
     elif action == 'n':
-        _split_with_new_file(window, count)
+        _new(window, **kwargs)
     elif action == 'o':
         _close_all_other_views(window)
     elif action == '|':
@@ -677,18 +692,20 @@ def window_control(window, action: str, count: int = 1, **kwargs) -> None:
     elif action == '_':
         _set_group_height(window, count)
     elif action == 'v':
-        _split_vertically(window, count)
+        _vsplit(window, **kwargs)
     elif action == 'x':
         _exchange_view_by_count(window, count)
     elif action == ']':
         goto_definition_side_by_side(window)
+    elif action == '^':
+        _split_alternate(window)
     else:
         raise ValueError('unknown action')
 
 
-def window_open_file(window, file) -> None:
+def window_open_file(window, file: str, row: int = None, col: int = None) -> bool:
     if not file:
-        return
+        return False
 
     if not os.path.isabs(file):
         cwd = get_cmdline_cwd()
@@ -696,5 +713,15 @@ def window_open_file(window, file) -> None:
         if os.path.isdir(cwd):
             file = os.path.join(cwd, file)
 
-    if os.path.isfile(file):
-        window.open_file(file)
+    if not os.path.isfile(file):
+        return False
+
+    flags = 0
+    if row:
+        flags = ENCODED_POSITION
+        file += ':' + str(row)
+        file += ':' + str(col) if col else ''
+
+    window.open_file(file, flags)
+
+    return True

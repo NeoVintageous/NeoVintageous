@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -49,8 +49,8 @@ class Test_gq_wrapped_at_80(unittest.FunctionalTestCase):
         self.eq('x\n\na|a\nbb\ncc\n\ny\n', 'gqip', 'x\n\naa bb cc\n|\ny\n')
 
     def test_gq_brace(self):
-        self.eq('|aaa\nbbb\nccc\n', 'gq}', 'aaa bbb ccc\n|'),
-        self.eq('|aaa\nbbb\nccc', 'gq}', '|aaa bbb ccc'),
+        self.eq('|aaa\nbbb\nccc\n', 'gq}', 'aaa bbb ccc\n|')
+        self.eq('|aaa\nbbb\nccc', 'gq}', '|aaa bbb ccc')
 
     def test_gq_brace_should_only_mutate_current_paragraph(self):
         self.eq('x\n\na|a\nbb\ncc\n\nyyy', 'gqip', 'x\n\naa bb cc\n|\nyyy')

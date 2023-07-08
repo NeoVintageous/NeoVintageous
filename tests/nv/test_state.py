@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -55,7 +55,7 @@ from NeoVintageous.nv.vi.cmd_base import ViCommandDefBase
 class TestState(unittest.ViewTestCase):
 
     def test_init_view_on_invalid_view(self):
-        panel = self.view.window().create_output_panel('test_invalid_state', unlisted=True)
+        panel = self.view.window().create_output_panel('test_invalid_state', unlisted=True)  # type: ignore[union-attr]
         panel.settings().set('is_widget', True)
         panel.settings().set('command_mode', True)
         panel.settings().set('inverse_caret_state', True)
@@ -71,12 +71,12 @@ class TestState(unittest.ViewTestCase):
         # pristine state. This isn't great, though.
 
         # DEPRECATED
-        self.view.window().settings().erase('_vintageous_last_char_search_command')
-        self.view.window().settings().erase('_vintageous_last_char_search_character')
-        self.view.window().settings().erase('_vintageous_last_buff_search_command')
-        self.view.window().settings().erase('_vintageous_last_buff_search_pattern')
-        self.view.window().settings().erase('_vintageous_last_search_pattern')
-        self.view.window().settings().erase('_vintageous_last_search_pattern_command')
+        self.view.window().settings().erase('_vintageous_last_char_search_command')  # type: ignore[union-attr]
+        self.view.window().settings().erase('_vintageous_last_char_search_character')  # type: ignore[union-attr]
+        self.view.window().settings().erase('_vintageous_last_buff_search_command')  # type: ignore[union-attr]
+        self.view.window().settings().erase('_vintageous_last_buff_search_pattern')  # type: ignore[union-attr]
+        self.view.window().settings().erase('_vintageous_last_search_pattern')  # type: ignore[union-attr]
+        self.view.window().settings().erase('_vintageous_last_search_pattern_command')  # type: ignore[union-attr]
 
         self.assertEqual(get_sequence(self.view), '')
         self.assertEqual(get_partial_sequence(self.view), '')
@@ -185,7 +185,7 @@ class TestStateCounts(unittest.ViewTestCase):
         set_action_count(self.view, get_action_count(self.view) + '3')
         self.assertEqual('123', get_action_count(self.view))
         with self.assertRaisesRegex(TypeError, self._get_type_error()):
-            set_action_count(self.view, get_action_count(self.view) + 4)
+            set_action_count(self.view, get_action_count(self.view) + 4)  # type: ignore[operator]
 
     def test_adding_motion_count_concatinates_str_not_int_addition(self):
         # NOTE motion/action counts need to be cast to strings because they need
@@ -197,7 +197,7 @@ class TestStateCounts(unittest.ViewTestCase):
         set_motion_count(self.view, get_motion_count(self.view) + '3')
         self.assertEqual('123', get_motion_count(self.view))
         with self.assertRaisesRegex(TypeError, self._get_type_error()):
-            set_motion_count(self.view, get_motion_count(self.view) + 4)
+            set_motion_count(self.view, get_motion_count(self.view) + 4)  # type: ignore[operator]
 
     def _get_type_error(self) -> str:
         if unittest.ST_VERSION < 4000:
@@ -270,11 +270,11 @@ class TestStateSetCommand(unittest.ViewTestCase):
 
     def setUp(self):
         super().setUp()
-        self.handler = FeedKeyHandler(self.view, 'w', None, True, False)
+        self.handler = FeedKeyHandler(self.view, 'w', 0, True, False)
 
     def test_raise_error_if_unknown_command_type(self):
         with self.assertRaisesRegex(ValueError, 'unexpected command type'):
-            self.handler._handle_command('foobar', True)
+            self.handler._handle_command('foobar', True)  # type: ignore[arg-type]
 
     def test_unexpected_type(self):
         class Foobar(ViCommandDefBase):

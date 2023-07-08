@@ -1,4 +1,4 @@
-# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -30,7 +30,7 @@ from sublime import version
 from sublime import windows as _windows
 
 
-def is_py38() -> bool:
+def _is_py38() -> bool:
     return sys.version_info >= (3, 8)
 
 
@@ -118,7 +118,7 @@ def is_file_read_only(file_name: str) -> bool:
 
 # A future compatable regular expression special character escaper. In Python
 # 3.7 only characters that have special meaning in regex patterns are escaped.
-if is_py38():
+if _is_py38():
     def re_escape(pattern: str):
         return re.escape(pattern)
 else:
@@ -128,6 +128,13 @@ else:
             '\\>', '>').replace(
             '\\\'', '\'').replace(
             '\\`', '`')
+
+
+def merge_dicts(a: dict, b: dict) -> dict:
+    x = a.copy()
+    x.update(b)
+
+    return x
 
 
 # There's no Sublime API to show a corrections select list. The workaround is to
@@ -301,6 +308,14 @@ def toggle_side_bar(window) -> None:
         window.focus_group(window.active_group())
 
 
+def reveal_side_bar(window) -> None:
+    if not window.is_sidebar_visible():
+        toggle_side_bar(window)
+
+    window.run_command('reveal_side_bar')
+    window.run_command('focus_side_bar')
+
+
 @contextmanager
 def save_preferences():
     yield load_settings('Preferences.sublime-settings')
@@ -325,3 +340,10 @@ else:
 def goto_definition_side_by_side(window) -> None:
     window.run_command('goto_definition', {'side_by_side': True})
     window.run_command('carry_file_to_pane', {'direction': 'right'})
+
+
+def truncate(string: str, truncate_at: int) -> str:
+    if len(string) > truncate_at:
+        return string[0:truncate_at] + ' ...'
+
+    return string
