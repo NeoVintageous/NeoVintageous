@@ -6,6 +6,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* Added [#916](https://github.com/NeoVintageous/NeoVintageous/issues/916): Marks are now persisted on restarts
+* Added [#880](https://github.com/NeoVintageous/NeoVintageous/issues/880): Support for uppercase global marks
 * Added [#906](https://github.com/NeoVintageous/NeoVintageous/issues/906): `:tabnew` and `:tabedit` Open a new tab page with an empty window, after the current
 * Added [#902](https://github.com/NeoVintageous/NeoVintageous/issues/902): `:vsplit {file}` Like `:split {file}`, but split vertically
 * Added [#903](https://github.com/NeoVintageous/NeoVintageous/issues/903): `:split {file}` Split current window in two and edit the file `{file}` in it

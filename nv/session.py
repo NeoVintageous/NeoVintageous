@@ -100,6 +100,7 @@ def load_session() -> None:
                         'last_substitute_string',
                         'last_used_register_name',
                         'macros',
+                        'marks',
                         'registers',
                     )
 

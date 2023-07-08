@@ -35,15 +35,40 @@ class Test_ex_marks(unittest.ResetMarks, unittest.ResetCommandLineOutput, unitte
         self.assertMarks(
             ' a      3    1       fizz')
 
-    def test_uppercase_mark(self):
+    @unittest.mock.patch('sublime.Window.find_open_file')
+    @unittest.mock.patch('sublime.View.file_name')
+    def test_uppercase_mark(self, file_name, find_open_file):
+        file_name.return_value = '/tmp/fizz.txt'
+        find_open_file.return_value = self.view
         self.normal('x\n\nf|izz\nbuzz\nx')
         self.feed('m')
         self.feed('A')
         self.feed(':marks')
         self.assertMarks(
-            ' A      3    1       fizz')
+            ' A      3    1 /tmp/fizz.txt')
 
-    def test_lowercase_and_uppercase_mark(self):
+    def test_lowercase_multiple_lines(self):
+        self.normal('x\n\nf|izz\nbuzz\nping pong\nx')
+        self.feed('m')
+        self.feed('a')
+        self.feed('w')
+        self.feed('m')
+        self.feed('c')
+        self.feed('j')
+        self.feed('7l')
+        self.feed('m')
+        self.feed('b')
+        self.feed(':marks')
+        self.assertMarks(
+            ' a      3    1       fizz\n'
+            ' b      5    7  ping pong\n'
+            ' c      4    0       buzz')
+
+    @unittest.mock.patch('sublime.Window.find_open_file')
+    @unittest.mock.patch('sublime.View.file_name')
+    def test_lowercase_and_uppercase_mark(self, file_name, find_open_file):
+        file_name.return_value = '/tmp/fizz.txt'
+        find_open_file.return_value = self.view
         self.normal('x\n\nf|izz\nbuzz\nping pong\nx')
         self.feed('m')
         self.feed('a')
@@ -58,10 +83,10 @@ class Test_ex_marks(unittest.ResetMarks, unittest.ResetCommandLineOutput, unitte
         self.feed('x')
         self.feed(':marks')
         self.assertMarks(
-            ' a      3    1       fizz\n'
-            ' x      5    5  ping pong\n'
-            ' B      4    0       buzz\n'
-            ' X      5    0  ping pong')
+            ' a      3    1 /tmp/fizz.txt\n'
+            ' x      5    5 /tmp/fizz.txt\n'
+            ' B      4    0 /tmp/fizz.txt\n'
+            ' X      5    0 /tmp/fizz.txt')
 
     @unittest.mock.patch('sublime.View.file_name')
     def test_mark_file_name(self, file_name):
