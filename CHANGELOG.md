@@ -8,13 +8,13 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 * Added [#916](https://github.com/NeoVintageous/NeoVintageous/issues/916): Marks are now persisted on restarts
 * Added [#880](https://github.com/NeoVintageous/NeoVintageous/issues/880): Support for uppercase global marks
-* Added [#906](https://github.com/NeoVintageous/NeoVintageous/issues/906): `:tabnew` and `:tabedit` Open a new tab page with an empty window, after the current
-* Added [#902](https://github.com/NeoVintageous/NeoVintageous/issues/902): `:vsplit {file}` Like `:split {file}`, but split vertically
-* Added [#903](https://github.com/NeoVintageous/NeoVintageous/issues/903): `:split {file}` Split current window in two and edit the file `{file}` in it
-* Added [#911](https://github.com/NeoVintageous/NeoVintageous/issues/911): `CTRL-w ^` Split the current window in two and edit the alternate file
-* Added [#909](https://github.com/NeoVintageous/NeoVintageous/issues/909): `new {file}` Create a new split and start editing file `{file}` in it
-* Added [#910](https://github.com/NeoVintageous/NeoVintageous/issues/910): `:vnew {file}` Like `:new {file}`, but split vertically
-* Added [#907](https://github.com/NeoVintageous/NeoVintageous/issues/907): `:vnew` Like `:new`, but split vertically
+* Added [#906](https://github.com/NeoVintageous/NeoVintageous/issues/906): `:tabnew` and `:tabedit` Open a new tab page with an empty window, after the current (requires [Origami](https://packagecontrol.io/packages/Origami))
+* Added [#902](https://github.com/NeoVintageous/NeoVintageous/issues/902): `:vsplit {file}` Like `:split {file}`, but split vertically (requires [Origami](https://packagecontrol.io/packages/Origami))
+* Added [#903](https://github.com/NeoVintageous/NeoVintageous/issues/903): `:split {file}` Split current window in two and edit the file `{file}` in it (requires [Origami](https://packagecontrol.io/packages/Origami))
+* Added [#911](https://github.com/NeoVintageous/NeoVintageous/issues/911): `CTRL-w ^` Split the current window in two and edit the alternate file (requires [Origami](https://packagecontrol.io/packages/Origami))
+* Added [#909](https://github.com/NeoVintageous/NeoVintageous/issues/909): `new {file}` Create a new split and start editing file `{file}` in it (requires [Origami](https://packagecontrol.io/packages/Origami))
+* Added [#910](https://github.com/NeoVintageous/NeoVintageous/issues/910): `:vnew {file}` Like `:new {file}`, but split vertically (requires [Origami](https://packagecontrol.io/packages/Origami))
+* Added [#907](https://github.com/NeoVintageous/NeoVintageous/issues/907): `:vnew` Like `:new`, but split vertically (requires [Origami](https://packagecontrol.io/packages/Origami))
 * Added [#904](https://github.com/NeoVintageous/NeoVintageous/issues/904): `V` is now countable
 * Added [#901](https://github.com/NeoVintageous/NeoVintageous/issues/901): `CTRL-W gt` same as `gt` and `CTRL-W gT` same as `gT`
 * Added [#881](https://github.com/NeoVintageous/NeoVintageous/issues/881): `:marks` List all the current marks
