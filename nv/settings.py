@@ -85,10 +85,8 @@ def get_cmdline_cwd() -> str:
 
         # 3. Return first view file name dirname.
         for view in window.views():
-            print('view =', view)
             if view:
                 file_name = view.file_name()
-                print('file_name =', file_name)
                 if file_name:
                     return os.path.dirname(file_name)
 
