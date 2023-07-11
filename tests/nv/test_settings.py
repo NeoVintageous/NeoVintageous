@@ -25,24 +25,34 @@ from NeoVintageous.nv.settings import set_cmdline_cwd
 
 class TestCmdlineCwd(unittest.ViewTestCase):
 
+    @unittest.mock.patch('sublime.View.file_name')
+    @unittest.mock.patch('sublime.Window.extract_variables')
+    @unittest.mock.patch.dict('NeoVintageous.nv.session._session', clear=True)
+    def test_defaults_to_cwd_set_by_sublime(self, extract_variables, file_name):
+        extract_variables.return_value = {}
+        file_name.return_value = None
+        self.assertEqual(get_cmdline_cwd(), os.getcwd())
+
     @unittest.mock.patch('NeoVintageous.nv.settings.active_window')
     @unittest.mock.patch.dict('NeoVintageous.nv.session._session', clear=True)
-    def test_returns_cwd(self, active_window, *args):
+    def test_return_default_cwd_when_no_active_window(self, active_window):
         active_window.return_value = None
         self.assertEqual(get_cmdline_cwd(), os.getcwd())
 
     @unittest.mock.patch('sublime.Window.extract_variables')
     @unittest.mock.patch.dict('NeoVintageous.nv.session._session', clear=True)
-    def test_returns_cwd_when_no_folder_variable_found(self, extract_variables):
-        extract_variables.return_value = {}
-        self.assertEqual(get_cmdline_cwd(), os.getcwd())
-
-    @unittest.mock.patch('sublime.Window.extract_variables')
-    @unittest.mock.patch.dict('NeoVintageous.nv.session._session', clear=True)
-    def test_returns_cwd_folder_variable(self, extract_variables):
+    def test_can_return_first_window_folder(self, extract_variables):
         extract_variables.return_value = {'folder': '/tmp/folder'}
         self.assertEqual(get_cmdline_cwd(), '/tmp/folder')
 
-    def test_returns_set_cwd(self):
+    @unittest.mock.patch('sublime.View.file_name')
+    @unittest.mock.patch('sublime.Window.extract_variables')
+    @unittest.mock.patch.dict('NeoVintageous.nv.session._session', clear=True)
+    def test_can_return_first_view_file_name_dirname(self, extract_variables, file_name):
+        extract_variables.return_value = {}
+        file_name.return_value = '/tmp/fizz/buzz.txt'
+        self.assertEqual(get_cmdline_cwd(), '/tmp/fizz')
+
+    def test_can_return_session_cwd(self):
         set_cmdline_cwd('/tmp/fizz')
         self.assertEqual(get_cmdline_cwd(), '/tmp/fizz')

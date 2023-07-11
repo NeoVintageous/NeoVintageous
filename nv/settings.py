@@ -70,16 +70,29 @@ def set_action_count(view, value) -> None:
 
 
 def get_cmdline_cwd() -> str:
+    # 1. Return session cwd e.g. set via ":cd {path}".
     cwd = get_session_value('cmdline_cwd')
     if cwd:
         return cwd
 
     window = active_window()
     if window:
+
+        # 2. Return first window folder.
         variables = window.extract_variables()
         if 'folder' in variables:
             return str(variables['folder'])
 
+        # 3. Return first view file name dirname.
+        for view in window.views():
+            print('view =', view)
+            if view:
+                file_name = view.file_name()
+                print('file_name =', file_name)
+                if file_name:
+                    return os.path.dirname(file_name)
+
+    # 4. Default to the cwd set by ST.
     return os.getcwd()
 
 
