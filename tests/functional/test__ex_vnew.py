@@ -24,4 +24,4 @@ class Test_ex_vnew(unittest.FunctionalTestCase):
     def test_vnew(self):
         self.normal('f|izz')
         self.feed(':vnew')
-        self.assertRunCommand('create_pane', {'direction': 'right'})
+        self.assertRunCommand('create_pane', {'direction': 'right', 'give_focus': True})

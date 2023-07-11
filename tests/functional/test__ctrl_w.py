@@ -122,7 +122,7 @@ class Test_ctrl_w(unittest.FunctionalTestCase):
         self.normal('f|izz')
         for feed in ('<C-w>n', '<C-w><C-n>', ':new'):
             self.feed(feed)
-        self.assertRunCommand('create_pane', {'direction': 'down'}, count=3)
+        self.assertRunCommand('create_pane', {'direction': 'down', 'give_focus': True}, count=3)
 
     @unittest.mock.patch('NeoVintageous.nv.window._close_all_other_views')
     def test_ctrl_w_o(self, function):
@@ -196,4 +196,4 @@ class Test_ctrl_w(unittest.FunctionalTestCase):
         for feed in ('<C-w>^', '<C-w><C-6>'):
             self.feed(feed)
             opener.assert_called_with('/tmp/buzz.txt', FORCE_GROUP)
-        self.assertRunCommand('create_pane', {'direction': 'down'}, count=2)
+        self.assertRunCommand('create_pane', {'direction': 'down', 'give_focus': True}, count=2)

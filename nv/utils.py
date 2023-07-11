@@ -1398,6 +1398,6 @@ def open_file(window: Window, file: str) -> None:
 
 def create_pane(window, direction: str, file: str = None) -> None:
     # Uses Origami command.
-    window.run_command('create_pane', {'direction': direction})
+    window.run_command('create_pane', {'direction': direction, 'give_focus': True})
     if file:
         open_file(window, file)

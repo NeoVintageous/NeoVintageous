@@ -24,4 +24,4 @@ class Test_ex_new(unittest.FunctionalTestCase):
     def test_new(self):
         self.normal('f|izz')
         self.feed(':new')
-        self.assertRunCommand('create_pane', {'direction': 'down'})
+        self.assertRunCommand('create_pane', {'direction': 'down', 'give_focus': True})
