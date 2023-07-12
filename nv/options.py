@@ -280,3 +280,7 @@ def set_option(view, name: str, value=None) -> None:
 
 def toggle_option(view, name: str) -> None:
     set_option(view, name, not get_option(view, name))
+
+
+def clear_options():
+    _session.clear()

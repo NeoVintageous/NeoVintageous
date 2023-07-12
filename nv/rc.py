@@ -58,15 +58,19 @@ def reload_rc() -> None:
 
 
 def _unload() -> None:
+    # Note that the imports are inline to avoid circular dependency errors.
     from NeoVintageous.nv.mappings import mappings_clear
     from NeoVintageous.nv.variables import variables_clear
+    from NeoVintageous.nv.options import clear_options
 
     variables_clear()
     mappings_clear()
+    clear_options()
 
 
 def _load() -> None:
     try:
+        # Note that the import is inline to avoid circular dependency errors.
         from NeoVintageous.nv.ex_cmds import do_ex_cmdline
         window = sublime.active_window()
         with builtins.open(_file_path(), 'r', encoding='utf-8', errors='replace') as f:
