@@ -24,6 +24,7 @@ from sublime import Region
 
 from NeoVintageous.nv.jumplist import jumplist_back
 from NeoVintageous.nv.session import get_session_value
+from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.utils import get_insertion_point_at_b
 
 
@@ -44,10 +45,13 @@ def set_mark(view, name: str) -> None:
         regions,
         flags=HIDDEN | PERSISTENT,
         scope='region.cyanish neovintageous_mark',
-        icon=_get_icon(name))
+        icon=_get_icon(view, name))
 
 
-def _get_icon(name: str) -> str:
+def _get_icon(view, name: str) -> str:
+    if not get_setting(view, 'show_marks_in_gutter'):
+        return ''
+
     return 'Packages/NeoVintageous/res/icons/%s_%s.png' % (
         'lower' if name.islower() else 'upper',
         name.lower())
