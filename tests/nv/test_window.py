@@ -18,9 +18,9 @@
 
 from NeoVintageous.tests import unittest
 
+from NeoVintageous.nv.polyfill import _get_layout_groups_same_size
 from NeoVintageous.nv.window import _layout_group_height
 from NeoVintageous.nv.window import _layout_group_width
-from NeoVintageous.nv.window import _layout_groups_equal
 from NeoVintageous.nv.window import window_control
 
 # +-+-+
@@ -299,57 +299,57 @@ class TestResizeGroupsAlmostEqually(unittest.TestCase):
 
     def test_size(self):
         # Negative tests: layouts with no rows or columns shouldn't change.
-        self.assertEqual(LAYOUT_SINGLE, _layout_groups_equal(LAYOUT_SINGLE.copy()))
+        self.assertEqual(LAYOUT_SINGLE, _get_layout_groups_same_size(LAYOUT_SINGLE.copy()))
 
         # Negative tests: layouts that are already equally sized shouldn't change
-        self.assertEqual(LAYOUT_COLS_2, _layout_groups_equal(LAYOUT_COLS_2.copy()))
-        self.assertEqual(LAYOUT_COLS_3, _layout_groups_equal(LAYOUT_COLS_3.copy()))
-        self.assertEqual(LAYOUT_ROWS_2, _layout_groups_equal(LAYOUT_ROWS_2.copy()))
-        self.assertEqual(LAYOUT_ROWS_3, _layout_groups_equal(LAYOUT_ROWS_3.copy()))
-        self.assertEqual(LAYOUT_GRID_4, _layout_groups_equal(LAYOUT_GRID_4.copy()))
-        self.assertEqual(LAYOUT_CELLS_3_VARIANT_1, _layout_groups_equal(LAYOUT_CELLS_3_VARIANT_1.copy()))
+        self.assertEqual(LAYOUT_COLS_2, _get_layout_groups_same_size(LAYOUT_COLS_2.copy()))
+        self.assertEqual(LAYOUT_COLS_3, _get_layout_groups_same_size(LAYOUT_COLS_3.copy()))
+        self.assertEqual(LAYOUT_ROWS_2, _get_layout_groups_same_size(LAYOUT_ROWS_2.copy()))
+        self.assertEqual(LAYOUT_ROWS_3, _get_layout_groups_same_size(LAYOUT_ROWS_3.copy()))
+        self.assertEqual(LAYOUT_GRID_4, _get_layout_groups_same_size(LAYOUT_GRID_4.copy()))
+        self.assertEqual(LAYOUT_CELLS_3_VARIANT_1, _get_layout_groups_same_size(LAYOUT_CELLS_3_VARIANT_1.copy()))
 
         # Columns: 2
-        self.assertEqual(LAYOUT_COLS_2, _layout_groups_equal(LAYOUT_COLS_2_LEFT_SMALL.copy()))
-        self.assertEqual(LAYOUT_COLS_2, _layout_groups_equal(LAYOUT_COLS_2_RIGHT_SMALL.copy()))
+        self.assertEqual(LAYOUT_COLS_2, _get_layout_groups_same_size(LAYOUT_COLS_2_LEFT_SMALL.copy()))
+        self.assertEqual(LAYOUT_COLS_2, _get_layout_groups_same_size(LAYOUT_COLS_2_RIGHT_SMALL.copy()))
 
         # Rows: 2
-        self.assertEqual(LAYOUT_ROWS_2, _layout_groups_equal(LAYOUT_ROWS_2_ABOVE_SMALL.copy()))
-        self.assertEqual(LAYOUT_ROWS_2, _layout_groups_equal(LAYOUT_ROWS_2_BELOW_SMALL.copy()))
+        self.assertEqual(LAYOUT_ROWS_2, _get_layout_groups_same_size(LAYOUT_ROWS_2_ABOVE_SMALL.copy()))
+        self.assertEqual(LAYOUT_ROWS_2, _get_layout_groups_same_size(LAYOUT_ROWS_2_BELOW_SMALL.copy()))
 
         # Grid: 4
         expected = LAYOUT_GRID_4.copy()
         layout = LAYOUT_GRID_4.copy()
         layout['cols'] = [0.0, 0.3, 1.0]
-        self.assertEqual(expected, _layout_groups_equal(layout.copy()))
+        self.assertEqual(expected, _get_layout_groups_same_size(layout.copy()))
         layout['cols'] = [0.0, 0.9, 1.0]
-        self.assertEqual(expected, _layout_groups_equal(layout.copy()))
+        self.assertEqual(expected, _get_layout_groups_same_size(layout.copy()))
         layout['rows'] = [0.0, 0.6, 1.0]
-        self.assertEqual(expected, _layout_groups_equal(layout.copy()))
+        self.assertEqual(expected, _get_layout_groups_same_size(layout.copy()))
         layout['rows'] = [0.0, 0.2, 1.0]
-        self.assertEqual(expected, _layout_groups_equal(layout.copy()))
+        self.assertEqual(expected, _get_layout_groups_same_size(layout.copy()))
 
         # Cells: 3 (variant 1)
         expected = LAYOUT_CELLS_3_VARIANT_1.copy()
         layout = LAYOUT_CELLS_3_VARIANT_1.copy()
         layout['cols'] = [0.0, 0.3, 1.0]
-        self.assertEqual(expected, _layout_groups_equal(layout.copy()))
+        self.assertEqual(expected, _get_layout_groups_same_size(layout.copy()))
         layout['cols'] = [0.0, 0.8, 1.0]
-        self.assertEqual(expected, _layout_groups_equal(layout.copy()))
+        self.assertEqual(expected, _get_layout_groups_same_size(layout.copy()))
         layout['rows'] = [0.0, 0.4, 1.0]
-        self.assertEqual(expected, _layout_groups_equal(layout.copy()))
+        self.assertEqual(expected, _get_layout_groups_same_size(layout.copy()))
 
         # Cells: 4 (variant 1)
         expected = LAYOUT_CELLS_4_VARIANT_1.copy()
         layout = LAYOUT_CELLS_4_VARIANT_1.copy()
         layout['rows'] = [0.0, 0.5, 0.75, 1.0]
-        self.assertEqual(expected, _layout_groups_equal(layout))
+        self.assertEqual(expected, _get_layout_groups_same_size(layout))
         layout['rows'] = [0.0, 0.7, 0.8, 1.0]
-        self.assertEqual(expected, _layout_groups_equal(layout))
+        self.assertEqual(expected, _get_layout_groups_same_size(layout))
         layout['cols'] = [0.0, 0.2, 1.0]
-        self.assertEqual(expected, _layout_groups_equal(layout))
+        self.assertEqual(expected, _get_layout_groups_same_size(layout))
         layout['cols'] = [0.0, 0.33, 1.0]
-        self.assertEqual(expected, _layout_groups_equal(layout))
+        self.assertEqual(expected, _get_layout_groups_same_size(layout))
 
 
 class MockView():

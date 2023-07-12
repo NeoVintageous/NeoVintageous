@@ -168,6 +168,8 @@ class TestCmdlineEditing(unittest.FunctionalTestCase):
         self.feed('<tab>')
         self.assertNormal(':set belloff|')
         self.feed('<tab>')
+        self.assertNormal(':set equalalways|')
+        self.feed('<tab>')
         self.assertNormal(':set expandtab|')
 
     def test_c_tab_set_completions_no(self):

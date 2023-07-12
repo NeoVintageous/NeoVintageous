@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.32.0 - Unreleased
+
+### Added
+
+* Added [#921](https://github.com/NeoVintageous/NeoVintageous/issues/921): Add `'equalalways'` option
+
 ## 1.31.0 - Unreleased
 
 ### Added

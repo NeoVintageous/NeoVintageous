@@ -69,7 +69,7 @@ class Test_ctrl_w(unittest.FunctionalTestCase):
         self.feed('<C-w>c')
         function.assert_called_once_with(self.view.window())
 
-    @unittest.mock.patch('NeoVintageous.nv.window._resize_groups_equally')
+    @unittest.mock.patch('NeoVintageous.nv.window.make_all_groups_same_size')
     def test_ctrl_w_equal(self, function):
         self.normal('f|izz')
         self.feed('<C-w>=')

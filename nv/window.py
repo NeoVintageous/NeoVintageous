@@ -21,11 +21,13 @@ from sublime import ENCODED_POSITION
 
 from NeoVintageous.nv.polyfill import goto_definition_side_by_side
 from NeoVintageous.nv.polyfill import has_dirty_buffers
+from NeoVintageous.nv.polyfill import make_all_groups_same_size
 from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.registers import get_alternate_file_register
 from NeoVintageous.nv.settings import get_cmdline_cwd
 from NeoVintageous.nv.settings import get_exit_when_quiting_last_window
 from NeoVintageous.nv.ui import ui_bell
+from NeoVintageous.nv.utils import clone_file
 from NeoVintageous.nv.utils import create_pane
 from NeoVintageous.nv.vim import status_message
 
@@ -132,40 +134,6 @@ def _layout_group_width(layout, group: int, width: int = None) -> dict:
     cols.append(1.0)
 
     layout['cols'] = cols
-
-    return layout
-
-
-def _layout_groups_equal(layout):
-    """Make all groups (almost) equally high and wide."""
-    cell_count = len(layout['cells'])
-    col_count = len(layout['cols'])
-    row_count = len(layout['rows'])
-
-    if col_count == 2 and row_count == 2:
-        return layout
-
-    if cell_count == 4 and col_count == 3 and row_count == 3:
-        # Special case for 4-grid. Works around some complicated layout issues.
-        return {
-            'cells': [[0, 0, 1, 1], [1, 0, 2, 1], [0, 1, 1, 2], [1, 1, 2, 2]],
-            'cols': [0.0, 0.5, 1.0],
-            'rows': [0.0, 0.5, 1.0]
-        }
-
-    def equalise(count):
-        size = round(1.0 / (count - 1), 2)
-        vals = [0.0]
-        for i in range(1, count - 1):
-            vals.append(round(size * i, 2))
-        vals.append(1.0)
-        return vals
-
-    if col_count > 2:
-        layout['cols'] = equalise(col_count)
-
-    if row_count > 2:
-        layout['rows'] = equalise(row_count)
 
     return layout
 
@@ -331,7 +299,7 @@ def _move_active_view_to_far_left(window) -> None:
         window.focus_group(0)
 
     window.set_layout(_LAYOUT_TWO_COLUMN)
-    _resize_groups_equally(window)
+    make_all_groups_same_size(window)
 
 
 def _move_active_view_to_far_right(window) -> None:
@@ -344,7 +312,7 @@ def _move_active_view_to_far_right(window) -> None:
         window.focus_group(1)
 
     window.set_layout(_LAYOUT_TWO_COLUMN)
-    _resize_groups_equally(window)
+    make_all_groups_same_size(window)
 
 
 def _move_active_view_to_very_bottom(window) -> None:
@@ -357,7 +325,7 @@ def _move_active_view_to_very_bottom(window) -> None:
         window.focus_group(1)
 
     window.set_layout(_LAYOUT_TWO_ROW)
-    _resize_groups_equally(window)
+    make_all_groups_same_size(window)
 
 
 def _move_active_view_to_very_top(window) -> None:
@@ -370,7 +338,7 @@ def _move_active_view_to_very_top(window) -> None:
         window.focus_group(0)
 
     window.set_layout(_LAYOUT_TWO_ROW)
-    _resize_groups_equally(window)
+    make_all_groups_same_size(window)
 
 
 def _get_group(window, direction: str, count: int):
@@ -531,25 +499,18 @@ def _increase_group_width(window, count: int = 1) -> None:
     pass
 
 
-def _resize_groups_equally(window) -> None:
-    """Make all groups (almost) equally high and wide."""
-    return window.set_layout(
-        _layout_groups_equal(window.layout())
-    )
-
-
 def _split(window, file: str = None) -> None:
     if file:
         create_pane(window, 'down', file)
     else:
-        window.run_command('clone_file_to_pane', {'direction': 'down'})
+        clone_file(window, 'down')
 
 
 def _vsplit(window, file: str = None) -> None:
     if file:
         create_pane(window, 'right', file)
     else:
-        window.run_command('clone_file_to_pane', {'direction': 'right'})
+        clone_file(window, 'right')
 
 
 def _new(window, file: str = None) -> None:
@@ -660,7 +621,7 @@ def window_control(window, action: str, mode=None, count: int = 1, register=None
     elif action == 'c':
         _close_active_view(window, **kwargs)
     elif action == '=':
-        _resize_groups_equally(window)
+        make_all_groups_same_size(window)
     elif action == '>':
         _increase_group_width(window, count)
     elif action == 'h':

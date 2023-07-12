@@ -43,6 +43,7 @@ from sublime import View
 from sublime import Window
 
 from NeoVintageous.nv.options import get_option
+from NeoVintageous.nv.polyfill import make_all_groups_same_size
 from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
@@ -1401,3 +1402,15 @@ def create_pane(window, direction: str, file: str = None) -> None:
     window.run_command('create_pane', {'direction': direction, 'give_focus': True})
     if file:
         open_file(window, file)
+    _maybe_equalalways(window)
+
+
+def clone_file(window, direction: str) -> None:
+    window.run_command('clone_file_to_pane', {'direction': direction})
+    _maybe_equalalways(window)
+
+
+def _maybe_equalalways(window) -> None:
+    view = window.active_view()
+    if view and get_option(view, 'equalalways'):
+        make_all_groups_same_size(window)

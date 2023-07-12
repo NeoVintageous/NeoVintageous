@@ -347,3 +347,40 @@ def truncate(string: str, truncate_at: int) -> str:
         return string[0:truncate_at] + ' ...'
 
     return string
+
+
+def make_all_groups_same_size(window) -> None:
+    return window.set_layout(_get_layout_groups_same_size(window.layout()))
+
+
+def _get_layout_groups_same_size(layout: dict) -> dict:
+    cell_count = len(layout['cells'])
+    col_count = len(layout['cols'])
+    row_count = len(layout['rows'])
+
+    if col_count == 2 and row_count == 2:
+        return layout
+
+    if cell_count == 4 and col_count == 3 and row_count == 3:
+        # Special case for 4-grid. Works around some complicated layout issues.
+        return {
+            'cells': [[0, 0, 1, 1], [1, 0, 2, 1], [0, 1, 1, 2], [1, 1, 2, 2]],
+            'cols': [0.0, 0.5, 1.0],
+            'rows': [0.0, 0.5, 1.0]
+        }
+
+    def equalise(count: int) -> list:
+        size = round(1.0 / (count - 1), 2)
+        vals = [0.0]
+        for i in range(1, count - 1):
+            vals.append(round(size * i, 2))
+        vals.append(1.0)
+        return vals
+
+    if col_count > 2:
+        layout['cols'] = equalise(col_count)
+
+    if row_count > 2:
+        layout['rows'] = equalise(row_count)
+
+    return layout
