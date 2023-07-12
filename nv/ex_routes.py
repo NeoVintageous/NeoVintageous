@@ -578,10 +578,6 @@ def _ex_route_unmap(state) -> TokenCommand:
     return _create_word_route(state, 'unmap', 'lhs')
 
 
-def _ex_route_unvsplit(state) -> TokenCommand:
-    return _create_route(state, 'unvsplit')
-
-
 def _ex_route_vnew(state) -> TokenCommand:
     return _create_file_route(state, 'vnew')
 
@@ -802,7 +798,6 @@ _add_ex_route(r'tabo(?:nly)?', _ex_route_tabonly, 'tabonly')
 _add_ex_route(r'tabp(?:revious)?', _ex_route_tabprevious, 'tabprevious')
 _add_ex_route(r'tabr(?:ewind)?', _ex_route_tabfirst, 'tabrewind')
 _add_ex_route(r'unm(?:ap)?', _ex_route_unmap, 'unmap')
-_add_ex_route(r'unvsplit', _ex_route_unvsplit, 'unvsplit')
 _add_ex_route(r'vne(?:w)?', _ex_route_vnew, 'vnew')
 _add_ex_route(r'vn(?:oremap)?', _ex_route_vnoremap, 'vnoremap')
 _add_ex_route(r'vs(?:plit)?', _ex_route_vsplit, 'vsplit')

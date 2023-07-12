@@ -904,35 +904,6 @@ def ex_unmap(lhs: str, **kwargs) -> None:
             status_message('E31: No such mapping')
 
 
-# TODO [review] Either remove or refactor into window module. Preferably remove, because there should be standard commands that can achieve the same thing.  # noqa: E501
-# Non-standard Vim :unvsplit command
-def ex_unvsplit(window, **kwargs) -> None:
-    groups = window.num_groups()
-    if groups == 1:
-        return status_message("can't delete more groups")
-
-    # If we don't do this, cloned views will be moved to the previous group and
-    # kept around. We want to close them instead.
-
-    layout_data = {
-        1: {"cells": [[0, 0, 1, 1]],
-            "rows": [0.0, 1.0],
-            "cols": [0.0, 1.0]},
-        2: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1]],
-            "rows": [0.0, 1.0],
-            "cols": [0.0, 0.5, 1.0]},
-        3: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1]],
-            "rows": [0.0, 1.0],
-            "cols": [0.0, 0.33, 0.66, 1.0]},
-        4: {"cells": [[0, 0, 1, 1], [1, 0, 2, 1], [2, 0, 3, 1], [3, 0, 4, 1]],
-            "rows": [0.0, 1.0],
-            "cols": [0.0, 0.25, 0.50, 0.75, 1.0]},
-    }
-
-    window.run_command('close')
-    window.run_command('set_layout', layout_data[groups - 1])
-
-
 def ex_vnew(window, file: str = None, **kwargs) -> None:
     vnew(window, file=file)
 

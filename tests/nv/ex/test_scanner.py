@@ -630,7 +630,6 @@ class TestExCommands(unittest.TestCase):
         self.assertCommand(['tabonly!', 'tabo!'], cmd('tabonly', forced=True))
         self.assertCommand(['tabonly', 'tabo'], cmd('tabonly'))
         self.assertCommand(['unmap xyz', 'unm xyz'], cmd('unmap', params={'lhs': 'xyz'}))
-        self.assertCommand(['unvsplit'], cmd('unvsplit'))
         self.assertCommand(['vnew /tmp/fizz/buzz.txt'], cmd('vnew', params={'file': '/tmp/fizz/buzz.txt'}))  # noqa: E501
         self.assertCommand(['vnew file.txt'], cmd('vnew', params={'file': 'file.txt'}))
         self.assertCommand(['vnew tmp/file.txt'], cmd('vnew', params={'file': 'tmp/file.txt'}))
