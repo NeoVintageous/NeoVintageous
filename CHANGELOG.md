@@ -10,6 +10,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Added [#879](https://github.com/NeoVintageous/NeoVintageous/issues/879): RC file options only set on active view at startup
 * Added [#922](https://github.com/NeoVintageous/NeoVintageous/issues/922): RC file reloading should reset options
 
 ## 1.31.0 - Unreleased

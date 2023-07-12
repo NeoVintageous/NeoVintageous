@@ -19,6 +19,7 @@ import os
 import sys
 
 from sublime import active_window
+from sublime import load_settings
 
 from NeoVintageous.nv.settings import get_setting
 
@@ -96,7 +97,7 @@ class BooleanViewOption(BooleanOption):
         self._off = off
 
     def _set(self, view, value):
-        settings = view.settings()
+        settings = _resolve_settings(view)
         current_value = settings.get(self._name)
 
         # Note that the intent here is to avoid Sublime triggering a "setting
@@ -110,7 +111,7 @@ class BooleanViewOption(BooleanOption):
                 settings.set(self._name, self._off[0])
 
     def _get(self, view):
-        value = view.settings().get(self._name)
+        value = _resolve_settings(view).get(self._name)
 
         if value in self._on:
             value = True
@@ -126,13 +127,13 @@ class NumberViewOption(NumberOption):
         super().__init__(name, default)
 
     def _set(self, view, value):
-        settings = view.settings()
+        settings = _resolve_settings(view)
         current_value = settings.get(self._name)
         if value != current_value:
             settings.set(self._name, value)
 
     def _get(self, view):
-        return view.settings().get(self._name, self._default)
+        return _resolve_settings(view).get(self._name, self._default)
 
 
 def get_window_ui_element_visible(name: str, window=None) -> None:
@@ -284,3 +285,10 @@ def toggle_option(view, name: str) -> None:
 
 def clear_options():
     _session.clear()
+
+
+def _resolve_settings(view):
+    if view.window().settings().get('_nv_rc_loading'):
+        return load_settings('Preferences.sublime-settings')
+
+    return view.settings()
