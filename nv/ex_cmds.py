@@ -583,7 +583,7 @@ def ex_read(view, edit, line_range: RangeNode, cmd: str = None, file_name: str =
     # TODO :read [name] According to Vim's help :read should read the current
     # file's content *if no file is given* but Vim doesn't seem to do that.
     elif file_name:
-        ui_bell(':read [file] is not yet implemeneted; please open an issue')
+        ui_bell(':read [file] is not yet implemented; please open an issue')
 
 
 def ex_marks(view, **kwargs) -> None:
