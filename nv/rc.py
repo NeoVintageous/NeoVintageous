@@ -73,15 +73,14 @@ def _load() -> None:
         # Note that the import is inline to avoid circular dependency errors.
         from NeoVintageous.nv.ex_cmds import do_ex_cmdline
         window = sublime.active_window()
-        window.settings().set('_nv_rc_loading', True)
         with builtins.open(_file_path(), 'r', encoding='utf-8', errors='replace') as f:
+            window.settings().set('_nv_rc_loading', True)
             for line in f:
                 ex_cmdline = _parse_line(line)
                 if ex_cmdline:
                     do_ex_cmdline(window, ex_cmdline)
-
-        window.settings().erase('_nv_rc_loading')
-        sublime.save_settings('Preferences.sublime-settings')
+            window.settings().erase('_nv_rc_loading')
+            sublime.save_settings('Preferences.sublime-settings')
         print('%s file loaded' % _file_name())
     except FileNotFoundError:
         _log.info('%s file not found', _file_name())
