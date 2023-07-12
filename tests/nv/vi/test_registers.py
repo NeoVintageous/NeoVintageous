@@ -16,7 +16,6 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 from collections import deque
-from unittest import mock
 
 from sublime import get_clipboard
 from sublime import set_clipboard
@@ -328,7 +327,7 @@ class TestRegister(RegistersTestCase):
         self.assertEqual(registers_get(self.view, _CURRENT_FILE_NAME), None)
 
     def test_returns_empty_string_if_file_name_not_found_or_error(self):
-        self.view.file_name = mock.Mock(side_effect=AttributeError('error'))  # type: ignore[method-assign]
+        self.view.file_name = unittest.mock.Mock(side_effect=AttributeError('error'))  # type: ignore[method-assign]
         self.assertEqual(registers_get(self.view, _CURRENT_FILE_NAME), None)
 
     def test_can_get_clipboard_registers(self):
@@ -402,7 +401,7 @@ class Test_get_selected_text(RegistersTestCase):
 
     def setUp(self):
         super().setUp()
-        self.mock_view = mock.Mock()
+        self.mock_view = unittest.mock.Mock()
 
     def test_extracts_substrings(self):
         self.mock_view.sel.return_value = [10, 20, 30]

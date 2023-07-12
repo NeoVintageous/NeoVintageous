@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from unittest import mock
 import unittest
 
 from NeoVintageous.nv.variables import _defaults
@@ -39,11 +38,11 @@ class TestVariables(unittest.TestCase):
         self.assertTrue(is_key_name('<localleader>'))
         self.assertEqual(_defaults[_special['<localleader>']], '<bslash>')
 
-    @mock.patch.dict('NeoVintageous.nv.variables._special', {'<testpresent>': 'testpresentvalue'})
+    @unittest.mock.patch.dict('NeoVintageous.nv.variables._special', {'<testpresent>': 'testpresentvalue'})
     def test_is_key_name_returns_true_when_present(self):
         self.assertTrue(is_key_name('<testpresent>'))
 
-    @mock.patch.dict('NeoVintageous.nv.variables._special', {'<testpresent>': 'testpresentvalue'})
+    @unittest.mock.patch.dict('NeoVintageous.nv.variables._special', {'<testpresent>': 'testpresentvalue'})
     def test_is_key_name_is_case_insensitive(self):
         self.assertTrue(is_key_name('<testpresent>'))
         self.assertTrue(is_key_name('<TESTPRESENT>'))
@@ -56,14 +55,14 @@ class TestVariables(unittest.TestCase):
     def test_get_returns_none_if_key_is_not_present(self):
         self.assertIsNone(get('<TestNotPresent>'))
 
-    @mock.patch.dict('NeoVintageous.nv.variables._special', {'<testget>': 'x'})
-    @mock.patch.dict('NeoVintageous.nv.variables._defaults', {'x': 'y'})
+    @unittest.mock.patch.dict('NeoVintageous.nv.variables._special', {'<testget>': 'x'})
+    @unittest.mock.patch.dict('NeoVintageous.nv.variables._defaults', {'x': 'y'})
     def test_get_returns_default_value(self):
         self.assertEqual(get('<TestGet>'), 'y')
 
-    @mock.patch.dict('NeoVintageous.nv.variables._special', {'<testget>': 'x'})
-    @mock.patch.dict('NeoVintageous.nv.variables._defaults', {'x': 'foobar'})
-    @mock.patch.dict('NeoVintageous.nv.variables._variables', {'x': 'y'})
+    @unittest.mock.patch.dict('NeoVintageous.nv.variables._special', {'<testget>': 'x'})
+    @unittest.mock.patch.dict('NeoVintageous.nv.variables._defaults', {'x': 'foobar'})
+    @unittest.mock.patch.dict('NeoVintageous.nv.variables._variables', {'x': 'y'})
     def test_get_returns_variable_value_if_set(self):
         self.assertEqual(get('<TestGet>'), 'y')
 
@@ -80,14 +79,14 @@ class TestVariables(unittest.TestCase):
         self.assertEqual('x<TestNotPresent>y', expand_keys('x<TestNotPresent>y'))
         self.assertEqual('<TestNotPresent><TestNotPresent>', expand_keys('<TestNotPresent><TestNotPresent>'))
 
-    @mock.patch.dict('NeoVintageous.nv.variables._special', {'<testget>': 'x'})
-    @mock.patch.dict('NeoVintageous.nv.variables._defaults', {}, clear=True)
-    @mock.patch.dict('NeoVintageous.nv.variables._variables', {}, clear=True)
+    @unittest.mock.patch.dict('NeoVintageous.nv.variables._special', {'<testget>': 'x'})
+    @unittest.mock.patch.dict('NeoVintageous.nv.variables._defaults', {}, clear=True)
+    @unittest.mock.patch.dict('NeoVintageous.nv.variables._variables', {}, clear=True)
     def test_expand_keys_protect_against_infinite_loop(self):
         self.assertEqual('<TestGet>', expand_keys('<TestGet>'))
 
-    @mock.patch.dict('NeoVintageous.nv.variables._defaults', {'x': 'y'})
-    @mock.patch.dict('NeoVintageous.nv.variables._special', {'<testget>': 'x'})
+    @unittest.mock.patch.dict('NeoVintageous.nv.variables._defaults', {'x': 'y'})
+    @unittest.mock.patch.dict('NeoVintageous.nv.variables._special', {'<testget>': 'x'})
     def test_expand_keys_expands_to_default(self):
         self.assertEqual('y', expand_keys('<TestGet>'))
         self.assertEqual('yz', expand_keys('<TestGet>z'))
@@ -97,9 +96,9 @@ class TestVariables(unittest.TestCase):
         self.assertEqual('1y2y3', expand_keys('1<TestGet>2<TestGet>3'))
         self.assertEqual('42Gyy:Fizz<Enter>ysiw', expand_keys('42G<TestGet><TestGet>:Fizz<Enter><TestGet>siw'))
 
-    @mock.patch.dict('NeoVintageous.nv.variables._special', {'<testget>': 'x'})
-    @mock.patch.dict('NeoVintageous.nv.variables._defaults', {'x': 'foobar'})
-    @mock.patch.dict('NeoVintageous.nv.variables._variables', {'x': 'y'})
+    @unittest.mock.patch.dict('NeoVintageous.nv.variables._special', {'<testget>': 'x'})
+    @unittest.mock.patch.dict('NeoVintageous.nv.variables._defaults', {'x': 'foobar'})
+    @unittest.mock.patch.dict('NeoVintageous.nv.variables._variables', {'x': 'y'})
     def test_expand_keys_expands_to_variable_if_set(self):
         self.assertEqual('y', expand_keys('<TestGet>'))
         self.assertEqual('yz', expand_keys('<TestGet>z'))
@@ -109,9 +108,9 @@ class TestVariables(unittest.TestCase):
         self.assertEqual('1y2y3', expand_keys('1<TestGet>2<TestGet>3'))
         self.assertEqual('42Gyy:Fizz<Enter>ysiw', expand_keys('42G<TestGet><TestGet>:Fizz<Enter><TestGet>siw'))
 
-    @mock.patch.dict('NeoVintageous.nv.variables._special', {'<testx>': 'testx', '<testy>': 'testy'})
-    @mock.patch.dict('NeoVintageous.nv.variables._defaults', {'testx': 'foobar'})
-    @mock.patch.dict('NeoVintageous.nv.variables._variables', {'testx': 'x', 'testy': 'y'})
+    @unittest.mock.patch.dict('NeoVintageous.nv.variables._special', {'<testx>': 'testx', '<testy>': 'testy'})
+    @unittest.mock.patch.dict('NeoVintageous.nv.variables._defaults', {'testx': 'foobar'})
+    @unittest.mock.patch.dict('NeoVintageous.nv.variables._variables', {'testx': 'x', 'testy': 'y'})
     def test_expand_keys_expands_all_keys_in_seq(self):
         self.assertEqual('x', expand_keys('<TestX>'))
         self.assertEqual('y', expand_keys('<TestY>'))
@@ -119,7 +118,7 @@ class TestVariables(unittest.TestCase):
         self.assertEqual('1x2y3', expand_keys('1<TestX>2<TestY>3'))
         self.assertEqual('42Gyy:w<Enter>xggp', expand_keys('42G<TestY><TestY>:w<Enter><TestX>ggp'))
 
-    @mock.patch.dict('NeoVintageous.nv.variables._variables', {'x': 'y'})
+    @unittest.mock.patch.dict('NeoVintageous.nv.variables._variables', {'x': 'y'})
     def test_clear(self):
         variables_clear()
         self.assertEquals({}, _variables)
