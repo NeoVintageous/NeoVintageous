@@ -6,7 +6,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
-* Added [#921](https://github.com/NeoVintageous/NeoVintageous/issues/921): Add `'equalalways'` option
+* Added [#915](https://github.com/NeoVintageous/NeoVintageous/issues/915): Gutter icon support for marks
+* Added [#921](https://github.com/NeoVintageous/NeoVintageous/issues/921): `'equalalways'` option
 
 ### Fixed
 

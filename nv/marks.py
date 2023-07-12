@@ -18,6 +18,7 @@
 from collections import OrderedDict
 from string import ascii_letters
 
+from sublime import HIDDEN
 from sublime import PERSISTENT
 from sublime import Region
 
@@ -36,8 +37,20 @@ def set_mark(view, name: str) -> None:
 
         _get_session_marks()[name] = view.file_name()
 
-    point = get_insertion_point_at_b(view.sel()[0])
-    view.add_regions(_get_key(name), [Region(point)], flags=PERSISTENT)
+    regions = [Region(get_insertion_point_at_b(view.sel()[0]))]
+
+    view.add_regions(
+        _get_key(name),
+        regions,
+        flags=HIDDEN | PERSISTENT,
+        scope='region.cyanish neovintageous_mark',
+        icon=_get_icon(name))
+
+
+def _get_icon(name: str) -> str:
+    return 'Packages/NeoVintageous/res/icons/%s_%s.png' % (
+        'lower' if name.islower() else 'upper',
+        name.lower())
 
 
 def get_mark(view, name: str):
