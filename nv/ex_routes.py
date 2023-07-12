@@ -17,6 +17,7 @@
 
 from collections import OrderedDict
 from string import ascii_letters
+import re
 
 from NeoVintageous.nv.ex.tokens import TokenCommand
 
@@ -723,81 +724,95 @@ def _ex_route_yank(state) -> TokenCommand:
     return command
 
 
-# TODO: compile regexes. ??
-ex_routes = OrderedDict()  # type: dict
-ex_routes[r'!(?=.+)'] = _ex_route_shell_out
-ex_routes[r'&&?'] = _ex_route_double_ampersand
-ex_routes[r'(?:files|ls|buffers)!?'] = _ex_route_buffers
-ex_routes[r'bf(?:irst)?'] = _ex_route_bfirst
-ex_routes[r'bl(?:ast)?'] = _ex_route_blast
-ex_routes[r'bn(?:ext)?'] = _ex_route_bnext
-ex_routes[r'bN(?:ext)?'] = _ex_route_bprevious
-ex_routes[r'bp(?:revious)?'] = _ex_route_bprevious
-ex_routes[r'bro(?:wse)?'] = _ex_route_browse
-ex_routes[r'br(?:ewind)?'] = _ex_route_bfirst
-ex_routes[r'b(?:uffer)?'] = _ex_route_buffer
-ex_routes[r'cd'] = _ex_route_cd
-ex_routes[r'clo(?:se)?'] = _ex_route_close
-ex_routes[r'co(?:py)?'] = _ex_route_copy
-ex_routes[r'cq(?:uit)?'] = _ex_route_cquit
-ex_routes[r'd(?:elete)?'] = _ex_route_delete
-ex_routes[r'exi(?:t)?'] = _ex_route_exit
-ex_routes[r'e(?:dit)?(?= |$)?'] = _ex_route_edit
-ex_routes[r'f(?:ile)?'] = _ex_route_file
-ex_routes[r'g(?:lobal)?'] = _ex_route_global
-ex_routes[r'his(?:tory)?'] = _ex_route_history
-ex_routes[r'h(?:elp)?'] = _ex_route_help
-ex_routes[r'ino(?:remap)?'] = _ex_route_inoremap
-ex_routes[r'let\s'] = _ex_route_let
-ex_routes[r'marks'] = _ex_route_marks
-ex_routes[r'm(?:ove)?(?=[^a]|$)'] = _ex_route_move
-ex_routes[r'new'] = _ex_route_new
-ex_routes[r'nn(?:oremap)?'] = _ex_route_nnoremap
-ex_routes[r'noh(?:lsearch)?'] = _ex_route_nohlsearch
-ex_routes[r'no(?:remap)?'] = _ex_route_noremap
-ex_routes[r'nun(?:map)?'] = _ex_route_nunmap
-ex_routes[r'ono(?:remap)?'] = _ex_route_onoremap
-ex_routes[r'on(?:ly)?'] = _ex_route_only
-ex_routes[r'ou(nmap)?'] = _ex_route_ounmap
-ex_routes[r'pw(?:d)?'] = _ex_route_pwd
-ex_routes[r'p(?:rint)?'] = _ex_route_print
-ex_routes[r'qa(?:ll)?'] = _ex_route_qall
-ex_routes[r'quita(?:ll)?'] = _ex_route_qall
-ex_routes[r'q(?!a)(?:uit)?'] = _ex_route_quit
-ex_routes[r'reg(?:isters)?'] = _ex_route_registers
-ex_routes[r'r(?!eg)(?:ead)?'] = _ex_route_read
-ex_routes[r'setl(?:ocal)?'] = _ex_route_setlocal
-ex_routes[r'se(?:t)?'] = _ex_route_set
-ex_routes[r's(?:ubstitute)?(?=[%&:/=]|$)'] = _ex_route_substitute
-ex_routes[r'sh(?:ell)?'] = _ex_route_shell
-ex_routes[r'sil(ent)?'] = _ex_route_silent
-ex_routes[r'snor(?:emap)?'] = _ex_route_snoremap
-ex_routes[r'sor(?:t)?'] = _ex_route_sort
-ex_routes[r'spellu(ndo)?'] = _ex_route_spellundo
-ex_routes[r'spe(llgood)?'] = _ex_route_spellgood
-ex_routes[r'sp(?:lit)?'] = _ex_route_split
-ex_routes[r'sunm(?:ap)?'] = _ex_route_sunmap
-ex_routes[r'tabc(?:lose)?'] = _ex_route_tabclose
-ex_routes[r'tabfir(?:st)?'] = _ex_route_tabfirst
-ex_routes[r'tabl(?:ast)?'] = _ex_route_tablast
-ex_routes[r'tab(?:new|e(?:dit)?)'] = _ex_route_tabnew
-ex_routes[r'tabn(?:ext)?'] = _ex_route_tabnext
-ex_routes[r'tabN(?:ext)?'] = _ex_route_tabprevious
-ex_routes[r'tabo(?:nly)?'] = _ex_route_tabonly
-ex_routes[r'tabp(?:revious)?'] = _ex_route_tabprevious
-ex_routes[r'tabr(?:ewind)?'] = _ex_route_tabfirst
-ex_routes[r'unm(?:ap)?'] = _ex_route_unmap
-ex_routes[r'unvsplit'] = _ex_route_unvsplit
-ex_routes[r'vne(?:w)?'] = _ex_route_vnew
-ex_routes[r'vn(?:oremap)?'] = _ex_route_vnoremap
-ex_routes[r'vs(?:plit)?'] = _ex_route_vsplit
-ex_routes[r'vu(?:nmap)?'] = _ex_route_vunmap
-ex_routes[r'w(?:rite)?(?=(?:!?(?:\+\+|>>| |$)))'] = _ex_route_write
-ex_routes[r'wa(?:ll)?'] = _ex_route_wall
-ex_routes[r'wqa(?:ll)?'] = _ex_route_wqall
-ex_routes[r'wq(?=[^a-zA-Z]|$)?'] = _ex_route_wq
-ex_routes[r'xa(?:ll)?'] = _ex_route_wqall
-ex_routes[r'xn(?:oremap)?'] = _ex_route_xnoremap
-ex_routes[r'xu(?:nmap)?'] = _ex_route_xunmap
-ex_routes[r'x(?:it)?'] = _ex_route_exit
-ex_routes[r'y(?:ank)?'] = _ex_route_yank
+ex_routes = OrderedDict()
+ex_completions = []
+
+
+def _add_ex_route(pattern: str, function, completions=None) -> None:
+    ex_routes[re.compile(pattern)] = function
+
+    if completions:
+        if isinstance(completions, str):
+            ex_completions.append(completions)
+        else:
+            for completion in completions:
+                ex_completions.append(completion)
+
+
+# Note that the order of the routes is important.
+_add_ex_route(r'!(?=.+)', _ex_route_shell_out)
+_add_ex_route(r'&&?', _ex_route_double_ampersand)
+_add_ex_route(r'(?:files|ls|buffers)!?', _ex_route_buffers, ['files', 'ls', 'buffers'])
+_add_ex_route(r'bf(?:irst)?', _ex_route_bfirst, 'bfirst')
+_add_ex_route(r'bl(?:ast)?', _ex_route_blast, 'blast')
+_add_ex_route(r'bn(?:ext)?', _ex_route_bnext, 'bnext')
+_add_ex_route(r'bN(?:ext)?', _ex_route_bprevious, 'bNext')
+_add_ex_route(r'bp(?:revious)?', _ex_route_bprevious, 'bprevious')
+_add_ex_route(r'bro(?:wse)?', _ex_route_browse, 'browse')
+_add_ex_route(r'br(?:ewind)?', _ex_route_bfirst, 'brewind')
+_add_ex_route(r'b(?:uffer)?', _ex_route_buffer, 'buffer')
+_add_ex_route(r'cd', _ex_route_cd, 'cd')
+_add_ex_route(r'clo(?:se)?', _ex_route_close, 'close')
+_add_ex_route(r'co(?:py)?', _ex_route_copy, 'copy')
+_add_ex_route(r'cq(?:uit)?', _ex_route_cquit, 'cquit')
+_add_ex_route(r'd(?:elete)?', _ex_route_delete, 'delete')
+_add_ex_route(r'exi(?:t)?', _ex_route_exit, 'exit')
+_add_ex_route(r'e(?:dit)?(?= |$)?', _ex_route_edit, 'edit')
+_add_ex_route(r'f(?:ile)?', _ex_route_file, 'file')
+_add_ex_route(r'g(?:lobal)?', _ex_route_global, 'global')
+_add_ex_route(r'his(?:tory)?', _ex_route_history, 'history')
+_add_ex_route(r'h(?:elp)?', _ex_route_help, 'help')
+_add_ex_route(r'ino(?:remap)?', _ex_route_inoremap, 'inoremap')
+_add_ex_route(r'let\s', _ex_route_let, 'let')
+_add_ex_route(r'marks', _ex_route_marks, 'marks')
+_add_ex_route(r'm(?:ove)?(?=[^a]|$)', _ex_route_move, 'move')
+_add_ex_route(r'new', _ex_route_new, 'new')
+_add_ex_route(r'nn(?:oremap)?', _ex_route_nnoremap, 'nnoremap')
+_add_ex_route(r'noh(?:lsearch)?', _ex_route_nohlsearch, 'nohlsearch')
+_add_ex_route(r'no(?:remap)?', _ex_route_noremap, 'noremap')
+_add_ex_route(r'nun(?:map)?', _ex_route_nunmap, 'nunmap')
+_add_ex_route(r'ono(?:remap)?', _ex_route_onoremap, 'onoremap')
+_add_ex_route(r'on(?:ly)?', _ex_route_only, 'only')
+_add_ex_route(r'ou(nmap)?', _ex_route_ounmap, 'ounmap')
+_add_ex_route(r'pw(?:d)?', _ex_route_pwd, 'pwd')
+_add_ex_route(r'p(?:rint)?', _ex_route_print, 'print')
+_add_ex_route(r'qa(?:ll)?', _ex_route_qall, 'qall')
+_add_ex_route(r'quita(?:ll)?', _ex_route_qall, 'quitall')
+_add_ex_route(r'q(?!a)(?:uit)?', _ex_route_quit, 'quit')
+_add_ex_route(r'reg(?:isters)?', _ex_route_registers, 'registers')
+_add_ex_route(r'r(?!eg)(?:ead)?', _ex_route_read, 'read')
+_add_ex_route(r'setl(?:ocal)?', _ex_route_setlocal, 'setlocal')
+_add_ex_route(r'se(?:t)?', _ex_route_set, 'set')
+_add_ex_route(r's(?:ubstitute)?(?=[%&:/=]|$)', _ex_route_substitute, 'substitute')
+_add_ex_route(r'sh(?:ell)?', _ex_route_shell, 'shell')
+_add_ex_route(r'sil(ent)?', _ex_route_silent, 'silent')
+_add_ex_route(r'snor(?:emap)?', _ex_route_snoremap, 'snoremap')
+_add_ex_route(r'sor(?:t)?', _ex_route_sort, 'sort')
+_add_ex_route(r'spellu(ndo)?', _ex_route_spellundo, 'spellundo')
+_add_ex_route(r'spe(llgood)?', _ex_route_spellgood, 'spellgood')
+_add_ex_route(r'sp(?:lit)?', _ex_route_split, 'split')
+_add_ex_route(r'sunm(?:ap)?', _ex_route_sunmap, 'sunmap')
+_add_ex_route(r'tabc(?:lose)?', _ex_route_tabclose, 'tabclose')
+_add_ex_route(r'tabfir(?:st)?', _ex_route_tabfirst, 'tabfirst')
+_add_ex_route(r'tabl(?:ast)?', _ex_route_tablast, 'tablast')
+_add_ex_route(r'tab(?:new|e(?:dit)?)', _ex_route_tabnew, ['tabnew', 'tabedit'])
+_add_ex_route(r'tabn(?:ext)?', _ex_route_tabnext, 'tabnext')
+_add_ex_route(r'tabN(?:ext)?', _ex_route_tabprevious, 'tabNext')
+_add_ex_route(r'tabo(?:nly)?', _ex_route_tabonly, 'tabonly')
+_add_ex_route(r'tabp(?:revious)?', _ex_route_tabprevious, 'tabprevious')
+_add_ex_route(r'tabr(?:ewind)?', _ex_route_tabfirst, 'tabrewind')
+_add_ex_route(r'unm(?:ap)?', _ex_route_unmap, 'unmap')
+_add_ex_route(r'unvsplit', _ex_route_unvsplit, 'unvsplit')
+_add_ex_route(r'vne(?:w)?', _ex_route_vnew, 'vnew')
+_add_ex_route(r'vn(?:oremap)?', _ex_route_vnoremap, 'vnoremap')
+_add_ex_route(r'vs(?:plit)?', _ex_route_vsplit, 'vsplit')
+_add_ex_route(r'vu(?:nmap)?', _ex_route_vunmap, 'vunmap')
+_add_ex_route(r'w(?:rite)?(?=(?:!?(?:\+\+|>>| |$)))', _ex_route_write, 'write')
+_add_ex_route(r'wa(?:ll)?', _ex_route_wall, 'wall')
+_add_ex_route(r'wqa(?:ll)?', _ex_route_wqall, 'wqall')
+_add_ex_route(r'wq(?=[^a-zA-Z]|$)?', _ex_route_wq, 'wq')
+_add_ex_route(r'xa(?:ll)?', _ex_route_wqall, 'xall')
+_add_ex_route(r'xn(?:oremap)?', _ex_route_xnoremap, 'xnoremap')
+_add_ex_route(r'xu(?:nmap)?', _ex_route_xunmap, 'xunmap')
+_add_ex_route(r'x(?:it)?', _ex_route_exit, 'xit')
+_add_ex_route(r'y(?:ank)?', _ex_route_yank, 'yank')

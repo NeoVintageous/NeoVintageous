@@ -21,6 +21,7 @@ import re
 
 from sublime import Region
 
+from NeoVintageous.nv.ex_routes import ex_completions
 from NeoVintageous.nv.options import get_option_completions
 from NeoVintageous.nv.polyfill import view_to_region
 from NeoVintageous.nv.polyfill import view_to_str
@@ -248,19 +249,6 @@ def reset_cmdline_completion_state() -> None:
     _FsCompletion.reset()
 
 
-_CMDLINE_COMPLETIONS = [
-    'bNext', 'bfirst', 'blast', 'bnext', 'bprevious', 'brewind', 'browse',
-    'buffer', 'buffers', 'cd', 'close', 'copy', 'cquit', 'delete', 'edit',
-    'exit', 'file', 'files', 'global', 'help', 'history', 'inoremap', 'let',
-    'ls', 'marks', 'move', 'new', 'nnoremap', 'nohlsearch', 'noremap', 'nunmap', 'only',
-    'onoremap', 'ounmap', 'print', 'pwd', 'qall', 'quit', 'quitall', 'read', 'registers',
-    'set', 'setlocal', 'shell', 'silent', 'snoremap', 'sort', 'spellgood',
-    'spellundo', 'split', 'substitute', 'sunmap', 'tabNext', 'tabclose',
-    'tabfirst', 'tablast', 'tabnext', 'tabonly', 'tabprevious', 'tabrewind',
-    'unmap', 'unvsplit', 'vnew', 'vnoremap', 'vsplit', 'vunmap', 'wall', 'wq', 'wqall',
-    'write', 'xall', 'xit', 'yank', 'xnoremap', 'xunmap'
-]
-
 # Keeps track of current completion completion.
 _current_cmdline_completions = []  # type: list
 
@@ -279,7 +267,7 @@ def insert_best_cmdline_completion(view, edit, forward: bool = True) -> None:
             prefix = cmdline[1:]
 
             if prefix not in _current_cmdline_completions:
-                prefix_completions = [x for x in _CMDLINE_COMPLETIONS if x.startswith(prefix) and x != prefix]
+                prefix_completions = [x for x in ex_completions if x.startswith(prefix) and x != prefix]
                 if prefix_completions:
                     _current_cmdline_completions[:] = [prefix] + prefix_completions
 
