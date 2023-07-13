@@ -14,28 +14,29 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Fixed [#879](https://github.com/NeoVintageous/NeoVintageous/issues/879): RC file options only set on active view at startup
 * Fixed [#922](https://github.com/NeoVintageous/NeoVintageous/issues/922): RC file reloading should reset options
 
-## 1.31.0 - Unreleased
+## 1.31.0 - 2023-07-12
 
 ### Added
 
-* Added [#916](https://github.com/NeoVintageous/NeoVintageous/issues/916): Marks are now persisted on restarts
-* Added [#880](https://github.com/NeoVintageous/NeoVintageous/issues/880): Support for uppercase global marks
-* Added [#906](https://github.com/NeoVintageous/NeoVintageous/issues/906): `:tabnew` and `:tabedit` Open a new tab page with an empty window, after the current (requires [Origami](https://packagecontrol.io/packages/Origami))
-* Added [#902](https://github.com/NeoVintageous/NeoVintageous/issues/902): `:vsplit {file}` Like `:split {file}`, but split vertically (requires [Origami](https://packagecontrol.io/packages/Origami))
-* Added [#903](https://github.com/NeoVintageous/NeoVintageous/issues/903): `:split {file}` Split current window in two and edit the file `{file}` in it (requires [Origami](https://packagecontrol.io/packages/Origami))
-* Added [#911](https://github.com/NeoVintageous/NeoVintageous/issues/911): `CTRL-w ^` Split the current window in two and edit the alternate file (requires [Origami](https://packagecontrol.io/packages/Origami))
-* Added [#909](https://github.com/NeoVintageous/NeoVintageous/issues/909): `new {file}` Create a new split and start editing file `{file}` in it (requires [Origami](https://packagecontrol.io/packages/Origami))
-* Added [#910](https://github.com/NeoVintageous/NeoVintageous/issues/910): `:vnew {file}` Like `:new {file}`, but split vertically (requires [Origami](https://packagecontrol.io/packages/Origami))
-* Added [#907](https://github.com/NeoVintageous/NeoVintageous/issues/907): `:vnew` Like `:new`, but split vertically (requires [Origami](https://packagecontrol.io/packages/Origami))
-* Added [#904](https://github.com/NeoVintageous/NeoVintageous/issues/904): `V` is now countable
-* Added [#901](https://github.com/NeoVintageous/NeoVintageous/issues/901): `CTRL-W gt` same as `gt` and `CTRL-W gT` same as `gT`
+* Added [#916](https://github.com/NeoVintageous/NeoVintageous/issues/916): Set mark `m{a-zA-Z` at cursor position now persist on restart
+* Added [#880](https://github.com/NeoVintageous/NeoVintageous/issues/880): Set global mark `m{A-Z}` at cursor position
 * Added [#881](https://github.com/NeoVintageous/NeoVintageous/issues/881): `:marks` List all the current marks
-* Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `CTRL-W gf` (same as `gf`) and `CTRL-W gF` (same as `gF`)
+* Added [#906](https://github.com/NeoVintageous/NeoVintageous/issues/906): `:tabnew` and `:tabe[dit]` open a new tab page with an empty view (requires [Origami](https://packagecontrol.io/packages/Origami))
+* Added [#902](https://github.com/NeoVintageous/NeoVintageous/issues/902): `:vs[plit] [file]` like `:sp[lit] [file]`, but split vertically (requires [Origami](https://packagecontrol.io/packages/Origami))
+* Added [#903](https://github.com/NeoVintageous/NeoVintageous/issues/903): `:sp[lit] [file]` split current view in two and if given, edit `[file]`in new window (requires [Origami](https://packagecontrol.io/packages/Origami))
+* Added [#911](https://github.com/NeoVintageous/NeoVintageous/issues/911): `CTRL-w ^` and `CTRL-w CTRL-^` split the current view in two and edit the alternate file (requires [Origami](https://packagecontrol.io/packages/Origami))
+* Added [#909](https://github.com/NeoVintageous/NeoVintageous/issues/909): `new [file]` create a new split and if given, start editing file `[file]` in it (requires [Origami](https://packagecontrol.io/packages/Origami))
+* Added [#910](https://github.com/NeoVintageous/NeoVintageous/issues/910): `:vnew [file]` like `:new [file]`, but split vertically (requires [Origami](https://packagecontrol.io/packages/Origami))
+* Added [#901](https://github.com/NeoVintageous/NeoVintageous/issues/901): `CTRL-W gT` same as `gT`
+* Added [#901](https://github.com/NeoVintageous/NeoVintageous/issues/901): `CTRL-W gt` same as `gt`
+* Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `CTRL-W gF` same as `gF`
+* Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `CTRL-W gf` same as `gf`
 * Added [#896](https://github.com/NeoVintageous/NeoVintageous/issues/896): `gF` same as `gf`, except the cursor is positioned on row:col
 * Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `gf` the '~' character is expanded, like in "~user/file"
 * Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `gf` environment variables are expanded.
 * Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `gf` in visual modes
 * Added [#893](https://github.com/NeoVintageous/NeoVintageous/issues/893): Reveal Side Bar command to make side bar visible, if not already, and put focus on it
+* Added [#904](https://github.com/NeoVintageous/NeoVintageous/issues/904): Start visual mode linewise, `V`, is now countable
 * Added [#888](https://github.com/NeoVintageous/NeoVintageous/issues/888): `gg` in visual block mode
 * Added [#888](https://github.com/NeoVintageous/NeoVintageous/issues/888): `G` is now countable in visual block mode
 * Added [#888](https://github.com/NeoVintageous/NeoVintageous/issues/888): `G` in visual block mode
