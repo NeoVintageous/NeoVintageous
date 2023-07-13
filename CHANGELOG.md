@@ -6,7 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
-* Added [#916](https://github.com/NeoVintageous/NeoVintageous/issues/916): Set mark `m{a-zA-Z` at cursor position now persist on restart
+* Added [#916](https://github.com/NeoVintageous/NeoVintageous/issues/916): Set mark `m{a-zA-Z}` at cursor position now persist on restart
 * Added [#880](https://github.com/NeoVintageous/NeoVintageous/issues/880): Set global mark `m{A-Z}` at cursor position
 * Added [#881](https://github.com/NeoVintageous/NeoVintageous/issues/881): `:marks` List all the current marks
 * Added [#906](https://github.com/NeoVintageous/NeoVintageous/issues/906): `:tabnew` and `:tabe[dit]` open a new tab page with an empty view (requires [Origami](https://packagecontrol.io/packages/Origami))
@@ -14,7 +14,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * Added [#903](https://github.com/NeoVintageous/NeoVintageous/issues/903): `:sp[lit] [file]` split current view in two and if given, edit `[file]`in new window (requires [Origami](https://packagecontrol.io/packages/Origami))
 * Added [#911](https://github.com/NeoVintageous/NeoVintageous/issues/911): `CTRL-w ^` and `CTRL-w CTRL-^` split the current view in two and edit the alternate file (requires [Origami](https://packagecontrol.io/packages/Origami))
 * Added [#909](https://github.com/NeoVintageous/NeoVintageous/issues/909): `new [file]` create a new split and if given, start editing file `[file]` in it (requires [Origami](https://packagecontrol.io/packages/Origami))
-* Added [#910](https://github.com/NeoVintageous/NeoVintageous/issues/910): `:vnew [file]` like `:new [file]`, but split vertically (requires [Origami](https://packagecontrol.io/packages/Origami))
+* Added [#910](https://github.com/NeoVintageous/NeoVintageous/issues/910): `:vne[w] [file]` like `:new [file]`, but split vertically (requires [Origami](https://packagecontrol.io/packages/Origami))
 * Added [#901](https://github.com/NeoVintageous/NeoVintageous/issues/901): `CTRL-W gT` same as `gT`
 * Added [#901](https://github.com/NeoVintageous/NeoVintageous/issues/901): `CTRL-W gt` same as `gt`
 * Added [#897](https://github.com/NeoVintageous/NeoVintageous/issues/897): `CTRL-W gF` same as `gF`
