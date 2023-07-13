@@ -18,7 +18,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
-* Added [#916](https://github.com/NeoVintageous/NeoVintageous/issues/916): Set mark `m{a-zA-Z` at cursor position now persist on restart
+* Added [#916](https://github.com/NeoVintageous/NeoVintageous/issues/916): Set mark `m{a-zA-Z}` at cursor position now persist on restart
 * Added [#880](https://github.com/NeoVintageous/NeoVintageous/issues/880): Set global mark `m{A-Z}` at cursor position
 * Added [#881](https://github.com/NeoVintageous/NeoVintageous/issues/881): `:marks` List all the current marks
 * Added [#906](https://github.com/NeoVintageous/NeoVintageous/issues/906): `:tabnew` and `:tabe[dit]` open a new tab page with an empty view (requires [Origami](https://packagecontrol.io/packages/Origami))
