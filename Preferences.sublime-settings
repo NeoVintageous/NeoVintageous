@@ -180,12 +180,12 @@
     // Example: gnome-terminal
     "vintageous_terminal": null,
 
-    // Enable key bindings prefaced by the control-key.
+    // Enable Vim ctrl keys.
     "vintageous_use_ctrl_keys": true,
 
-    // Enable key bindings prefaced by the super-key, otherwise known as the
-    // command-key in OSX, and as the windows-key in Windows.
-    "vintageous_use_super_keys": false,
+    // Enable Vim super keys. Super key is an alternative name for what is
+    // commonly labelled as the Windows key or Command key (Macintosh).
+    "vintageous_use_super_keys": true,
 
     // Propagate copy actions to the system clipboard.
     "vintageous_use_sys_clipboard": false

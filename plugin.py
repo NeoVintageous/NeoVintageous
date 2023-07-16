@@ -133,6 +133,22 @@ def _init_backwards_compat_patches():
 
             sublime.save_settings('Preferences.sublime-settings')
 
+        if build_version < 13200:  # pragma: no cover
+            if build_version != 0:
+                try:
+                    # The super are now enabled by default. To avoid disruption
+                    # to users, when upgrading, the super keys are set to false
+                    # for users who have not already enabled them.
+                    settings = sublime.decode_value(sublime.load_resource('Packages/User/Preferences.sublime-settings'))
+                    use_super_keys = settings.get('vintageous_use_super_keys')  # type: ignore[union-attr]
+                    if use_super_keys is None:
+                        preferences.set('vintageous_use_super_keys', False)
+                except Exception:
+                    traceback.print_exc()
+
+            preferences.set('neovintageous_build_version', 13200)
+            sublime.save_settings('Preferences.sublime-settings')
+
     except Exception:  # pragma: no cover
         traceback.print_exc()
 
