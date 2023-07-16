@@ -51,6 +51,7 @@ See `:help '{option}'` for help on individual options.
 
     'autoindent'
     'belloff'
+    'equalalways'
     'expandtab'
     'hlsearch'
     'ignorecase'
