@@ -205,6 +205,11 @@ To edit settings go to Menu → Preferences → Settings.
                         boolean (default off)
         Map insert mode jk to <Esc>.
 
+                                                    *'vintageous_i_escape_kj'*
+'vintageous_i_escape_kj'
+                        boolean (default off)
+        Map insert mode kj to <Esc>.
+
                              *'vintageous_multi_cursor_exit_from_visual_mode'*
 'vintageous_multi_cursor_exit_from_visual_mode'
                         boolean (default off)
