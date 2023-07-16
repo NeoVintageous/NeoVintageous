@@ -240,7 +240,7 @@ To edit settings go to Menu → Preferences → Settings.
 
                                                  *'vintageous_use_super_keys'*
 'vintageous_use_super_keys'
-                        boolean (default off)
+                        boolean (default on)
         Enable key bindings prefaced by the super-key, otherwise known as the
         command-key in OSX, and as the windows-key in Windows.
 
