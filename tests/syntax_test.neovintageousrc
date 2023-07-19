@@ -277,6 +277,9 @@ nnoremap <leader>d :ToggleSideBar<CR>
 "        ^^^^^^^^ storage.type
 "                                ^^^^ storage.type
 
+nnoremap <Leader>d :ToggleSideBar<CR>
+"        ^^ storage.type
+
 nnoremap <leader>d :ToggleSideBar<CR> " x
 "                                     ^^^ -comment
 
@@ -291,6 +294,12 @@ nnoremap <leader>n :noremap x y<CR>
 "                ^^^^^^^^^^^^^^ -keyword
 "                ^^^^^^^^^^^^^^ -storage
 "                              ^^^^ storage.type
+
+nnoremap <localleader>d :ToggleSideBar<CR>
+"        ^^ storage.type
+
+nnoremap <LocalLeader>d :ToggleSideBar<CR>
+"        ^^ storage.type
 
 " control-key         *control* *ctrl* *<C-*
 " nnoremap <C-...> x

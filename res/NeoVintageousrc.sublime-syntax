@@ -48,7 +48,7 @@ contexts:
         2: entity.name.neovintageourc
 
     # Keys <{named}>
-    - match: (?i)\<(bs|bar|bslash|cr|csi|del|down|eol|end|enter|esc|ff|help|home|insert|leader|left|nl|nul|pagedown|pageup|return|right|space|tab|undo|up|lt|xcsi)>
+    - match: (?i)\<(bs|bar|bslash|cr|csi|del|down|eol|end|enter|esc|ff|help|home|insert|(local)?leader|left|nl|nul|pagedown|pageup|return|right|space|tab|undo|up|lt|xcsi)>
       scope: storage.type.neovintageourc
 
     # Keys <C-{named}>

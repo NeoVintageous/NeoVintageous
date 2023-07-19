@@ -12,6 +12,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+* Fixed [#929](https://github.com/NeoVintageous/NeoVintageous/issues/929): There is no syntax highlighting for `<LocalLeader>`
 * Fixed [#879](https://github.com/NeoVintageous/NeoVintageous/issues/879): RC file options only set on active view at startup
 * Fixed [#922](https://github.com/NeoVintageous/NeoVintageous/issues/922): RC file reloading should reset options
 
