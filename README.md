@@ -77,6 +77,10 @@ Unimpaired | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/ma
 - [Dvorak](https://github.com/gerardroche/NeoVintageousDvorak): Dvorak key mappings.
 - [Colemak](https://github.com/gerardroche/NeoVintageousColemak): Colemak key mappings.
 
+**Blogs**
+
+- [blog.gerardroche.com](https://blog.gerardroche.com): Releases, guides, and tips.
+
 ## Contributing
 
 See [CONTRIBUTING.md](.github/CONTRIBUTING.md).
