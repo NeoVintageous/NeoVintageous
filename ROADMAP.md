@@ -1,5 +1,3 @@
-# Roadmap
-
 ## Legend
 
 :heavy_check_mark: - done
@@ -16,7 +14,51 @@
 
 `[count]` - An optional number that may precede the command to multiply or iterate the command.
 
-## Vim modes `|vim-modes|`
+<details>
+ <summary><strong>Table of Contents</strong> (click to expand)</summary>
+
+- [Modes](#modes-vim-modes)
+- [Editing and writing files](#editing-and-writing-files-editingtxt)
+- [Commands for moving around](#commands-for-moving-around-motion-txt)
+  - [Motions and operators](#motions-and-operators-operator)
+  - [Left-right motions](#left-right-motions-left-right-motions)
+  - [Text object selection](#text-object-selection-text-objects)
+  - [Marks](#marks-mark-motions)
+  - [Jumps](#jumps-jump-motions)
+- [Scrolling the text in the window](#scrolling-the-text-in-the-window-scrolltxt)
+- [Insert and Replace mode](#insert-and-replace-mode-inserttxt)
+- [Deleting and replacing text](#deleting-and-replacing-text-changetxt)
+- [Undo and Redo](#undo-and-redo-undotxt)
+- [Repeating commands](#repeating-commands-repeattxt)
+- [Using the Visual mode (selecting a text area)](#using-the-visual-mode-selecting-a-text-area-visualtxt)
+- [Various remaining commands](#various-remaining-commands-varioustxt)
+- [Command-line editing](#command-line-editing-cmdlinetxt)
+- [Description of all options](#description-of-all-options-optionstxt)
+- [Regexp patterns and search commands](#regexp-patterns-and-search-commands-patterntxt)
+- [Key mapping and abbreviations](#key-mapping-and-abbreviations-maptxt)
+- [Tags and special searches](#tags-and-special-searches-tagsrchtxt)
+- [Commands for using multiple windows and buffers](#commands-for-using-multiple-windows-and-buffers-windowstxt)
+- [Commands for using multiple tab pages](#commands-for-using-multiple-tab-pages-tabpagetxt)
+- [Spell checking](#spell-checking-spelltxt)
+- [Hide (fold) ranges of lines](#hide-fold-ranges-of-lines-fondtxt)
+- [Plugins](#plugins)
+  - [Abolish](#abolish-abolishtxt)
+  - [Commentary](#commentary-commentarytxt)
+  - [Highlighted Yank](#highlighted-yank-highlightedyank)
+  - [Indent Object](#indent-object-indent-objecttxt)
+  - [Multiple Cursors](#multiple-cursors-multiple-cursors)
+  - [Sneak](#sneak-sneaktxt)
+  - [Surround](#surround-surroundtxt)
+  - [Targets](#targets)
+  - [Unimpaired](#unimpaired-unimpairedtxt)
+- [Completeness](#completeness)
+- [Work in Progress](#work-in-progress)
+- [F.A.Q.](#faq)
+- [Known issues](#known-issues)
+
+</details>
+
+## Modes `|vim-modes|`
 
 | Status             | Mode                  | Description
 | :----------------- | :-------------------- | :----------
@@ -530,6 +572,8 @@ See also [Part 1](#404), [Part 2](#711), and [Part 3](#854)
 * [ ] All private settings should have a consistent prefix
 * [ ] Rework mode handling to work like Vim #385 #374 https://github.com/NeoVintageous/NeoVintageous/commit/239b3bf69b52728cb2177b3ec6297ed3168fb346
 * [ ] Remove deprecations
+
+## F.A.Q.
 
 ## Known issues
 
