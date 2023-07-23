@@ -76,8 +76,8 @@
 
 | Status             | Command                          | Description
 | :----------------- | :------------------------------- | :----------
-| :heavy_check_mark: |`CTRL-G` or `:f[ile]`             | Prints the current file name
-| :heavy_check_mark: |`:buffers` or `:files` or `:ls`   | List all the currently known file names
+| :heavy_check_mark: |`CTRL-G`, `:f[ile]`               | Prints the current file name
+| :heavy_check_mark: |`:buffers`, `:files`, `:ls`       | List all the currently known file names
 | :bug:              |`:e[dit]`                         | Edit the current file. This is useful to re-edit the current file, when it has been changed outside of Sublime.
 | :heavy_check_mark: |`:e[dit]!`                        | Edit the current file always.  Discard any changes to the current buffer.
 | :heavy_check_mark: |`:e[dit] {file}`                  | Edit `{file}`
@@ -113,9 +113,9 @@
 
 ### Left-right motions `|left-right-motions|`
 
-| Status             | Command                               | Description
-| :----------------- | :------------------------------------ | -----------
-| :heavy_check_mark: | `h` or `<Left>` or `CTRL-H` or `<BS>` | `[count]` characters to the left. `|exclusive|` motion.
+| Status             | Command                              | Description
+| :----------------- | :----------------------------------- | -----------
+| :heavy_check_mark: | `h`, `<Left>`, `CTRL-H`, `<BS>`      | `[count]` characters to the left. `|exclusive|` motion.
 
 ### Text object selection `|text-objects|`
 
@@ -129,18 +129,18 @@
 | :heavy_check_mark: | `is`                          | "inner sentence"
 | :heavy_check_mark: | `ap`                          | "a paragraph", select `[count]` paragraphs
 | :heavy_check_mark: | `ip`                          | "inner paragraph", select `[count]` paragraphs
-| :heavy_check_mark: | `a]` or `a[`                  | "a `[]` block"
-| :heavy_check_mark: | `i]` or `i[`                  | "inner `[]` block"
-| :heavy_check_mark: | `a)` or `a(` or `ab`          | "a block", select blocks, from "[(" to the matching ')', including the '(' and ')'
-| :heavy_check_mark: | `i)` or `i(` or `ib`          | "inner block", select blocks, from "[(" to the matching ')', excluding the '(' and ')'
-| :heavy_check_mark: | `a>` or `a<`                  | "a <> block"
-| :heavy_check_mark: | `i>` or `i<`                  | "inner <> block"
+| :heavy_check_mark: | `a]`, `a[`                    | "a `[]` block"
+| :heavy_check_mark: | `i]`, `i[`                    | "inner `[]` block"
+| :heavy_check_mark: | `a)`, `a(`, `ab`              | "a block", select blocks, from "[(" to the matching ')', including the '(' and ')'
+| :heavy_check_mark: | `i)`, `i(`, `ib`              | "inner block", select blocks, from "[(" to the matching ')', excluding the '(' and ')'
+| :heavy_check_mark: | `a>`, `a<`                    | "a <> block"
+| :heavy_check_mark: | `i>`, `i<`                    | "inner <> block"
 | :heavy_check_mark: | `at`                          | "a tag block"
 | :heavy_check_mark: | `it`                          | "inner tag block"
-| :heavy_check_mark: | `a}` or `a{` or `aB`          | "a Block", select blocks, from "[{" to the matching '}', including the '{' and '}'
-| :heavy_check_mark: | `i}` or `i{` or `iB`          | "inner block", select blocks, from "[{" to the matching '}', excluding the '{' and '}'
-| :heavy_check_mark: | `a"` or `a'` or `a{backtick}` | Selects the text from the previous quote until the next quote
-| :heavy_check_mark: | `i"` or `i'` or `i{backtick}` | Like `a"`, `a'` and `a{backtick}`, but exclude the quotes
+| :heavy_check_mark: | `a}`, `a{`, `aB`              | "a Block", select blocks, from "[{" to the matching '}', including the '{' and '}'
+| :heavy_check_mark: | `i}`, `i{`, `iB`              | "inner block", select blocks, from "[{" to the matching '}', excluding the '{' and '}'
+| :heavy_check_mark: | `a"`, `a'`, `a{backtick}`     | Selects the text from the previous quote until the next quote
+| :heavy_check_mark: | `i"`, `i'`, `i{backtick}`     | Like `a"`, `a'` and `a{backtick}`, but exclude the quotes
 
 ### Marks `|mark-motions|`
 
@@ -206,7 +206,7 @@
 | :heavy_check_mark: | `gN`                          | Like `gn` but searches backward, like with `N`
 | :heavy_check_mark: | `o`                           | Go to other end of highlighted text
 |                    | `O`                           | Like "o", but in Visual block mode the cursor moves to the other corner in the same line
-| :heavy_check_mark: | `<Esc>` or `CTRL-C`           | Stop Visual mode
+| :heavy_check_mark: | `<Esc>`, `CTRL-C`             | Stop Visual mode
 
 ## Various remaining commands `|various.txt|`
 
@@ -225,17 +225,17 @@
 | :----------------- | :------------------------------- | -----------
 | :heavy_check_mark: | `<Left>`                         | cursor left
 | :heavy_check_mark: | `<Right>`                        | cursor right
-| :heavy_check_mark: | `<S-Left>` or `<C-Left>`         | cursor one WORD left
-| :heavy_check_mark: | `<S-Right>` or `<C-Right>`       | cursor one WORD right
-| :heavy_check_mark: | `CTRL-B` or `<Home>`             | cursor to beginning of command-line
-| :heavy_check_mark: | `CTRL-E` or `<End>`              | cursor to end of command-line
-| :heavy_check_mark: | `CTRL-H` or `<BS>`               |
+| :heavy_check_mark: | `<S-Left>`, `<C-Left>`           | cursor one WORD left
+| :heavy_check_mark: | `<S-Right>`, `<C-Right>`         | cursor one WORD right
+| :heavy_check_mark: | `CTRL-B`, `<Home>`               | cursor to beginning of command-line
+| :heavy_check_mark: | `CTRL-E`, `<End>`                | cursor to end of command-line
+| :heavy_check_mark: | `CTRL-H`, `<BS>`                 |
 | :heavy_check_mark: | `<Del>`                          |
 | :heavy_check_mark: | `CTRL-W`                         |
 | :heavy_check_mark: | `CTRL-U`                         |
-| :heavy_check_mark: | `CTRL-P` or `<up>`               |
-| :heavy_check_mark: | `CTRL-N`, or `<down>`            |
-| :heavy_check_mark: | `CTRL-C` or `CTRL-[`, `<Esc>`    |
+| :heavy_check_mark: | `CTRL-P`, `<up>`                 |
+| :heavy_check_mark: | `CTRL-N`,, `<down>`              |
+| :heavy_check_mark: | `CTRL-C`, `CTRL-[`, `<Esc>`      |
 | :heavy_check_mark: | `<Tab>`                          |
 | :heavy_check_mark: | `<S-Tab>`                        |
 
@@ -250,7 +250,7 @@
 | :heavy_check_mark: | `:se[t] {option}?`                           | Show value of `{option}`
 | :heavy_check_mark: | `:se[t] {option}`                            | Toggle option: set, switch it on. Number or String option: show value.
 | :heavy_check_mark: | `:se[t] no{option}`                          | Toggle option: Reset, switch it off
-| :heavy_check_mark: | `:se[t] {option}!` or `:se[t] inv{option}`   | Toggle option: Invert value
+| :heavy_check_mark: | `:se[t] {option}!`, `:se[t] inv{option}`     | Toggle option: Invert value
 |                    | `:se[t] {option}&`                           | Reset option to its default value
 |                    | `:se[t] {option}&vi`                         | Reset option to its Vi default value
 |                    | `:se[t] {option}&vim`                        | Reset option to its Vim default value
@@ -310,8 +310,41 @@ Some options "proxy" to Sublime Text settings. This means that the option uses t
 
 ## Commands for using multiple windows and buffers `|windows.txt|`
 
-| Status             | Command                          | Description
-| :----------------- | :------------------------------- | :----------
+### 3. Opening and closing a window
+
+| Status             | Command                                                      | Description
+| :----------------- | :----------------------------------------------------------- | :----------
+| :heavy_check_mark: | `CTRL-W s`, `CTRL-W S`, `CTRL-W CTRL-S`, `:sp[lit] [file]`   | Split current window in two
+| :heavy_check_mark: | `CTRL-W CTRL-V`, `CTRL-W v`, `:vs[plit] [file]`              | Like `|:split|`, but split vertically
+| :heavy_check_mark: | `CTRL-W n`, `CTRL-W CTRL-N`, `:new`                          | Create a new window and start editing an empty file in it
+| :heavy_check_mark: | `:new {file}`, `:sp[lit] {file}`                             | Create a new window and start editing file `{file}` in it
+| :heavy_check_mark: | `:vne[w] [file]`                                             | Like `|:new|`, but split vertically
+|                    | `:sv[iew] [file]`                                            | Same as `":split"`, but set 'readonly' option for this buffer
+|                    | `:sf[ind] {file}`                                            | Same as `":split"`, but search for `{file}` in 'path' like in `|:find|`
+| :heavy_check_mark: | `CTRL-W CTRL-^`, `CTRL-W ^`                                  | Split the current window in two and edit the alternate file
+| :heavy_check_mark: | `CTRL-W :`                                                   | Does the same as typing `|:|` - enter a command line
+| :heavy_check_mark: | `:q[uit]`, `:q[uit]`, `CTRL-W q`, `CTRL-W CTRL-Q`            | Quit the current window
+| :heavy_check_mark: | `:q[uit]!`, `:q[uit]!`                                       | Quit the current window
+| :heavy_check_mark: | `:clo[se][!]`, `:clo[se][!]`, `CTRL-W c`                     | Close the current window
+| :heavy_check_mark: | `CTRL-W CTRL-C`                                              | You might have expected that CTRL-W CTRL-C closes the current window, but that does not work, because the CTRL-C cancels the command
+|                    | `:hid[e]`, `:hid[e]`                                         | Quit the current window, unless it is the last window on the screen
+|                    | `:hid[e] {cmd}`                                              | Execute `{cmd}` with 'hidden' is set
+| :heavy_check_mark: | `:on[ly][!]`, `:on[ly][!]`, `CTRL-W o`, `CTRL-W CTRL-O`      | Make the current window the only one on the screen
+
+### 4. Moving cursor to other windows
+
+| Status             | Command                                                      | Description
+| :----------------- | :----------------------------------------------------------- | :----------
+| :heavy_check_mark: | `CTRL-W <Down>`, `CTRL-W CTRL-J`, `CTRL-W j`                 | Move cursor to Nth window below current one
+| :heavy_check_mark: | `CTRL-W <Up>`, `CTRL-W CTRL-K`, `CTRL-W k`                   | Move cursor to Nth window above current one
+| :heavy_check_mark: | `CTRL-W <Left>`, `CTRL-W CTRL-H`, `CTRL-W <BS>`, `CTRL-W h`  | Move cursor to Nth window left of current one
+| :heavy_check_mark: | `CTRL-W <Right>`, `CTRL-W CTRL-L`, `CTRL-W l`                | Move cursor to Nth window right of current one
+| :heavy_check_mark: | `CTRL-W w`, `CTRL-W CTRL-W`                                  | Move cursor to window below/right of the current one
+| :heavy_check_mark: | `CTRL-W W`                                                   | Move cursor to window above/left of current one
+| :heavy_check_mark: | `CTRL-W t`, `CTRL-W CTRL-T`                                  | Move cursor to top-left window
+| :heavy_check_mark: | `CTRL-W b`, `CTRL-W CTRL-B`                                  | Move cursor to bottom-right window
+| :heavy_check_mark: | `CTRL-W p`, `CTRL-W CTRL-P`                                  | Go to previous (last accessed) window
+| :heavy_check_mark: | `CTRL-W P`                                                   | Go to preview window
 
 ## Commands for using multiple tab pages `|tabpage.txt|`
 
@@ -334,9 +367,9 @@ Some options "proxy" to Sublime Text settings. This means that the option uses t
 | :------------------ | :----------------- | :------------------ | :----
 | Abolish             | :white_check_mark: | [vim-abolish](https://github.com/tpope/vim-abolish) |
 | Commentary          | :white_check_mark: | [vim-commentary](https://github.com/tpope/vim-commentary) |
-| Highlighted Yank    | :heavy_check_mark: | [vim-highlightedyank](https://github.com/machakann/vim-highlightedyank) | Inspired by.
+| Highlighted Yank    | :heavy_check_mark: | [vim-highlightedyank](https://github.com/machakann/vim-highlightedyank) |
 | Indent Object       | :white_check_mark: | [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object) |
-| Multiple Cursors    | :heavy_check_mark: | [vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors) | Inspired by.
+| Multiple Cursors    | :heavy_check_mark: | [vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors) |
 | Sneak               | :white_check_mark: | [vim-sneak](https://github.com/justinmk/vim-sneak) | [Disabled by default](https://github.com/NeoVintageous/NeoVintageous/issues/731)
 | Surround            | :white_check_mark: | [vim-surround](https://github.com/tpope/vim-surround) |
 | Targets             | :white_check_mark: | [vim-targets](https://github.com/wellle/targets.vim) |
@@ -457,8 +490,6 @@ A port of [vim-surround](https://github.com/tpope/vim-surround).
 ### Targets
 
 Inspired by [targets.vim](https://github.com/wellle/targets.vim).
-
-TODO targets
 
 ### Unimpaired `|unimpaired.txt|`
 
