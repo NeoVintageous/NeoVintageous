@@ -9,13 +9,14 @@
 
 ## About NeoVintageous
 
-NeoVintageous is an advanced Vim emulation layer for Sublime Text.
+NeoVintageous is an advanced Vim emulation layer for [Sublime Text](https://www.sublimetext.com).
 
 * Strong defaults
 * Highly configurable
-* Plugins out-of-the-box: Abolish, Commentary, Highlighted Yank, Indent Object, Multiple cursors, Surround, Sneak (disabled by default), Targets, Unimpaired
+* Plugins: Abolish, Commentary, Highlighted Yank, Indent Object, Multiple cursors, Surround, Sneak, Targets, Unimpaired
 * Integrations: [GitGutter](https://github.com/jisaacks/GitGutter), [LSP](https://github.com/sublimelsp/LSP), [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter3), [Origami](https://github.com/SublimeText/Origami)
 * Drop-in replacement for Vintageous
+- Zero configuration required
 
 ## Installation
 
@@ -49,17 +50,17 @@ Vim's full documentation system is accessible via the `:help {subject}` command,
 
 Some popular Vim plugins have been ported and are available out-of-the-box. Feature-parity is an ongoing effort and functional differences are not always documented. Please open issues to request missing features.
 
-Plugin | Documentation | Original Vim Plugin
------- | ------------- | -------------------
-Abolish | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-abolish](https://github.com/tpope/vim-abolish)
-Commentary | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-commentary](https://github.com/tpope/vim-commentary)
-Highlighted Yank | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-highlightedyank](https://github.com/machakann/vim-highlightedyank)
-Indent Object | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object)
-Multiple Cursors | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors)
-Sneak | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-sneak](https://github.com/justinmk/vim-sneak)
-Surround | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-surround](https://github.com/tpope/vim-surround)
-Targets | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-targets](https://github.com/wellle/targets.vim)
-Unimpaired | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/master/res/doc/neovintageous.txt) | [vim-unimpaired](https://github.com/tpope/vim-unimpaired)
+| Plugin              | Status             | Original Vim plugin
+| :------------------ | :----------------- | :------------------
+| Abolish             | :white_check_mark: | [vim-abolish](https://github.com/tpope/vim-abolish)
+| Commentary          | :white_check_mark: | [vim-commentary](https://github.com/tpope/vim-commentary)
+| Highlighted Yank    | :white_check_mark: | [vim-highlightedyank](https://github.com/machakann/vim-highlightedyank)
+| Indent Object       | :white_check_mark: | [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object)
+| Multiple Cursors    | :white_check_mark: | [vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors)
+| Sneak               | :white_check_mark: | [vim-sneak](https://github.com/justinmk/vim-sneak) - disabled by default
+| Surround            | :white_check_mark: | [vim-surround](https://github.com/tpope/vim-surround)
+| Targets             | :white_check_mark: | [vim-targets](https://github.com/wellle/targets.vim)
+| Unimpaired          | :white_check_mark: | [vim-unimpaired](https://github.com/tpope/vim-unimpaired)
 
 **Additional plugins, install via Package Control:**
 
@@ -77,7 +78,7 @@ Unimpaired | [`:help nv`](https://github.com/NeoVintageous/NeoVintageous/blob/ma
 - [Dvorak](https://github.com/gerardroche/NeoVintageousDvorak): Dvorak key mappings.
 - [Colemak](https://github.com/gerardroche/NeoVintageousColemak): Colemak key mappings.
 
-**Blogs**
+**Blog**
 
 - [blog.gerardroche.com](https://blog.gerardroche.com): Releases, guides, and tips.
 
