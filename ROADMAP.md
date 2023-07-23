@@ -85,6 +85,7 @@ Status              | Command                       | Description
 :heavy_check_mark:  | `m{a-zA-Z}`                   | Set mark `{a-zA-Z}` at cursor position.
 :heavy_check_mark:  | `'{a-z}`  `{backtick}{a-z}`   | Jump to the mark `{a-z}` in the current buffer.
 :heavy_check_mark:  | `'{A-Z}`  `{backtick}{A-Z}`   | To the mark `{A-Z}` in the file where it was set (not a motion command when in another file).
+:heavy_check_mark:  | `:marks`                      | List all the current marks (not a motion command).
 
 ### Jump motions `|jump-motions|`
 
@@ -158,7 +159,7 @@ Status              | Option                | Default
 :heavy_check_mark:  | `'number'`            | `line_numbers` st setting
 :heavy_check_mark:  | `'relativenumber'`    | `relative_line_numbers` st setting
 :heavy_check_mark:  | `'scrolloff'`         | `scroll_context_lines` st setting
-:heavy_check_mark:  | `'shell'`             | `$SHELL` or `"sh"`, Win32: `"cmd.exe"`
+:white_check_mark:  | `'shell'`             | `$SHELL` or `"sh"`, Win32: `"cmd.exe"`
 :heavy_check_mark:  | `'sidebar'`           | On
                     | `'sidescrolloff'`     | 5
 :heavy_check_mark:  | `'smartcase'`         | Off
@@ -171,7 +172,26 @@ Status              | Option                | Default
 :heavy_check_mark:  | `'wrapscan'`          | On
 :white_check_mark:  | `'belloff'`           | `''`
 
-### Command-line editing `|cmdline-editing|`
+## Undo and Redo `|undo-redo|`
+
+Status              | Command                       | Description
+:------------------ | :---------------------------- | -----------
+:heavy_check_mark:  | `u`                           | Undo `[count]` changes
+:heavy_check_mark:  | `CTRL-R`                      | Redo `[count]` changes which were undone
+                    | `U`                           | Undo all latest changes on one line, the line where the latest change was made
+
+## Various `|various|`
+
+Status                  | Command                       | Description
+:------------------     | :---------------------------- | -----------
+:heavy_check_mark:      | `ga`                          | Print the ascii value of the character under the cursor in dec, hex and oct.
+                        | `:as[cii]`                    | Same as `ga`
+:heavy_check_mark:      | `:sh[ell]`                    | This command starts a shell
+:heavy_check_mark:      | `:!{cmd}`                     | Execute `{cmd}` with the shell
+:heavy_check_mark:      | `:!!`                         | Repeat last `":!{cmd}"`
+:heavy_check_mark:      | `:sil[ent] {command}`         | Execute `{command}` silently
+
+## Command-line editing `|cmdline-editing|`
 
 Status              | Command                       | Description
 :------------------ | :---------------------------- | -----------
