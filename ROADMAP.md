@@ -118,7 +118,14 @@ Status              | Command                       | Description
 :heavy_check_mark:  | `'{a-z}`  `{backtick}{a-z}`   | Jump to the mark `{a-z}` in the current buffer.
 :heavy_check_mark:  | `'{A-Z}`  `{backtick}{A-Z}`   | To the mark `{A-Z}` in the file where it was set (not a motion command when in another file).
 
-### Visual start `|visual-start|`
+### Jump motions `|jump-motions|`
+
+Status              | Command                       | Description
+:------------------ | :---------------------------- | -----------
+:heavy_check_mark:  | `<Tab>`, `CTRL-I`             | Go to newer cursor position in jump list (not a motion command)
+:heavy_check_mark:  | `CTRL-O`                      | Go to older cursor position in jump list (not a motion command)
+
+## Visual start `|visual-start|`
 
 Status              | Command                       | Description
 :------------------ | :---------------------------- | -----------
@@ -132,12 +139,18 @@ Status              | Command                       | Description
                     | `O`                           | Like "o", but in Visual block mode the cursor moves to the other corner in the same line
 :heavy_check_mark:  | `<Esc>` or `CTRL-C`           | Stop Visual mode
 
-### Jump motions `|jump-motions|`
+## Repeating `|repeating|`
 
 Status              | Command                       | Description
 :------------------ | :---------------------------- | -----------
-:heavy_check_mark:  | `<Tab>`, `CTRL-I`             | Go to newer cursor position in jump list (not a motion command)
-:heavy_check_mark:  | `CTRL-O`                      | Go to older cursor position in jump list (not a motion command)
+:heavy_check_mark:  | `[count].`                    | Repeat last change, with count replaced with `[count]`
+                    | `@:`                          | Repeat last command-line `[count]` times
+:heavy_check_mark:  | `q{0-9a-zA-Z"}`               | Record typed characters into register `{0-9a-zA-Z"}` (uppercase to append)
+:heavy_check_mark:  | `q`                           | Stops recording
+:heavy_check_mark:  | `@{0-9a-z"}`                  | Execute the contents of register `{0-9a-z"}` `[count]` times
+                    | `@{=*+}`                      | Execute the contents of register `{=*+}` `[count]` times
+:heavy_check_mark:  | `@@`                          | Repeat the previous `@{0-9a-z":*}` `[count]` times
+
 
 ### Command-line editing `|cmdline-editing|`
 
