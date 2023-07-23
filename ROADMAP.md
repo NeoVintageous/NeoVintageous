@@ -122,11 +122,15 @@ Status              | Command                       | Description
 
 Status              | Command                       | Description
 :------------------ | :---------------------------- | -----------
-:heavy_check_mark:  | gv                            | Start visual mode with the same area as the previous area and the same mode.
-:heavy_check_mark:  | gn                            | Search forward for the last used search pattern, like with `n`, and start Visual mode to select the match.
-:heavy_check_mark:  | gN                            | Like `gn` but searches backward, like with `N`.
-:heavy_check_mark:  | o                             |
-                    | O                             |
+:heavy_check_mark:  | `v`                           | Start Visual mode per character
+:heavy_check_mark:  | `[count]V`                    | Start Visual mode linewise
+:heavy_check_mark:  | `CTRL-V`                      | Start Visual mode blockwise
+:heavy_check_mark:  | `gv`                          | Start visual mode with the same area as the previous area and the same mode
+:heavy_check_mark:  | `gn`                          | Search forward for the last used search pattern, like with `n`, and start Visual mode to select the match.
+:heavy_check_mark:  | `gN`                          | Like `gn` but searches backward, like with `N`
+:heavy_check_mark:  | `o`                           | Go to Other end of highlighted text
+                    | `O`                           | Like "o", but in Visual block mode the cursor moves to the other corner in the same line
+:heavy_check_mark:  | `<Esc>` or `CTRL-C`           | Stop Visual mode
 
 ### Jump motions `|jump-motions|`
 
