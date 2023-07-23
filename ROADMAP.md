@@ -14,69 +14,69 @@
 
 ## Vim modes |vim-modes|
 
-Status              | Mode                  | Description
-:------------------ | :-------------------- | :----------
-:heavy_check_mark:  | Insert mode           | `[count]i`
-:heavy_check_mark:  | Normal mode           | `<Esc>`
-:heavy_check_mark:  | Visual mode           | `v`
-:heavy_check_mark:  | Visual line mode      | `[count]V`
-:heavy_check_mark:  | Visual block mode     | `CTRL-V`
-:heavy_check_mark:  | Replace mode          | `R`
-:heavy_check_mark:  | Operator-pending mode | Like Normal mode, but after an operator command has start, and Vim is waiting for a `{motion}` to specify the text that the operator will work on.
-:heavy_check_mark:  | Command-line mode     | `:`, `/`, `?`, `!`
-:rocket:   | Multiple-cursor mode  | `CTRL-N`, `gh`
+| Status             | Mode                  | Description
+| :----------------- | :-------------------- | :----------
+| :heavy_check_mark: | Insert mode           | `[count]i`
+| :heavy_check_mark: | Normal mode           | `<Esc>`
+| :heavy_check_mark: | Visual mode           | `v`
+| :heavy_check_mark: | Visual line mode      | `[count]V`
+| :heavy_check_mark: | Visual block mode     | `CTRL-V`
+| :heavy_check_mark: | Replace mode          | `R`
+| :heavy_check_mark: | Operator-pending mode | Like Normal mode, but after an operator command has start, and Vim is waiting for a `{motion}` to specify the text that the operator will work on.
+| :heavy_check_mark: | Command-line mode     | `:`, `/`, `?`, `!`
+| :rocket:           | Multiple-cursor mode  | `CTRL-N`, `gh`
 
 ### Operators `|operator|`
 
-Status              | Command   | Description
-:------------------ | :-------- | :----------
-:heavy_check_mark:  | `c`       | change
-:heavy_check_mark:  | `d`       | delete
-:heavy_check_mark:  | `y`       | yank into register (does not change the text)
-:heavy_check_mark:  | `~`       | swap case (only if 'tildeop' is set)
-:heavy_check_mark:  | `g~`      | g~  swap case
-:heavy_check_mark:  | `gu`      | gu  make lowercase
-:heavy_check_mark:  | `gU`      | gU  make uppercase
-:heavy_check_mark:  | `!`       | filter through an external program
-:heavy_check_mark:  | `=`       | filter through 'equalprg' or C-indenting if empty
-:heavy_check_mark:  | `gq`      | gq  text formatting
-                    | `gw`      | gw  text formatting with no cursor movement
-                    | `g?`      | g?  ROT13 encoding
-:heavy_check_mark:  | `>`       | shift right
-:heavy_check_mark:  | `<`       | shift left
-                    | `zf`      | zf  define a fold
-                    | `g@`      | g@  call function set with the 'operatorfunc' option
+| Status             | Command   | Description
+| :----------------- | :-------- | :----------
+| :heavy_check_mark: | `c`       | change
+| :heavy_check_mark: | `d`       | delete
+| :heavy_check_mark: | `y`       | yank into register (does not change the text)
+| :heavy_check_mark: | `~`       | swap case (only if 'tildeop' is set)
+| :heavy_check_mark: | `g~`      | g~  swap case
+| :heavy_check_mark: | `gu`      | gu  make lowercase
+| :heavy_check_mark: | `gU`      | gU  make uppercase
+| :heavy_check_mark: | `!`       | filter through an external program
+| :heavy_check_mark: | `=`       | filter through 'equalprg' or C-indenting if empty
+| :heavy_check_mark: | `gq`      | gq  text formatting
+|                    | `gw`      | gw  text formatting with no cursor movement
+|                    | `g?`      | g?  ROT13 encoding
+| :heavy_check_mark: | `>`       | shift right
+| :heavy_check_mark: | `<`       | shift left
+|                    | `zf`      | zf  define a fold
+|                    | `g@`      | g@  call function set with the 'operatorfunc' option
 
 ### Motions `|motions.txt|`
 
-Status              | Command                               | Description
-:------------------ | :------------------------------------ | -----------
-:heavy_check_mark:  | `h` or `<Left>` or `CTRL-H` or `<BS>` | `[count]` characters to the left. `|exclusive|` motion.
+Status               | Command                               | Description
+| :----------------- | :------------------------------------ | -----------
+| :heavy_check_mark: | `h` or `<Left>` or `CTRL-H` or `<BS>` | `[count]` characters to the left. `|exclusive|` motion.
 
 ### Text object selection `|text-objects|`
 
-Status              | Command                       | Description
-:------------------ | :---------------------------- | -----------
-:heavy_check_mark:  | `aw`                          | "a word", select `[count]` words
-:heavy_check_mark:  | `iw`                          | "inner word", select `[count]` words
-:heavy_check_mark:  | `aW`                          | "a WORD", select `[count]` WORDs
-:heavy_check_mark:  | `iW`                          | "inner WORD", select `[count]` WORDs
-:heavy_check_mark:  | `as`                          | "a sentence"
-:heavy_check_mark:  | `is`                          | "inner sentence"
-:heavy_check_mark:  | `ap`                          | "a paragraph", select `[count]` paragraphs
-:heavy_check_mark:  | `ip`                          | "inner paragraph", select `[count]` paragraphs
-:heavy_check_mark:  | `a]` or `a[`                  | "a `[]` block"
-:heavy_check_mark:  | `i]` or `i[`                  | "inner `[]` block"
-:heavy_check_mark:  | `a)` or `a(` or `ab`          | "a block", select blocks, from "[(" to the matching ')', including the '(' and ')'
-:heavy_check_mark:  | `i)` or `i(` or `ib`          | "inner block", select blocks, from "[(" to the matching ')', excluding the '(' and ')'
-:heavy_check_mark:  | `a>` or `a<`                  | "a <> block"
-:heavy_check_mark:  | `i>` or `i<`                  | "inner <> block"
-:heavy_check_mark:  | `at`                          | "a tag block"
-:heavy_check_mark:  | `it`                          | "inner tag block"
-:heavy_check_mark:  | `a}` or `a{` or `aB`          | "a Block", select blocks, from "[{" to the matching '}', including the '{' and '}'
-:heavy_check_mark:  | `i}` or `i{` or `iB`          | "inner block", select blocks, from "[{" to the matching '}', excluding the '{' and '}'
-:heavy_check_mark:  | `a"` or `a'` or `a{backtick}` | Selects the text from the previous quote until the next quote
-:heavy_check_mark:  | `i"` or `i'` or `i{backtick}` | Like `a"`, `a'` and `a{backtick}`, but exclude the quotes
+| Status             | Command                       | Description
+| :----------------- | :---------------------------- | -----------
+| :heavy_check_mark: | `aw`                          | "a word", select `[count]` words
+| :heavy_check_mark: | `iw`                          | "inner word", select `[count]` words
+| :heavy_check_mark: | `aW`                          | "a WORD", select `[count]` WORDs
+| :heavy_check_mark: | `iW`                          | "inner WORD", select `[count]` WORDs
+| :heavy_check_mark: | `as`                          | "a sentence"
+| :heavy_check_mark: | `is`                          | "inner sentence"
+| :heavy_check_mark: | `ap`                          | "a paragraph", select `[count]` paragraphs
+| :heavy_check_mark: | `ip`                          | "inner paragraph", select `[count]` paragraphs
+| :heavy_check_mark: | `a]` or `a[`                  | "a `[]` block"
+| :heavy_check_mark: | `i]` or `i[`                  | "inner `[]` block"
+| :heavy_check_mark: | `a)` or `a(` or `ab`          | "a block", select blocks, from "[(" to the matching ')', including the '(' and ')'
+| :heavy_check_mark: | `i)` or `i(` or `ib`          | "inner block", select blocks, from "[(" to the matching ')', excluding the '(' and ')'
+| :heavy_check_mark: | `a>` or `a<`                  | "a <> block"
+| :heavy_check_mark: | `i>` or `i<`                  | "inner <> block"
+| :heavy_check_mark: | `at`                          | "a tag block"
+| :heavy_check_mark: | `it`                          | "inner tag block"
+| :heavy_check_mark: | `a}` or `a{` or `aB`          | "a Block", select blocks, from "[{" to the matching '}', including the '{' and '}'
+| :heavy_check_mark: | `i}` or `i{` or `iB`          | "inner block", select blocks, from "[{" to the matching '}', excluding the '{' and '}'
+| :heavy_check_mark: | `a"` or `a'` or `a{backtick}` | Selects the text from the previous quote until the next quote
+| :heavy_check_mark: | `i"` or `i'` or `i{backtick}` | Like `a"`, `a'` and `a{backtick}`, but exclude the quotes
 
 ### Mark motions `|mark-motions|`
 
