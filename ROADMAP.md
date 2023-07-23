@@ -26,30 +26,37 @@
 | :heavy_check_mark: | Command-line mode     | `:`, `/`, `?`, `!`
 | :rocket:           | Multiple-cursor mode  | `CTRL-N`, `gh`
 
-### Operators `|operator|`
+## Operators `|operator|`
 
 | Status             | Command   | Description
 | :----------------- | :-------- | :----------
 | :heavy_check_mark: | `c`       | change
 | :heavy_check_mark: | `d`       | delete
 | :heavy_check_mark: | `y`       | yank into register (does not change the text)
-| :heavy_check_mark: | `~`       | swap case (only if 'tildeop' is set)
+|                    | `~`       | swap case (only if 'tildeop' is set)
 | :heavy_check_mark: | `g~`      | g~  swap case
 | :heavy_check_mark: | `gu`      | gu  make lowercase
 | :heavy_check_mark: | `gU`      | gU  make uppercase
 | :heavy_check_mark: | `!`       | filter through an external program
-| :heavy_check_mark: | `=`       | filter through 'equalprg' or C-indenting if empty
+|                    | `=`       | filter through 'equalprg' or C-indenting if empty
 | :heavy_check_mark: | `gq`      | gq  text formatting
 |                    | `gw`      | gw  text formatting with no cursor movement
 |                    | `g?`      | g?  ROT13 encoding
 | :heavy_check_mark: | `>`       | shift right
 | :heavy_check_mark: | `<`       | shift left
-|                    | `zf`      | zf  define a fold
+| :x:                | `zf`      | zf  define a fold
 |                    | `g@`      | g@  call function set with the 'operatorfunc' option
 
-### Motions `|motions.txt|`
+## Change `|change.txt|`
 
-| Status               | Command                               | Description
+| Status             | Command                      | Description
+| :----------------- | :--------------------------- | :----------
+| :heavy_check_mark: | `~`                          | swap case
+
+
+## Motions `|motion.txt|`
+
+| Status             | Command                               | Description
 | :----------------- | :------------------------------------ | -----------
 | :heavy_check_mark: | `h` or `<Left>` or `CTRL-H` or `<BS>` | `[count]` characters to the left. `|exclusive|` motion.
 
@@ -142,35 +149,37 @@
 |                    | `:se[t] {option}^={value}`                   | Multiply the `{value}` to a number option, or prepend the `{value}` to a string option.
 |                    | `:se[t] {option}-={value}`                   | Subtract the `{value}` from a number option, or remove the `{value}` from a string option, if it is there.
 
-| Status             | Option               | Default
-| :------------------| :------------------- | :------
-| :heavy_check_mark: | `'autoindent'`       | `auto_indent` st setting
-| :heavy_check_mark: | `'equalalways'`      | On
-| :heavy_check_mark: | `'expandtab'`        | `translate_tabs_to_spaces` st setting
-| :heavy_check_mark: | `'hlsearch'`         | On
-| :heavy_check_mark: | `'ignorecase'`       | Off
-| :heavy_check_mark: | `'incsearch'`        | On
-| :heavy_check_mark: | `'list'`             | `draw_white_space` st setting
-| :heavy_check_mark: | `'magic'`            | On
-| :heavy_check_mark: | `'menu'`             | On
-| :heavy_check_mark: | `'minimap'`          | On
-| :heavy_check_mark: | `'modeline'`         | On
-| :heavy_check_mark: | `'modelines'`        | 5
-| :heavy_check_mark: | `'number'`           | `line_numbers` st setting
-| :heavy_check_mark: | `'relativenumber'`   | `relative_line_numbers` st setting
-| :heavy_check_mark: | `'scrolloff'`        | `scroll_context_lines` st setting
-| :white_check_mark: | `'shell'`            | `$SHELL` or `"sh"`, Win32: `"cmd.exe"`
-| :heavy_check_mark: | `'sidebar'`          | On
-|                    | `'sidescrolloff'`    | 5
-| :heavy_check_mark: | `'smartcase'`        | Off
-| :heavy_check_mark: | `'spell'`            | `spell_check` st setting
-| :heavy_check_mark: | `'statusbar'`        | On
-| :heavy_check_mark: | `'tabstop'`          | `tab_size` st setting
-| :heavy_check_mark: | `'textwidth'`        | `wrap_width` st setting
-| :heavy_check_mark: | `'winaltkeys'`       | `menu`
-| :heavy_check_mark: | `'wrap'`             | `word_wrap` st setting
-| :heavy_check_mark: | `'wrapscan'`         | On
-| :white_check_mark: | `'belloff'`          | `''`
+Some option defaults "proxy" to Sublime Text settings. This means that the option uses the underlying Sublime Text setting. Changing the option, changes the underlying Sublime Text setting. See blog post on [NeoVintageous Options](https://blog.gerardroche.com/2023/06/05/neovintageous-options/)
+
+| Status             | Option                       | Type      | Default
+| :------------------| :--------------------------- | :-------- | :------
+| :heavy_check_mark: | `'autoindent'` `'ai'`        | `string`  | `auto_indent` st setting
+| :white_check_mark: | `'belloff'` `'bo'`           | `string` | `''`; accepts 'all'
+| :heavy_check_mark: | `'equalalways'`              | `boolean` | On
+| :heavy_check_mark: | `'expandtab'` `'et'`         | `boolean` | `translate_tabs_to_spaces` st setting
+| :heavy_check_mark: | `'hlsearch'` `'hls'`         | `boolean` | On
+| :heavy_check_mark: | `'ignorecase'` `'ic'`        | `boolean` | Off
+| :heavy_check_mark: | `'incsearch'` `'is'`         | `boolean` | On
+| :heavy_check_mark: | `'list'`                     | `boolean` | `draw_white_space` st setting
+| :heavy_check_mark: | `'magic'`                    | `boolean` | On ;
+| :heavy_check_mark: | `'menu'`                     | `boolean` | On
+| :heavy_check_mark: | `'minimap'`                  | `boolean` | On
+| :heavy_check_mark: | `'modeline'` `'ml'`          | `boolean` | On
+| :heavy_check_mark: | `'modelines'` `'mls'`        | `number`  | 5
+| :heavy_check_mark: | `'number'` `'nu'`            | `boolean` | `line_numbers` st setting
+| :heavy_check_mark: | `'relativenumber'` `'rnu'`   | `boolean` | `relative_line_numbers` st setting
+| :heavy_check_mark: | `'scrolloff'` `'so'`         | `number`  | `scroll_context_lines` st setting
+| :white_check_mark: | `'shell'`                    | `string`  | `$SHELL` or `"sh"`, Win32: `"cmd.exe"`
+| :heavy_check_mark: | `'sidebar'`                  | `boolean` | On
+|                    | `'sidescrolloff'` `'siso'`   | `number`  | 5
+| :heavy_check_mark: | `'smartcase'` `'scs'`        | `boolean` | Off
+| :heavy_check_mark: | `'spell'`                    | `boolean` | `spell_check` st setting
+| :heavy_check_mark: | `'statusbar'`                | `boolean` | On
+| :heavy_check_mark: | `'tabstop'` `'ts'`           | `number`  | `tab_size` st setting
+| :heavy_check_mark: | `'textwidth'` `'tw'`         | `number` | `wrap_width` st setting
+| :heavy_check_mark: | `'winaltkeys'` `'wak'`       | `string` | `menu`
+| :heavy_check_mark: | `'wrap'`                     | `boolean` | `word_wrap` st setting
+| :heavy_check_mark: | `'wrapscan'` `'ws'`          | `boolean` | On
 
 ## Undo and Redo `|undo-redo|`
 
