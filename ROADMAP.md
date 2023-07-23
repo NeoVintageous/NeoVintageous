@@ -53,7 +53,6 @@
 | :----------------- | :--------------------------- | :----------
 | :heavy_check_mark: | `~`                          | swap case
 
-
 ## Motions `|motion.txt|`
 
 | Status             | Command                               | Description
@@ -111,7 +110,7 @@
 | :heavy_check_mark: | `gv`                          | Start visual mode with the same area as the previous area and the same mode
 | :heavy_check_mark: | `gn`                          | Search forward for the last used search pattern, like with `n`, and start Visual mode to select the match.
 | :heavy_check_mark: | `gN`                          | Like `gn` but searches backward, like with `N`
-| :heavy_check_mark: | `o`                           | Go to Other end of highlighted text
+| :heavy_check_mark: | `o`                           | Go to other end of highlighted text
 |                    | `O`                           | Like "o", but in Visual block mode the cursor moves to the other corner in the same line
 | :heavy_check_mark: | `<Esc>` or `CTRL-C`           | Stop Visual mode
 
@@ -149,7 +148,7 @@
 |                    | `:se[t] {option}^={value}`                   | Multiply the `{value}` to a number option, or prepend the `{value}` to a string option.
 |                    | `:se[t] {option}-={value}`                   | Subtract the `{value}` from a number option, or remove the `{value}` from a string option, if it is there.
 
-Some option defaults "proxy" to Sublime Text settings. This means that the option uses the underlying Sublime Text setting. Changing the option, changes the underlying Sublime Text setting. See blog post on [NeoVintageous Options](https://blog.gerardroche.com/2023/06/05/neovintageous-options/)
+Some options "proxy" to Sublime Text settings. This means that the option uses the underlying Sublime Text setting . Changing the option, changes the underlying Sublime Text setting. See blog post on [NeoVintageous Options](https://blog.gerardroche.com/2023/06/05/neovintageous-options/).
 
 | Status             | Option                       | Type      | Default
 | :------------------| :--------------------------- | :-------- | :------
@@ -161,7 +160,7 @@ Some option defaults "proxy" to Sublime Text settings. This means that the optio
 | :heavy_check_mark: | `'ignorecase'` `'ic'`        | `boolean` | Off
 | :heavy_check_mark: | `'incsearch'` `'is'`         | `boolean` | On
 | :heavy_check_mark: | `'list'`                     | `boolean` | `draw_white_space` st setting
-| :heavy_check_mark: | `'magic'`                    | `boolean` | On ;
+| :heavy_check_mark: | `'magic'`                    | `boolean` | On
 | :heavy_check_mark: | `'menu'`                     | `boolean` | On
 | :heavy_check_mark: | `'minimap'`                  | `boolean` | On
 | :heavy_check_mark: | `'modeline'` `'ml'`          | `boolean` | On
