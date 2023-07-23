@@ -30,7 +30,25 @@
 | :heavy_check_mark: | Command-line mode     | `:`, `/`, `?`, `!`
 | :rocket:           | Multiple-cursor mode  | `CTRL-N`, `gh`
 
-## Operators `|operator|`
+## Editing and writing files `|editing.txt|`
+
+| Status             | Command                          | Description
+| :----------------- | :------------------------------- | :----------
+| :heavy_check_mark: |`CTRL-G` or `:f[ile]`             | Prints the current file name
+| :heavy_check_mark: |`:buffers` or `:files` or `:ls`   | List all the currently known file names
+| :bug:              |`:e[dit]`                         | Edit the current file. This is useful to re-edit the current file, when it has been changed outside of Sublime.
+| :heavy_check_mark: |`:e[dit]!`                        | Edit the current file always.  Discard any changes to the current buffer.
+| :heavy_check_mark: |`:e[dit] {file}`                  | Edit `{file}`
+| :heavy_check_mark: | `:ene[w]`                        | Edit a new, unnamed buffer
+| :heavy_check_mark: | `CTRL-^`                         | Edit the alternate file
+| :heavy_check_mark: | `gf`                             | Edit the file whose name is under or after the cursor
+| :heavy_check_mark: | `{Visual}gf`                     | Same as "gf", but the highlighted text is used as the name of the file to edit
+| :heavy_check_mark: | `gF`                             | Same as "gf", except if a number follows the file name, then the cursor is positioned on that line in the file
+| :heavy_check_mark: | `{Visual}gF`                     | Same as "v_gf".
+
+## Commands for moving around `|motion.txt|`
+
+### Motions and operators `|operator|`
 
 | Status             | Command   | Description
 | :----------------- | :-------- | :----------
@@ -51,23 +69,7 @@
 | :x:                | `zf`      | zf  define a fold
 |                    | `g@`      | g@  call function set with the 'operatorfunc' option
 
-## Editing `|editing.txt|`
-
-| Status             | Command                          | Description
-| :----------------- | :------------------------------- | :----------
-| :heavy_check_mark: |`CTRL-G` or `:f[ile]`             | Prints the current file name
-| :heavy_check_mark: |`:buffers` or `:files` or `:ls`   | List all the currently known file names
-| :bug:              |`:e[dit]`                         | Edit the current file. This is useful to re-edit the current file, when it has been changed outside of Sublime.
-| :heavy_check_mark: |`:e[dit]!`                        | Edit the current file always.  Discard any changes to the current buffer.
-| :heavy_check_mark: |`:e[dit] {file}`                  | Edit `{file}`
-| :heavy_check_mark: | `:ene[w]`                        | Edit a new, unnamed buffer
-| :heavy_check_mark: | `CTRL-^`                         | Edit the alternate file
-| :heavy_check_mark: | `gf`                             | Edit the file whose name is under or after the cursor
-| :heavy_check_mark: | `{Visual}gf`                     | Same as "gf", but the highlighted text is used as the name of the file to edit
-| :heavy_check_mark: | `gF`                             | Same as "gf", except if a number follows the file name, then the cursor is positioned on that line in the file
-| :heavy_check_mark: | `{Visual}gF`                     | Same as "v_gf".
-
-## Motion `|motion.txt|`
+### Left-right motions `|left-right-motions|`
 
 | Status             | Command                               | Description
 | :----------------- | :------------------------------------ | -----------
@@ -98,7 +100,7 @@
 | :heavy_check_mark: | `a"` or `a'` or `a{backtick}` | Selects the text from the previous quote until the next quote
 | :heavy_check_mark: | `i"` or `i'` or `i{backtick}` | Like `a"`, `a'` and `a{backtick}`, but exclude the quotes
 
-### Mark motions `|mark-motions|`
+### Marks `|mark-motions|`
 
 | Status             | Command                       | Description
 | :----------------- | :---------------------------- | -----------
@@ -107,24 +109,24 @@
 | :heavy_check_mark: | `'{A-Z}`  `{backtick}{A-Z}`   | To the mark `{A-Z}` in the file where it was set (not a motion command when in another file).
 | :heavy_check_mark: | `:marks`                      | List all the current marks (not a motion command).
 
-### Jump motions `|jump-motions|`
+### Jumps `|jump-motions|`
 
 | Status             | Command                       | Description
 | :----------------- | :---------------------------- | -----------
 | :heavy_check_mark: | `<Tab>`, `CTRL-I`             | Go to newer cursor position in jump list (not a motion command)
 | :heavy_check_mark: | `CTRL-O`                      | Go to older cursor position in jump list (not a motion command)
 
-## Scroll `|scroll.txt|`
+## Scrolling the text in the window `|scroll.txt|`
 
 | Status             | Command                          | Description
 | :----------------- | :------------------------------- | :----------
 
-## Insert `|insert.txt|`
+## Insert and Replace mode `|insert.txt|`
 
 | Status             | Command                          | Description
 | :----------------- | :------------------------------- | :----------
 
-## Change `|change.txt|`
+## Deleting and replacing text `|change.txt|`
 
 | Status             | Command                          | Description
 | :----------------- | :------------------------------- | :----------
@@ -164,7 +166,7 @@
 |                    | `O`                           | Like "o", but in Visual block mode the cursor moves to the other corner in the same line
 | :heavy_check_mark: | `<Esc>` or `CTRL-C`           | Stop Visual mode
 
-## Various `|various.txt|`
+## Various remaining commands `|various.txt|`
 
 | Status             | Command                      | Description
 | :----------------- | :--------------------------- | -----------
@@ -195,7 +197,7 @@
 | :heavy_check_mark: | `<Tab>`                          |
 | :heavy_check_mark: | `<S-Tab>`                        |
 
-## Options `|options.txt|`
+## Description of all options `|options.txt|`
 
 | Status             | Command                                      | Description
 | :------------------| :------------------------------------------- | -----------
@@ -248,6 +250,41 @@ Some options "proxy" to Sublime Text settings. This means that the option uses t
 | :heavy_check_mark: | `'winaltkeys'` `'wak'`       | `string` | `menu`
 | :heavy_check_mark: | `'wrap'`                     | `boolean` | `word_wrap` st setting
 | :heavy_check_mark: | `'wrapscan'` `'ws'`          | `boolean` | On
+
+## Regexp patterns and search commands `|pattern.txt|`
+
+| Status             | Command                          | Description
+| :----------------- | :------------------------------- | :----------
+
+## Key mapping and abbreviations `|map.txt|`
+
+| Status             | Command                          | Description
+| :----------------- | :------------------------------- | :----------
+
+## Tags and special searches `|tagsrch.txt|`
+
+| Status             | Command                          | Description
+| :----------------- | :------------------------------- | :----------
+
+## Commands for using multiple windows and buffers `|windows.txt|`
+
+| Status             | Command                          | Description
+| :----------------- | :------------------------------- | :----------
+
+## Commands for using multiple tab pages `|tabpage.txt|`
+
+| Status             | Command                          | Description
+| :----------------- | :------------------------------- | :----------
+
+## Spell checking `|spell.txt|`
+
+| Status             | Command                          | Description
+| :----------------- | :------------------------------- | :----------
+
+## Hide (fold) ranges of lines `|fond.txt|`
+
+| Status             | Command                          | Description
+| :----------------- | :------------------------------- | :----------
 
 ## Plugins
 
