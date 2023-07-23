@@ -141,35 +141,35 @@ Status              | Command                                       | Descriptio
                     | `:se[t] {option}^={value}`                    | Multiply the `{value}` to a number option, or prepend the `{value}` to a string option.
                     | `:se[t] {option}-={value}`                    | Subtract the `{value}` from a number option, or remove the `{value}` from a string option, if it is there.
 
-Status              | Option
-:------------------ | :--------------------
-:heavy_check_mark:  | `'autoindent'`
-:white_check_mark:  | `'belloff'`
-:heavy_check_mark:  | `'equalalways'`
-:heavy_check_mark:  | `'expandtab'`
-:heavy_check_mark:  | `'hlsearch'`
-:heavy_check_mark:  | `'ignorecase'`
-:heavy_check_mark:  | `'incsearch'`
-:heavy_check_mark:  | `'list'`
-:heavy_check_mark:  | `'magic'`
-:heavy_check_mark:  | `'menu'`
-:heavy_check_mark:  | `'minimap'`
-:heavy_check_mark:  | `'modeline'`
-:heavy_check_mark:  | `'modelines'`
-:heavy_check_mark:  | `'number'`
-:heavy_check_mark:  | `'relativenumber'`
-:heavy_check_mark:  | `'scrolloff'`
-:heavy_check_mark:  | `'shell'`
-:heavy_check_mark:  | `'sidebar'`
-                    | `'sidescrolloff'`
-:heavy_check_mark:  | `'smartcase'`
-:heavy_check_mark:  | `'spell'`
-:heavy_check_mark:  | `'statusbar'`
-:heavy_check_mark:  | `'tabstop'`
-:heavy_check_mark:  | `'textwidth'`
-:heavy_check_mark:  | `'winaltkeys'`
-:heavy_check_mark:  | `'wrap'`
-:heavy_check_mark:  | `'wrapscan'`
+Status              | Option                | Default
+:------------------ | :-------------------- | :------
+:heavy_check_mark:  | `'autoindent'`        | `auto_indent` st setting
+:heavy_check_mark:  | `'equalalways'`       | On
+:heavy_check_mark:  | `'expandtab'`         | `translate_tabs_to_spaces` st setting
+:heavy_check_mark:  | `'hlsearch'`          | On
+:heavy_check_mark:  | `'ignorecase'`        | Off
+:heavy_check_mark:  | `'incsearch'`         | On
+:heavy_check_mark:  | `'list'`              | `draw_white_space` st setting
+:heavy_check_mark:  | `'magic'`             | On
+:heavy_check_mark:  | `'menu'`              | On
+:heavy_check_mark:  | `'minimap'`           | On
+:heavy_check_mark:  | `'modeline'`          | On
+:heavy_check_mark:  | `'modelines'`         | 5
+:heavy_check_mark:  | `'number'`            | `line_numbers` st setting
+:heavy_check_mark:  | `'relativenumber'`    | `relative_line_numbers` st setting
+:heavy_check_mark:  | `'scrolloff'`         | `scroll_context_lines` st setting
+:heavy_check_mark:  | `'shell'`             | `$SHELL` or `"sh"`, Win32: `"cmd.exe"`
+:heavy_check_mark:  | `'sidebar'`           | On
+                    | `'sidescrolloff'`     | 5
+:heavy_check_mark:  | `'smartcase'`         | Off
+:heavy_check_mark:  | `'spell'`             | `spell_check` st setting
+:heavy_check_mark:  | `'statusbar'`         | On
+:heavy_check_mark:  | `'tabstop'`           | `tab_size` st setting
+:heavy_check_mark:  | `'textwidth'`         | `wrap_width` st setting
+:heavy_check_mark:  | `'winaltkeys'`        | `menu`
+:heavy_check_mark:  | `'wrap'`              | `word_wrap` st setting
+:heavy_check_mark:  | `'wrapscan'`          | On
+:white_check_mark:  | `'belloff'`           | `''`
 
 ### Command-line editing `|cmdline-editing|`
 
