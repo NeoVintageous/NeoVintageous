@@ -8,6 +8,10 @@
 
 :rocket: - Sublime Text specific; Non-Vim
 
+:sparkles: - additional sublime text functionality
+
+:bug: - Buggy
+
 :x: - Can't be implemented due to platform limitations
 
 `[count]` - An optional number that may precede the command to multiply or iterate the command.
@@ -47,13 +51,23 @@
 | :x:                | `zf`      | zf  define a fold
 |                    | `g@`      | g@  call function set with the 'operatorfunc' option
 
-## Change `|change.txt|`
+## Editing `|editing.txt|`
 
-| Status             | Command                      | Description
-| :----------------- | :--------------------------- | :----------
-| :heavy_check_mark: | `~`                          | swap case
+| Status             | Command                          | Description
+| :----------------- | :------------------------------- | :----------
+| :heavy_check_mark: |`CTRL-G` or `:f[ile]`             | Prints the current file name
+| :heavy_check_mark: |`:buffers` or `:files` or `:ls`   | List all the currently known file names
+| :bug:              |`:e[dit]`                         | Edit the current file. This is useful to re-edit the current file, when it has been changed outside of Sublime.
+| :heavy_check_mark: |`:e[dit]!`                        | Edit the current file always.  Discard any changes to the current buffer.
+| :heavy_check_mark: |`:e[dit] {file}`                  | Edit `{file}`
+| :heavy_check_mark: | `:ene[w]`                        | Edit a new, unnamed buffer
+| :heavy_check_mark: | `CTRL-^`                         | Edit the alternate file
+| :heavy_check_mark: | `gf`                             | Edit the file whose name is under or after the cursor
+| :heavy_check_mark: | `{Visual}gf`                     | Same as "gf", but the highlighted text is used as the name of the file to edit
+| :heavy_check_mark: | `gF`                             | Same as "gf", except if a number follows the file name, then the cursor is positioned on that line in the file
+| :heavy_check_mark: | `{Visual}gF`                     | Same as "v_gf".
 
-## Motions `|motion.txt|`
+## Motion `|motion.txt|`
 
 | Status             | Command                               | Description
 | :----------------- | :------------------------------------ | -----------
@@ -100,7 +114,43 @@
 | :heavy_check_mark: | `<Tab>`, `CTRL-I`             | Go to newer cursor position in jump list (not a motion command)
 | :heavy_check_mark: | `CTRL-O`                      | Go to older cursor position in jump list (not a motion command)
 
-## Visual start `|visual-start|`
+## Scroll `|scroll.txt|`
+
+| Status             | Command                          | Description
+| :----------------- | :------------------------------- | :----------
+
+## Insert `|insert.txt|`
+
+| Status             | Command                          | Description
+| :----------------- | :------------------------------- | :----------
+
+## Change `|change.txt|`
+
+| Status             | Command                          | Description
+| :----------------- | :------------------------------- | :----------
+| :heavy_check_mark: | `~`                              | swap case
+
+## Undo and Redo `|undo.txt|`
+
+| Status             | Command                      | Description
+| :------------------| :--------------------------- | -----------
+| :heavy_check_mark: | `u`                          | Undo `[count]` changes
+| :heavy_check_mark: | `CTRL-R`                     | Redo `[count]` changes which were undone
+|                    | `U`                          | Undo all latest changes on one line, the line where the latest change was made
+
+## Repeating commands `|repeat.txt|`
+
+| Status             | Command                      | Description
+| :------------------| :--------------------------- | -----------
+| :heavy_check_mark: | `[count].`                   | Repeat last change, with count replaced with `[count]`
+|                    | `@:`                         | Repeat last command-line `[count]` times
+| :heavy_check_mark: | `q{0-9a-zA-Z"}`              | Record typed characters into register `{0-9a-zA-Z"}` (uppercase to append)
+| :heavy_check_mark: | `q`                          | Stops recording
+| :heavy_check_mark: | `@{0-9a-z"}`                 | Execute the contents of register `{0-9a-z"}` `[count]` times
+|                    | `@{=*+}`                     | Execute the contents of register `{=*+}` `[count]` times
+| :heavy_check_mark: | `@@`                         | Repeat the previous `@{0-9a-z":*}` `[count]` times
+
+## Using the Visual mode (selecting a text area) `|visual.txt|`
 
 | Status             | Command                       | Description
 | :----------------- | :---------------------------- | -----------
@@ -114,19 +164,38 @@
 |                    | `O`                           | Like "o", but in Visual block mode the cursor moves to the other corner in the same line
 | :heavy_check_mark: | `<Esc>` or `CTRL-C`           | Stop Visual mode
 
-## Repeating `|repeating|`
+## Various `|various.txt|`
 
 | Status             | Command                      | Description
-| :------------------| :--------------------------- | -----------
-| :heavy_check_mark: | `[count].`                   | Repeat last change, with count replaced with `[count]`
-|                    | `@:`                         | Repeat last command-line `[count]` times
-| :heavy_check_mark: | `q{0-9a-zA-Z"}`              | Record typed characters into register `{0-9a-zA-Z"}` (uppercase to append)
-| :heavy_check_mark: | `q`                          | Stops recording
-| :heavy_check_mark: | `@{0-9a-z"}`                 | Execute the contents of register `{0-9a-z"}` `[count]` times
-|                    | `@{=*+}`                     | Execute the contents of register `{=*+}` `[count]` times
-| :heavy_check_mark: | `@@`                         | Repeat the previous `@{0-9a-z":*}` `[count]` times
+| :----------------- | :--------------------------- | -----------
+| :heavy_check_mark: | `ga`                         | Print the ascii value of the character under the cursor in dec, hex and oct.
+|                    | `:as[cii]`                   | Same as `ga`
+| :heavy_check_mark: | `:sh[ell]`                   | This command starts a shell
+| :heavy_check_mark: | `:!{cmd}`                    | Execute `{cmd}` with the shell
+| :heavy_check_mark: | `:!!`                        | Repeat last `":!{cmd}"`
+| :heavy_check_mark: | `:sil[ent] {command}`        | Execute `{command}` silently
 
-## Options `|options|`
+## Command-line editing `|cmdline.txt|`
+
+| Status             | Command                          | Description
+| :----------------- | :------------------------------- | -----------
+| :heavy_check_mark: | `<Left>`                         | cursor left
+| :heavy_check_mark: | `<Right>`                        | cursor right
+| :heavy_check_mark: | `<S-Left>` or `<C-Left>`         | cursor one WORD left
+| :heavy_check_mark: | `<S-Right>` or `<C-Right>`       | cursor one WORD right
+| :heavy_check_mark: | `CTRL-B` or `<Home>`             | cursor to beginning of command-line
+| :heavy_check_mark: | `CTRL-E` or `<End>`              | cursor to end of command-line
+| :heavy_check_mark: | `CTRL-H` or `<BS>`               |
+| :heavy_check_mark: | `<Del>`                          |
+| :heavy_check_mark: | `CTRL-W`                         |
+| :heavy_check_mark: | `CTRL-U`                         |
+| :heavy_check_mark: | `CTRL-P` or `<up>`               |
+| :heavy_check_mark: | `CTRL-N`, or `<down>`            |
+| :heavy_check_mark: | `CTRL-C` or `CTRL-[`, `<Esc>`    |
+| :heavy_check_mark: | `<Tab>`                          |
+| :heavy_check_mark: | `<S-Tab>`                        |
+
+## Options `|options.txt|`
 
 | Status             | Command                                      | Description
 | :------------------| :------------------------------------------- | -----------
@@ -179,45 +248,6 @@ Some options "proxy" to Sublime Text settings. This means that the option uses t
 | :heavy_check_mark: | `'winaltkeys'` `'wak'`       | `string` | `menu`
 | :heavy_check_mark: | `'wrap'`                     | `boolean` | `word_wrap` st setting
 | :heavy_check_mark: | `'wrapscan'` `'ws'`          | `boolean` | On
-
-## Undo and Redo `|undo-redo|`
-
-| Status             | Command                      | Description
-| :------------------| :--------------------------- | -----------
-| :heavy_check_mark: | `u`                          | Undo `[count]` changes
-| :heavy_check_mark: | `CTRL-R`                     | Redo `[count]` changes which were undone
-|                    | `U`                          | Undo all latest changes on one line, the line where the latest change was made
-
-## Various `|various|`
-
-| Status             | Command                      | Description
-| :----------------- | :--------------------------- | -----------
-| :heavy_check_mark: | `ga`                         | Print the ascii value of the character under the cursor in dec, hex and oct.
-|                    | `:as[cii]`                   | Same as `ga`
-| :heavy_check_mark: | `:sh[ell]`                   | This command starts a shell
-| :heavy_check_mark: | `:!{cmd}`                    | Execute `{cmd}` with the shell
-| :heavy_check_mark: | `:!!`                        | Repeat last `":!{cmd}"`
-| :heavy_check_mark: | `:sil[ent] {command}`        | Execute `{command}` silently
-
-## Command-line editing `|cmdline-editing|`
-
-| Status             | Command                          | Description
-| :----------------- | :------------------------------- | -----------
-| :heavy_check_mark: | `<Left>`                         | cursor left
-| :heavy_check_mark: | `<Right>`                        | cursor right
-| :heavy_check_mark: | `<S-Left>` or `<C-Left>`         | cursor one WORD left
-| :heavy_check_mark: | `<S-Right>` or `<C-Right>`       | cursor one WORD right
-| :heavy_check_mark: | `CTRL-B` or `<Home>`             | cursor to beginning of command-line
-| :heavy_check_mark: | `CTRL-E` or `<End>`              | cursor to end of command-line
-| :heavy_check_mark: | `CTRL-H` or `<BS>`               |
-| :heavy_check_mark: | `<Del>`                          |
-| :heavy_check_mark: | `CTRL-W`                         |
-| :heavy_check_mark: | `CTRL-U`                         |
-| :heavy_check_mark: | `CTRL-P` or `<up>`               |
-| :heavy_check_mark: | `CTRL-N`, or `<down>`            |
-| :heavy_check_mark: | `CTRL-C` or `CTRL-[`, `<Esc>`    |
-| :heavy_check_mark: | `<Tab>`                          |
-| :heavy_check_mark: | `<S-Tab>`                        |
 
 ## Plugins
 
