@@ -26,38 +26,6 @@ Status              | Mode                  | Description
 :heavy_check_mark:  | Command-line mode     | `:`, `/`, `?`, `!`
 :rocket:   | Multiple-cursor mode  | `CTRL-N`, `gh`
 
-## Options `|options|`
-
-Status              | Option
-:------------------ | :--------------------
-:heavy_check_mark:  | `'autoindent'`
-:white_check_mark:  | `'belloff'`
-:heavy_check_mark:  | `'equalalways'`
-:heavy_check_mark:  | `'expandtab'`
-:heavy_check_mark:  | `'hlsearch'`
-:heavy_check_mark:  | `'ignorecase'`
-:heavy_check_mark:  | `'incsearch'`
-:heavy_check_mark:  | `'list'`
-:heavy_check_mark:  | `'magic'`
-:heavy_check_mark:  | `'menu'`
-:heavy_check_mark:  | `'minimap'`
-:heavy_check_mark:  | `'modeline'`
-:heavy_check_mark:  | `'modelines'`
-:heavy_check_mark:  | `'number'`
-:heavy_check_mark:  | `'relativenumber'`
-:heavy_check_mark:  | `'scrolloff'`
-:heavy_check_mark:  | `'shell'`
-:heavy_check_mark:  | `'sidebar'`
-                    | `'sidescrolloff'`
-:heavy_check_mark:  | `'smartcase'`
-:heavy_check_mark:  | `'spell'`
-:heavy_check_mark:  | `'statusbar'`
-:heavy_check_mark:  | `'tabstop'`
-:heavy_check_mark:  | `'textwidth'`
-:heavy_check_mark:  | `'winaltkeys'`
-:heavy_check_mark:  | `'wrap'`
-:heavy_check_mark:  | `'wrapscan'`
-
 ### Operators `|operator|`
 
 Status              | Command   | Description
@@ -151,6 +119,57 @@ Status              | Command                       | Description
                     | `@{=*+}`                      | Execute the contents of register `{=*+}` `[count]` times
 :heavy_check_mark:  | `@@`                          | Repeat the previous `@{0-9a-z":*}` `[count]` times
 
+## Options `|options|`
+
+Status              | Command                                       | Description
+:------------------ | :-------------------------------------------- | -----------
+                    | `:se[t][!]`                                   | Show all options that differ from their default value
+                    | `:se[t][!] all`                               | Show all but terminal options
+                    | `:se[t] termcap`                              | Show all terminal options
+                    | `:se[t]! termcap`                             | Idem, but don't use multiple columns
+:heavy_check_mark:  | `:se[t] {option}?`                            | Show value of `{option}`
+:heavy_check_mark:  | `:se[t] {option}`                             | Toggle option: set, switch it on. Number or String option: show value.
+:heavy_check_mark:  | `:se[t] no{option}`                           | Toggle option: Reset, switch it off
+:heavy_check_mark:  | `:se[t] {option}!` or `:se[t] inv{option}`    | Toggle option: Invert value
+                    | `:se[t] {option}&`                            | Reset option to its default value
+                    | `:se[t] {option}&vi`                          | Reset option to its Vi default value
+                    | `:se[t] {option}&vim`                         | Reset option to its Vim default value
+                    | `:se[t] all&`                                 | Set all options to their default value
+:heavy_check_mark:  | `:se[t] {option}={value}`                     | Set string or number option to `{value}`
+                    | `:se[t] {option}:{value}`                     | Same as `:se[t] {option}={value}`
+                    | `:se[t] {option}+={value}`                    | Add the `{value}` to a number option, or append the `{value}` to a string option.
+                    | `:se[t] {option}^={value}`                    | Multiply the `{value}` to a number option, or prepend the `{value}` to a string option.
+                    | `:se[t] {option}-={value}`                    | Subtract the `{value}` from a number option, or remove the `{value}` from a string option, if it is there.
+
+Status              | Option
+:------------------ | :--------------------
+:heavy_check_mark:  | `'autoindent'`
+:white_check_mark:  | `'belloff'`
+:heavy_check_mark:  | `'equalalways'`
+:heavy_check_mark:  | `'expandtab'`
+:heavy_check_mark:  | `'hlsearch'`
+:heavy_check_mark:  | `'ignorecase'`
+:heavy_check_mark:  | `'incsearch'`
+:heavy_check_mark:  | `'list'`
+:heavy_check_mark:  | `'magic'`
+:heavy_check_mark:  | `'menu'`
+:heavy_check_mark:  | `'minimap'`
+:heavy_check_mark:  | `'modeline'`
+:heavy_check_mark:  | `'modelines'`
+:heavy_check_mark:  | `'number'`
+:heavy_check_mark:  | `'relativenumber'`
+:heavy_check_mark:  | `'scrolloff'`
+:heavy_check_mark:  | `'shell'`
+:heavy_check_mark:  | `'sidebar'`
+                    | `'sidescrolloff'`
+:heavy_check_mark:  | `'smartcase'`
+:heavy_check_mark:  | `'spell'`
+:heavy_check_mark:  | `'statusbar'`
+:heavy_check_mark:  | `'tabstop'`
+:heavy_check_mark:  | `'textwidth'`
+:heavy_check_mark:  | `'winaltkeys'`
+:heavy_check_mark:  | `'wrap'`
+:heavy_check_mark:  | `'wrapscan'`
 
 ### Command-line editing `|cmdline-editing|`
 
