@@ -18,6 +18,8 @@
 import os
 import traceback
 
+PACKAGE_NAME  = "NeoVintageous"
+
 # To enable debug logging, set the env var to a non-blank value.
 _DEBUG = bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG'))
 
