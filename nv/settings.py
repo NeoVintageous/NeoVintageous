@@ -26,6 +26,7 @@ from NeoVintageous.nv.session import set_session_value
 from NeoVintageous.nv.session import set_session_view_value
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import UNKNOWN
+from NeoVintageous.nv.events_user import on_mode_change
 
 
 def get_setting(view, name: str, default=None):
@@ -208,6 +209,11 @@ def get_mode(view) -> str:
 
 
 def set_mode(view, value: str) -> None:
+    current_mode = get_mode(view)
+    if not current_mode == value: # mode changes
+       set_session_view_value(view, f'is_{current_mode}', False) # unset old mode
+       set_session_view_value(view, f'is_{value}'       , True ) #   set new mode
+       on_mode_change(view, current_mode, value)
     set_session_view_value(view, 'mode', value)
 
 
