@@ -136,6 +136,11 @@ class cfgU():
             _log.warn(f"⚠️‘surround’ in ‘{cfgU_settings}’ should be a dictionary, not {surrT}")
             cfgU.surround = None
 
+        _import_plugins_with_user_data()
+
+def _import_plugins_with_user_data():
+    from NeoVintageous.nv import plugin_surround
+    plugin_surround.reload_with_user_data()
 
 def load_cfgU() -> None: # load alternative user config file to a global class and add a watcher event to track changes
     # load user config file to a global class and add a watcher event to track changes
