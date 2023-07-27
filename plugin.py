@@ -17,8 +17,10 @@
 
 import os
 import traceback
+import logging
 
 PACKAGE_NAME  = "NeoVintageous"
+DEFAULT_LOG_LEVEL = logging.WARN
 
 # To enable debug logging, set the env var to a non-blank value.
 _DEBUG = bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG'))
@@ -31,7 +33,6 @@ _DEBUG = bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG'))
 # WARNING. The end result is that it prints the message to sys.stderr, and in
 # Sublime Text that means it will print the message to console).
 if _DEBUG:  # pragma: no cover
-    import logging
 
     logger = logging.getLogger('NeoVintageous')
 
