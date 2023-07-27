@@ -18,6 +18,7 @@
 # A port of https://github.com/tpope/vim-surround.
 
 import re
+import logging
 
 from sublime import Region
 from sublime_plugin import TextCommand
@@ -40,6 +41,11 @@ from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import run_motion
 
+from NeoVintageous.nv.rc import cfgU
+
+from NeoVintageous.plugin import DEFAULT_LOG_LEVEL
+_log = logging.getLogger(__name__)
+_log.setLevel(DEFAULT_LOG_LEVEL)
 
 __all__ = [
     'nv_surround_command'
@@ -215,7 +221,23 @@ _PUNCTUTION_MARK_ALIASES = {
     'r': ']',
     'a': '>',
 }
+_APPEND_SPACE_TO_CHARS = '({['
 
+def reload_with_user_data() -> None:
+    if hasattr(cfgU,'surround') and (cfg := cfgU.surround): # skip on initial import when Plugin API isn't ready, so not settings are loaded
+        global _APPEND_SPACE_TO_CHARS, _PUNCTUTION_MARK_ALIASES
+        if (_key := 'punctuation marks') in cfg:
+            for key,value in cfg[_key].items():
+                if not (_len := len(value)) == 2:
+                    _log.warn(f"‘punctuation marks’ values should have 2 values, not ‘{_len}’ in ‘{value}’")
+                    continue
+                _PUNCTUATION_MARKS[key] = (value[0], value[1])
+        if (_key := 'punctuation alias') in cfg:
+            _PUNCTUTION_MARK_ALIASES.clear()
+            for key,value in cfg[_key].items():
+                _PUNCTUTION_MARK_ALIASES[key] = value
+        if (_key := 'append space to chars') in cfg:
+            _APPEND_SPACE_TO_CHARS = cfg[_key]
 
 # Expand target punctuation marks. Eight punctuation marks, (, ), {, }, [, ], <,
 # and >, represent themselves and their counterparts. The targets b, B, r, and
@@ -230,7 +252,6 @@ def _expand_targets(target: str) -> tuple:
 
 def _resolve_target_aliases(target: str) -> str:
     return _PUNCTUTION_MARK_ALIASES.get(target, target)
-
 
 # If either ), }, ], or > is used, the text is wrapped in the appropriate pair
 # of characters. Similar behavior can be found with (, {, and [ (but not <),
@@ -265,11 +286,11 @@ def _expand_replacements(target: str) -> tuple:
 
     # Pair replacement
     target = _resolve_target_aliases(target)
-    append_addition_space = True if target in '({[' else False
+    append_addition_space = True if target in _APPEND_SPACE_TO_CHARS else False
     begin, end = _expand_targets(target)
     if append_addition_space:
         begin = begin + ' '
-        end = ' ' + end
+        end   =         ' ' + end
 
     return (begin, end)
 
