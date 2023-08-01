@@ -787,10 +787,9 @@ class nv_enter_normal_mode(TextCommand):
             # XXX: The 'not is_view(self.view)' check above seems to be
             #      redundant, since those views should be ignored by
             #      NeoVintageous altogether.
-            if len(self.view.sel()) < 2:
-                # Don't hide panel if multiple cursors
-                if not from_init:
-                    hide_panel(self.view.window())
+            # Don't hide panel if multiple cursors
+            if not from_init and len(self.view.sel()) < 2:
+                hide_panel(self.view.window())
 
         self.view.settings().set('command_mode', True)
         self.view.settings().set('inverse_caret_state', True)
