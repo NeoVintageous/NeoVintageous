@@ -11,10 +11,10 @@
 
 NeoVintageous is an advanced Vim emulation layer for [Sublime Text](https://www.sublimetext.com).
 
-* Strong defaults
-* Highly configurable
-* Plugins: Abolish, Commentary, Highlighted Yank, Indent Object, Multiple cursors, Surround, Sneak, Targets, Unimpaired
-* Integrations: [GitGutter](https://github.com/jisaacks/GitGutter), [LSP](https://github.com/sublimelsp/LSP), [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter3), [Origami](https://github.com/SublimeText/Origami)
+- :sparkles: For a full list of supported Vim features, please refer to our [roadmap](https://github.com/NeoVintageous/NeoVintageous/blob/master/ROADMAP.md).
+- :rocket: The [changelog]() outlines the breaking/major/minor updates between releases.
+- :page_facing_up: Vim's full documentation is accessible via`:help {subject}` and online at [vimhelp.org](https://vimhelp.org).
+- Report missing features/bugs on [GitHub](https://github.com/NeoVintageous/NeoVintageous/issues).
 * Drop-in replacement for Vintageous
 - Zero configuration required
 
@@ -22,7 +22,7 @@ NeoVintageous is an advanced Vim emulation layer for [Sublime Text](https://www.
 
 ### Package Control installation
 
-The preferred method of installation is [Package Control](https://packagecontrol.io/packages/NeoVintageous).
+Install NeoVintageous via [Package Control](https://packagecontrol.io/packages/NeoVintageous).
 
 ### Manual installation
 
