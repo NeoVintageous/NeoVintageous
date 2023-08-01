@@ -49,9 +49,7 @@ from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_LINE
 
 
-__all__ = [
-    'nv_sneak_command'
-]
+__all__ = ['nv_sneak_command']
 
 
 class SneakInputMotion(ViMotionDef):

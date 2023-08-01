@@ -30,9 +30,7 @@ from NeoVintageous.nv.vi.cmd_base import translate_action
 from NeoVintageous.nv.vim import NORMAL
 
 
-__all__ = [
-    'nv_abolish_command'
-]
+__all__ = ['nv_abolish_command']
 
 
 def _coerce_to_mixedcase(string: str) -> str:

@@ -24,7 +24,7 @@ from NeoVintageous.nv.vim import ACTION_MODES
 from NeoVintageous.nv.vim import SELECT
 
 
-__all__ = ()
+__all__ = []  # type: list
 
 
 @register(seqs.CTRL_N, ACTION_MODES)

@@ -41,9 +41,7 @@ from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import run_motion
 
 
-__all__ = [
-    'nv_surround_command'
-]
+__all__ = ['nv_surround_command']
 
 
 def _should_tag_accept_input(inp: str) -> bool:

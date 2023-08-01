@@ -38,9 +38,7 @@ from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import run_motion
 
 
-__all__ = [
-    'nv_commentary_command'
-]
+__all__ = ['nv_commentary_command']
 
 
 @register(seqs.GC, ACTION_MODES)
