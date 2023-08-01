@@ -414,9 +414,9 @@ For the following four commands the cursor follows the screen.  If the character
 | :white_check_mark: | ["x]S                                                                  | Delete [count] lines [into register x] and start insert.  Synonym for "cc" `linewise`.
 | :white_check_mark: | \{Visual\}["x]c<br>\{Visual\}["x]s                                     | Delete the highlighted text [into register x] and start insert (for `{Visual}` see `Visual-mode`).
 | :white_check_mark: | \{Visual\}r{char}                                                      | Replace all selected characters by `{char}`.
-| :x:                | \{Visual\}["x]C                                                        | Delete the highlighted lines [into register x] and start insert.
-| :x:                | \{Visual\}["x]S                                                        | Delete the highlighted lines [into register x] and start insert (for `{Visual}` see `Visual-mode`).
-| :x:                | \{Visual\}["x]R                                                        | Currently just like `{Visual}`["x]S.  In a next version it might work differently.
+|                    | \{Visual\}["x]C                                                        | Delete the highlighted lines [into register x] and start insert.
+|                    | \{Visual\}["x]S                                                        | Delete the highlighted lines [into register x] and start insert (for `{Visual}` see `Visual-mode`).
+|                    | \{Visual\}["x]R                                                        | Currently just like `{Visual}`["x]S.  In a next version it might work differently.
 
 ### 3. Simple changes
 
@@ -567,31 +567,31 @@ The next two commands always work on whole lines.
 | Status             | Command                      | Description
 | :----------------- | :--------------------------- | -----------
 | :white_check_mark: | `ga`                         | Print the ascii value of the character under the cursor in dec, hex and oct.
-|                    | `:as[cii]`                   | Same as `ga`
-| :white_check_mark: | `:sh[ell]`                   | This command starts a shell
-| :white_check_mark: | `:!{cmd}`                    | Execute `{cmd}` with the shell
-| :white_check_mark: | `:!!`                        | Repeat last `":!{cmd}"`
-| :white_check_mark: | `:sil[ent] {command}`        | Execute `{command}` silently
+|                    | `:as[cii]`                   | Same as `ga`.
+| :white_check_mark: | `:sh[ell]`                   | This command starts a shell.
+| :white_check_mark: | `:!{cmd}`                    | Execute `{cmd}` with the shell.
+| :white_check_mark: | `:!!`                        | Repeat last `":!{cmd}"`.
+| :white_check_mark: | `:sil[ent] {command}`        | Execute `{command}` silently.
 
 ## Command-line editing `|cmdline.txt|`
 
 | Status             | Command                          | Description
 | :----------------- | :------------------------------- | -----------
-| :white_check_mark: | `<Left>`                         | cursor left
-| :white_check_mark: | `<Right>`                        | cursor right
-| :white_check_mark: | `<S-Left>`, `<C-Left>`           | cursor one WORD left
-| :white_check_mark: | `<S-Right>`, `<C-Right>`         | cursor one WORD right
-| :white_check_mark: | `CTRL-B`, `<Home>`               | cursor to beginning of command-line
-| :white_check_mark: | `CTRL-E`, `<End>`                | cursor to end of command-line
-| :white_check_mark: | `CTRL-H`, `<BS>`                 |
-| :white_check_mark: | `<Del>`                          |
-| :white_check_mark: | `CTRL-W`                         |
-| :white_check_mark: | `CTRL-U`                         |
-| :white_check_mark: | `CTRL-P`, `<up>`                 |
-| :white_check_mark: | `CTRL-N`,, `<down>`              |
-| :white_check_mark: | `CTRL-C`, `CTRL-[`, `<Esc>`      |
-| :white_check_mark: | `<Tab>`                          |
-| :white_check_mark: | `<S-Tab>`                        |
+| :white_check_mark: | `<Left>`                         | Cursor left.
+| :white_check_mark: | `<Right>`                        | Cursor right.
+| :white_check_mark: | `<S-Left>`, `<C-Left>`           | Cursor one WORD left.
+| :white_check_mark: | `<S-Right>`, `<C-Right>`         | Cursor one WORD right.
+| :white_check_mark: | `CTRL-B`, `<Home>`               | Cursor to beginning of command-line.
+| :white_check_mark: | `CTRL-E`, `<End>`                | Cursor to end of command-line.
+| :white_check_mark: | `CTRL-H`, `<BS>`                 | Delete the character in front of the cursor.
+| :white_check_mark: | `<Del>`                          | Delete the character under the cursor (at end of line: character before the cursor).
+| :white_check_mark: | `CTRL-W`                         | Delete the `word` before the cursor.
+| :white_check_mark: | `CTRL-U`                         | Remove all characters between the cursor position and the beginning of the line.
+| :white_check_mark: | `CTRL-P`, `<up>`                 | Go to previous in history.
+| :white_check_mark: | `CTRL-N`,, `<down>`              | Go to next in history.
+| :white_check_mark: | `CTRL-C`, `CTRL-[`, `<Esc>`      | Quit Command-line mode without executing.
+| :white_check_mark: | `<Tab>`                          | Go to next matched completion.
+| :white_check_mark: | `<S-Tab>`                        | Go to previous matched completion.
 
 ## Description of all options `|options.txt|`
 
@@ -599,11 +599,11 @@ The next two commands always work on whole lines.
 
 | Status             | Command                                      | Description
 | :------------------| :------------------------------------------- | -----------
-| :white_check_mark: | `:se[t] {option}?`                           | Show value of `{option}`
-| :white_check_mark: | `:se[t] {option}`                            | Toggle option: set, switch it on. Number or String option: show value.
-| :white_check_mark: | `:se[t] no{option}`                          | Toggle option: Reset, switch it off
-| :white_check_mark: | `:se[t] {option}!`, `:se[t] inv{option}`     | Toggle option: Invert value
-| :white_check_mark: | `:se[t] {option}={value}`                    | Set string or number option to `{value}`
+| :white_check_mark: | `:se[t] {option}?`                           | Show value of `{option}`.
+| :white_check_mark: | `:se[t] {option}`                            | Toggle option: set, switch it on. Number or String option: show value..
+| :white_check_mark: | `:se[t] no{option}`                          | Toggle option: Reset, switch it off.
+| :white_check_mark: | `:se[t] {option}!`, `:se[t] inv{option}`     | Toggle option: Invert value.
+| :white_check_mark: | `:se[t] {option}={value}`                    | Set string or number option to `{value}`.
 
 ### 3. Options summary
 
@@ -906,17 +906,17 @@ OPENING AND CLOSING FOLDS
 
 ## Plugins
 
-| Plugin              | Status             | Original Vim Plugin | Notes
-| :------------------ | :----------------- | :------------------ | :----
-| Abolish             | :white_check_mark: | [vim-abolish](https://github.com/tpope/vim-abolish) |
-| Commentary          | :white_check_mark: | [vim-commentary](https://github.com/tpope/vim-commentary) |
-| Highlighted Yank    | :white_check_mark: | [vim-highlightedyank](https://github.com/machakann/vim-highlightedyank) |
-| Indent Object       | :white_check_mark: | [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object) |
-| Multiple Cursors    | :white_check_mark: | [vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors) |
-| Sneak               | :white_check_mark: | [vim-sneak](https://github.com/justinmk/vim-sneak) | [Disabled by default](https://github.com/NeoVintageous/NeoVintageous/issues/731)
-| Surround            | :white_check_mark: | [vim-surround](https://github.com/tpope/vim-surround) |
-| Targets             | :white_check_mark: | [vim-targets](https://github.com/wellle/targets.vim) |
-| Unimpaired          | :white_check_mark: | [vim-unimpaired](https://github.com/tpope/vim-unimpaired) |
+| Status             | Plugin              | Original Vim Plugin | Notes
+| :----------------- | :------------------ | :------------------ | :----
+| :white_check_mark: | Abolish             | [vim-abolish](https://github.com/tpope/vim-abolish) |
+| :white_check_mark: | Commentary          | [vim-commentary](https://github.com/tpope/vim-commentary) |
+| :white_check_mark: | Highlighted Yank    | [vim-highlightedyank](https://github.com/machakann/vim-highlightedyank) |
+| :white_check_mark: | Indent Object       | [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object) |
+| :white_check_mark: | Multiple Cursors    | [vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors) |
+| :white_check_mark: | Sneak               | [vim-sneak](https://github.com/justinmk/vim-sneak) | [Disabled by default](https://github.com/NeoVintageous/NeoVintageous/issues/731)
+| :white_check_mark: | Surround            | [vim-surround](https://github.com/tpope/vim-surround) |
+| :white_check_mark: | Targets             | [vim-targets](https://github.com/wellle/targets.vim) |
+| :white_check_mark: | Unimpaired          | [vim-unimpaired](https://github.com/tpope/vim-unimpaired) |
 
 Suggestions for future implementation.
 
@@ -1138,10 +1138,10 @@ Option Toggling
 | :x:                 | `[ov` | `]ov` | `yov`  | `'virtualedit'`
 | :white_check_mark:  | `[ow` | `]ow` | `yow`  | `'wrap'`
 | :x:                 | `[ox` | `]ox` | `yox`  | `'cursorline'` `'cursorcolumn'` (x as in crosshairs)
-| :sparkles:          | `[oa` | `]oa` | `yoa`  | `'menu'`
-| :sparkles:          | `[oe` | `]oe` | `yoe`  | `'statusbar'`
-| :sparkles:          | `[om` | `]om` | `yom`  | `'minimap'`
-| :sparkles:          | `[ot` | `]ot` | `yot`  | `'sidebar'`
+| :white_check_mark: :sparkles: | `[oa` | `]oa` | `yoa`  | `'menu'`
+| :white_check_mark: :sparkles: | `[oe` | `]oe` | `yoe`  | `'statusbar'`
+| :white_check_mark: :sparkles: | `[om` | `]om` | `yom`  | `'minimap'`
+| :white_check_mark: :sparkles: | `[ot` | `]ot` | `yot`  | `'sidebar'`
 
 ## F.A.Q.
 
