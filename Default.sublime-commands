@@ -23,5 +23,14 @@
         "caption": "NeoVintageous: Reload .neovintageousrc File",
         "command": "neovintageous",
         "args": { "action": "reload_rc_file" }
+    },
+    {
+        "caption": "Preferences: NeoVintageous Settings",
+        "command": "edit_settings",
+        "args": {
+            "base_file": "${packages}/PHPUnitKit/Preferences.sublime-settings",
+            "user_file": "${packages}/User/Preferences.sublime-settings",
+            "default": "{\n\t$0\n}\n"
+        }
     }
 ]
