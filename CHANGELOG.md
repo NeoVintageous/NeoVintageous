@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* [#841](https://github.com/NeoVintageous/NeoVintageous/issues/841): `vintageous_auto_nohlsearch_on_normal_enter` setting to allow keep highlighting after search until `:noh[lsearch]`
 * [#936](https://github.com/NeoVintageous/NeoVintageous/issues/936): An edit settings command: "Preferences: NeoVintageous Settings"
 * [#924](https://github.com/NeoVintageous/NeoVintageous/issues/924): Enable super keys by default (commonly labelled as the Windows key or Command key (Macintosh))
 * [#915](https://github.com/NeoVintageous/NeoVintageous/issues/915): Show marks in gutter (controlled via `vintageous_show_marks_in_gutter` setting)

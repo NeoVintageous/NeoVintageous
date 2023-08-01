@@ -29,6 +29,18 @@
     //      stippled_underline
     "neovintageous_search_occ_style": "fill",
 
+    // If enabled, search highlighing is cleared entering normal mode. This
+    // typically means when the <Esc> key is pressed.
+    //
+    // To clear search highlighting directly:
+    //
+    //     :noh[lsearch]
+    //
+    // Example mapping:
+    //
+    //     noremap <C-l> :nohlsearch<CR>
+    "vintageous_auto_nohlsearch_on_normal_enter": true,
+
     // On Esc, close auto complete, if visible, and exit to normal mode.
     //
     // When set to false, only the auto complete is closed.

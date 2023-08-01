@@ -849,7 +849,9 @@ class nv_enter_normal_mode(TextCommand):
             else:
                 regions_transformer(self.view, f)
 
-            clear_search_highlighting(self.view)
+            if get_setting(self.view, 'auto_nohlsearch_on_normal_enter'):
+                clear_search_highlighting(self.view)
+
             fix_eol_cursor(self.view, mode)
 
         if get_glue_until_normal_mode(self.view) and not is_processing_notation(self.view):
