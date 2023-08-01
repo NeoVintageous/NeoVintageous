@@ -1920,6 +1920,7 @@ class ViMoveHalfScreenHorizontally(ViMotionDef):
 @assign(seqs.ZL, ACTION_MODES)
 @assign(seqs.ZO, ACTION_MODES)
 @assign(seqs.ZUG, ACTION_MODES)
+@assign(seqs.ZUW, ACTION_MODES)
 @assign(seqs.Z_BIG_H, ACTION_MODES)
 @assign(seqs.Z_BIG_L, ACTION_MODES)
 @assign(seqs.Z_BIG_M, ACTION_MODES)

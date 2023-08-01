@@ -1986,7 +1986,7 @@ class nv_vi_z(TextCommand):
             fold(self.view)
         elif action == 'g':
             spell_file_add_word(self.view, kwargs.get('mode'), count)
-        elif action == 'ug':
+        elif action in ('ug', 'uw'):
             spell_file_remove_word(self.view, kwargs.get('mode'), count)
         elif action in ('h', '<left>'):
             scroll_horizontally(self.view, edit, amount=-count)
