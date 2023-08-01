@@ -10,6 +10,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 * [#915](https://github.com/NeoVintageous/NeoVintageous/issues/915): Show marks in gutter; controlled via `vintageous_show_marks_in_gutter` setting
 * [#921](https://github.com/NeoVintageous/NeoVintageous/issues/921): `'equalalways'` option
 
+### Changed
+
+* Reword file open and load command captions: "RC" → ".neovintageousrc"
+
 ### Fixed
 
 * [#929](https://github.com/NeoVintageous/NeoVintageous/issues/929): There is no syntax highlighting for `<LocalLeader>`
