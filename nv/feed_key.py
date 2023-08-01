@@ -81,7 +81,7 @@ class FeedKeyHandler():
         self.check_user_mappings = check_user_mappings
         self.mode = get_mode(self.view)
         _log.info(
-            'key evt: %s/%s/%s eval=%s mappings=%s',
+            'key evt: %s,%s,%s eval=%s mappings=%s',
             key,
             self.mode,
             repeat_count,
