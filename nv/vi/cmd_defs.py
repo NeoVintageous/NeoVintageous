@@ -1181,6 +1181,25 @@ class ViMoveByBigWordEndsBackward(ViMotionDef):
         self.command = 'nv_vi_g_big_e'
 
 
+@assign(seqs.G_SEMICOLON, MOTION_MODES)
+class ViGotoOlderChange(ViMotionDef):
+    def init(self):
+        self.updates_xpos = True
+        self.scroll_into_view = True
+        self.command = 'nv_vi_goto_changelist'
+        self.command_args = {
+            'forward': False
+        }
+
+
+@assign(seqs.G_COMMA, MOTION_MODES)
+class ViGotoNewerChange(ViMotionDef):
+    def init(self):
+        self.updates_xpos = True
+        self.scroll_into_view = True
+        self.command = 'nv_vi_goto_changelist'
+
+
 @assign(seqs.BIG_L, MOTION_MODES)
 class ViGotoScreenBottom(ViMotionDef):
     def init(self):

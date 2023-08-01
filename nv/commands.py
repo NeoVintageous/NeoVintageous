@@ -281,6 +281,7 @@ __all__ = [
     'nv_vi_gk',
     'nv_vi_gm',
     'nv_vi_go_to_symbol',
+    'nv_vi_goto_changelist',
     'nv_vi_gq',
     'nv_vi_greater_than',
     'nv_vi_greater_than_greater_than',
@@ -3612,6 +3613,15 @@ class nv_vi_g_big_e(TextCommand):
             return s
 
         regions_transformer(self.view, f)
+
+
+class nv_vi_goto_changelist(TextCommand):
+    def run(self, edit, mode=None, count=1, forward=True):
+        goto = GotoView(self.view, mode, count)
+        if forward:
+            goto.next_changelist()
+        else:
+            goto.prev_changelist()
 
 
 class nv_vi_left_paren(TextCommand):

@@ -6,7 +6,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
-* [#942](https://github.com/NeoVintageous/NeoVintageous/issues/942): `CTRL-M` alias of `Enter` and `+` - `[count]` lines downward, on the first non-blank character `linewise`.
+* [#106](https://github.com/NeoVintageous/NeoVintageous/issues/106): `g,` Go to `[count]` newer position in change list.
+* [#106](https://github.com/NeoVintageous/NeoVintageous/issues/106): `g;` Go to `[count]` older position in change list
+* [#942](https://github.com/NeoVintageous/NeoVintageous/issues/942): `CTRL-M` alias of `Enter` and `+` - `[count]` lines downward, on the first non-blank character `linewise`
 * [#943](https://github.com/NeoVintageous/NeoVintageous/issues/943): `zuw` (alias of zug) Undo `zw` and `zg` (add word under the cursor as a good word)
 * [#841](https://github.com/NeoVintageous/NeoVintageous/issues/841): `vintageous_auto_nohlsearch_on_normal_enter` setting to allow keep highlighting after search until `:noh[lsearch]`
 * [#936](https://github.com/NeoVintageous/NeoVintageous/issues/936): An edit settings command: "Preferences: NeoVintageous Settings"

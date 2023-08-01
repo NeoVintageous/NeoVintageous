@@ -321,6 +321,18 @@ def goto_prev_mispelled_word(view, mode: str, count: int) -> None:
     regions_transform_to_normal_mode(view)
 
 
+def goto_next_changelist(view, mode: str, count: int) -> None:
+    for i in range(count):
+        view.run_command('next_modification')
+    regions_transform_to_normal_mode(view)
+
+
+def goto_prev_changelist(view, mode: str, count: int) -> None:
+    for i in range(count):
+        view.run_command('prev_modification')
+    regions_transform_to_normal_mode(view)
+
+
 def goto_prev_target(view, mode: str, count: int, target: str) -> None:
     targets = {
         '{': ('\\{', '\\}'),
@@ -431,6 +443,12 @@ class GotoView():
 
     def help(self) -> None:
         goto_help(self.view)
+
+    def next_changelist(self):
+        goto_next_changelist(self.view, self.mode, self.count)
+
+    def prev_changelist(self):
+        goto_prev_changelist(self.view, self.mode, self.count)
 
 
 def jump_to_mark(view, mode: str, mark: str, to_non_blank: bool = False) -> None:
