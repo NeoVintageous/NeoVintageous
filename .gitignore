@@ -28,3 +28,6 @@ tags
 /covhtml/
 /htmlcov/
 /tmp/
+package-metadata.json
+.extracted-sublime-package
+
