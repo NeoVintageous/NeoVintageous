@@ -1,4 +1,4 @@
-*repeat.txt*    For Vim version 9.0.  Last change: 2023 Apr 02
+*repeat.txt*    For Vim version 9.0.  Last change: 2023 May 26
 
 
 		  VIM REFERENCE MANUAL    by Bram Moolenaar
@@ -65,7 +65,7 @@ Using the underscore after `:d` avoids clobbering registers or the clipboard.
 This also makes it faster.
 
 Instead of the '/' which surrounds the {pattern}, you can use any other
-single byte character, but not an alphabetic character, '\', '"' or '|'.
+single byte character, but not an alphabetic character, '\', '"', '|' or '!'.
 This is useful if you want to include a '/' in the search pattern or
 replacement string.
 
@@ -308,8 +308,8 @@ For writing a Vim script, see chapter 41 of the user manual |usr_41.txt|.
 			'runtimepath'.
 
 			If the filetype detection was not enabled yet (this
-			is usually done with a "syntax enable" or "filetype
-			on" command in your .vimrc file), this will also look
+			is usually done with a `syntax enable` or `filetype on`
+			command in your .vimrc file), this will also look
 			for "{name}/ftdetect/*.vim" files.
 
 			When the optional ! is added no plugin files or
