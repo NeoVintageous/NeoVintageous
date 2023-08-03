@@ -9,11 +9,11 @@
 
 ## About NeoVintageous
 
-NeoVintageous is an advanced Vim emulation layer for [Sublime Text](https://www.sublimetext.com).
+NeoVintageous is an advanced Vim emulator for [Sublime Text](https://www.sublimetext.com).
 
 - :sparkles: For a full list of supported Vim features, please refer to our [roadmap](https://github.com/NeoVintageous/NeoVintageous/blob/master/ROADMAP.md).
 - :rocket: The [changelog]() outlines the breaking/major/minor updates between releases.
-- :page_facing_up: Vim's full documentation is accessible via`:help {subject}` and online at [vimhelp.org](https://vimhelp.org).
+- :page_facing_up: Vim's full documentation is accessible via`:help {subject}` and [online](https://vimhelp.org).
 - Report missing features/bugs on [GitHub](https://github.com/NeoVintageous/NeoVintageous/issues).
 * Drop-in replacement for Vintageous
 - Zero configuration required

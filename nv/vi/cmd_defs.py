@@ -986,7 +986,7 @@ class VigF(ViOperatorDef):
 
 @assign(seqs.I, (NORMAL, SELECT))
 @assign(seqs.INSERT, (NORMAL, SELECT))
-class ViEnterInserMode(ViOperatorDef):
+class ViEnterInsertMode(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
         self.glue_until_normal_mode = True
