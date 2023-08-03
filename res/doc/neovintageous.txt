@@ -113,6 +113,22 @@ To edit settings go to Menu → Preferences → Settings.
         The search occurrences style. Valid values: fill, outline, underline,
         squiggly_underline, stippled_underline.
 
+                                *'vintageous_auto_nohlsearch_on_normal_enter'*
+'vintageous_auto_nohlsearch_on_normal_enter'
+                        boolean (default on)
+
+        If enabled, search highlighting is cleared entering normal mode. This
+        typically means when the <Esc> key is pressed.
+
+        To clear search highlighting directly: >
+
+            :noh[lsearch]
+        <
+
+        Example mapping: >
+
+            noremap <C-l> :nohlsearch<CR>
+
                                                            *'vintageous_bell'*
 'vintageous_bell'       string (default "blink")
         Visual bell style type. Valid values are: blink, view, or views.
@@ -232,6 +248,11 @@ To edit settings go to Menu → Preferences → Settings.
 'vintageous_shell_silent'
                         boolean (default off)
         Show output panel from shell commands.
+
+                                           *'vintageous_show_marks_in_gutter'*
+'vintageous_show_marks_in_gutter'
+                        boolean (default on)
+        Show marks in the gutter.
 
                                                *'vintageous_sneak_use_ic_scs'*
 'vintageous_sneak_use_ic_scs'

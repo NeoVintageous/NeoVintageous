@@ -1262,7 +1262,7 @@ $quote	eval.txt	/*$quote*
 'vif'	options.txt	/*'vif'*
 'viminfo'	options.txt	/*'viminfo'*
 'viminfofile'	options.txt	/*'viminfofile'*
-'vintageous_bell'	neovintageous.txt	/*'vintageous_bell'*
+'vintageous_auto_nohlsearch_on_normal_enter'	neovintageous.txt	/*'vintageous_auto_nohlsearch_on_normal_enter'*
 'vintageous_bell_color_scheme'	neovintageous.txt	/*'vintageous_bell_color_scheme'*
 'vintageous_default_mode'	neovintageous.txt	/*'vintageous_default_mode'*
 'vintageous_enable_abolish'	neovintageous.txt	/*'vintageous_enable_abolish'*
@@ -1279,6 +1279,7 @@ $quote	eval.txt	/*$quote*
 'vintageous_multi_cursor_exit_from_visual_mode'	neovintageous.txt	/*'vintageous_multi_cursor_exit_from_visual_mode'*
 'vintageous_reset_mode_when_switching_tabs'	neovintageous.txt	/*'vintageous_reset_mode_when_switching_tabs'*
 'vintageous_shell_silent'	neovintageous.txt	/*'vintageous_shell_silent'*
+'vintageous_show_marks_in_gutter'	neovintageous.txt	/*'vintageous_show_marks_in_gutter'*
 'vintageous_sneak_use_ic_scs'	neovintageous.txt	/*'vintageous_sneak_use_ic_scs'*
 'vintageous_use_ctrl_keys'	neovintageous.txt	/*'vintageous_use_ctrl_keys'*
 'vintageous_use_super_keys'	neovintageous.txt	/*'vintageous_use_super_keys'*
