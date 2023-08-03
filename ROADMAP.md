@@ -14,7 +14,9 @@
  <summary><strong>Table of Contents</strong> (click to expand)</summary>
 
 - [Modes](#modes-vim-modes)
+  - [About using the help files](#about-using-the-help-files-helphelptxt)
 - [Editing and writing files](#editing-and-writing-files-editingtxt)
+  - [1. Introduction](#1-introduction)
   - [4. Writing](#4-writing)
   - [5. Writing and quitting](#5-writing-and-quitting)
   - [6. Dialogs](#6-dialogs)
@@ -36,6 +38,7 @@
   - [4. Scrolling horizontally](#4-scrolling-horizontally)
 - [Insert and Replace mode](#insert-and-replace-mode-inserttxt)
   - [1. Special keys](#1-special-keys)
+  - [7. Insert mode completion](#7-insert-mode-completion)
 - [Deleting and replacing text](#deleting-and-replacing-text-changetxt)
   - [1. Deleting text](#1-deleting-text)
   - [2. Delete and insert](#2-delete-and-insert)
@@ -47,9 +50,13 @@
   - [7. Sorting text](#7-sorting-text)
 - [Undo and Redo](#undo-and-redo-undotxt)
 - [Repeating commands](#repeating-commands-repeattxt)
+  - [1. Single repeats](#1-single-repeats)
+  - [2. Multiple repeats](#2-multiple-repeats)
+  - [3. Complex repeats](#3-complex-repeats)
 - [Using the Visual mode (selecting a text area)](#using-the-visual-mode-selecting-a-text-area-visualtxt)
 - [Various remaining commands](#various-remaining-commands-varioustxt)
 - [Command-line editing](#command-line-editing-cmdlinetxt)
+  - [1. Command-line editing](#1-command-line-editing)
 - [Description of all options](#description-of-all-options-optionstxt)
   - [1. Setting options](#1-setting-options)
   - [3. Options summary](#3-options-summary)
@@ -68,8 +75,13 @@
 - [Commands for using multiple tab pages](#commands-for-using-multiple-tab-pages-tabpagetxt)
   - [2. Commands](#2-commands)
 - [Spell checking](#spell-checking-spelltxt)
+- [Working with versions of the same file](#working-with-versions-of-the-same-file-difftxt)
+  - [3. Jumping to diffs](#3-jumping-to-diffs)
+- [Expression evaluation, conditional commands](#expression-evaluation-conditional-commands-evaltxt)
+  - [7. Commands](#7-commands)
 - [Hide (fold) ranges of lines](#hide-fold-ranges-of-lines-foldtxt)
   - [2. Fold commands](#2-fold-commands)
+- [Commands for a quick edit-compile-fix cycle](#commands-for-a-quick-edit-compile-fix-cycle-quickfixtxt)
 - [Sidebar motions](#sidebar-motions)
 - [Overlay motions (e.g. Files, Command Palette, Auto Complete)](#overlay-motions-eg-files-command-palette-auto-complete)
 - [Plugins](#plugins)
@@ -102,7 +114,16 @@
 | :white_check_mark: | Command-line mode<br>Cmdline mode  | `:`, `/`, `?`, `!`
 | :sparkles:         | Multiple-cursor mode               | `CTRL-N`, `gh`
 
+## About using the help files `|helphelp.txt|`
+
+| Status             | Command                          | Description
+| :----------------- | :------------------------------- | :----------
+| :white_check_mark: | :h[elp]                          | Open a window and display the help file in read-only mode.
+| :white_check_mark: | :h[elp] \{subject\}              | Like ":help", additionally jump to the tag `{subject}.` Example: `:help options`
+
 ## Editing and writing files `|editing.txt|`
+
+### 1. Introduction
 
 | Status             | Command                          | Description
 | :----------------- | :------------------------------- | :----------
@@ -380,6 +401,15 @@ For the following four commands the cursor follows the screen.  If the character
 | :white_check_mark: | CTRL-C                                         | Quit insert mode, go back to Normal mode.
 | :white_check_mark: | CTRL-W                                         | Delete the word before the cursor.
 
+### 7. Insert mode completion
+
+| Status             | Command                                        | Description
+| :----------------- | :--------------------------------------------- | :----------
+| :white_check_mark: | CTRL-X CTRL-L                                  | Search backwards for a line that starts with the same characters as those in the current line before the cursor.  Indent is ignored.  The matching line is inserted in front of the cursor.
+|                    | CTRL-X CTRL-F                                  | Search for the first file name that starts with the same characters as before the cursor.  The matching file name is inserted in front of the cursor.
+|                    | CTRL-X CTRL-]                                  |
+|                    | CTRL-X CTRL-N                                  |
+
 ## Deleting and replacing text `|change.txt|`
 
 ### 1. Deleting text
@@ -481,12 +511,13 @@ SHIFTING LINES LEFT OR RIGHT
 
 The flags that you can use for the substitute commands:
 
-| Flag  | Description
-| :---- | :----------
-| `[c]` | Confirm each substitution.
-| `[g]` | Replace all occurrences in the line.  Without this argument, replacement occurs only for the first occurrence in each line.
-| `[i]` | Ignore case for the pattern.  The `'ignorecase'` and `'smartcase'` options are not used.
-| `[I]` | Don't ignore case for the pattern.  The `'ignorecase'` and `'smartcase'` options are not used.
+| Status             | Flag  | Description
+| ------------------ | :---- | :----------
+| :white_check_mark: | `[c]` | Confirm each substitution.
+|                    | `[&]` | Must be the first one: Keep the flags from the previous substitute command.  Examples: `:&& :s/this/that/&`. Note that `:s` and `:&` don't keep the flags.
+| :white_check_mark: | `[g]` | Replace all occurrences in the line.  Without this argument, replacement occurs only for the first occurrence in each line.
+| :white_check_mark: | `[i]` | Ignore case for the pattern.  The `'ignorecase'` and `'smartcase'` options are not used.
+| :white_check_mark: | `[I]` | Don't ignore case for the pattern.  The `'ignorecase'` and `'smartcase'` options are not used.
 
 ### 5. Copying and moving text
 
@@ -538,10 +569,32 @@ The next two commands always work on whole lines.
 
 ## Repeating commands `|repeat.txt|`
 
+### 1. Single repeats
+
 | Status             | Command                      | Description
 | :------------------| :--------------------------- | -----------
-| :white_check_mark: | `[count].`                   | Repeat last change, with count replaced with `[count]`
+| :white_check_mark: | `[count].`                   | Repeat last change, with count replaced with `[count]`. Does not repeat a command-line command.
+
+Simple changes can be repeated with the "." command.  Without a count, the
+count of the last change is used.  If you enter a count, it will replace the
+last one.
+
+| Status             | Command                      | Description
+| :------------------| :--------------------------- | -----------
 |                    | `@:`                         | Repeat last command-line `[count]` times
+
+### 2. Multiple repeats
+
+| Status             | Command                                  | Description
+| :------------------| :--------------------------------------- | -----------
+| :white_check_mark: | `:[range]g[lobal]/{pattern}/[cmd]`       | Execute the Ex command `[cmd]` (default ":p") on the lines within `[range]` where `{pattern}` matches. *Currently only works with a few commands like print.*
+| :white_check_mark: | `[range]g[lobal]!/{pattern}/[cmd]`       | Execute the Ex command `[cmd]` (default ":p") on the lines within `[range]` where `{pattern}` does NOT match. *Currently only works with a few commands like print.*
+|                    | `:[range]v[global]/{pattern}/[cmd]`      | Same as :g!.
+
+### 3. Complex repeats
+
+| Status             | Command                      | Description
+| :------------------| :--------------------------- | -----------
 | :white_check_mark: | `q{0-9a-zA-Z"}`              | Record typed characters into register `{0-9a-zA-Z"}` (uppercase to append)
 | :white_check_mark: | `q`                          | Stops recording
 | :white_check_mark: | `@{0-9a-z"}`                 | Execute the contents of register `{0-9a-z"}` `[count]` times
@@ -575,23 +628,30 @@ The next two commands always work on whole lines.
 
 ## Command-line editing `|cmdline.txt|`
 
+### 1. Command-line editing
+
 | Status             | Command                          | Description
 | :----------------- | :------------------------------- | -----------
-| :white_check_mark: | `<Left>`                         | cursor left
-| :white_check_mark: | `<Right>`                        | cursor right
-| :white_check_mark: | `<S-Left>`, `<C-Left>`           | cursor one WORD left
-| :white_check_mark: | `<S-Right>`, `<C-Right>`         | cursor one WORD right
-| :white_check_mark: | `CTRL-B`, `<Home>`               | cursor to beginning of command-line
-| :white_check_mark: | `CTRL-E`, `<End>`                | cursor to end of command-line
-| :white_check_mark: | `CTRL-H`, `<BS>`                 |
-| :white_check_mark: | `<Del>`                          |
-| :white_check_mark: | `CTRL-W`                         |
-| :white_check_mark: | `CTRL-U`                         |
-| :white_check_mark: | `CTRL-P`, `<up>`                 |
-| :white_check_mark: | `CTRL-N`,, `<down>`              |
-| :white_check_mark: | `CTRL-C`, `CTRL-[`, `<Esc>`      |
-| :white_check_mark: | `<Tab>`                          |
-| :white_check_mark: | `<S-Tab>`                        |
+| :white_check_mark: | `<Left>`                         | Cursor left.
+| :white_check_mark: | `<Right>`                        | Cursor right.
+| :white_check_mark: | `<S-Left>`<br>`<C-Left>`         | Cursor one WORD left.
+| :white_check_mark: | `<S-Right>`<br>`<C-Right>`       | Cursor one WORD right.
+| :white_check_mark: | `CTRL-B`<br>`<Home>`             | Cursor to beginning of command-line.
+| :white_check_mark: | `CTRL-E`<br>`<End>`              | Cursor to end of command-line.
+| :white_check_mark: | `CTRL-H`<br>`<BS>`               | Delete the character in front of the cursor.
+| :white_check_mark: | `<Del>`                          | Delete the character under the cursor (at end of line: character before the cursor).
+| :white_check_mark: | `CTRL-W`                         | Delete the `word` before the cursor.
+| :white_check_mark: | `CTRL-U`                         | Remove all characters between the cursor position and the beginning of the line.
+| :white_check_mark: | `CTRL-[`<br>`<Esc>`              | Quit Command-line mode without executing.
+| :white_check_mark: | `CTRL-C`                         | Quit Command-line mode without executing.
+| :white_check_mark: | `<Tab>`                          | Go to next matched completion.
+| :white_check_mark: | `<S-Tab>`                        | Go to previous matched completion.
+| :white_check_mark: | `<Up>`                           | Recall older command-line from history, whose beginning matches the current command-line.
+| :white_check_mark: | `<Down>`                         | Recall more recent command-line from history, whose beginning matches the current command-line.
+| :white_check_mark: | `CTRL-P`                         | Go to previous in history.
+| :white_check_mark: | `CTRL-N`                         | Go to next in history.
+| :white_check_mark: | :his[tory]                       | Print the history of last entered commands.
+| :white_check_mark: | :his[tory]&nbsp;[\{name\}]       | List the contents of history `{name}` which can be: <br>`c[md]` or : command-line history <br>`s[earch]` or / or ? search string history <br>`e[xpr]` or = expression register history <br>`i[nput]` or @ input line history <br>`d[ebug]` or > debug command history <br>`a[ll]` all of the above
 
 ## Description of all options `|options.txt|`
 
@@ -811,6 +871,8 @@ When the option `'equalalways'` (`'ea'`) is set, all the windows are automatical
 | Status             | Command                                                      | Description
 | :----------------- | :----------------------------------------------------------- | :----------
 | :white_check_mark: | :files<br>:buffers<br>:ls                                    | Show all buffers.
+| :white_check_mark: | :b[uffer] [N]                                                | Edit buffer `[N]` from the buffer list.  If `[N]` is not given, the current buffer remains being edited.
+|                    | :b[uffer]&nbsp;\{bufname\}                                   | Edit buffer for `{bufname}` from the buffer list.  A partial name also works, so long as it is unique in the list of buffers.
 | :white_check_mark: | :bn[ext]                                                     | Go to next buffer in buffer list.  Wraps around the end of the buffer list.
 | :white_check_mark: | :bN[ext]<br>:bp[revious]                                     | Go to previous buffer in buffer list. Wraps around the start of the buffer list.
 | :white_check_mark: | :br[ewind]                                                   | Go to first buffer in buffer list.  If the buffer list is empty, go to the first unlisted buffer.
@@ -869,6 +931,27 @@ Finding suggestions for bad words:
 | :----------------- | :------------------------------- | :----------
 | :white_check_mark: | z=                               | For the word under/after the cursor suggest correctly spelled words.
 
+## Working with versions of the same file `|diff.txt|`
+
+### 3. Jumping to diffs
+
+Two commands can be used to jump to diffs:
+
+| Status             | Command                          | Description
+| :----------------- | :------------------------------- | :----------
+| :white_check_mark: | [c                               | Jump backwards to the previous start of a change. When a count is used, do it that many times.
+| :white_check_mark: | ]c                               | Jump forwards to the next start of a change. When a count is used, do it that many times.
+
+It is an error if there is no change for the cursor to move to.
+
+## Expression evaluation, conditional commands `|eval.txt|`
+
+### 7. Commands
+
+| Status             | Command                          | Description
+| :----------------- | :------------------------------- | :----------
+| :white_check_mark: | `:let {var-name}={expr1}`        | Set internal variable `{var-name}` to the result of the expression `{expr1}.`  The variable will get the type from the `{expr}.`  If `{var-name}` didn't exist yet, it is created. <br>*Only "mapleader" and "maplocalleader" are currently supported.*<br>Example: `let mapleader=,`<br>Example: `let maplocalleader=,`
+
 ## Hide (fold) ranges of lines `|fold.txt|`
 
 ### 2. Fold commands
@@ -883,6 +966,16 @@ OPENING AND CLOSING FOLDS
 | :white_check_mark: | zc                               | Close one fold under the cursor.
 | :white_check_mark: | zM                               | Close all folds.
 | :white_check_mark: | zR                               | Open all folds.
+
+## Commands for a quick edit-compile-fix cycle `|quickfix.txt|`
+
+| Status             | Command                          | Description
+| :----------------- | :------------------------------- | :----------
+|                    | `:lne[xt]`                       |
+|                    | `:lN[ext]`<br>`:lp[revious]`     |
+|                    | `:lfir[st]`                      | Same as ":lrewind".
+|                    | `:lla[st]`                       |
+| :white_check_mark: | `:cq[uit]`                       | Quit Sublime.
 
 ## Sidebar motions
 
@@ -1099,10 +1192,10 @@ A port of the awesome [vim-unimpaired](https://github.com/tpope/vim-unimpaired).
 |                     | `]Q` | `:clast`
 |                     | `[<C-Q>` | `:cpfile` (Note that `<C-Q>` only works in a terminal if you disable
 |                     | `]<C-Q>` | `:cnfile` flow control: stty -ixon)
-| :white_check_mark:  | `[t` | `:tprevious`
-| :white_check_mark:  | `]t` | `:tnext`
-| :white_check_mark:  | `[T` | `:tfirst`
-| :white_check_mark:  | `]T` | `:tlast`
+|                     | `[t` | `:tprevious`
+|                     | `]t` | `:tnext`
+|                     | `[T` | `:tfirst`
+|                     | `]T` | `:tlast`
 |                     | `[<C-T>` | `:ptprevious`
 |                     | `]<C-T>` | `:ptnext`
 |                     | `[f` | Go to the file preceding the current one alphabetically in the current file's directory.  In the quickfix window, equivalent to `:colder`.
