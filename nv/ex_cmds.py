@@ -127,6 +127,7 @@ def ex_buffer(window, index: int = None, **kwargs) -> None:
     if index is None:
         return
 
+    index = int(index)
     window_buffer_control(window, 'goto', index)
     if index != window.active_view().id():
         ui_bell('E86: Buffer %s does not exist' % index)
