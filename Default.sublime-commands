@@ -28,7 +28,7 @@
         "caption": "Preferences: NeoVintageous Settings",
         "command": "edit_settings",
         "args": {
-            "base_file": "${packages}/PHPUnitKit/Preferences.sublime-settings",
+            "base_file": "${packages}/NeoVintageous/Preferences.sublime-settings",
             "user_file": "${packages}/User/Preferences.sublime-settings",
             "default": "{\n\t$0\n}\n"
         }
