@@ -8,5 +8,5 @@
     "show_reload_progress": false,
     "failfast": false,
     "tests_dir": "tests",
-    "verbosity": 0
+    "verbosity": 1
 }
