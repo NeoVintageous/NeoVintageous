@@ -1,6 +1,6 @@
 {
     "async": false,
-    "capture_console": true,
+    "capture_console": false,
     "deferred": true,
     "legacy_runner": false,
     "output": null,
