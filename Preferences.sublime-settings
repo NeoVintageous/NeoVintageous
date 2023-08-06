@@ -19,7 +19,7 @@
     //      stippled_underline
     "neovintageous_search_inc_style": "fill",
 
-    //  Search occurences style.
+    //  Search occurrences style.
     //
     //  Valid values are:
     //      fill
@@ -181,11 +181,19 @@
     // Show output panel from shell commands.
     "vintageous_shell_silent": false,
 
+    // Show mark letters in the gutter.
     "vintageous_show_marks_in_gutter": true,
 
     // 0: Always case-sensitive
     // 1: Case sensitivity is determined by 'ignorecase' and 'smartcase'.
     "vintageous_sneak_use_ic_scs": 0,
+
+    // Read Ex commands from a resource before the neovintageourc resource is
+    // sourced. This means you can still override these ex commands in your
+    // neovintageousrc file.
+    // Example: Packages/NeoVintageousDvorak/dvorak.neovintageous
+    // Example: Packages/NeoVintageousColemak/colemak.neovintageous
+    "vintageous_source": null,
 
     // Name of program to use when starting a ":shell".
     //
