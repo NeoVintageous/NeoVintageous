@@ -102,17 +102,17 @@
 
 ## Modes `|vim-modes|`
 
-| Status             | Mode                               | Description
-| :----------------- | :----------------------------------| :----------
-| :white_check_mark: | Insert mode                        | `[count]i`
-| :white_check_mark: | Normal mode                        | `<Esc>`
-| :white_check_mark: | Visual mode                        | `v`
-| :white_check_mark: | Visual line mode                   | `[count]V`
-| :white_check_mark: | Visual block mode                  | `CTRL-V`
-| :white_check_mark: | Replace mode                       | `R`
-| :white_check_mark: | Operator&#8209;pending&nbsp;mode   | Like Normal mode, but after an operator command has start, and Vim is waiting for a `{motion}` to specify the text that the operator will work on.
-| :white_check_mark: | Command-line mode<br>Cmdline mode  | `:`, `/`, `?`, `!`
-| :sparkles:         | Multiple-cursor mode               | `CTRL-N`, `gh`
+| Status                        | Mode                               | Description
+| :-----------------------------| :----------------------------------| :----------
+| :white_check_mark:            | Insert mode                        | `[count]i`
+| :white_check_mark:            | Normal mode                        | `<Esc>`
+| :white_check_mark:            | Visual mode                        | `v`
+| :white_check_mark:            | Visual line mode                   | `[count]V`
+| :white_check_mark:            | Visual block mode                  | `CTRL-V`
+| :white_check_mark:            | Replace mode                       | `R`
+| :white_check_mark:            | Operator&#8209;pending&nbsp;mode   | Like Normal mode, but after an operator command has start, and Vim is waiting for a `{motion}` to specify the text that the operator will work on.
+| :white_check_mark:            | Command-line mode<br>Cmdline mode  | `:`, `/`, `?`, `!`
+| :white_check_mark: :sparkles: | Multiple-cursor mode               | `CTRL-N`, `gh`
 
 ## About using the help files `|helphelp.txt|`
 
@@ -311,13 +311,15 @@ MULTIPLE WINDOWS AND BUFFERS
 
 ### 7. Marks `|mark-motions|`
 
-| Status             | Command                       | Description
-| :----------------- | :---------------------------- | -----------
-| :white_check_mark: | `m{a-zA-Z}`                   | Set mark `{a-zA-Z}` at cursor position
-| :white_check_mark: | `'{a-z}` <code>\`{a-z}</code> | Jump to the mark `{a-z}` in the current buffer
-| :white_check_mark: | `'{A-Z}` <code>\`{A-Z}</code> | To the mark `{A-Z}` in the file where it was set
-| :white_check_mark: | `:marks`                      | List all the current marks (not a motion command)
-| :white_check_mark: | `''`,  <code>\`\`</code>      | To the position before the latest jump
+| Status             | Command                              | Description
+| :----------------- | :------------------------------------| -----------
+| :white_check_mark: | `m{a-zA-Z}`                          | Set mark `{a-zA-Z}` at cursor position (does not move the cursor, this is not a motion command).
+| :white_check_mark: | `'{a-z}`<br><code>\`\{a-z\}</code>   | Jump to the mark `{a-z}` in the current buffer.
+| :white_check_mark: | `'{A-Z}`<br><code>\`\{A-Z\}</code>   | To the mark `{A-Z}` in the file where it was set (not a motion command when in another file).
+| :white_check_mark: | `:marks`                             | List all the current marks (not a motion command). The `'(`, `')`, `'{` and `'}` marks are not listed. The first column has number zero.
+| :white_check_mark: | :delm[arks]&nbsp;\{marks\}           | Delete the specified marks.  Marks that can be deleted include A-Z and 0-9.  You cannot delete the ' mark. They can be specified by giving the list of mark names, or with a range, separated with a dash.  Spaces are ignored.  Examples: <br>`:delmarks a` deletes mark a <br>`:delmarks a b c` deletes marks a, b and c <br>`:delmarks Aa` deletes marks A and a <br>`:delmarks p-z` deletes marks in the range p to z
+| :white_check_mark: | :delm[arks]!                         | Delete all marks for the current buffer, but not marks A-Z or 0-9.
+| :white_check_mark: | `''`<br><code>\`\`</code>            | To the position before the latest jump
 
 ### 8. Jumps `|jump-motions|`
 
@@ -671,35 +673,34 @@ In the list below all the options are mentioned with their full name and with an
 
 Some options "proxy" to Sublime Text settings. This means that the option uses the underlying Sublime Text setting . Changing the option, changes the underlying Sublime Text setting. See this [blog post](https://blog.gerardroche.com/2023/06/05/neovintageous-options/) about options.
 
-| Status                          | Option                          | Type      | Default                                  | Description
-| :------------------------------ | :------------------------------ | :-------- | :--------------------------------------- | :----------
-| :white_check_mark: :sparkles:   | `'autoindent'`<br>`'ai'`        | `string`  | `auto_indent` st setting                 |
-| :white_check_mark:              | `'belloff'`<br>`'bo'`           | `string`  | `''`; accepts 'all'                      |
-| :white_check_mark:              | `'equalalways'`                 | `boolean` | On                                       |
-| :white_check_mark: :sparkles:   | `'expandtab'`<br>`'et'`         | `boolean` | `translate_tabs_to_spaces` st setting    |
-| :white_check_mark:              | `'hlsearch'`<br>`'hls'`         | `boolean` | On                                       |
-| :white_check_mark:              | `'ignorecase'`<br>`'ic'`        | `boolean` | Off                                      |
-| :white_check_mark:              | `'incsearch'`<br>`'is'`         | `boolean` | On                                       |
-| :white_check_mark: :sparkles:   | `'list'`                        | `boolean` | `draw_white_space` st setting            | Useful to see the difference between tabs and spaces and for trailing blanks.
-| :white_check_mark:              | `'magic'`                       | `boolean` | On                                       |
-| :white_check_mark:              | `'menu'`                        | `boolean` | On                                       |
-| :white_check_mark:              | `'minimap'`                     | `boolean` | On                                       |
-| :white_check_mark:              | `'modeline'`<br>`'ml'`          | `boolean` | On                                       |
-| :white_check_mark:              | `'modelines'`<br>`'mls'`        | `number`  | 5                                        |
-| :white_check_mark: :sparkles:   | `'number'`<br>`'nu'`            | `boolean` | `line_numbers` st setting                | Print the line number in front of each line.
-| :white_check_mark: :sparkles:   | `'relativenumber'`<br>`'rnu'`   | `boolean` | `relative_line_numbers` st setting       | Show the line number relative to the line with the cursor in front of each line. Relative line numbers help you use the `count` you can precede some vertical motion commands (e.g. j k + -) with, without having to calculate it yourself. Especially useful in combination with other commands (e.g. y d c &lt; &gt; gq gw =).
-| :white_check_mark: :sparkles:   | `'scrolloff'`<br>`'so'`         | `number`  | `scroll_context_lines` st setting        |
-| :white_check_mark:              | `'shell'`                       | `string`  | `$SHELL` or `"sh"`, Win32: `"cmd.exe"`   |
-| :white_check_mark:              | `'sidebar'`                     | `boolean` | On                                       |
-|                                 | `'sidescrolloff'`<br>`'siso'`   | `number`  | 5                                        |
-| :white_check_mark:              | `'smartcase'`<br>`'scs'`        | `boolean` | Off                                      |
-| :white_check_mark: :sparkles:   | `'spell'`                       | `boolean` | `spell_check` st setting                 |
-| :white_check_mark:              | `'statusbar'`                   | `boolean` | On                                       |
-| :white_check_mark: :sparkles:   | `'tabstop'`<br>`'ts'`           | `number`  | `tab_size` st setting                    |
-| :white_check_mark: :sparkles:   | `'textwidth'`<br>`'tw'`         | `number`  | `wrap_width` st setting                  |
-| :white_check_mark:              | `'winaltkeys'`<br>`'wak'`       | `string`  | `menu`                                   |
-| :white_check_mark: :sparkles:   | `'wrap'`                        | `boolean` | `word_wrap` st setting                   | This option changes how text is displayed.  It doesn't change the text in the buffer, see `'textwidth'` for that. When on, lines longer than the width of the window will wrap and displaying continues on the next line.  When off lines will not wrap and only part of long lines will be displayed.  When the cursor is moved to a part that is not shown, the screen will scroll horizontally.
-| :white_check_mark:              | `'wrapscan'`<br>`'ws'`          | `boolean` | On                                       |
+| Status                          | Option                          | Type    | Default                                         | Description
+| :------------------------------ | :------------------------------ | :------ | :-----------------------------------------------| :----------
+| :white_check_mark: :sparkles:   | `'autoindent'`<br>`'ai'`        | String  | `auto_indent` <br>sublime setting               |
+| :white_check_mark:              | `'belloff'`<br>`'bo'`           | String  | `''`; accepts 'all'                             |
+| :white_check_mark:              | `'equalalways'`                 | Boolean | On                                              |
+| :white_check_mark: :sparkles:   | `'expandtab'`<br>`'et'`         | Boolean | `translate_tabs_to_spaces` <br>sublime setting  |
+| :white_check_mark:              | `'hlsearch'`<br>`'hls'`         | Boolean | On                                              | When there is a previous search pattern, highlight all its matches. See also: `'incsearch'`. When you get bored looking at the highlighted matches, you can turn it off with `:nohlsearch`.  This does not change the option value, as soon as you use a search command, the highlighting comes back.
+| :white_check_mark:              | `'ignorecase'`<br>`'ic'`        | Boolean | Off                                             |
+| :white_check_mark:              | `'incsearch'`<br>`'is'`         | Boolean | On                                              | While typing a search command, show where the pattern, as it was typed so far, matches.  The matched string is highlighted.  If the pattern is invalid or not found, nothing is shown.  The screen will be updated often.<br> Note that the match will be shown, but the cursor will return to its original position when no match is found and when pressing `<Esc>.`  You still need to finish the search command with `<Enter>` to move the cursor to the match.<br> When `'hlsearch'` is on, all matched strings are highlighted too while typing a search command. See also: `'hlsearch'.`
+| :white_check_mark: :sparkles:   | `'list'`                        | Boolean | `draw_white_space` <br>sublime setting          | Useful to see the difference between tabs and spaces and for trailing blanks.
+| :white_check_mark:              | `'magic'`                       | Boolean | On                                              |
+| :white_check_mark:              | `'menu'`                        | Boolean | On                                              |
+| :white_check_mark:              | `'minimap'`                     | Boolean | On                                              |
+| :white_check_mark:              | `'modeline'`<br>`'ml'`          | Boolean | On                                              |
+| :white_check_mark:              | `'modelines'`<br>`'mls'`        | Number  | 5                                               |
+| :white_check_mark: :sparkles:   | `'number'`<br>`'nu'`            | Boolean | `line_numbers` <br>sublime setting              | Print the line number in front of each line.
+| :white_check_mark: :sparkles:   | `'relativenumber'`<br>`'rnu'`   | Boolean | `relative_line_numbers` <br>sublime setting     | Show the line number relative to the line with the cursor in front of each line. Relative line numbers help you use the `count` you can precede some vertical motion commands (e.g., `j` `k` `+` `-`) with, without having to calculate it yourself. Especially useful in combination with other commands (e.g., `y` `d` `c` `<` `>` `gq` `gw` `=`).
+| :white_check_mark: :sparkles:   | `'scrolloff'`<br>`'so'`         | Number  | `scroll_context_lines` <br>sublime setting      |
+| :white_check_mark:              | `'shell'`                       | String  | `$SHELL` or `"sh"`, Win32: `"cmd.exe"`          |
+| :white_check_mark:              | `'sidebar'`                     | Boolean | On                                              |
+|                                 | `'sidescrolloff'`<br>`'siso'`   | Number  | 5                                               |
+| :white_check_mark:              | `'smartcase'`<br>`'scs'`        | Boolean | Off                                             |
+| :white_check_mark: :sparkles:   | `'spell'`                       | Boolean | `spell_check` <br>sublime setting               |
+| :white_check_mark:              | `'statusbar'`                   | Boolean | On                                              |
+| :white_check_mark: :sparkles:   | `'tabstop'`<br>`'ts'`           | Number  | `tab_size` <br>sublime setting                  |
+| :white_check_mark: :sparkles:   | `'textwidth'`<br>`'tw'`         | Number  | `wrap_width` <br>sublime setting                |
+| :white_check_mark:              | `'winaltkeys'`<br>`'wak'`       | String  | `menu`                                          |
+| :white_check_mark: :sparkles:   | `'wrap'`                        | Boolean | `word_wrap` <br>sublime setting                 | This option changes how text is displayed.  It doesn't change the text in the buffer, see `'textwidth'` for that.<br> When on, lines longer than the width of the window will wrap and displaying continues on the next line.  When off lines will not wrap and only part of long lines will be displayed.  When the cursor is moved to a part that is not shown, the screen will scroll horizontally.| :white_check_mark:              | `'wrapscan'`<br>`'ws'`          | Boolean | On                                              |
 
 ## Regexp patterns and search commands `|pattern.txt|`
 
