@@ -45,7 +45,7 @@ def set_mark(view, name: str) -> None:
         _get_key(name),
         regions,
         flags=HIDDEN | PERSISTENT,
-        scope='region.cyanish neovintageous_mark',
+        scope='region.cyanish neovintageous.mark',
         icon=_get_icon(view, name))
 
 

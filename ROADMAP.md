@@ -87,6 +87,7 @@
   - [Commentary](#commentary-commentarytxt)
   - [Highlighted Yank](#highlighted-yank-highlightedyank)
   - [Indent Object](#indent-object-indent-objecttxt)
+  - [Markology](#markology-markology)
   - [Multiple Cursors](#multiple-cursors-multiple-cursors)
   - [Sneak](#sneak-sneaktxt)
   - [Surround](#surround-surroundtxt)
@@ -996,28 +997,31 @@ OPENING AND CLOSING FOLDS
 
 ## Plugins
 
+The following Vim plugins have been ported or have inspired implemented versions:
+
 | Status             | Plugin              | Original Vim Plugin | Notes
 | :----------------- | :------------------ | :------------------ | :----
 | :heavy_check_mark: | Abolish             | [vim-abolish](https://github.com/tpope/vim-abolish) |
 | :heavy_check_mark: | Commentary          | [vim-commentary](https://github.com/tpope/vim-commentary) |
 | :heavy_check_mark: | Highlighted Yank    | [vim-highlightedyank](https://github.com/machakann/vim-highlightedyank) |
 | :heavy_check_mark: | Indent Object       | [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object) |
+| :heavy_check_mark: | Markology           | [vim-markology](https://github.com/jeetsukumaran/vim-markology) |
 | :heavy_check_mark: | Multiple Cursors    | [vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors) |
 | :heavy_check_mark: | Sneak               | [vim-sneak](https://github.com/justinmk/vim-sneak) | [Disabled by default](https://github.com/NeoVintageous/NeoVintageous/issues/731)
 | :heavy_check_mark: | Surround            | [vim-surround](https://github.com/tpope/vim-surround) |
 | :heavy_check_mark: | Targets             | [vim-targets](https://github.com/wellle/targets.vim) |
 | :heavy_check_mark: | Unimpaired          | [vim-unimpaired](https://github.com/tpope/vim-unimpaired) |
 
-Suggestions for future implementation.
+The following Vim plugins hav been suggested for future ports:
 
 | Plugin | Original Vim Plugin | Notes
 | ------ | ------------------- | -----
-| Hop | [hop.nvim](https://github.com/phaazon/hop.nvim) | Re https://github.com/NeoVintageous/NeoVintageous/issues/808
-| WhichKey | [vim-which-key](https://github.com/liuchengxu/vim-which-key) | Re https://github.com/NeoVintageous/NeoVintageous/issues/758
-| SurroundAny | | Re https://github.com/NeoVintageous/NeoVintageous/issues/743
-| YankStackAndRing | | Re https://github.com/NeoVintageous/NeoVintageous/issues/337
-| XkbSwitch | [vim-xkbswitch](https://github.com/lyokha/vim-xkbswitch) | Re https://github.com/NeoVintageous/NeoVintageous/issues/276
 | EasyMotion | [vim-easymotion](https://github.com/easymotion/vim-easymotion) | Re https://github.com/NeoVintageous/NeoVintageous/issues/276
+| Hop | [hop.nvim](https://github.com/phaazon/hop.nvim) | Re https://github.com/NeoVintageous/NeoVintageous/issues/808
+| SurroundAny | | Re https://github.com/NeoVintageous/NeoVintageous/issues/743
+| WhichKey | [vim-which-key](https://github.com/liuchengxu/vim-which-key) | Re https://github.com/NeoVintageous/NeoVintageous/issues/758
+| XkbSwitch | [vim-xkbswitch](https://github.com/lyokha/vim-xkbswitch) | Re https://github.com/NeoVintageous/NeoVintageous/issues/276
+| YankStackAndRing | | Re https://github.com/NeoVintageous/NeoVintageous/issues/337
 
 ### Abolish `|abolish.txt|`
 
@@ -1077,6 +1081,10 @@ A port of the awesome [vim-indent-object](https://github.com/michaeljsmith/vim-i
 | :heavy_check_mark: | `<count>aI` | (A)n (I)ndentation level and lines above/below.
 | :heavy_check_mark: | `<count>iI` | (I)nner (I)ndentation level (no lines above/below).
 
+### Markology `|markology|`
+
+Inspired by [vim-markology](https://github.com/jeetsukumaran/vim-markology).
+
 ### Multiple Cursors `|multiple-cursors|`
 
 Inspired by [vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors).
@@ -1092,12 +1100,6 @@ Inspired by [vim-multiple-cursors](https://github.com/terryma/vim-multiple-curso
 | :heavy_check_mark: | `<M-n>`, `A`      | Select all matches.
 | :heavy_check_mark: | `v`               | Enter normal mode.
 | :heavy_check_mark: | `gH`              | Select all search occurrences (/, ?, *, #).
-
-You can use visual commands e.g. c, I, x, y work without any issues.
-
-Go to normal mode by pressing v and use normal commands there, for example commands like ciw work without any issues.
-
-At any time you can press `<Esc>` or J to exit back to regular Vim. To change the behaviour of exiting see the setting `vintageous_multi_cursor_exit_from_visual_mode`.
 
 ### Sneak `|sneak.txt|`
 

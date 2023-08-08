@@ -111,7 +111,7 @@ Command Palette → Preferences: NeoVintageous Settings
 | vintageous_reset_mode_when_switching_tabs         | true      | Boolean   | Reset to normal mode when a tab is activated.
 | vintageous_save_async                             | false     | Boolean   | Asynchronous file saving with commands like :w, :wq.
 | vintageous_shell_silent                           | false     | Boolean   | Show output panel from shell commands.
-| vintageous_show_marks_in_gutter                   | true      | Boolean   | Show mark letters in gutter.
+| vintageous_show_marks_in_gutter                   | true      | Boolean   | Show marks in the gutter.
 | vintageous_sneak_use_ic_scs                       | 0         | Integer   | 0: Always case-sensitive<br> 1: Case sensitivity is determined by `'ignorecase'` and `'smartcase'`.
 | vintageous_source                                 | null      | String    | Read Ex commands from a resource before the neovintageourc resource is sourced. This means you can still override these ex commands in your neovintageousrc file. <br>Example: Packages/NeoVintageousDvorak/dvorak.neovintageous <br>Example: Packages/NeoVintageousColemak/colemak.neovintageous
 | vintageous_terminal                               | null      | String    | Name of program to use when starting a ":shell". <br>Example: gnome-terminal
@@ -475,6 +475,7 @@ Some awesome Vim plugins have been ported and are available out-of-the-box. Feat
 | Commentary          | [vim-commentary](https://github.com/tpope/vim-commentary)
 | Highlighted Yank    | [vim-highlightedyank](https://github.com/machakann/vim-highlightedyank)
 | Indent Object       | [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object)
+| Markology           | [vim-markology](https://github.com/jeetsukumaran/vim-markology)
 | Multiple Cursors    | [vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors)
 | Sneak               | [vim-sneak](https://github.com/justinmk/vim-sneak) (disabled by default)
 | Surround            | [vim-surround](https://github.com/tpope/vim-surround)
@@ -501,6 +502,43 @@ Some awesome Vim plugins have been ported and are available out-of-the-box. Feat
 **Blog**
 
 - [blog.gerardroche.com](https://blog.gerardroche.com): Releases, guides, and tips.
+
+### Markology
+
+Markology displays marks associated with the current line in the gutter. You can disable this feature by modifying the setting `vintageous_show_marks_in_gutter`.
+
+To do so, follow these steps:
+
+1. Open the Command Palette: `Preferences: NeoVintageous Settings`.
+2. Add the following JSON configuration:
+
+```json
+{
+    "vintageous_show_marks_in_gutter": false
+}
+```
+
+By adjusting this setting, you can control whether marks are displayed in the gutter for the current line.
+
+#### Customize Markology Mark Colors
+
+If you wish to personalize the color of the marks displayed by Markology, you can follow these steps to create a color scheme override:
+
+1. Open the Command Palette: `UI Customize Color Scheme`.
+2. Add the following JSON configuration, adjusting the color as desired:
+
+```json
+{
+    "rules": [
+        {
+            "scope": "neovintageous.mark",
+            "foreground": "yellow"
+        }
+    ]
+}
+```
+
+By customizing the color of the marks, you can ensure they are visually distinct and align with your preferred color scheme, providing you with a more tailored and visually appealing editing experience in Sublime Text.
 
 ### Multiple Cursors
 
@@ -541,13 +579,12 @@ You can customize the highlighted yank duration and style using the following se
 
 - `highlightedyank_style`: This setting allows you to customize the style of the highlighted yank region. You can modify the background and foreground colors to suit your color scheme.
 
-To customize the colors, you can create a color scheme override. For example, if you are using the default Monokai color scheme, follow these steps:
+#### Customize Highlighted Yank Colors
 
-1. Locate the Sublime Text User directory. You can find this location through the menu by navigating to `Preferences → Browse Packages...`.
+To tailor the colors of highlighted yanks to your preference, you can create a color scheme override using the following steps:
 
-2. Create a file named `Monokai.sublime-color-scheme` in the User directory.
-
-3. Inside the `Monokai.sublime-color-scheme` file, add the following styles using the "highlightedyank" scope:
+1. Open the Command Palette: `UI Customize Color Scheme`.
+2. Add the following styles using the "highlightedyank" scope, and adjust the background and foreground colors as desired:
 
 ```json
 {
@@ -561,9 +598,7 @@ To customize the colors, you can create a color scheme override. For example, if
 }
 ```
 
-Replace the `"background"` and `"foreground"` values with the colors you desire. These styles will be applied to the highlighted yank region when using the Monokai color scheme.
-
-By customizing the highlighted yank behavior and colors, you can enhance the visibility of yanked regions and make them stand out in your editor, improving your overall editing experience.
+By customizing the colors of highlighted yanks, you can make yanked regions more visually distinctive and ensure they align with your preferred color scheme, enhancing your editing experience in the Sublime Text editor.
 
 ## F.A.Q.
 

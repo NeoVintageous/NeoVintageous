@@ -181,7 +181,7 @@
     // Show output panel from shell commands.
     "vintageous_shell_silent": false,
 
-    // Show mark letters in the gutter.
+    // Show marks in the gutter.
     "vintageous_show_marks_in_gutter": true,
 
     // 0: Always case-sensitive
