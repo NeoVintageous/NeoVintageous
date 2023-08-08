@@ -29,14 +29,14 @@
     //      stippled_underline
     "neovintageous_search_occ_style": "fill",
 
-    // If enabled, search highlighting is cleared entering normal mode. This
-    // typically means when the <Esc> key is pressed.
+    // If enabled, search highlighting is cleared when entering normal mode. This
+    // usually occurs when the <Esc> key is pressed.
     //
-    // To clear search highlighting directly:
+    // To clear search highlighting directly, you can use the following command:
     //
     //     :noh[lsearch]
     //
-    // Example mapping:
+    // For example, you can map a key combination to clear search highlighting:
     //
     //     noremap <C-l> :nohlsearch<CR>
     "vintageous_auto_nohlsearch_on_normal_enter": true,

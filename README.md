@@ -13,7 +13,7 @@ NeoVintageous is an advanced Vim emulator for [Sublime Text](https://www.sublime
 
 - :sparkles: For a full list of supported Vim features, please refer to our [roadmap](https://github.com/NeoVintageous/NeoVintageous/blob/master/ROADMAP.md).
 - :rocket: The [changelog](CHANGELOG.md) outlines the breaking/major/minor updates between releases.
-- :page_facing_up: Vim's full documentation is accessible via`:help {subject}` and [online](https://vimhelp.org).
+- :page_facing_up: Vim's full documentation is accessible via `:help {subject}` and [online](https://vimhelp.org).
 - Report missing features/bugs on [GitHub](https://github.com/NeoVintageous/NeoVintageous/issues).
 - Drop-in replacement for Vintageous
 - Zero configuration required
@@ -33,12 +33,12 @@ NeoVintageous is an advanced Vim emulator for [Sublime Text](https://www.sublime
    - [map-overview](#map-overview)
    - [Mapping Ex Commands](#mapping-ex-commands)
    - [Mapping Sublime Text Commands](#mapping-sublime-text-commands)
-   - [Mappings for Specific File-Types](#mappings-for-specific-file-types)
+   - [Mapping Specific File-Types](#mappings-specific-file-types)
    - [Mapping Super-Keys](#mapping-super-keys)
    - [Mapping Case-Sensitivity](#mapping-case-sensitivity)
    - [Mapping for Toggling the Side Bar](#mapping-for-toggling-the-side-bar)
    - [Mapping for Revealing the Side Bar](#mapping-for-revealing-the-side-bar)
-   - [Mapping Capslock key to Escape](#mapping-capslock-key-to-escape)
+   - [Mapping Capslock to Escape](#mapping-capslock-to-escape)
 - [Options](#options)
 - [Search Highlighting](#search-highlighting)
 - [Plugins](#plugins)
@@ -133,7 +133,7 @@ Command Palette → Preferences: NeoVintageous Settings
 | Replace mode                       | `R`
 | Operator&#8209;pending&nbsp;mode   | Like Normal mode, but after an operator command has start, and Vim is waiting for a `{motion}` to specify the text that the operator will work on.
 | Command-line mode<br>Cmdline mode  | `:`, `/`, `?`, `!`
-| Multiple-cursor mode               | `CTRL-n`, `gh`
+| Multiple-cursor mode               | `CTRL-n` or `gh`
 
 ## neovintageousrc
 
@@ -198,9 +198,9 @@ There are commands to enter new mappings, remove mappings and list mappings.
 See [map-overview](#map-overview) for the various forms of "map" and their relationships with
 modes.
 
-`{lhs}`   means left-hand-side
+`{lhs}`   means left-hand-side.
 
-`{rhs}`   means right-hand-side
+`{rhs}`   means right-hand-side.
 
 | Commands | Description
 | -------: | :----------
@@ -250,7 +250,7 @@ Sublime Text commands are mappable. The command must be PascalCase and the param
 nnoremap ,f :ShowOverlay overlay=goto text=@<CR>
 ```
 
-#### Mappings for Specific File-Types
+#### Mapping Specific File-Types
 
 File type specific mappings are supported by the `FileType` keyword that accepts a comma-delimited list of file-types.
 
@@ -374,7 +374,7 @@ With this setup, you can now use the specified key bindings to easily toggle and
 
 Please note that the provided example uses `<leader><leader>` as the mapping, but you can customize it to your preferred mapping by modifying the `<leader>` part and updating the key binding to match your leader and preferred key. See [Mapping for Toggling the Side Bar](#mapping-for-toggling-the-side-bar) for a more detailed example.
 
-#### Mapping Capslock key to Escape
+#### Mapping Capslock to Escape
 
 Neovintageous cannot directly remap the CapsLock key; however, you can achieve this remapping at the operating system level. For instance, on Ubuntu, you can map the CapsLock key to Escape using a tool called `gsettings`. Follow these steps to make the remapping:
 
@@ -544,7 +544,7 @@ By customizing the color of the marks, you can ensure they are visually distinct
 
 NeoVintageous provides multiple cursor support in normal mode and visual mode. This feature allows you to work with multiple cursors simultaneously, making repetitive editing tasks more efficient.
 
-##### Normal and Visual Mode Commands:
+**Normal and Visual Mode Commands**
 
 | Command               | Description
 | :---------------------| :----------
