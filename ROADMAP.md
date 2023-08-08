@@ -86,6 +86,7 @@
   - [Abolish](#abolish-abolishtxt)
   - [Commentary](#commentary-commentarytxt)
   - [Highlighted Yank](#highlighted-yank-highlightedyank)
+  - [Input Method](#input-method-input-method)
   - [Indent Object](#indent-object-indent-objecttxt)
   - [Markology](#markology-markology)
   - [Multiple Cursors](#multiple-cursors-multiple-cursors)
@@ -1003,16 +1004,17 @@ The following Vim plugins have been ported or have inspired implemented versions
 | :----------------- | :------------------ | :------------------ | :----
 | :heavy_check_mark: | Abolish             | [vim-abolish](https://github.com/tpope/vim-abolish) |
 | :heavy_check_mark: | Commentary          | [vim-commentary](https://github.com/tpope/vim-commentary) |
-| :heavy_check_mark: | Highlighted Yank    | [vim-highlightedyank](https://github.com/machakann/vim-highlightedyank) |
+| :heavy_check_mark: | Highlighted Yank    | Inspired by [vim-highlightedyank](https://github.com/machakann/vim-highlightedyank) |
+| :heavy_check_mark: | Input Method        | Inspired by [vim-xkbswitch](https://github.com/lyokha/vim-xkbswitch) and [VSCodeVim/Vim](https://github.com/VSCodeVim/Vim#input-method)
 | :heavy_check_mark: | Indent Object       | [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object) |
-| :heavy_check_mark: | Markology           | [vim-markology](https://github.com/jeetsukumaran/vim-markology) |
-| :heavy_check_mark: | Multiple Cursors    | [vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors) |
+| :heavy_check_mark: | Markology           | Inspired by [vim-markology](https://github.com/jeetsukumaran/vim-markology) |
+| :heavy_check_mark: | Multiple Cursors    | INspired by [vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors) and [mg979/vim-visual-multi](https://github.com/mg979/vim-visual-multi) |
 | :heavy_check_mark: | Sneak               | [vim-sneak](https://github.com/justinmk/vim-sneak) | [Disabled by default](https://github.com/NeoVintageous/NeoVintageous/issues/731)
 | :heavy_check_mark: | Surround            | [vim-surround](https://github.com/tpope/vim-surround) |
 | :heavy_check_mark: | Targets             | [vim-targets](https://github.com/wellle/targets.vim) |
 | :heavy_check_mark: | Unimpaired          | [vim-unimpaired](https://github.com/tpope/vim-unimpaired) |
 
-The following Vim plugins hav been suggested for future ports:
+The following Vim plugins have been suggested for future ports:
 
 | Plugin | Original Vim Plugin | Notes
 | ------ | ------------------- | -----
@@ -1020,7 +1022,6 @@ The following Vim plugins hav been suggested for future ports:
 | Hop | [hop.nvim](https://github.com/phaazon/hop.nvim) | Re https://github.com/NeoVintageous/NeoVintageous/issues/808
 | SurroundAny | | Re https://github.com/NeoVintageous/NeoVintageous/issues/743
 | WhichKey | [vim-which-key](https://github.com/liuchengxu/vim-which-key) | Re https://github.com/NeoVintageous/NeoVintageous/issues/758
-| XkbSwitch | [vim-xkbswitch](https://github.com/lyokha/vim-xkbswitch) | Re https://github.com/NeoVintageous/NeoVintageous/issues/276
 | YankStackAndRing | | Re https://github.com/NeoVintageous/NeoVintageous/issues/337
 
 ### Abolish `|abolish.txt|`
@@ -1069,6 +1070,10 @@ A port of the awesome [vim-commentary](https://github.com/tpope/vim-commentary).
 ### Highlighted Yank `|highlightedyank|`
 
 Inspired by [vim-highlightedyank](https://github.com/machakann/vim-highlightedyank).
+
+### Input Method `|input-method|`
+
+Inspired by [vim-xkbswitch](https://github.com/lyokha/vim-xkbswitch) and [VSCodeVim/Vim](https://github.com/VSCodeVim/Vim#input-method).
 
 ### Indent Object `|indent-object.txt|`
 

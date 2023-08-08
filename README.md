@@ -27,31 +27,34 @@ NeoVintageous is an advanced Vim emulator for [Sublime Text](https://www.sublime
 - [Modes](#modes)
 - [neovintageousrc](#neovintageousrc)
 - [Key mapping](#key-mapping)
- - [Leader mapleader](#leader-mapleader)
- - [LocalLeader maplocalleader](#localleader-maplocalleader)
- - [Map commands](#map-commands)
-   - [map-overview](#map-overview)
-   - [Mapping Ex Commands](#mapping-ex-commands)
-   - [Mapping Sublime Text Commands](#mapping-sublime-text-commands)
-   - [Mapping Specific File-Types](#mappings-specific-file-types)
-   - [Mapping Super-Keys](#mapping-super-keys)
-   - [Mapping Case-Sensitivity](#mapping-case-sensitivity)
-   - [Mapping for Toggling the Side Bar](#mapping-for-toggling-the-side-bar)
-   - [Mapping for Revealing the Side Bar](#mapping-for-revealing-the-side-bar)
-   - [Mapping Capslock to Escape](#mapping-capslock-to-escape)
+  - [Leader mapleader](#leader-mapleader)
+  - [LocalLeader maplocalleader](#localleader-maplocalleader)
+  - [Map commands](#map-commands)
+    - [map-overview](#map-overview)
+    - [Mapping Ex Commands](#mapping-ex-commands)
+    - [Mapping Sublime Text Commands](#mapping-sublime-text-commands)
+    - [Mapping Specific File-Types](#mappings-specific-file-types)
+    - [Mapping Super-Keys](#mapping-super-keys)
+    - [Mapping Case-Sensitivity](#mapping-case-sensitivity)
+    - [Mapping for Toggling the Side Bar](#mapping-for-toggling-the-side-bar)
+    - [Mapping for Revealing the Side Bar](#mapping-for-revealing-the-side-bar)
+    - [Mapping Capslock to Escape](#mapping-capslock-to-escape)
 - [Options](#options)
 - [Search Highlighting](#search-highlighting)
 - [Plugins](#plugins)
+  - [Highlighted Yank](#highlighted-yank)
+    - [Customize Highlighted Yank Colors](#customize-highlighted-yank-colors)
+  - [Markology](#markology)
+    - [Customize Markology Mark Colors](#customize-markology-mark-colors)
   - [Multiple Cursors](#multiple-cursors)
-    - [Normal and Visual Mode Commands:](#normal-and-visual-mode-commands)
-- [Highlighted Yank](#highlighted-yank)
 - [F.A.Q.](#faq)
   - [Key Presses are Laggy or Slow](#key-presses-are-laggy-or-slow)
-   - [On macOS (OSX):](#on-macos-osx)
-   - [On Ubuntu (GNOME desktop):](#on-ubuntu-gnome-desktop)
-   - [On KDE:](#on-kde)
-   - [On X11 Systems (generic method):](#on-x11-systems-generic-method)
+    - [On macOS (OSX):](#on-macos-osx)
+    - [On Ubuntu (GNOME desktop):](#on-ubuntu-gnome-desktop)
+    - [On KDE:](#on-kde)
+    - [On X11 Systems (generic method):](#on-x11-systems-generic-method)
 - [Contributing](#contributing)
+  - [Enable Pre-Release Upgrades](#enable-pre-release-upgrades)
 - [Changelog](#changelog)
 - [Credits](#credits)
 - [License](#license)
@@ -88,8 +91,12 @@ Command Palette → Preferences: NeoVintageous Settings
 | neovintageous_search_cur_style                    | "fill"    | String    | Current match search style. Valid values are: fill, outline, underline, squiggly_underline, stippled_underline
 | neovintageous_search_inc_style                    | "fill"    | String    | Incremental search style. Valid values are: fill, outline, underline, squiggly_underline, stippled_underline
 | neovintageous_search_occ_style                    | "fill"    | String    | Search occurrences style. Valid values are: fill, outline, underline, squiggly_underline, stippled_underline
-| vintageous_auto_nohlsearch_on_normal_enter        | true      | Boolean   | If enabled, search highlighting is cleared entering normal mode. This typically means the `<Esc>` key has been pressed. <br><br>To clear search highlighting use: <br><br>`:noh[lsearch]` <br><br>Example mapping: <br><br>`noremap <C-l> :nohlsearch<CR>`
 | vintageous_auto_complete_exit_from_insert_mode    | true      | Boolean   | Close auto complete, if visible, when leaving Insert mode and entering Normal mode. When set to false only the auto complete is closed.
+| vintageous_auto_nohlsearch_on_normal_enter        | true      | Boolean   | If enabled, search highlighting is cleared entering normal mode. This typically means the `<Esc>` key has been pressed. <br><br>To clear search highlighting use: <br><br>`:noh[lsearch]` <br><br>Example mapping: <br><br>`noremap <C-l> :nohlsearch<CR>`
+| vintageous_auto_switch_input_method               | false     | Boolean   | Enable automatic switching of input methods.
+| vintageous_auto_switch_input_method_default       | ""        | String    | The default input method to be used.
+| vintageous_auto_switch_input_method_get_cmd       | ""        | String    | The full path to the command used to retrieve the current input method key.
+| vintageous_auto_switch_input_method_set_cmd       | ""        | String    | The full path to the command used to switch input methods, where `{im}` is a placeholder for the input method key.
 | vintageous_bell                                   | "blink"   | String    | Visual bell style. Valid values are: blink, view, views.
 | vintageous_bell_color_scheme                      | "dark"    | String    | Visual bell color-scheme. Valid values are: dark, light, or a color scheme resource. Example: Packages/Name/Name.color-scheme
 | vintageous_clear_auto_indent_on_esc               | true      | Boolean   | If you do not type anything on a new line e.g. pressing `<Esc>` after "o" or "O", the indent is deleted again. To preserve the leading white-space on after pressing `<esc>` set this setting to false.
@@ -467,16 +474,19 @@ By customizing the search highlighting colors, you can make search results more 
 
 ## Plugins
 
-Some awesome Vim plugins have been ported and are available out-of-the-box. Feature-parity is an ongoing effort and functional differences are not always documented. Please open issues to request missing features. For a full list of supported Vim features, please refer to our [roadmap](https://github.com/NeoVintageous/NeoVintageous/blob/master/ROADMAP.md).
+Experience the power of Vim with NeoVintageous, which seamlessly integrates several impressive Vim plugins right out of the box. While we continuously strive for feature parity, please note that some functional differences might exist, and they may not always be fully documented.
+
+If you come across any missing features or observe variations in functionality, we warmly encourage you to create issues to request enhancements. For a comprehensive inventory of supported Vim features and a detailed development roadmap, kindly consult our [roadmap](https://github.com/NeoVintageous/NeoVintageous/blob/master/ROADMAP.md).
 
 | Plugin              | Original Vim plugin
 | :------------------ | :------------------
 | Abolish             | [vim-abolish](https://github.com/tpope/vim-abolish)
 | Commentary          | [vim-commentary](https://github.com/tpope/vim-commentary)
-| Highlighted Yank    | [vim-highlightedyank](https://github.com/machakann/vim-highlightedyank)
+| Highlighted Yank    | Inspired by [vim-highlightedyank](https://github.com/machakann/vim-highlightedyank)
+| Input Method        | Inspired by [vim-xkbswitch](https://github.com/lyokha/vim-xkbswitch) and [VSCodeVim/Vim](https://github.com/VSCodeVim/Vim#input-method) :rocket: :new:
 | Indent Object       | [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object)
-| Markology           | [vim-markology](https://github.com/jeetsukumaran/vim-markology)
-| Multiple Cursors    | [vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors)
+| Markology           | Inspired by [vim-markology](https://github.com/jeetsukumaran/vim-markology) :rocket: :new:
+| Multiple Cursors    | Inspired by [vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors) and [mg979/vim-visual-multi](https://github.com/mg979/vim-visual-multi)
 | Sneak               | [vim-sneak](https://github.com/justinmk/vim-sneak) (disabled by default)
 | Surround            | [vim-surround](https://github.com/tpope/vim-surround)
 | Targets             | [vim-targets](https://github.com/wellle/targets.vim)
@@ -503,7 +513,236 @@ Some awesome Vim plugins have been ported and are available out-of-the-box. Feat
 
 - [blog.gerardroche.com](https://blog.gerardroche.com): Releases, guides, and tips.
 
-### Markology
+### Highlighted Yank
+
+HighlightedYank is a plugin designed to highlight the yanked region in Sublime Text.
+
+When new text is yanked, the old highlighting is automatically deleted. This ensures that the highlighting remains relevant to the most recent yanked text. Similarly, when former lines are edited, the highlighting is cleared to prevent shifting the position of the highlighting.
+
+You can customize the highlighted yank duration and style using the following settings:
+
+- `highlightedyank_duration`: This setting allows you to configure the duration for which the yanked region will be highlighted. You can set the duration according to your preferences.
+
+- `highlightedyank_style`: This setting allows you to customize the style of the highlighted yank region. You can modify the background and foreground colors to suit your color scheme.
+
+#### Customize Highlighted Yank Colors
+
+To tailor the colors of highlighted yanks to your preference, you can create a color scheme override using the following steps:
+
+1. Open the Command Palette: `UI Customize Color Scheme`.
+2. Add the following styles using the "highlightedyank" scope, and adjust the background and foreground colors as desired:
+
+```json
+{
+    "rules": [
+        {
+            "scope": "highlightedyank",
+            "background": "#e6db74",
+            "foreground": "#272822"
+        }
+    ]
+}
+```
+
+By customizing the colors of highlighted yanks, you can make yanked regions more visually distinctive and ensure they align with your preferred color scheme, enhancing your editing experience in the Sublime Text editor.
+
+### Input Method :rocket: :new: <small>Since v1.32</small>
+
+Automatically switch the input method when entering and exiting Insert Mode.
+
+Any third-party program can be used to switch input methods. Below are some examples.
+
+Below, you'll find instructions for installing and using input method switchers on various operating systems.
+
+| Setting                                           | Default                  | Type      | Description
+| :------------------------------------------------ | :------------------------ | :-------- | :----------
+| vintageous_auto_switch_input_method               | false                     | Boolean   | Enable automatic switching of input methods.
+| vintageous_auto_switch_input_method_default       | ""                        | String    | The default input method to be used.
+| vintageous_auto_switch_input_method_get_cmd       | ""                        | String    | The full path to the command used to retrieve the current input method key.
+| vintageous_auto_switch_input_method_set_cmd       | ""                        | String    | The full path to the command used to switch input methods, where `{im}` is a placeholder for the input method key.
+
+The `{im}` argument in the configurations below represents a command-line option that will be passed to the input switcher command, indicating the desired input method for switching. If you're using an alternative program for input method switching, you should incorporate a similar option into the configuration. For instance, if the alternate program's syntax for switching input methods is `my-program -s im`, then the `vintageous_auto_switch_input_method_set_cmd` should be set to `/path/to/my-program -s {im}`. This ensures compatibility with different input method switching tools.
+
+#### Linux:
+
+1. **Install an Input Method Switcher**:
+
+   Choose from popular options like:
+
+   - **ibus**: A powerful input method framework.
+
+   - **xkb-switch**: A lightweight utility for XKB-based layouts.
+
+   - **fcitx**: A flexible and feature-rich input method platform.
+
+   - **gdbus**: A command-line tool for switching input methods.
+
+      Put the following into `im-get` e.g., `~/bin/im-get`.
+
+      You may need to make the script executable e.g., `chmod 744 ~/bin/im-get`.
+
+      ```sh
+      #!/bin/sh
+      gdbus call \
+          --session \
+          --dest org.gnome.Shell \
+          --object-path /org/gnome/Shell \
+          --method org.gnome.Shell.Eval \
+          "imports.ui.status.keyboard.getInputSourceManager().currentSource.index" | \
+          awk -F'[^0-9]*' '{print $2}'
+      ```
+
+      Put the following into `im-set` e.g., `~/bin/im-set`.
+
+      You may need to make the script executable e.g., `chmod 744 ~/bin/im-set`.
+
+      ```sh
+      #!/bin/sh
+      gdbus call \
+          --session \
+          --dest org.gnome.Shell \
+          --object-path /org/gnome/Shell \
+          --method org.gnome.Shell.Eval \
+          "imports.ui.status.keyboard.getInputSourceManager().inputSources[$1].activate()"
+      ```
+
+   - **qdbus**: A D-Bus tool for communication with input methods.
+
+2. **Determine your Default Input Method**:
+
+   Switch your input method to English and execute the following commands in your terminal:
+
+   - **ibus**: Run `ibus engine`. Example output: `xkb:us::eng`
+   - **xkb-switch**: Run `xkb-switch`. Example output: `us`
+   - **fcitx**: Run `fcitx-remote`. Example output: `1`
+   - **gdbus**: Run `/path/to/im-get`. Example output: `0`
+   - **qdbus**: Run `/usr/bin/qdbus org.kde.keyboard /Layouts getLayout`. Example output: `0`
+
+3. **Configure the Input Method Auto Switcher**:
+
+   1. Open the Command Palette by using the shortcut `Ctrl+Shift+P`.
+   2. Add the following JSON configuration:
+
+      **ibus**
+
+      ```json
+      {
+          "vintageous_auto_switch_input_method": true,
+          "vintageous_auto_switch_input_method_default": "xkb:us::eng",
+          "vintageous_auto_switch_input_method_get_cmd": "/usr/bin/ibus engine",
+          "vintageous_auto_switch_input_method_set_cmd": "/usr/bin/ibus engine {im}"
+      }
+      ```
+
+      **xkb-switch**
+
+      ```json
+      {
+          "vintageous_auto_switch_input_method": true,
+          "vintageous_auto_switch_input_method_default": "us",
+          "vintageous_auto_switch_input_method_get_cmd": "/usr/local/bin/xkb-switch",
+          "vintageous_auto_switch_input_method_set_cmd": "/usr/local/bin/xkb-switch -s {im}"
+      }
+      ```
+
+      **fcitx**
+
+      ```json
+      {
+          "vintageous_auto_switch_input_method": true,
+          "vintageous_auto_switch_input_method_default": "1",
+          "vintageous_auto_switch_input_method_get_cmd": "/usr/bin/fcitx-remote",
+          "vintageous_auto_switch_input_method_set_cmd": "/usr/bin/fcitx-remote -t {im}"
+      }
+      ```
+
+      **gdbus**
+
+      ```json
+      {
+          "vintageous_auto_switch_input_method": true,
+          "vintageous_auto_switch_input_method_default": "0",
+          "vintageous_auto_switch_input_method_get_cmd": "/path/to/im-get",
+          "vintageous_auto_switch_input_method_set_cmd": "/path/to/im-set {im}"
+      }
+      ```
+
+      **qdbus (KDE)**
+
+      ```json
+      {
+          "vintageous_auto_switch_input_method": true,
+          "vintageous_auto_switch_input_method_default": "0",
+          "vintageous_auto_switch_input_method_get_cmd": "/usr/bin/qdbus org.kde.keyboard /Layouts getLayout",
+          "vintageous_auto_switch_input_method_set_cmd": "/usr/bin/qdbus org.kde.keyboard /Layouts setLayout {im}"
+      }
+      ```
+
+#### Mac:
+
+1. **Install an Input Method Switcher**:
+
+   Choose from popular options like:
+
+   - **[im-select](https://github.com/daipeihust/im-select)**: A versatile input switching tool.
+
+2. **Determine Your Default Input Method**:
+
+   Switch your input method to English and execute the following commands in your terminal:
+
+   - **im-select**: Run `im-select`. Example output: `com.apple.keylayout.US`
+
+3. **Configure the Input Method Auto Switcher**:
+
+   1. Open the Command Palette by using the shortcut `Cmd+Shift+P`.
+   2. Add the following JSON configuration:
+
+      **im-select**
+
+      Given the input method key of `com.apple.keylayout.US` and `im-select` located at `/usr/local/bin.` The configuration is:
+
+      ```json
+      {
+          "vintageous_auto_switch_input_method": true,
+          "vintageous_auto_switch_input_method_default": "com.apple.keylayout.US",
+          "vintageous_auto_switch_input_method_get_cmd": "/usr/local/bin/im-select",
+          "vintageous_auto_switch_input_method_set_cmd": "/usr/local/bin/im-select {im}"
+      }
+      ```
+
+#### Windows:
+
+1. **Install an Input Method Switcher**:
+
+   Choose from popular options like:
+
+   - **[im-select](https://github.com/daipeihust/im-select)**: A versatile input switching tool.
+
+2. **Determine Your Default Input Method**:
+
+   Switch your input method to English and execute the following commands in your terminal:
+
+   - **im-select**: Run `im-select`. Example output: `1033`
+
+3. **Configure the Input Method Auto Switcher**:
+
+   1. Open the Command Palette by using the shortcut `Ctrl+Shift+P`.
+   2. Add the following JSON configuration:
+
+      **im-select**
+
+      Given the input method key of `1033` (en_US) and `im-select.exe` located at `D:/bin`. The configuration is:
+
+      ```json
+      {
+          "vintageous_auto_switch_input_method": true,
+          "vintageous_auto_switch_input_method_default": "1033",
+          "vintageous_auto_switch_input_method_get_cmd": "D:\\bin\\im-select.exe",
+          "vintageous_auto_switch_input_method_set_cmd": "D:\\bin\\im-select.exe {im}"
+      }
+      ```
+
+### Markology :rocket: :new: <small>Since v1.32</small>
 
 Markology displays marks associated with the current line in the gutter. You can disable this feature by modifying the setting `vintageous_show_marks_in_gutter`.
 
@@ -567,39 +806,6 @@ To change the behaviour of `<Esc>`, you can set the `vintageous_multi_cursor_exi
 
 With the multiple cursor feature, you can speed up your editing workflow by applying commands to multiple locations simultaneously, increasing productivity and convenience.
 
-## Highlighted Yank
-
-HighlightedYank is a plugin designed to highlight the yanked region in Sublime Text.
-
-When new text is yanked, the old highlighting is automatically deleted. This ensures that the highlighting remains relevant to the most recent yanked text. Similarly, when former lines are edited, the highlighting is cleared to prevent shifting the position of the highlighting.
-
-You can customize the highlighted yank duration and style using the following settings:
-
-- `highlightedyank_duration`: This setting allows you to configure the duration for which the yanked region will be highlighted. You can set the duration according to your preferences.
-
-- `highlightedyank_style`: This setting allows you to customize the style of the highlighted yank region. You can modify the background and foreground colors to suit your color scheme.
-
-#### Customize Highlighted Yank Colors
-
-To tailor the colors of highlighted yanks to your preference, you can create a color scheme override using the following steps:
-
-1. Open the Command Palette: `UI Customize Color Scheme`.
-2. Add the following styles using the "highlightedyank" scope, and adjust the background and foreground colors as desired:
-
-```json
-{
-    "rules": [
-        {
-            "scope": "highlightedyank",
-            "background": "#e6db74",
-            "foreground": "#272822"
-        }
-    ]
-}
-```
-
-By customizing the colors of highlighted yanks, you can make yanked regions more visually distinctive and ensure they align with your preferred color scheme, enhancing your editing experience in the Sublime Text editor.
-
 ## F.A.Q.
 
 ### Key Presses are Laggy or Slow
@@ -656,6 +862,32 @@ By adjusting these settings, you can enhance the responsiveness of key presses a
 ## Contributing
 
 See [CONTRIBUTING.md](.github/CONTRIBUTING.md).
+
+### Enable Pre-Release Upgrades
+
+Pre-release versions of packages allow you to access the latest features, improvements, and bug fixes before they are officially released. If you're eager to test out new functionalities in NeoVintageous, you can enable pre-release installation with a simple configuration.
+
+1. Open the Command Palette by using the shortcut `Ctrl+Shift+P` (or `Cmd+Shift+P` on macOS). Type and select `Preferences: Package Control Settings` to open the settings file for Package Control.
+
+2. In the user settings file, add the "install_prereleases" setting and specify "NeoVintageous" in the list of packages to enable pre-release installation:
+
+   ```json
+   {
+       "install_prereleases": ["NeoVintageous"]
+   }
+   ```
+
+   Save the settings file.
+
+3. After saving the settings, you can now install the pre-release version of NeoVintageous. Open the Command Palette again and type `Package Control: Upgrade Package` to install the pre-release version.
+
+4. Enjoy the Latest Features:
+
+   With pre-release installation enabled, you'll receive updates to NeoVintageous before they are officially released. Enjoy exploring and testing the latest features and improvements.
+
+**Note:**
+
+Pre-release versions might contain experimental features or changes that are still being refined. If you encounter any issues or have feedback, feel free to share it with us on the NeoVintageous GitHub repository.
 
 ## Changelog
 
