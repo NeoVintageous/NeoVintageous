@@ -6,33 +6,32 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
-* [#373](https://github.com/NeoVintageous/NeoVintageous/issues/373): New automatically switch input method on entering and exiting Insert mode
+* [#373](https://github.com/NeoVintageous/NeoVintageous/issues/373): New Input Method plugin - Automatically switch the IM when entering and exiting Insert Mode
 * [#948](https://github.com/NeoVintageous/NeoVintageous/issues/948): New `:delm[arks] {marks}` - Delete the specified marks.  Marks that can be deleted include A-Z and 0-9.
 * [#948](https://github.com/NeoVintageous/NeoVintageous/issues/948): New `:delm[arks]!` - Delete all marks for the current buffer, but not marks A-Z or 0-9.
 * [#919](https://github.com/NeoVintageous/NeoVintageous/issues/919): Support for Dvorak mappings via [NeoVintageousDvorak](https://github.com/gerardroche/NeoVintageousDvorak)
 * [#918](https://github.com/NeoVintageous/NeoVintageous/issues/918): Support for Colemak mappings via [NeoVintageousColemak](https://github.com/gerardroche/NeoVintageousColemak)
-* [#944](https://github.com/NeoVintageous/NeoVintageous/issues/944): Ability to map any simple character e.g., `nnoremap ø :marks<CR>`
-* [#106](https://github.com/NeoVintageous/NeoVintageous/issues/106): `g,` Go to `[count]` newer position in change list.
-* [#106](https://github.com/NeoVintageous/NeoVintageous/issues/106): `g;` Go to `[count]` older position in change list
-* [#942](https://github.com/NeoVintageous/NeoVintageous/issues/942): `CTRL-M` alias of `Enter` and `+` - `[count]` lines downward, on the first non-blank character `linewise`
-* [#943](https://github.com/NeoVintageous/NeoVintageous/issues/943): `zuw` (alias of zug) Undo `zw` and `zg` (add word under the cursor as a good word)
-* [#841](https://github.com/NeoVintageous/NeoVintageous/issues/841): `vintageous_auto_nohlsearch_on_normal_enter` setting to allow keep highlighting after search until `:noh[lsearch]`
-* [#936](https://github.com/NeoVintageous/NeoVintageous/issues/936): An edit settings command: "Preferences: NeoVintageous Settings"
-* [#924](https://github.com/NeoVintageous/NeoVintageous/issues/924): Enable super keys by default (commonly labelled as the Windows key or Command key (Macintosh))
-* [#915](https://github.com/NeoVintageous/NeoVintageous/issues/915): Show marks in gutter (controlled via `vintageous_show_marks_in_gutter` setting)
-* [#921](https://github.com/NeoVintageous/NeoVintageous/issues/921): `'equalalways'` option
+* [#944](https://github.com/NeoVintageous/NeoVintageous/issues/944): New ability to map any character e.g., `nnoremap ø :marks<CR>`
+* [#106](https://github.com/NeoVintageous/NeoVintageous/issues/106): New `g,` Go to `[count]` newer position in change list
+* [#106](https://github.com/NeoVintageous/NeoVintageous/issues/106): New `g;` Go to `[count]` older position in change list
+* [#942](https://github.com/NeoVintageous/NeoVintageous/issues/942): Add `CTRL-M` alias of `Enter`
+* [#943](https://github.com/NeoVintageous/NeoVintageous/issues/943): Add `zuw` alias of `zug`
+* [#841](https://github.com/NeoVintageous/NeoVintageous/issues/841): Add `vintageous_auto_nohlsearch_on_normal_enter` setting to keep highlighting after searches
+* [#936](https://github.com/NeoVintageous/NeoVintageous/issues/936): Add edit settings command "Preferences: NeoVintageous Settings"
+* [#924](https://github.com/NeoVintageous/NeoVintageous/issues/924): Enable super keys, also known as the Windows key or Command key (⌘) on Mac, by default
+* [#915](https://github.com/NeoVintageous/NeoVintageous/issues/915): Show marks in gutter (disable via `vintageous_show_marks_in_gutter` setting)
+* [#921](https://github.com/NeoVintageous/NeoVintageous/issues/921): New `'equalalways'` option. Default on. When on, all the views are made the same size after splitting a view.
 
 ### Changed
 
 * [#947](https://github.com/NeoVintageous/NeoVintageous/issues/947): :vnoremap and vunmap now include Select mode
 * [#946](https://github.com/NeoVintageous/NeoVintageous/issues/946): :noremap and unmap now include Select mode
-* Reword file open and load command captions: "RC" → ".neovintageousrc"
 
 ### Fixed
 
 * [#929](https://github.com/NeoVintageous/NeoVintageous/issues/929): There is no syntax highlighting for `<LocalLeader>`
-* [#879](https://github.com/NeoVintageous/NeoVintageous/issues/879): RC file options only set on active view at startup
-* [#922](https://github.com/NeoVintageous/NeoVintageous/issues/922): RC file reloading should reset options
+* [#879](https://github.com/NeoVintageous/NeoVintageous/issues/879): neovintageousrc file options only set on active view at startup
+* [#922](https://github.com/NeoVintageous/NeoVintageous/issues/922): neovintageousrc file reloading should reset options
 
 ## 1.31.0 - 2023-07-12
 
