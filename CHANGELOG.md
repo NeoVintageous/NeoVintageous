@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* [#944](https://github.com/NeoVintageous/NeoVintageous/issues/944): Ability to map any simple character e.g., `nnoremap ø :marks<CR>`
 * [#106](https://github.com/NeoVintageous/NeoVintageous/issues/106): `g,` Go to `[count]` newer position in change list.
 * [#106](https://github.com/NeoVintageous/NeoVintageous/issues/106): `g;` Go to `[count]` older position in change list
 * [#942](https://github.com/NeoVintageous/NeoVintageous/issues/942): `CTRL-M` alias of `Enter` and `+` - `[count]` lines downward, on the first non-blank character `linewise`

@@ -421,9 +421,16 @@ class nv_run_cmds(TextCommand):
 
 class nv_feed_key(WindowCommand):
 
-    # TODO refactor: rename repeat_count -> count
-    def run(self, key, repeat_count=None, do_eval=True, check_user_mappings=True):
+    # TODO Rename {repeat_count} argument to {count}
+    # TODO Deprecate and remove {key} argument
+    def run(self, key=None, repeat_count=None, do_eval=True, check_user_mappings=True, character=None):
         start_time = time.time()
+
+        # Support for "<character>" key binding which allows receiving input
+        # from Sublime for all characters. This is a temporary backwards
+        # compatibility bridge towards removing the {key} argument.
+        if character is not None:
+            key = character
 
         try:
             FeedKeyHandler(
