@@ -94,8 +94,6 @@
   - [Surround](#surround-surroundtxt)
   - [Targets](#targets)
   - [Unimpaired](#unimpaired-unimpairedtxt)
-- [F.A.Q.](#faq)
-  - [Key presses are laggy or slow](#key-presses-are-laggy-or-slow)
 - [Known issues](#known-issues)
 
 </details>
@@ -105,14 +103,14 @@
 | Status                        | Mode                               | Description
 | :-----------------------------| :----------------------------------| :----------
 | :white_check_mark:            | Insert mode                        | `[count]i`
-| :white_check_mark:            | Normal mode                        | `<Esc>`
+| :white_check_mark:            | Normal mode                        | `<Esc>` or `CTRL-[` or `CTRL-c`
 | :white_check_mark:            | Visual mode                        | `v`
 | :white_check_mark:            | Visual line mode                   | `[count]V`
-| :white_check_mark:            | Visual block mode                  | `CTRL-V`
+| :white_check_mark:            | Visual block mode                  | `CTRL-v`
 | :white_check_mark:            | Replace mode                       | `R`
 | :white_check_mark:            | Operator&#8209;pending&nbsp;mode   | Like Normal mode, but after an operator command has start, and Vim is waiting for a `{motion}` to specify the text that the operator will work on.
 | :white_check_mark:            | Command-line mode<br>Cmdline mode  | `:`, `/`, `?`, `!`
-| :white_check_mark: :sparkles: | Multiple-cursor mode               | `CTRL-N`, `gh`
+| :white_check_mark: :sparkles: | Multiple-cursor mode               | `CTRL-n` or `gh`
 
 ## About using the help files `|helphelp.txt|`
 
@@ -1236,31 +1234,6 @@ Option Toggling
 | :white_check_mark: :sparkles: | `[oe` | `]oe` | `yoe`  | `'statusbar'`
 | :white_check_mark: :sparkles: | `[om` | `]om` | `yom`  | `'minimap'`
 | :white_check_mark: :sparkles: | `[ot` | `]ot` | `yot`  | `'sidebar'`
-
-## F.A.Q.
-
-### Key presses are laggy or slow
-
-On OSX, if holding down a key like "j" does not repeat the command (a feature
-of OSX), you make a key repeat by running this once at the terminal:
-
-    defaults write com.sublimetext.3 ApplePressAndHoldEnabled -bool false
-
-If key presses are slow or laggy first check the system configuration, for
-example on Ubuntu you can configure keyboard repeat interval and delay:
-
-    gsettings set org.gnome.desktop.peripherals.keyboard repeat-interval 15
-    gsettings set org.gnome.desktop.peripherals.keyboard delay 180
-
-and for KDE:
-
-    systemsettings5 kcm_keyboard
-
-brings up a window where you can change 'Delay' and 'Rate' as required.
-
-In general if you are on X11 type systems you could directly use:
-
-    xset r rate <milliseconds_before_repeating> <repetitions_per_second>
 
 ## Known issues
 
