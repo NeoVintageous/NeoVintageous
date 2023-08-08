@@ -34,23 +34,6 @@ except ImportError:
     ctypes = None
 
 
-def _get_startup_info():
-    # Hide the child process window.
-    startupinfo = subprocess.STARTUPINFO()
-    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-
-    return startupinfo
-
-
-def _get_encoding() -> str:
-    return str(ctypes.windll.kernel32.GetOEMCP())
-
-
-# TODO Review Do newlines really need to converted on Windows?
-def _translate_newlines(text: str):
-    return text.replace('\r\n', '\n')
-
-
 def open(view) -> None:
     term = get_setting(view, 'terminal', 'cmd.exe')
     if term:
@@ -105,3 +88,20 @@ def filter_region(view, txt: str, cmd: str) -> str:
     finally:
         os.remove(script.name)
         os.remove(contents.name)
+
+
+def _get_startup_info():
+    # Hide the child process window.
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    return startupinfo
+
+
+def _get_encoding() -> str:
+    return str(ctypes.windll.kernel32.GetOEMCP())
+
+
+# TODO Review Do newlines really need to converted on Windows?
+def _translate_newlines(text: str):
+    return text.replace('\r\n', '\n')
