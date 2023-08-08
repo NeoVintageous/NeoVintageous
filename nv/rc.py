@@ -100,7 +100,6 @@ def _source(window, source) -> None:
             do_ex_cmdline(window, ex_cmdline)
 
     window.settings().erase('_nv_rc_loading')
-    sublime.save_settings('Preferences.sublime-settings')
 
 
 # Recursive mappings (:map, :nmap, :omap, :smap, :vmap) are not supported. They
