@@ -41,7 +41,7 @@ def open_rc(window) -> None:
 
     if not os.path.exists(file):
         with builtins.open(file, 'w', encoding='utf-8') as f:
-            f.write('" Type :help nv for help.\n')
+            f.write('" A double quote character starts a comment.\n')
 
     window.open_file(file)
 
