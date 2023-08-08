@@ -20,10 +20,10 @@ import unittest
 from NeoVintageous.nv.variables import _defaults
 from NeoVintageous.nv.variables import _special
 from NeoVintageous.nv.variables import _variables
+from NeoVintageous.nv.variables import clear_variables
 from NeoVintageous.nv.variables import expand_keys
 from NeoVintageous.nv.variables import get
 from NeoVintageous.nv.variables import is_key_name
-from NeoVintageous.nv.variables import variables_clear
 
 
 class TestVariables(unittest.TestCase):
@@ -120,5 +120,5 @@ class TestVariables(unittest.TestCase):
 
     @unittest.mock.patch.dict('NeoVintageous.nv.variables._variables', {'x': 'y'})
     def test_clear(self):
-        variables_clear()
+        clear_variables()
         self.assertEquals({}, _variables)

@@ -30,8 +30,8 @@ from NeoVintageous.nv.mappings import _find_full_match
 from NeoVintageous.nv.mappings import _has_partial_matches
 from NeoVintageous.nv.mappings import _seq_to_command
 from NeoVintageous.nv.mappings import _seq_to_mapping
+from NeoVintageous.nv.mappings import clear_mappings
 from NeoVintageous.nv.mappings import mappings_add
-from NeoVintageous.nv.mappings import mappings_clear
 from NeoVintageous.nv.mappings import mappings_remove
 from NeoVintageous.nv.mappings import mappings_resolve
 from NeoVintageous.nv.plugin_commentary import CommentaryLines
@@ -179,7 +179,7 @@ class TestMappings(unittest.ViewTestCase):
         mappings_add(unittest.NORMAL, 'FileType', 'php X Y')
         mappings_add(unittest.NORMAL, 'FileType', 'php P Y')
         mappings_add(unittest.NORMAL, 'FileType', 'js P Y')
-        mappings_clear()
+        clear_mappings()
         self.assertMappingsEmpty()
 
     @unittest.mock_mappings()

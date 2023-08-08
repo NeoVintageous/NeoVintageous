@@ -58,13 +58,13 @@ def reload_rc() -> None:
 
 
 def _unload() -> None:
-    # Note that the imports are inline to avoid circular dependency errors.
-    from NeoVintageous.nv.mappings import mappings_clear
-    from NeoVintageous.nv.variables import variables_clear
+    # Imports are inline to avoid circular dependency errors.
+    from NeoVintageous.nv.mappings import clear_mappings
     from NeoVintageous.nv.options import clear_options
+    from NeoVintageous.nv.variables import clear_variables
 
-    variables_clear()
-    mappings_clear()
+    clear_variables()
+    clear_mappings()
     clear_options()
 
 
