@@ -914,6 +914,7 @@ def ex_vnoremap(lhs: str = None, rhs: str = None, **kwargs) -> None:
     if not (lhs and rhs):
         return status_message('Listing key mappings is not implemented')
 
+    mappings_add(SELECT, lhs, rhs)
     mappings_add(VISUAL, lhs, rhs)
     mappings_add(VISUAL_BLOCK, lhs, rhs)
     mappings_add(VISUAL_LINE, lhs, rhs)
@@ -924,7 +925,7 @@ def ex_vsplit(window, file: str = None, **kwargs) -> None:
 
 
 def ex_vunmap(lhs: str, **kwargs) -> None:
-    for mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
+    for mode in (SELECT, VISUAL, VISUAL_LINE, VISUAL_BLOCK):
         try:
             mappings_remove(mode, lhs)
         except KeyError:

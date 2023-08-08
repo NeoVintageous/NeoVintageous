@@ -21,6 +21,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Changed
 
+* [#947](https://github.com/NeoVintageous/NeoVintageous/issues/947): :vnoremap and vunmap now include Select mode
 * [#946](https://github.com/NeoVintageous/NeoVintageous/issues/946): :noremap and unmap now include Select mode
 * Reword file open and load command captions: "RC" → ".neovintageousrc"
 

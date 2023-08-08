@@ -215,7 +215,7 @@ Overview of which map command works in which mode.  More details below.
 | :noremap  | :unmap  | Normal, Visual, Select, Operator-pending
 | :nnoremap | :nunmap | Normal
 | :inoremap | :iunmap | Insert <br>:warning: Insert mode mappings are very limited. Very few keys are mappable out-of-the-box, but you can configure any key to be mappable. This may be improved in a future release.
-| :vnoremap | :vunmap | Visual and Select <br>:warning: Currently does not include Select mode; this may be fixed in a future release.
+| :vnoremap | :vunmap | Visual and Select
 | :xnoremap | :xunmap | Visual
 | :snoremap | :sunmap | Select <br>:warning: Currently represents Multiple-cursor mode; this may change in a future release. The multiple-cursor mode is likely to get its own dedicated mode. Probably :mnoremaap?
 | :onoremap | :ounmap | Operator-pending
