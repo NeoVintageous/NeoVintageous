@@ -47,12 +47,12 @@ def open_rc(window) -> None:
 
 
 def load_rc() -> None:
-    _log.debug('load %s', _file_path())
+    _log.debug('sourcing %s', _file_path())
     _load()
 
 
 def reload_rc() -> None:
-    _log.debug('reload %s', _file_path())
+    _log.debug('reloading %s', _file_path())
     _unload()
     _load()
 
@@ -86,7 +86,7 @@ def _load() -> None:
             print('NeoVintageous: sourced %s' % _file_path())
 
     except FileNotFoundError:
-        _log.info('%s file not found', _file_name())
+        _log.info('%s file not found', _file_path())
 
 
 def _source(window, source) -> None:
