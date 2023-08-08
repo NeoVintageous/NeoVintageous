@@ -129,7 +129,7 @@ def mappings_remove(mode: str, lhs: str) -> None:
     del _mappings[mode][_normalise_lhs(lhs)]
 
 
-def mappings_clear() -> None:
+def clear_mappings() -> None:
     for mode in _mappings:
         _mappings[mode] = {}
 

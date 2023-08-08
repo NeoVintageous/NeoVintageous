@@ -67,5 +67,5 @@ def set(name: str, value: str) -> None:
     _variables[name] = value
 
 
-def variables_clear() -> None:
+def clear_variables() -> None:
     _variables.clear()

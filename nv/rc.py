@@ -41,49 +41,66 @@ def open_rc(window) -> None:
 
     if not os.path.exists(file):
         with builtins.open(file, 'w', encoding='utf-8') as f:
-            f.write('" Type :help nv for help.\n')
+            f.write('" A double quote character starts a comment.\n')
 
     window.open_file(file)
 
 
 def load_rc() -> None:
-    _log.debug('load %s', _file_path())
+    _log.debug('sourcing %s', _file_path())
     _load()
 
 
 def reload_rc() -> None:
-    _log.debug('reload %s', _file_path())
+    _log.debug('reloading %s', _file_path())
     _unload()
     _load()
 
 
 def _unload() -> None:
-    # Note that the imports are inline to avoid circular dependency errors.
-    from NeoVintageous.nv.mappings import mappings_clear
-    from NeoVintageous.nv.variables import variables_clear
+    # Imports are inline to avoid circular dependency errors.
+    from NeoVintageous.nv.mappings import clear_mappings
     from NeoVintageous.nv.options import clear_options
+    from NeoVintageous.nv.variables import clear_variables
 
-    variables_clear()
-    mappings_clear()
+    clear_variables()
+    clear_mappings()
     clear_options()
 
 
 def _load() -> None:
+    window = sublime.active_window()
+
+    settings = sublime.load_settings('Preferences.sublime-settings')
+    source = settings.get('vintageous_source')
+    if source and isinstance(source, str):
+        try:
+            _source(window, iter(sublime.load_resource(source).splitlines()))
+            print('NeoVintageous: sourced {}'.format(source))
+        except FileNotFoundError as e:
+            print('NeoVintageous:', e)
+
     try:
-        # Note that the import is inline to avoid circular dependency errors.
-        from NeoVintageous.nv.ex_cmds import do_ex_cmdline
-        window = sublime.active_window()
         with builtins.open(_file_path(), 'r', encoding='utf-8', errors='replace') as f:
-            window.settings().set('_nv_rc_loading', True)
-            for line in f:
-                ex_cmdline = _parse_line(line)
-                if ex_cmdline:
-                    do_ex_cmdline(window, ex_cmdline)
-            window.settings().erase('_nv_rc_loading')
-            sublime.save_settings('Preferences.sublime-settings')
-        print('%s file loaded' % _file_name())
+            _source(window, f)
+            print('NeoVintageous: sourced %s' % _file_path())
+
     except FileNotFoundError:
-        _log.info('%s file not found', _file_name())
+        _log.info('%s file not found', _file_path())
+
+
+def _source(window, source) -> None:
+    # The import is inline to avoid circular dependency errors.
+    from NeoVintageous.nv.ex_cmds import do_ex_cmdline
+
+    try:
+        window.settings().set('_nv_sourcing', True)
+        for line in source:
+            ex_cmdline = _parse_line(line)
+            if ex_cmdline:
+                do_ex_cmdline(window, ex_cmdline)
+    finally:
+        window.settings().erase('_nv_sourcing')
 
 
 # Recursive mappings (:map, :nmap, :omap, :smap, :vmap) are not supported. They
