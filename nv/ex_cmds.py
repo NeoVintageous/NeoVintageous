@@ -474,6 +474,7 @@ def ex_noremap(lhs: str = None, rhs: str = None, **kwargs) -> None:
 
     mappings_add(NORMAL, lhs, rhs)
     mappings_add(OPERATOR_PENDING, lhs, rhs)
+    mappings_add(SELECT, lhs, rhs)
     mappings_add(VISUAL, lhs, rhs)
     mappings_add(VISUAL_BLOCK, lhs, rhs)
     mappings_add(VISUAL_LINE, lhs, rhs)
@@ -898,7 +899,7 @@ def ex_tabprevious(window, **kwargs) -> None:
 
 
 def ex_unmap(lhs: str, **kwargs) -> None:
-    for mode in (NORMAL, OPERATOR_PENDING, VISUAL, VISUAL_LINE, VISUAL_BLOCK):
+    for mode in (NORMAL, OPERATOR_PENDING, SELECT, VISUAL, VISUAL_LINE, VISUAL_BLOCK):
         try:
             mappings_remove(mode, lhs)
         except KeyError:

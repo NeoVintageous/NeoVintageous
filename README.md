@@ -212,7 +212,7 @@ Overview of which map command works in which mode.  More details below.
 
 | COMMAND   | COMMAND | MODES
 | :-------- | :------ | :----
-| :noremap  | :unmap  | Normal, Visual, Select, Operator-pending <br>:warning: Currently does not include Select mode; this may be fixed in a future release.
+| :noremap  | :unmap  | Normal, Visual, Select, Operator-pending
 | :nnoremap | :nunmap | Normal
 | :inoremap | :iunmap | Insert <br>:warning: Insert mode mappings are very limited. Very few keys are mappable out-of-the-box, but you can configure any key to be mappable. This may be improved in a future release.
 | :vnoremap | :vunmap | Visual and Select <br>:warning: Currently does not include Select mode; this may be fixed in a future release.

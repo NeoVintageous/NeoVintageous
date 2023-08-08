@@ -27,10 +27,10 @@ class Test_ex_noremap(unittest.FunctionalTestCase):
 
         self.assertMapping(unittest.NORMAL, 'x', 'y')
         self.assertMapping(unittest.OPERATOR_PENDING, 'x', 'y')
+        self.assertMapping(unittest.SELECT, 'x', 'y')
         self.assertMapping(unittest.VISUAL, 'x', 'y')
         self.assertMapping(unittest.VISUAL_BLOCK, 'x', 'y')
         self.assertMapping(unittest.VISUAL_LINE, 'x', 'y')
         self.assertNotMapping('x', unittest.INSERT)
-        self.assertNotMapping('x', unittest.SELECT)
 
         self.assertNoStatusMessage()
