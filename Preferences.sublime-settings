@@ -46,6 +46,43 @@
     // When set to false, only the auto complete is closed.
     "vintageous_auto_complete_exit_from_insert_mode": true,
 
+    // Enable automatic switching of input methods.
+    "vintageous_auto_switch_input_method": false,
+
+    // The default input method to be used.
+    // Example:
+    // - xkb:us::eng
+    // - us
+    // - 0
+    // - 1
+    // - 2
+    // - com.apple.keylayout.US
+    // - 1033
+    "vintageous_auto_switch_input_method_default": "",
+
+    // The full path to the command used to retrieve the current input method key.
+    // Example:
+    // - /usr/bin/ibus engine
+    // - /usr/local/bin/xkb-switch
+    // - /usr/bin/fcitx-remote
+    // - /path/to/im-get
+    // - /usr/bin/qdbus org.kde.keyboard /Layouts getLayout
+    // - /usr/local/bin/im-select
+    // - D:\\bin\\im-select.exe
+    "vintageous_auto_switch_input_method_get_cmd": "/path/to/im-select",
+
+    // The full path to the command used to switch input methods, where {im} is
+    // a placeholder for the input method key.
+    // Example:
+    // - /usr/bin/ibus engine {im}
+    // - /usr/local/bin/xkb-switch -s {im}
+    // - /usr/bin/fcitx-remote -t {im}
+    // - /path/to/im-set {im}
+    // - /usr/bin/qdbus org.kde.keyboard /Layouts setLayout {im}
+    // - /usr/local/bin/im-select {im}
+    // - D:\\bin\\im-select.exe {im}
+    "vintageous_auto_switch_input_method_set_cmd": "/path/to/im-select {im}",
+
     //  Visual bell style.
     //
     //  Valid values are:

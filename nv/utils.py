@@ -48,6 +48,7 @@ from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.polyfill import spell_add
 from NeoVintageous.nv.polyfill import spell_undo
 from NeoVintageous.nv.settings import get_cmdline_cwd
+from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import get_visual_block_direction
 from NeoVintageous.nv.settings import set_mode
@@ -56,6 +57,7 @@ from NeoVintageous.nv.settings import set_visual_block_direction
 from NeoVintageous.nv.settings import set_xpos
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import DIRECTION_UP
+from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import INTERNAL_NORMAL
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import VISUAL
@@ -1414,3 +1416,18 @@ def _maybe_equalalways(window) -> None:
     view = window.active_view()
     if view and get_option(view, 'equalalways'):
         make_all_groups_same_size(window)
+
+
+def is_insert_mode(view, mode: str = None) -> bool:
+    return _resolve_mode(view, mode) == INSERT
+
+
+def is_not_insert_mode(view, mode: str = None) -> bool:
+    return _resolve_mode(view, mode) != INSERT
+
+
+def _resolve_mode(view, mode: str = None) -> str:
+    if mode is None:
+        return get_mode(view)
+
+    return mode

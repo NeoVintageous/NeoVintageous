@@ -64,6 +64,7 @@ try:
     # Plugins.
     from NeoVintageous.nv.plugin_abolish import *  # noqa: F401,F403
     from NeoVintageous.nv.plugin_commentary import *  # noqa: F401,F403
+    from NeoVintageous.nv.plugin_input_method import *  # noqa: F401,F403
     from NeoVintageous.nv.plugin_multiple_cursors import *  # noqa: F401,F403
     from NeoVintageous.nv.plugin_sneak import *  # noqa: F401,F403
     from NeoVintageous.nv.plugin_sublime import *  # noqa: F401,F403
