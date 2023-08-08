@@ -93,13 +93,14 @@ def _source(window, source) -> None:
     # The import is inline to avoid circular dependency errors.
     from NeoVintageous.nv.ex_cmds import do_ex_cmdline
 
-    window.settings().set('_nv_rc_loading', True)
-    for line in source:
-        ex_cmdline = _parse_line(line)
-        if ex_cmdline:
-            do_ex_cmdline(window, ex_cmdline)
-
-    window.settings().erase('_nv_rc_loading')
+    try:
+        window.settings().set('_nv_sourcing', True)
+        for line in source:
+            ex_cmdline = _parse_line(line)
+            if ex_cmdline:
+                do_ex_cmdline(window, ex_cmdline)
+    finally:
+        window.settings().erase('_nv_sourcing')
 
 
 # Recursive mappings (:map, :nmap, :omap, :smap, :vmap) are not supported. They

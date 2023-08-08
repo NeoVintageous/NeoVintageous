@@ -288,7 +288,7 @@ def clear_options() -> None:
 
 
 def _resolve_settings(view):
-    if view.window().settings().get('_nv_rc_loading'):
+    if view.window().settings().get('_nv_sourcing'):
         return load_settings('Preferences.sublime-settings')
 
     return view.settings()
