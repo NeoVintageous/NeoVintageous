@@ -6,6 +6,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* [#919](https://github.com/NeoVintageous/NeoVintageous/issues/919): Support for Dvorak mappings via [NeoVintageousDvorak](https://github.com/gerardroche/NeoVintageousDvorak)
+* [#918](https://github.com/NeoVintageous/NeoVintageous/issues/918): Support for Colemak mappings via [NeoVintageousColemak](https://github.com/gerardroche/NeoVintageousColemak)
 * [#944](https://github.com/NeoVintageous/NeoVintageous/issues/944): Ability to map any simple character e.g., `nnoremap ø :marks<CR>`
 * [#106](https://github.com/NeoVintageous/NeoVintageous/issues/106): `g,` Go to `[count]` newer position in change list.
 * [#106](https://github.com/NeoVintageous/NeoVintageous/issues/106): `g;` Go to `[count]` older position in change list

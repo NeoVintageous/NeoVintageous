@@ -191,12 +191,13 @@
     // Read Ex commands from a resource before the neovintageourc resource is
     // sourced. This means you can still override these ex commands in your
     // neovintageousrc file.
+    // See https://github.com/gerardroche/NeoVintageousColemak
+    // See https://github.com/gerardroche/NeoVintageousDvorak
     // Example: Packages/NeoVintageousDvorak/dvorak.neovintageous
     // Example: Packages/NeoVintageousColemak/colemak.neovintageous
     "vintageous_source": null,
 
     // Name of program to use when starting a ":shell".
-    //
     // Example: gnome-terminal
     "vintageous_terminal": null,
 
