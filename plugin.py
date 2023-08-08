@@ -18,6 +18,8 @@
 import os
 import traceback
 
+PACKAGE_NAME  = "NeoVintageous"
+
 # To enable debug logging, set the env var to a non-blank value.
 _DEBUG = bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG'))
 
@@ -44,6 +46,8 @@ if _DEBUG:  # pragma: no cover
         logger.debug('debug logger initialised')
 
 import sublime  # noqa: E402
+
+cfgU  = {}
 
 # The plugin loading is designed to handle errors gracefully.
 #
@@ -138,6 +142,15 @@ def _init_backwards_compat_patches():
 
 
 def plugin_loaded():
+    # load user config file to a global class and add a watcher event to track changes
+    global cfgU
+    global user_settings
+
+    user_settings = sublime.load_settings(f'{PACKAGE_NAME}.sublime-settings')
+    cfgU.load();
+    user_settings.clear_on_change(PACKAGE_NAME)
+    user_settings.add_on_change  (PACKAGE_NAME, lambda: cfgU.load())
+
     if _DEBUG:  # pragma: no cover
         sublime.log_input(True)
         sublime.log_commands(True)
@@ -196,4 +209,22 @@ def plugin_loaded():
 
 
 def plugin_unloaded():
+    # clear config change watcher
+    global cfgU
+    global user_settings
+
+    user_settings.clear_on_change(PACKAGE_NAME)
+
     clean_views()
+
+
+class cfgU():
+
+    @staticmethod
+    def load():
+        cfgU.keymap	= user_settings.get('keymap'	, None)
+
+        cfgU.events	= user_settings.get('events'	, None)
+        if not (evtT := type(cfgU.events)) is dict:
+            print(f"NeoVintageous ERROR:\n‘events’ in ‘{PACKAGE_NAME}.sublime-settings’ should be a dictionary, not {evtT}")
+            cfgU.events	= None
