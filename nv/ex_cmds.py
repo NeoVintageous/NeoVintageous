@@ -39,6 +39,8 @@ from NeoVintageous.nv.goto import goto_help_subject
 from NeoVintageous.nv.history import history
 from NeoVintageous.nv.mappings import mappings_add
 from NeoVintageous.nv.mappings import mappings_remove
+from NeoVintageous.nv.marks import del_mark
+from NeoVintageous.nv.marks import del_marks
 from NeoVintageous.nv.marks import get_marks
 from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.options import set_option
@@ -601,6 +603,55 @@ def ex_marks(view, **kwargs) -> None:
         ))
 
     output.show()
+
+
+def ex_delmarks(view, forceit: bool = False, marks: str = '', **kwargs) -> None:
+    if forceit and marks:
+        ui_bell('E475: Invalid argument')
+        return
+
+    # Delete all marks for the current buffer, but not marks A-Z or 0-9.
+    if forceit:
+        del_marks(view)
+        return
+
+    if not marks:
+        ui_bell('E471: Argument required')
+        return
+
+    if marks:
+
+        # Strip white-space.
+        marks = marks.strip(' ')
+
+        # Split ranges like a-z, A-Z, 0-9.
+        names = [m for m in re.split('(.-.)', marks) if m]
+
+        for name in names:
+            # Ranges like a-z A-Z, p-z.
+            if re.match('^[a-zA-Z]-[a-zA-Z]$', name):
+                lhs, rhs = name.split('-')
+                if lhs >= rhs:
+                    ui_bell('E475: Invalid argument: %s', name)
+                    return
+
+                for mark in range(ord(lhs), ord(rhs) + 1):
+                    del_mark(view, chr(mark))
+
+            # Ranges like 0-9, 4-7, 2-5.
+            elif re.match('^[0-9]-[1-9]$', name):
+                lhs, rhs = name.split('-')
+                if lhs >= rhs:
+                    ui_bell('E475: Invalid argument: %s', name)
+                    return
+
+                for mark in range(int(lhs), int(rhs) + 1):
+                    del_mark(view, str(mark))
+
+            # Regular alnum mark names.
+            else:
+                for mark in list(name):
+                    del_mark(view, str(mark))
 
 
 def ex_registers(window, view, **kwargs) -> None:

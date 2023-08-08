@@ -25,9 +25,9 @@ class Test_m(unittest.FunctionalTestCase):
 
     def test_v(self):
         self.eq('1\nfi|zz bu|zz\n3\n', 'v_mx', '1\nfi|zz bu|zz\n3\n')
-        self.assertMark('x', '1\nfizz b|uzz\n3\n')
+        self.assertMarkContent('x', '1\nfizz b|uzz\n3\n')
         self.eq('r_1\nfi|zz bu|zz\n3\n', 'v_mx', 'r_1\nfi|zz bu|zz\n3\n')
-        self.assertMark('x', '1\nfi|zz buzz\n3\n')
+        self.assertMarkContent('x', '1\nfi|zz buzz\n3\n')
 
     def test_V(self):
         self.eq('1\n|fizz buzz\n|3\n', 'V_mx', '1\n|fizz buzz\n|3\n')

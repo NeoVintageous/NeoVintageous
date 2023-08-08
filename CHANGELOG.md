@@ -6,6 +6,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* [#948](https://github.com/NeoVintageous/NeoVintageous/issues/948): New `:delm[arks] {marks}` - Delete the specified marks.  Marks that can be deleted include A-Z and 0-9.
+* [#948](https://github.com/NeoVintageous/NeoVintageous/issues/948): New `:delm[arks]!` - Delete all marks for the current buffer, but not marks A-Z or 0-9.
 * [#919](https://github.com/NeoVintageous/NeoVintageous/issues/919): Support for Dvorak mappings via [NeoVintageousDvorak](https://github.com/gerardroche/NeoVintageousDvorak)
 * [#918](https://github.com/NeoVintageous/NeoVintageous/issues/918): Support for Colemak mappings via [NeoVintageousColemak](https://github.com/gerardroche/NeoVintageousColemak)
 * [#944](https://github.com/NeoVintageous/NeoVintageous/issues/944): Ability to map any simple character e.g., `nnoremap ø :marks<CR>`

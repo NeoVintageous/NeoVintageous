@@ -516,6 +516,9 @@ class TestExCommands(unittest.TestCase):
         self.assertCommand(['cquit', 'cq'], cmd('cquit'))
         self.assertCommand(['delete x', 'd x'], cmd('delete', params={'count': None, 'register': 'x'}, addressable=True, cooperates_with_global=True))  # noqa: E501
         self.assertCommand(['delete', 'd'], cmd('delete', params={'count': None, 'register': '"'}, addressable=True, cooperates_with_global=True))  # noqa: E501
+        self.assertCommand(['delmarks a', 'delm a'], cmd('delmarks', params={'marks': 'a'}))  # noqa: E501
+        self.assertCommand(['delmarks a-z b   B', 'delm a-z b   B'], cmd('delmarks', params={'marks': 'a-z b   B'}))  # noqa: E501
+        self.assertCommand(['delmarks!', 'delm!'], cmd('delmarks', forced=True))  # noqa: E501
         self.assertCommand(['edit file.txt', 'e file.txt'], cmd('edit', params={'file_name': 'file.txt'}))  # noqa: E501
         self.assertCommand(['edit x/y.txt', 'e x/y.txt'], cmd('edit', params={'file_name': 'x/y.txt'}))  # noqa: E501
         self.assertCommand(['edit!', 'e!'], cmd('edit', params={'file_name': None}, forced=True))  # noqa: E501

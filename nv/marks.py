@@ -17,6 +17,7 @@
 
 from collections import OrderedDict
 from string import ascii_letters
+from string import ascii_lowercase
 
 from sublime import HIDDEN
 from sublime import PERSISTENT
@@ -36,7 +37,7 @@ def set_mark(view, name: str) -> None:
         if not view.file_name():
             return
 
-        _get_session_marks()[name] = view.file_name()
+        _get_file_name_marks()[name] = view.file_name()
 
     regions = [Region(get_insertion_point_at_b(view.sel()[0]))]
 
@@ -46,15 +47,6 @@ def set_mark(view, name: str) -> None:
         flags=HIDDEN | PERSISTENT,
         scope='region.cyanish neovintageous_mark',
         icon=_get_icon(view, name))
-
-
-def _get_icon(view, name: str) -> str:
-    if not get_setting(view, 'show_marks_in_gutter'):
-        return ''
-
-    return 'Packages/NeoVintageous/res/icons/%s_%s.png' % (
-        'lower' if name.islower() else 'upper',
-        name.lower())
 
 
 def get_mark(view, name: str):
@@ -97,6 +89,23 @@ def get_marks(view) -> OrderedDict:
     return marks
 
 
+def del_mark(view, name: str) -> None:
+    if name.isupper():
+        view = _get_uppercase_mark_view(view, name)
+
+        try:
+            del _get_file_name_marks()[name]
+        except KeyError:
+            pass
+
+    view.erase_regions(_get_key(name))
+
+
+def del_marks(view) -> None:
+    for mark in ascii_lowercase:
+        del_mark(view, mark)
+
+
 def _get_mark_info(view, region: Region) -> dict:
     line_number, col = view.rowcol(region.b)
     line_number += 1
@@ -129,13 +138,13 @@ def _get_regions(view, name: str) -> list:
     return view.get_regions(_get_key(name))
 
 
-def _get_session_marks() -> dict:
+def _get_file_name_marks() -> dict:
     return get_session_value('marks', {})
 
 
 def _get_uppercase_mark_view(view, name: str):
     try:
-        file_name = _get_session_marks()[name]
+        file_name = _get_file_name_marks()[name]
     except KeyError:
         return
 
@@ -144,3 +153,12 @@ def _get_uppercase_mark_view(view, name: str):
         return
 
     return window.find_open_file(file_name)
+
+
+def _get_icon(view, name: str) -> str:
+    if not get_setting(view, 'show_marks_in_gutter'):
+        return ''
+
+    return 'Packages/NeoVintageous/res/icons/%s_%s.png' % (
+        'lower' if name.islower() else 'upper',
+        name.lower())

@@ -296,6 +296,13 @@ def _ex_route_marks(state) -> TokenCommand:
     return _create_route(state, 'marks')
 
 
+def _ex_route_delmarks(state) -> TokenCommand:
+    command = _create_route(state, 'delmarks', forcable=True)
+    command = _resolve(state, command, '\\s+(?P<marks>.+)')
+
+    return command
+
+
 def _ex_route_move(state) -> TokenCommand:
     command = _create_route(state, 'move', addressable=True)
 
@@ -751,6 +758,7 @@ _add_ex_route(r'cd', _ex_route_cd, 'cd')
 _add_ex_route(r'clo(?:se)?', _ex_route_close, 'close')
 _add_ex_route(r'co(?:py)?', _ex_route_copy, 'copy')
 _add_ex_route(r'cq(?:uit)?', _ex_route_cquit, 'cquit')
+_add_ex_route(r'delm(?:arks)?', _ex_route_delmarks, 'delmarks')
 _add_ex_route(r'd(?:elete)?', _ex_route_delete, 'delete')
 _add_ex_route(r'exi(?:t)?', _ex_route_exit, 'exit')
 _add_ex_route(r'e(?:dit)?(?= |$)?', _ex_route_edit, 'edit')

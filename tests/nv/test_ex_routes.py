@@ -259,6 +259,7 @@ class TestRoutes(unittest.TestCase):
         self.assertRoute('_ex_route_copy', ['copy', 'co'])
         self.assertRoute('_ex_route_cquit', ['cquit', 'cq'])
         self.assertRoute('_ex_route_delete', ['delete', 'd'])
+        self.assertRoute('_ex_route_delmarks', ['delmarks', 'delm'])
         self.assertRoute('_ex_route_edit', ['edit', 'e'])
         self.assertRoute('_ex_route_exit', ['exit', 'exi', 'xit', 'x'])
         self.assertRoute('_ex_route_file', ['file', 'f'])

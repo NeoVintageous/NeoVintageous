@@ -43,6 +43,7 @@ from NeoVintageous.nv.ex_cmds import do_ex_cmdline
 from NeoVintageous.nv.mappings import _mappings
 from NeoVintageous.nv.marks import _get_key
 from NeoVintageous.nv.marks import get_mark
+from NeoVintageous.nv.marks import get_marks
 from NeoVintageous.nv.marks import set_mark
 from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.options import set_option
@@ -398,8 +399,26 @@ class ViewTestCase(unittest.TestCase):
         self.view.sel().clear()
         self.view.sel().add_all(sels)  # type: ignore[arg-type]
 
-    def assertMark(self, name: str, expected) -> None:
+    def assertHasMarks(self, expected: str) -> None:
+        self.assertEqual([m for m in expected], sorted([m for m in get_marks(self.view)]))
+
+    def assertNoMark(self, name: str) -> None:
+        self.assertIsNone(get_mark(self.view, name))
+
+    def assertNoMarks(self) -> None:
+        self.assertEqual([], [m for m in get_marks(self.view)])
+
+    def assertMarkContent(self, name: str, expected) -> None:
         self._assertContentSelection([get_mark(self.view, name)], expected)
+
+    def assertMarksOutput(self, expected: str):
+        self.assertEquals('mark line  col file/text\n' +
+                          expected + ('' if expected == '' else '\n') +
+                          '\nPress ENTER to continue',
+                          self.commandLineOutput())
+
+    def assertNoMarksOutput(self):
+        self.assertMarksOutput('')
 
     def assertMapping(self, mode: int, lhs: str, rhs: str) -> None:
         self.assertIn(lhs, _mappings[mode])
@@ -1188,11 +1207,11 @@ def mock_bell():
             self.bell = args[-1]
             self.assert_bell_count = 0
 
-            def _assertBell(msg: str = None, count: int = 1) -> None:
-                if msg is None:
-                    self.bell.assert_called_with()
+            def _assertBell(*msg: str, count: int = 1) -> None:
+                if msg:
+                    self.bell.assert_called_with(*msg)
                 else:
-                    self.bell.assert_called_with(msg)
+                    self.bell.assert_called_with()
 
                 self.assert_bell_count += count
                 self.assertEqual(
@@ -1689,6 +1708,7 @@ _SEQ2CMD = {
     'C':            {'command': 'nv_feed_key'},  # noqa: E241
     'D':            {'command': 'nv_feed_key'},  # noqa: E241
     'E':            {'command': 'nv_feed_key'},  # noqa: E241
+    'F':            {'command': 'nv_feed_key'},  # noqa: E241
     'F0':           {'command': 'nv_feed_key'},  # noqa: E241
     'F4':           {'command': 'nv_feed_key'},  # noqa: E241
     'F5':           {'command': 'nv_feed_key'},  # noqa: E241
@@ -2151,6 +2171,7 @@ _SEQ2CMD = {
     'd|':           {'command': 'nv_feed_key'},  # noqa: E241
     'd}':           {'command': 'nv_feed_key'},  # noqa: E241
     'e':            {'command': 'nv_feed_key'},  # noqa: E241
+    'f':            {'command': 'nv_feed_key'},  # noqa: E241
     'f2':           {'command': 'nv_feed_key'},  # noqa: E241
     'f6':           {'command': 'nv_feed_key'},  # noqa: E241
     'f8':           {'command': 'nv_feed_key'},  # noqa: E241
@@ -2162,6 +2183,7 @@ _SEQ2CMD = {
     'fr':           {'command': 'nv_feed_key'},  # noqa: E241
     'fx':           {'command': 'nv_feed_key'},  # noqa: E241
     'f|':           {'command': 'nv_feed_key'},  # noqa: E241
+    'g':            {'command': 'nv_feed_key'},  # noqa: E241
     'gC':           {'command': 'nv_feed_key'},  # noqa: E241
     'gC}':          {'command': 'nv_feed_key'},  # noqa: E241
     'gD':           {'command': 'nv_feed_key'},  # noqa: E241

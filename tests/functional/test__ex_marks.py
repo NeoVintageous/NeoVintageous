@@ -32,7 +32,7 @@ class Test_ex_marks(unittest.ResetMarks, unittest.ResetCommandLineOutput, unitte
         self.feed('m')
         self.feed('a')
         self.feed(':marks')
-        self.assertMarks(
+        self.assertMarksOutput(
             ' a      3    1       fizz')
 
     @unittest.mock.patch('sublime.Window.find_open_file')
@@ -44,7 +44,7 @@ class Test_ex_marks(unittest.ResetMarks, unittest.ResetCommandLineOutput, unitte
         self.feed('m')
         self.feed('A')
         self.feed(':marks')
-        self.assertMarks(
+        self.assertMarksOutput(
             ' A      3    1 /tmp/fizz.txt')
 
     def test_lowercase_multiple_lines(self):
@@ -59,7 +59,7 @@ class Test_ex_marks(unittest.ResetMarks, unittest.ResetCommandLineOutput, unitte
         self.feed('m')
         self.feed('b')
         self.feed(':marks')
-        self.assertMarks(
+        self.assertMarksOutput(
             ' a      3    1       fizz\n'
             ' b      5    7  ping pong\n'
             ' c      4    0       buzz')
@@ -82,7 +82,7 @@ class Test_ex_marks(unittest.ResetMarks, unittest.ResetCommandLineOutput, unitte
         self.feed('m')
         self.feed('x')
         self.feed(':marks')
-        self.assertMarks(
+        self.assertMarksOutput(
             ' a      3    1 /tmp/fizz.txt\n'
             ' x      5    5 /tmp/fizz.txt\n'
             ' B      4    0 /tmp/fizz.txt\n'
@@ -95,9 +95,5 @@ class Test_ex_marks(unittest.ResetMarks, unittest.ResetCommandLineOutput, unitte
         self.feed('m')
         self.feed('a')
         self.feed(':marks')
-        self.assertMarks(
+        self.assertMarksOutput(
             ' a      1    1 /tmp/fizz/buzz.txt')
-
-    def assertMarks(self, expected: str):
-        output = self.commandLineOutput()
-        self.assertEquals('mark line  col file/text\n' + expected + '\n\nPress ENTER to continue', output)
