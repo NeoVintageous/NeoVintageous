@@ -15,33 +15,29 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
+import logging
 import os
 import traceback
 
-# To enable debug logging, set the env var to a non-blank value.
-_DEBUG = bool(os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG'))
+# The logger needs to be configured before any modules are loaded.
+logger = logging.getLogger(__package__)
+logger.propagate = False
 
-# If debugging is enabled, initialise the debug logger. The debug logger needs
-# to be configured before any plugin modules are loaded, otherwise the plugins
-# would send log messages to a "handler of last resort". The "handler of last
-# resort" is a logger that python configures in the absence of any logging
-# configuration (a StreamHandler that writes to sys.stderr with a level of
-# WARNING. The end result is that it prints the message to sys.stderr, and in
-# Sublime Text that means it will print the message to console).
-if _DEBUG:  # pragma: no cover
-    import logging
+# To enable debug logging set the following environment variable to a non-blank
+# value or to a logging level: CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET.
+_DEBUG = os.getenv('SUBLIME_NEOVINTAGEOUS_DEBUG')
+if _DEBUG:
+    logger.setLevel(getattr(logging, _DEBUG.upper(), logging.DEBUG))
+else:
+    logger.setLevel(logging.WARNING)
 
-    logger = logging.getLogger('NeoVintageous')
-
-    # Avoid duplicate loggers when the plugin is reloaded.
-    if not logger.hasHandlers():
-        logger.setLevel(logging.DEBUG)
-        stream_handler = logging.StreamHandler()
-        stream_handler.setFormatter(logging.Formatter(
-            'NeoVintageous.%(levelname)-7s [%(filename)15s:%(lineno)-4d] %(message)s'
-        ))
-        logger.addHandler(stream_handler)
-        logger.debug('debug logger initialised')
+# Avoid duplicate loggers e.g., if the plugin is reloaded.
+if not logger.hasHandlers():
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(logging.Formatter(
+        'NeoVintageous.%(levelname)-7s [%(filename)15s:%(lineno)-4d] %(message)s'
+    ))
+    logger.addHandler(stream_handler)
 
 import sublime  # noqa: E402
 
@@ -154,9 +150,6 @@ def _init_backwards_compat_patches():
 
 
 def plugin_loaded():
-    if _DEBUG:  # pragma: no cover
-        sublime.log_input(True)
-        sublime.log_commands(True)
 
     _init_backwards_compat_patches()
 
