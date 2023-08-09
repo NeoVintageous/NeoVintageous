@@ -217,6 +217,14 @@ MULTIPLE WINDOWS AND BUFFERS
 | :heavy_check_mark: | `<`       | shift left
 |                    | `g@`      | call function set with the `'operatorfunc'` option
 
+FORCING A MOTION TO BE LINEWISE, CHARACTERWISE OR BLOCKWISE
+
+| Status             | Command   | Description
+| :----------------- | :-------- | :----------
+|                    | v         | When used after an operator, before the motion command: Force the operator to work characterwise, also when the motion is linewise.  If the motion was linewise, it will become `exclusive`.<br> If the motion already was characterwise, toggle inclusive/exclusive.  This can be used to make an exclusive motion inclusive and an inclusive motion exclusive. [#90](https://github.com/NeoVintageous/NeoVintageous/issues/90)
+|                    | V         | When used after an operator, before the motion command: Force the operator to work linewise, also when the motion is characterwise. [#90](https://github.com/NeoVintageous/NeoVintageous/issues/90)
+|                    | CTRL-V    | When used after an operator, before the motion command: Force the operator to work blockwise.  This works like Visual block mode selection, with the corners defined by the cursor position before and after the motion. [#90](https://github.com/NeoVintageous/NeoVintageous/issues/90)
+
 ### 2. Left-right motions `|left-right-motions|`
 
 | Status             | Command                              | Description
