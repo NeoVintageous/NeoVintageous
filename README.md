@@ -89,7 +89,6 @@ Command Palette → Preferences: NeoVintageous Settings
 
 | Setting                                           | Default   | Type      | Description
 | :------------------------------------------------ | :-------- | :-------- | :----------
-
 | highlightedyank                                   | true      | Boolean   | Plugin. A port of https://github.com/machakann/vim-highlightedyank.
 | highlightedyank_duration                          | 1000      | Integer   | Assign number of time in milliseconds.
 | highlightedyank_style                             | "fill"    | String    | Highlighted Yank style. Valid values are: fill, outline, underline, squiggly_underline, stippled_underline.
