@@ -20,19 +20,19 @@
     // Enable automatic switching of input methods.
     "vintageous_auto_switch_input_method": false,
 
-    // The default input method to be used.
-    // Example:
-    // - xkb:us::eng
-    // - us
-    // - 0
-    // - 1
-    // - 2
-    // - com.apple.keylayout.US
-    // - 1033
+    // Configure the default input method to be used.
+    // Examples:
+    // - "xkb:us::eng"
+    // - "us"
+    // - "0"
+    // - "1"
+    // - "2"
+    // - "com.apple.keylayout.US"
+    // - "1033"
     "vintageous_auto_switch_input_method_default": "",
 
-    // The full path to the command used to retrieve the current input method key.
-    // Example:
+    // Specify the complete command path for retrieving the current input method key.
+    // Examples:
     // - /usr/bin/ibus engine
     // - /usr/local/bin/xkb-switch
     // - /usr/bin/fcitx-remote
@@ -42,9 +42,9 @@
     // - D:\\bin\\im-select.exe
     "vintageous_auto_switch_input_method_get_cmd": "/path/to/im-select",
 
-    // The full path to the command used to switch input methods, where {im} is
-    // a placeholder for the input method key.
-    // Example:
+    // Provide the complete command path for switching input methods, using
+    // {im} as a placeholder for the input method key.
+    // Examples:
     // - /usr/bin/ibus engine {im}
     // - /usr/local/bin/xkb-switch -s {im}
     // - /usr/bin/fcitx-remote -t {im}
@@ -54,22 +54,22 @@
     // - D:\\bin\\im-select.exe {im}
     "vintageous_auto_switch_input_method_set_cmd": "/path/to/im-select {im}",
 
-    //  Visual bell style.
+    // Choose the style for the visual bell.
     //
-    //  Valid values are:
-    //       blink
-    //       view
-    //       views
-    //       none
+    // Valid options include:
+    // - "blink"
+    // - "view"
+    // - "views"
+    // - "none"
     "vintageous_bell": "blink",
 
-    //  Visual bell color-scheme.
+    // Choose the color scheme for the visual bell.
     //
-    //  Valid values are:
-    //       dark
-    //       light
-    //  Or a color scheme resource path:
-    //       Packages/Name/name.hidden-color-scheme
+    // Valid options are:
+    // - "dark"
+    // - "light"
+    // Or you can specify a color scheme resource path:
+    // - Packages/Name/name.hidden-color-scheme
     "vintageous_bell_color_scheme": "dark",
 
     //  If you do not type anything on a new line e.g. pressing <Esc> after "o"
@@ -88,55 +88,47 @@
     //          mode selections are retained when the window loses focus.
     "vintageous_default_mode": "",
 
-    // Plugin
-    //
-    // A port of https://github.com/tpope/vim-abolish.
+    // Enable Abolish plugin.
+    // (ported from the vim-abolish plugin by @tpope).
     "vintageous_enable_abolish": true,
 
-    // Plugin
-    //
-    // A port of https://github.com/tpope/vim-commentary.
+    // Enable Commentary plugin.
+    // (ported from the vim-commentary plugin by @tpope).
     "vintageous_enable_commentary": true,
 
-    // Plugin
-    //
-    // A port of https://github.com/terryma/vim-multiple-cursors.
+    // Enable Multiple Cursors plugin.
+    // (ported from the vim-multiple-cursors plugin by @terryma).
     "vintageous_enable_multiple_cursors": true,
 
-    // Plugin
-    //
-    // A port of https://github.com/justinmk/vim-sneak.
+    // Enable Sneak plugin.
+    // (ported from the vim-sneak plugin by @justinmk).
     "vintageous_enable_sneak": false,
 
-    // Plugin
-    //
-    // Sublime Text tweaks.
+    // Enable Sublime Text tweaks plugin..
     "vintageous_enable_sublime": true,
 
-    // Plugin
-    //
-    // A port of https://github.com/tpope/vim-surround.
+    // Enable Surround plugin.
+    // (ported from the vim-surround plugin by @tpope).
     "vintageous_enable_surround": true,
 
-    // Plugin
-    //
-    // A port of https://github.com/tpope/vim-unimpaired.
+    // Enable Unimpaired plugin.
+    // (ported from the vim-unimpaired plugin by @tpope).
     "vintageous_enable_unimpaired": true,
 
-    // Plugin
-    //
-    // A port of https://github.com/machakann/vim-highlightedyank.
+    // Enable Highlighted Yank plugin.
+    // (ported from the vim-highlightedyank plugin by @machakann)
     "highlightedyank": true,
 
     // Assign number of time in milliseconds.
     "highlightedyank_duration": 1000,
 
-    // Valid values are:
-    //     fill
-    //     outline
-    //     underline
-    //     squiggly_underline
-    //     stippled_underline
+    // Specify the style for highlighted yank indicator.
+    // Available options:
+    // - "fill"
+    // - "outline"
+    // - "underline"
+    // - "squiggly_underline"
+    // - "stippled_underline"
     "highlightedyank_style": "fill",
 
     // When quitting the last window exit ST.
@@ -167,13 +159,13 @@
     //     }
     "vintageous_handle_keys": {},
 
-    // Enable Insert jj escape.
+    // Toggle the use of "jj" as an escape sequence in Insert mode.
     "vintageous_i_escape_jj": false,
 
-    // Enable Insert jk escape.
+    // Toggle the use of "jk" as an escape sequence in Insert mode.
     "vintageous_i_escape_jk": false,
 
-    // Enable Insert kj escape.
+    // Toggle the use of "kj" as an escape sequence in Insert mode.
     "vintageous_i_escape_kj": false,
 
     // Override native save to handle LSP Code-Actions-On-Save.
@@ -213,8 +205,9 @@
     // Show marks in the gutter.
     "vintageous_show_marks_in_gutter": true,
 
-    // 0: Always case-sensitive
-    // 1: Case sensitivity is determined by 'ignorecase' and 'smartcase'.
+    // Specify case sensitivity mode for Sneak:
+    // - 0: Always case-sensitive
+    // - 1: Case sensitivity based on 'ignorecase' and 'smartcase'.
     "vintageous_sneak_use_ic_scs": 0,
 
     // Read Ex commands from a resource before the neovintageousrc resource is
@@ -226,15 +219,15 @@
     // Example: Packages/NeoVintageousColemak/colemak.neovintageous
     "vintageous_source": null,
 
-    // Name of program to use when starting a ":shell".
-    // Example: gnome-terminal
+    // Define the program to use when initiating a ":shell" command.
+    // Example: "gnome-terminal"
     "vintageous_terminal": null,
 
-    // Enable Vim ctrl keys.
+    // Enable Vim Ctrl keys.
     "vintageous_use_ctrl_keys": true,
 
-    // Enable Vim super keys. Super key is an alternative name for what is
-    // commonly labelled as the Windows key or Command key (Macintosh).
+    // Enable Vim Super keys.
+    // Super key refers to the Windows key or Command key (Macintosh).
     "vintageous_use_super_keys": true,
 
     // Propagate copy actions to the system clipboard.

@@ -89,31 +89,31 @@ Command Palette → Preferences: NeoVintageous Settings
 
 | Setting                                           | Default   | Type      | Description
 | :------------------------------------------------ | :-------- | :-------- | :----------
-| highlightedyank                                   | true      | Boolean   | Plugin. A port of https://github.com/machakann/vim-highlightedyank.
+| highlightedyank                                   | true      | Boolean   | Enable Highlighted Yank plugin (ported from the [vim-highlightedyank](https://github.com/machakann/vim-highlightedyank) plugin by @machakann).
 | highlightedyank_duration                          | 1000      | Integer   | Assign number of time in milliseconds.
-| highlightedyank_style                             | "fill"    | String    | Highlighted Yank style. Valid values are: fill, outline, underline, squiggly_underline, stippled_underline.
+| highlightedyank_style                             | "fill"    | String    | Specify the style for highlighted yank indicator. Available options: "fill", "outline", "underline", "squiggly_underline", "stippled_underline".
 | vintageous_auto_complete_exit_from_insert_mode    | true      | Boolean   | Close auto complete, if visible, when leaving Insert mode and entering Normal mode. When set to false only the auto complete is closed.
 | vintageous_auto_nohlsearch_on_normal_enter        | true      | Boolean   | If enabled, search highlighting is cleared entering normal mode. This typically means the `<Esc>` key has been pressed. <br><br>To clear search highlighting use: <br><br>`:noh[lsearch]` <br><br>Example mapping: <br><br>`noremap <C-l> :nohlsearch<CR>`
 | vintageous_auto_switch_input_method               | false     | Boolean   | Enable automatic switching of input methods.
 | vintageous_auto_switch_input_method_default       | ""        | String    | The default input method to be used.
 | vintageous_auto_switch_input_method_get_cmd       | ""        | String    | The full path to the command used to retrieve the current input method key.
 | vintageous_auto_switch_input_method_set_cmd       | ""        | String    | The full path to the command used to switch input methods, where `{im}` is a placeholder for the input method key.
-| vintageous_bell                                   | "blink"   | String    | Visual bell style. Valid values are: blink, view, views.
-| vintageous_bell_color_scheme                      | "dark"    | String    | Visual bell color-scheme. Valid values are: dark, light, or a color scheme resource. Example: Packages/Name/Name.color-scheme
+| vintageous_bell                                   | "blink"   | String    | Choose the style for the visual bell. Choose from: blink, view, views.
+| vintageous_bell_color_scheme                      | "dark"    | String    | Choose the color scheme for the visual bell. Choose from: dark, light, or specify a color scheme resource path. Example: Packages/Name/Name.color-scheme
 | vintageous_clear_auto_indent_on_esc               | true      | Boolean   | If you do not type anything on a new line e.g. pressing `<Esc>` after "o" or "O", the indent is deleted again. To preserve the leading white-space on after pressing `<esc>` set this setting to false.
 | vintageous_default_mode                           | ""        | String    | Default mode to use when activating or switching views. Valid values are: "insert" or "". <br><br>insert: Enter insert mode when opening or switching views or when the window receives focus and is not in visual mode i.e. visual mode selections are retained when the window loses focus.
-| vintageous_enable_abolish                         | true      | Boolean   | Plugin. A port of https://github.com/tpope/vim-abolish.
-| vintageous_enable_commentary                      | true      | Boolean   | Plugin. A port of https://github.com/tpope/vim-commentary.
-| vintageous_enable_multiple_cursors                | true      | Boolean   | Plugin. A port of https://github.com/terryma/vim-multiple-cursors.
-| vintageous_enable_sneak                           | false     | Boolean   | Plugin. A port of https://github.com/justinmk/vim-sneak.
-| vintageous_enable_sublime                         | true      | Boolean   | Plugin. Sublime Text tweaks.
-| vintageous_enable_surround                        | true      | Boolean   | Plugin. A port of https://github.com/tpope/vim-surround.
-| vintageous_enable_unimpaired                      | true      | Boolean   | Plugin. A port of https://github.com/tpope/vim-unimpaired.
+| vintageous_enable_abolish                         | true      | Boolean   | Enable Abolish plugin (ported from the [vim-abolish](https://github.com/tpope/vim-abolish) by @tpope).
+| vintageous_enable_commentary                      | true      | Boolean   | Enable Commentary plugin (ported from the [vim-commentary](https://github.com/tpope/vim-commentary) by @tpope).
+| vintageous_enable_multiple_cursors                | true      | Boolean   | Enable Multiple Cursors plugin (ported from the [vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors) by @terryma).
+| vintageous_enable_sneak                           | false     | Boolean   | Enable Sneak plugin (ported from the [vim-sneak](https://github.com/justinmk/vim-sneak) by @justinmk).
+| vintageous_enable_sublime                         | true      | Boolean   | Enable Sublime Text plugin.
+| vintageous_enable_surround                        | true      | Boolean   | Enable Surround plugin (ported from the [vim-surround](https://github.com/tpope/vim-surround) by @tpope).
+| vintageous_enable_unimpaired                      | true      | Boolean   | Enable Unimpaired plugin (ported from the [vim-unimpaired](https://github.com/tpope/vim-unimpaired) by @tpope).
 | vintageous_exit_when_quiting_last_window          | true      | Boolean   | When quitting the last window exit Sublime.
 | vintageous_handle_keys                            | \{\}      | Dict      | Delegate configured keys to be handled by Sublime Text. For example to use native Sublime Text behaviour for ctrl+f:<br> `"vintageous_handle_keys": {"<C-f>": false}` <br><br> Keys can be handled for specific modes by using a prefix:<br><br> n_ - Normal<br> i_ - Insert<br> v_ - Visual<br> V_ - Visual line<br> b_ - Visual block<br> s_ - Select<br><br> For example to only delegate <C-w> in insert and visual modes:<br><br> `"vintageous_handle_keys": {"i_<C-w>": false "v_<C-w>": false}`
-| vintageous_i_escape_jj                            | false     | Boolean   | Enable Insert mode jj escape.
-| vintageous_i_escape_jk                            | false     | Boolean   | Enable Insert mode jk escape.
-| vintageous_i_escape_kj                            | false     | Boolean   | Enable Insert mode kj escape.
+| vintageous_i_escape_jj                            | false     | Boolean   | Toggle the use of "jj" as an escape sequence in Insert mode.
+| vintageous_i_escape_jk                            | false     | Boolean   | Toggle the use of "jk" as an escape sequence in Insert mode.
+| vintageous_i_escape_kj                            | false     | Boolean   | Toggle the use of "kj" as an escape sequence in Insert mode.
 | vintageous_lsp_save                               | false     | Boolean   | Override native save to handle LSP Code-Actions-On-Save. <br>See https://github.com/sublimelsp/LSP/issues/1725
 | vintageous_multi_cursor_exit_from_visual_mode     | false     | Boolean   | Exit visual multi cursor visual on quit key.<br> When false then pressing a quit key (e.g. `<Esc>` or J) in multiple cursor visual mode the visual mode exits to normal mode but keeps the cursors.<br> When true then pressing a quit key (e.g. `<Esc>` or J) in multiple cursor visual mode the visual mode exits all multiple cursors.
 | vintageous_reset_mode_when_switching_tabs         | true      | Boolean   | Reset to normal mode when a tab is activated.
@@ -123,11 +123,11 @@ Command Palette → Preferences: NeoVintageous Settings
 | vintageous_search_occ_style                       | "fill"    | String    | Style for highlighting search occurrences. Options: fill, outline, underline, squiggly_underline, stippled_underline
 | vintageous_shell_silent                           | false     | Boolean   | Show output panel from shell commands.
 | vintageous_show_marks_in_gutter                   | true      | Boolean   | Show marks in the gutter.
-| vintageous_sneak_use_ic_scs                       | 0         | Integer   | 0: Always case-sensitive<br> 1: Case sensitivity is determined by `'ignorecase'` and `'smartcase'`.
+| vintageous_sneak_use_ic_scs                       | 0         | Integer   | Case sensitivity mode for Sneak: 0 for always case-sensitive, 1 for based on `'ignorecase'` and `'smartcase'`.
 | vintageous_source                                 | null      | String    | Read Ex commands from a resource before the neovintageousrc resource is sourced. This means you can still override these ex commands in your neovintageousrc file. <br>Example: Packages/NeoVintageousDvorak/dvorak.neovintageous <br>Example: Packages/NeoVintageousColemak/colemak.neovintageous
-| vintageous_terminal                               | null      | String    | Name of program to use when starting a ":shell". <br>Example: gnome-terminal
+| vintageous_terminal                               | null      | String    | Define the program to use when initiating a ":shell" command. Example: "gnome-terminal".
 | vintageous_use_ctrl_keys                          | true      | Boolean   | Enable Vim Ctrl keys.
-| vintageous_use_super_keys                         | true      | Boolean   | Enable Vim Super keys. Super key is an alternative name for what is commonly labelled as the Windows key or Command key (Macintosh).
+| vintageous_use_super_keys                         | true      | Boolean   | Enable Vim Super keys. Super key refers to the Windows key or Command key (Macintosh).
 | vintageous_use_sys_clipboard                      | false     | Boolean   | Propagate copy actions to the system clipboard.
 
 ## Modes
