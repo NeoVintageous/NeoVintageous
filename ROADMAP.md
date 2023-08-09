@@ -56,6 +56,8 @@
 - [Various remaining commands](#various-remaining-commands-varioustxt)
 - [Command-line editing](#command-line-editing-cmdlinetxt)
   - [1. Command-line editing](#1-command-line-editing)
+  - [2. Command-line completion](#2-command-line-completion)
+  - [4. Ex command-line ranges](#4-ex-command-line-ranges)
 - [Description of all options](#description-of-all-options-optionstxt)
   - [1. Setting options](#1-setting-options)
   - [3. Options summary](#3-options-summary)
@@ -635,14 +637,16 @@ last one.
 
 ## Various remaining commands `|various.txt|`
 
-| Status             | Command                      | Description
-| :----------------- | :--------------------------- | -----------
-| :heavy_check_mark: | `ga`                         | Print the ascii value of the character under the cursor in dec, hex and oct.
-|                    | `:as[cii]`                   | Same as `ga`.
-| :heavy_check_mark: | `:sh[ell]`                   | This command starts a shell.
-| :heavy_check_mark: | `:!{cmd}`                    | Execute `{cmd}` with the shell.
-| :heavy_check_mark: | `:!!`                        | Repeat last `":!{cmd}"`.
-| :heavy_check_mark: | `:sil[ent] {command}`        | Execute `{command}` silently.
+| Status             | Command                              | Description
+| :----------------- | :----------------------------------- | -----------
+| :heavy_check_mark: | `ga`                                 | Print the ascii value of the character under the cursor in dec, hex and oct.
+|                    | `:as[cii]`                           | Same as `ga`.
+| :heavy_check_mark: | `:sh[ell]`                           | This command starts a shell.
+| :heavy_check_mark: | `:!{cmd}`                            | Execute `{cmd}` with the shell.
+| :heavy_check_mark: | `:!!`                                | Repeat last `":!{cmd}"`.
+| :heavy_check_mark: | `:sil[ent] {command}`                | Execute `{command}` silently.
+|                    | `:norm[al][!] {commands}`            | Execute Normal mode commands `{commands}`.
+|                    | `:{range}norm[al][!] {commands}`     | Execute Normal mode commands `{commands}` for each line in the `{range}`.
 
 ## Command-line editing `|cmdline.txt|`
 
@@ -663,13 +667,38 @@ last one.
 | :heavy_check_mark: | `CTRL-[`<br>`<Esc>`              | Quit Command-line mode without executing.
 | :heavy_check_mark: | `CTRL-C`                         | Quit Command-line mode without executing.
 | :heavy_check_mark: | `<Tab>`                          | Go to next matched completion.
-| :heavy_check_mark: | `<S-Tab>`                        | Go to previous matched completion.
 | :heavy_check_mark: | `<Up>`                           | Recall older command-line from history, whose beginning matches the current command-line.
 | :heavy_check_mark: | `<Down>`                         | Recall more recent command-line from history, whose beginning matches the current command-line.
-| :heavy_check_mark: | `CTRL-P`                         | Go to previous in history.
-| :heavy_check_mark: | `CTRL-N`                         | Go to next in history.
 | :heavy_check_mark: | :his[tory]                       | Print the history of last entered commands.
 | :heavy_check_mark: | :his[tory]&nbsp;[\{name\}]       | List the contents of history `{name}` which can be: <br>`c[md]` or : command-line history <br>`s[earch]` or / or ? search string history <br>`e[xpr]` or = expression register history <br>`i[nput]` or @ input line history <br>`d[ebug]` or > debug command history <br>`a[ll]` all of the above
+
+### 2. Command-line completion
+
+| Status             | Command                          | Description
+| :----------------- | :------------------------------- | -----------
+| :heavy_check_mark: | `<S-Tab>`                        | Like `<Tab>`, but begin with the last match and then go to the previous match.
+| :heavy_check_mark: | `CTRL-N`                         | Go to next match.  Otherwise recall more recent command-line from history.
+| :heavy_check_mark: | `CTRL-P`                         | Go to previous match.  Otherwise recall older command-line from history.
+
+### 4. Ex command-line ranges
+
+Some Ex commands accept a line range in front of them.  This is noted as `[range].`  It consists of one or more line specifiers, separated with ',' or ';'.
+
+Line numbers may be specified with:
+
+| Status             | Command                          | Description
+| :----------------- | :------------------------------- | -----------
+| :heavy_check_mark: | `{number}`                       | An absolute line number.
+| :heavy_check_mark: | `.`                              | The current line.
+| :heavy_check_mark: | `$`                              | The last line in the file.
+| :heavy_check_mark: | `%`                              | Equal to 1,$ (the entire file).
+|                    | `'t`                             | Position of mark t (lowercase).
+|                    | `'T`                             | Position of mark T (uppercase); when the mark is in another file it cannot be used in a range.
+| :heavy_check_mark: | `/{pattern}[/]`                  | The next line where `{pattern}` matches (also see `:range-pattern`).
+| :heavy_check_mark: | `?{pattern}[?]`                  | The previous line where `{pattern}` matches (also see `:range-pattern`).
+|                    | `\/`                             | The next line where the previously used search pattern matches.
+|                    | `\?`                             | The previous line where the previously used search pattern matches.
+|                    | `\&`                             | The next line where the previously used substitute pattern matches.
 
 ## Description of all options `|options.txt|`
 
