@@ -26,6 +26,7 @@ from sublime import set_timeout
 
 from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.settings import get_setting
+from NeoVintageous.nv.settings import get_setting_hly
 from NeoVintageous.nv.vim import status_message
 
 
@@ -108,21 +109,19 @@ def ui_region_flags(name: str) -> int:
 
 
 def ui_highlight_yank(view) -> None:
-    _get = view.settings().get
-
-    if not _get('highlightedyank'):
+    if not get_setting_hly(view, 'highlighted_yank'):
         return
 
     view.add_regions(
         'highlightedyank',
         list(view.sel()),
         scope='string highlightedyank',
-        flags=ui_region_flags(_get('highlightedyank_style'))
+        flags=ui_region_flags(get_setting_hly(view, 'highlighted_yank_style'))
     )
 
     set_timeout(
         lambda: view.erase_regions('highlightedyank'),
-        _get('highlightedyank_duration')
+        get_setting_hly(view, 'highlighted_yank_duration')
     )
 
 

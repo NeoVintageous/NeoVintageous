@@ -89,9 +89,6 @@ Command Palette → Preferences: NeoVintageous Settings
 
 | Setting                                           | Default   | Type      | Description
 | :------------------------------------------------ | :-------- | :-------- | :----------
-| highlightedyank                                   | true      | Boolean   | Enable Highlighted Yank plugin (ported from the [vim-highlightedyank](https://github.com/machakann/vim-highlightedyank) plugin by @machakann).
-| highlightedyank_duration                          | 1000      | Integer   | Assign number of time in milliseconds.
-| highlightedyank_style                             | "fill"    | String    | Specify the style for highlighted yank indicator. Available options: "fill", "outline", "underline", "squiggly_underline", "stippled_underline".
 | vintageous_auto_complete_exit_from_insert_mode    | true      | Boolean   | Close auto complete, if visible, when leaving Insert mode and entering Normal mode. When set to false only the auto complete is closed.
 | vintageous_auto_nohlsearch_on_normal_enter        | true      | Boolean   | If enabled, search highlighting is cleared entering normal mode. This typically means the `<Esc>` key has been pressed. <br><br>To clear search highlighting use: <br><br>`:noh[lsearch]` <br><br>Example mapping: <br><br>`noremap <C-l> :nohlsearch<CR>`
 | vintageous_auto_switch_input_method               | false     | Boolean   | Enable automatic switching of input methods.
@@ -111,6 +108,9 @@ Command Palette → Preferences: NeoVintageous Settings
 | vintageous_enable_unimpaired                      | true      | Boolean   | Enable Unimpaired plugin (ported from the [vim-unimpaired](https://github.com/tpope/vim-unimpaired) by @tpope).
 | vintageous_exit_when_quiting_last_window          | true      | Boolean   | When quitting the last window exit Sublime.
 | vintageous_handle_keys                            | \{\}      | Dict      | Delegate configured keys to be handled by Sublime Text. For example to use native Sublime Text behaviour for ctrl+f:<br> `"vintageous_handle_keys": {"<C-f>": false}` <br><br> Keys can be handled for specific modes by using a prefix:<br><br> n_ - Normal<br> i_ - Insert<br> v_ - Visual<br> V_ - Visual line<br> b_ - Visual block<br> s_ - Select<br><br> For example to only delegate <C-w> in insert and visual modes:<br><br> `"vintageous_handle_keys": {"i_<C-w>": false "v_<C-w>": false}`
+| vintageous_highlighted_yank                       | true      | Boolean   | Enable Highlighted Yank plugin (ported from the [vim-highlightedyank](https://github.com/machakann/vim-highlightedyank) plugin by @machakann).
+| vintageous_highlighted_yank_duration              | 1000      | Integer   | Assign number of time in milliseconds.
+| vintageous_highlighted_yank_style                 | "fill"    | String    | Specify the style for highlighted yank indicator. Available options: "fill", "outline", "underline", "squiggly_underline", "stippled_underline".
 | vintageous_i_escape_jj                            | false     | Boolean   | Toggle the use of "jj" as an escape sequence in Insert mode.
 | vintageous_i_escape_jk                            | false     | Boolean   | Toggle the use of "jk" as an escape sequence in Insert mode.
 | vintageous_i_escape_kj                            | false     | Boolean   | Toggle the use of "kj" as an escape sequence in Insert mode.
@@ -521,15 +521,15 @@ If you come across any missing features or observe variations in functionality, 
 
 ### Highlighted Yank
 
-HighlightedYank is a plugin designed to highlight the yanked region in Sublime Text.
+Highlighted Yank is a plugin designed to highlight the yanked region in Sublime Text.
 
 When new text is yanked, the old highlighting is automatically deleted. This ensures that the highlighting remains relevant to the most recent yanked text. Similarly, when former lines are edited, the highlighting is cleared to prevent shifting the position of the highlighting.
 
 You can customize the highlighted yank duration and style using the following settings:
 
-- `highlightedyank_duration`: This setting allows you to configure the duration for which the yanked region will be highlighted. You can set the duration according to your preferences.
+- `vintageous_highlighted_yank_duration`: This setting allows you to configure the duration for which the yanked region will be highlighted. You can set the duration according to your preferences.
 
-- `highlightedyank_style`: This setting allows you to customize the style of the highlighted yank region. You can modify the background and foreground colors to suit your color scheme.
+- `vintageous_highlighted_yank_style`: This setting allows you to customize the style of the highlighted yank region. You can modify the background and foreground colors to suit your color scheme.
 
 #### Customize Highlighted Yank Colors
 

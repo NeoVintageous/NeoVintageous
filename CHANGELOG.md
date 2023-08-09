@@ -24,11 +24,17 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Changed
 
-* [#952](https://github.com/NeoVintageous/NeoVintageous/issues/952): Renamed setting neovintageous_search_cur_style to vintageous_search_cur_style
-* [#952](https://github.com/NeoVintageous/NeoVintageous/issues/952): Renamed setting neovintageous_search_inc_style to vintageous_search_inc_style
-* [#952](https://github.com/NeoVintageous/NeoVintageous/issues/952): Renamed setting neovintageous_search_occ_style to vintageous_search_occ_style
 * [#947](https://github.com/NeoVintageous/NeoVintageous/issues/947): :vnoremap and vunmap now include Select mode
 * [#946](https://github.com/NeoVintageous/NeoVintageous/issues/946): :noremap and unmap now include Select mode
+
+### Deprecated
+
+* [#952](https://github.com/NeoVintageous/NeoVintageous/issues/952): Setting highlightedyank is deprecated, use vintageous_highlighted_yank instead
+* [#952](https://github.com/NeoVintageous/NeoVintageous/issues/952): Setting highlightedyank_style is deprecated, use vintageous_highlighted_yank_style instead
+* [#952](https://github.com/NeoVintageous/NeoVintageous/issues/952): Setting highlightedyank_duration is deprecated, use vintageous_highlighted_yank_duration instead
+* [#952](https://github.com/NeoVintageous/NeoVintageous/issues/952): Setting neovintageous_search_cur_style is deprecated, use vintageous_search_cur_style instead
+* [#952](https://github.com/NeoVintageous/NeoVintageous/issues/952): Setting neovintageous_search_inc_style is deprecated, use vintageous_search_inc_style instead
+* [#952](https://github.com/NeoVintageous/NeoVintageous/issues/952): Setting neovintageous_search_occ_style is deprecated, use vintageous_search_occ_style instead
 
 ### Fixed
 

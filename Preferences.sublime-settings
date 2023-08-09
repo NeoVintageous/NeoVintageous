@@ -115,22 +115,6 @@
     // (ported from the vim-unimpaired plugin by @tpope).
     "vintageous_enable_unimpaired": true,
 
-    // Enable Highlighted Yank plugin.
-    // (ported from the vim-highlightedyank plugin by @machakann)
-    "highlightedyank": true,
-
-    // Assign number of time in milliseconds.
-    "highlightedyank_duration": 1000,
-
-    // Specify the style for highlighted yank indicator.
-    // Available options:
-    // - "fill"
-    // - "outline"
-    // - "underline"
-    // - "squiggly_underline"
-    // - "stippled_underline"
-    "highlightedyank_style": "fill",
-
     // When quitting the last window exit ST.
     "vintageous_exit_when_quiting_last_window": true,
 
@@ -158,6 +142,22 @@
     //         "v_<C-w>": false
     //     }
     "vintageous_handle_keys": {},
+
+    // Enable Highlighted Yank plugin.
+    // (ported from the vim-highlightedyank plugin by @machakann)
+    "vintageous_highlighted_yank": true,
+
+    // Assign number of time in milliseconds.
+    "vintageous_highlighted_yank_duration": 1000,
+
+    // Specify the style for highlighted yank indicator.
+    // Available options:
+    // - "fill"
+    // - "outline"
+    // - "underline"
+    // - "squiggly_underline"
+    // - "stippled_underline"
+    "vintageous_highlighted_yank_style": "fill",
 
     // Toggle the use of "jj" as an escape sequence in Insert mode.
     "vintageous_i_escape_jj": false,

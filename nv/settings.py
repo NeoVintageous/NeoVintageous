@@ -56,11 +56,23 @@ def set_internal_setting(obj, name: str, value) -> None:
     _set_private(obj, name, value)
 
 
-# DEPRECATED TODO Refactor to use get_setting() instead
+# @deprecated use get_setting() instead.
 def get_setting_neo(view, name: str):
-    # Backwards compatibility for deprecated "neovintageous_" namespace.
+    # @deprecated neovintageous_* settings.
+    # The following is for backward compatibility.
     if view.settings().has('neovintageous_%s' % name):
         return view.settings().get('neovintageous_%s' % name)
+
+    return get_setting(view, name)
+
+
+# @deprecated use get_setting() instead.
+def get_setting_hly(view, name: str):
+    # @deprecated highlightedyank* settings.
+    # The following is for backward compatibility.
+    old_name = name.replace('highlighted_yank', 'highlightedyank')
+    if view.settings().has(old_name):
+        return view.settings().get(old_name)
 
     return get_setting(view, name)
 
