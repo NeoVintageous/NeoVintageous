@@ -1,33 +1,4 @@
 {
-    // Current search style.
-    //
-    // Valid values are:
-    //     fill
-    //     outline
-    //     underline
-    //     squiggly_underline
-    //     stippled_underline
-    "neovintageous_search_cur_style": "fill",
-
-    //  Incremental search style.
-    //
-    //  Valid values are:
-    //      fill
-    //      outline
-    //      underline
-    //      squiggly_underline
-    //      stippled_underline
-    "neovintageous_search_inc_style": "fill",
-
-    //  Search occurrences style.
-    //
-    //  Valid values are:
-    //      fill
-    //      outline
-    //      underline
-    //      squiggly_underline
-    //      stippled_underline
-    "neovintageous_search_occ_style": "fill",
 
     // If enabled, search highlighting is cleared when entering normal mode. This
     // usually occurs when the <Esc> key is pressed.
@@ -223,6 +194,18 @@
 
     // Asynchronous file saving with commands like :w, :wq.
     "vintageous_save_async": false,
+
+    // Style for highlighting the current match in a search. Options: fill,
+    // outline, underline, squiggly_underline, stippled_underline
+    "vintageous_search_cur_style": "fill",
+
+    // Style for highlighting during incremental search. Options: fill, outline,
+    // underline, squiggly_underline, stippled_underline
+    "vintageous_search_inc_style": "fill",
+
+    // Style for highlighting search occurrences. Options: fill, outline,
+    // underline, squiggly_underline, stippled_underline
+    "vintageous_search_occ_style": "fill",
 
     // Show output panel from shell commands.
     "vintageous_shell_silent": false,

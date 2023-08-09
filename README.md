@@ -89,12 +89,10 @@ Command Palette → Preferences: NeoVintageous Settings
 
 | Setting                                           | Default   | Type      | Description
 | :------------------------------------------------ | :-------- | :-------- | :----------
+
 | highlightedyank                                   | true      | Boolean   | Plugin. A port of https://github.com/machakann/vim-highlightedyank.
 | highlightedyank_duration                          | 1000      | Integer   | Assign number of time in milliseconds.
 | highlightedyank_style                             | "fill"    | String    | Highlighted Yank style. Valid values are: fill, outline, underline, squiggly_underline, stippled_underline.
-| neovintageous_search_cur_style                    | "fill"    | String    | Current match search style. Valid values are: fill, outline, underline, squiggly_underline, stippled_underline
-| neovintageous_search_inc_style                    | "fill"    | String    | Incremental search style. Valid values are: fill, outline, underline, squiggly_underline, stippled_underline
-| neovintageous_search_occ_style                    | "fill"    | String    | Search occurrences style. Valid values are: fill, outline, underline, squiggly_underline, stippled_underline
 | vintageous_auto_complete_exit_from_insert_mode    | true      | Boolean   | Close auto complete, if visible, when leaving Insert mode and entering Normal mode. When set to false only the auto complete is closed.
 | vintageous_auto_nohlsearch_on_normal_enter        | true      | Boolean   | If enabled, search highlighting is cleared entering normal mode. This typically means the `<Esc>` key has been pressed. <br><br>To clear search highlighting use: <br><br>`:noh[lsearch]` <br><br>Example mapping: <br><br>`noremap <C-l> :nohlsearch<CR>`
 | vintageous_auto_switch_input_method               | false     | Boolean   | Enable automatic switching of input methods.
@@ -121,6 +119,9 @@ Command Palette → Preferences: NeoVintageous Settings
 | vintageous_multi_cursor_exit_from_visual_mode     | false     | Boolean   | Exit visual multi cursor visual on quit key.<br> When false then pressing a quit key (e.g. `<Esc>` or J) in multiple cursor visual mode the visual mode exits to normal mode but keeps the cursors.<br> When true then pressing a quit key (e.g. `<Esc>` or J) in multiple cursor visual mode the visual mode exits all multiple cursors.
 | vintageous_reset_mode_when_switching_tabs         | true      | Boolean   | Reset to normal mode when a tab is activated.
 | vintageous_save_async                             | false     | Boolean   | Asynchronous file saving with commands like :w, :wq.
+| vintageous_search_cur_style                       | "fill"    | String    | Style for highlighting the current match in a search. Options: fill, outline, underline, squiggly_underline, stippled_underline
+| vintageous_search_inc_style                       | "fill"    | String    | Style for highlighting during incremental search. Options: fill, outline, underline, squiggly_underline, stippled_underline
+| vintageous_search_occ_style                       | "fill"    | String    | Style for highlighting search occurrences. Options: fill, outline, underline, squiggly_underline, stippled_underline
 | vintageous_shell_silent                           | false     | Boolean   | Show output panel from shell commands.
 | vintageous_show_marks_in_gutter                   | true      | Boolean   | Show marks in the gutter.
 | vintageous_sneak_use_ic_scs                       | 0         | Integer   | 0: Always case-sensitive<br> 1: Case sensitivity is determined by `'ignorecase'` and `'smartcase'`.

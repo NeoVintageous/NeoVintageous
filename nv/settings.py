@@ -58,7 +58,11 @@ def set_internal_setting(obj, name: str, value) -> None:
 
 # DEPRECATED TODO Refactor to use get_setting() instead
 def get_setting_neo(view, name: str):
-    return view.settings().get('neovintageous_%s' % name)
+    # Backwards compatibility for deprecated "neovintageous_" namespace.
+    if view.settings().has('neovintageous_%s' % name):
+        return view.settings().get('neovintageous_%s' % name)
+
+    return get_setting(view, name)
 
 
 def get_action_count(view) -> str:
