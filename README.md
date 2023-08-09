@@ -124,7 +124,7 @@ Command Palette → Preferences: NeoVintageous Settings
 | vintageous_shell_silent                           | false     | Boolean   | Show output panel from shell commands.
 | vintageous_show_marks_in_gutter                   | true      | Boolean   | Show marks in the gutter.
 | vintageous_sneak_use_ic_scs                       | 0         | Integer   | 0: Always case-sensitive<br> 1: Case sensitivity is determined by `'ignorecase'` and `'smartcase'`.
-| vintageous_source                                 | null      | String    | Read Ex commands from a resource before the neovintageourc resource is sourced. This means you can still override these ex commands in your neovintageousrc file. <br>Example: Packages/NeoVintageousDvorak/dvorak.neovintageous <br>Example: Packages/NeoVintageousColemak/colemak.neovintageous
+| vintageous_source                                 | null      | String    | Read Ex commands from a resource before the neovintageousrc resource is sourced. This means you can still override these ex commands in your neovintageousrc file. <br>Example: Packages/NeoVintageousDvorak/dvorak.neovintageous <br>Example: Packages/NeoVintageousColemak/colemak.neovintageous
 | vintageous_terminal                               | null      | String    | Name of program to use when starting a ":shell". <br>Example: gnome-terminal
 | vintageous_use_ctrl_keys                          | true      | Boolean   | Enable Vim Ctrl keys.
 | vintageous_use_super_keys                         | true      | Boolean   | Enable Vim Super keys. Super key is an alternative name for what is commonly labelled as the Windows key or Command key (Macintosh).

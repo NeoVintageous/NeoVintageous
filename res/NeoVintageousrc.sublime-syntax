@@ -13,71 +13,71 @@ contexts:
 
     # Comments
     - match: "^\\s*\".*"
-      scope: comment.line.neovintageourc
+      scope: comment.line.neovintageousrc
 
     # Map.
     - match: ^\s*:?((i|n|o|s|v|x)?noremap)\b
-      scope: keyword.control.neovintageourc
+      scope: keyword.control.neovintageousrc
 
     # Unmap.
     - match: ^\s*:?((i|n|o|s|v|x)?unmap)\b
-      scope: keyword.control.neovintageourc
+      scope: keyword.control.neovintageousrc
 
     # Mapping FileType
     - match: \b(FileType)\b
       captures:
-        1: keyword.neovintageourc
+        1: keyword.neovintageousrc
 
     # Recursive mappings were replaced with non-recursive mappings because they
     # were not implemented properly and can cause infinite loop problems.
     # https://github.com/NeoVintageous/NeoVintageous/blob/master/CHANGELOG.md#removed-3
     - match: ^:?\b.?map.*
-      scope: invalid.neovintageourc
+      scope: invalid.neovintageousrc
 
     # Mapleader.
     - match: ^\s*:?(let) (map(?:local)?leader)(=).*
       captures:
-        1: keyword.control.neovintageourc
-        2: variable.language.neovintageourc
-        3: keyword.operator.assignment.neovintageourc
+        1: keyword.control.neovintageousrc
+        2: variable.language.neovintageousrc
+        3: keyword.operator.assignment.neovintageousrc
 
     # Set.
     - match: ^\s*:?(set) ([a-z]+)(=)?(.+)?$
       captures:
-        1: keyword.control.neovintageourc
-        2: entity.name.neovintageourc
+        1: keyword.control.neovintageousrc
+        2: entity.name.neovintageousrc
 
     # Keys <{named}>
     - match: (?i)\<(bs|bar|bslash|cr|csi|del|down|eol|end|enter|esc|ff|help|home|insert|(local)?leader|left|nl|nul|pagedown|pageup|return|right|space|tab|undo|up|lt|xcsi)>
-      scope: storage.type.neovintageourc
+      scope: storage.type.neovintageousrc
 
     # Keys <C-{named}>
     - match: \<C-(Left|Right)>
-      scope: storage.type.neovintageourc
+      scope: storage.type.neovintageousrc
 
     # Keys <S-{named}>
     - match: \<S-(Up|Down|Left|Right)>
-      scope: storage.type.neovintageourc
+      scope: storage.type.neovintageousrc
 
     # Keys <C-x>, <D-x>, <M-x>, <S-x>, etc.
     - match: \<(A|C|D|M|S)\-[^>]+\>
-      scope: storage.type.neovintageourc
+      scope: storage.type.neovintageousrc
 
     # Keys <C-S-x>, <D-S-x>, <M-S-x>, etc.
     - match: \<(C|D|M)\-S-[^>]+\>
-      scope: storage.type.neovintageourc
+      scope: storage.type.neovintageousrc
 
     # Keys <k{named}>
     - match: \<k(Home|End|Page(Up|Down)|Plus|Minus|Multiply|Divide|Enter|Point)\>
-      scope: storage.type.neovintageourc
+      scope: storage.type.neovintageousrc
 
     # Keys <k0> - <k9>
     - match: \<k[0-9]\>
-      scope: storage.type.neovintageourc
+      scope: storage.type.neovintageousrc
 
     # Keys <F1> - <F12>
     - match: \<F([1-9]|1[0-2])\>
-      scope: storage.type.neovintageourc
+      scope: storage.type.neovintageousrc
 
     # The '|' character is used to chain commands. Users should
     # escape it with a slash or use '<bar>'. See :h map-bar. It's
@@ -85,11 +85,11 @@ contexts:
     # See https://github.com/NeoVintageous/NeoVintageous/issues/615.
     - match: '(\\)[|]'
       captures:
-        1: constant.character.escape.neovintageourc
+        1: constant.character.escape.neovintageousrc
 
     - match: '\|'
-      scope: invalid.neovintageourc
+      scope: invalid.neovintageousrc
 
     # Anything left is invalid.
     - match: ^.*$
-      scope: invalid.neovintageourc
+      scope: invalid.neovintageousrc

@@ -217,7 +217,7 @@
     // 1: Case sensitivity is determined by 'ignorecase' and 'smartcase'.
     "vintageous_sneak_use_ic_scs": 0,
 
-    // Read Ex commands from a resource before the neovintageourc resource is
+    // Read Ex commands from a resource before the neovintageousrc resource is
     // sourced. This means you can still override these ex commands in your
     // neovintageousrc file.
     // See https://github.com/gerardroche/NeoVintageousColemak
