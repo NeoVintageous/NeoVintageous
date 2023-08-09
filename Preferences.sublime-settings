@@ -196,6 +196,15 @@
     //     }
     "vintageous_handle_keys": {},
 
+    // Enable Insert jj escape.
+    "vintageous_i_escape_jj": false,
+
+    // Enable Insert jk escape.
+    "vintageous_i_escape_jk": false,
+
+    // Enable Insert kj escape.
+    "vintageous_i_escape_kj": false,
+
     // Override native save to handle LSP Code-Actions-On-Save.
     // See https://github.com/sublimelsp/LSP/issues/1725
     "vintageous_lsp_save": false,

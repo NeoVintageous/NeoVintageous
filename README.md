@@ -89,6 +89,9 @@ Command Palette → Preferences: NeoVintageous Settings
 
 | Setting                                           | Default   | Type      | Description
 | :------------------------------------------------ | :-------- | :-------- | :----------
+| highlightedyank                                   | true      | Boolean   | Plugin. A port of https://github.com/machakann/vim-highlightedyank.
+| highlightedyank_duration                          | 1000      | Integer   | Assign number of time in milliseconds.
+| highlightedyank_style                             | "fill"    | String    | Highlighted Yank style. Valid values are: fill, outline, underline, squiggly_underline, stippled_underline.
 | neovintageous_search_cur_style                    | "fill"    | String    | Current match search style. Valid values are: fill, outline, underline, squiggly_underline, stippled_underline
 | neovintageous_search_inc_style                    | "fill"    | String    | Incremental search style. Valid values are: fill, outline, underline, squiggly_underline, stippled_underline
 | neovintageous_search_occ_style                    | "fill"    | String    | Search occurrences style. Valid values are: fill, outline, underline, squiggly_underline, stippled_underline
@@ -109,11 +112,11 @@ Command Palette → Preferences: NeoVintageous Settings
 | vintageous_enable_sublime                         | true      | Boolean   | Plugin. Sublime Text tweaks.
 | vintageous_enable_surround                        | true      | Boolean   | Plugin. A port of https://github.com/tpope/vim-surround.
 | vintageous_enable_unimpaired                      | true      | Boolean   | Plugin. A port of https://github.com/tpope/vim-unimpaired.
-| highlightedyank                                   | true      | Boolean   | Plugin. A port of https://github.com/machakann/vim-highlightedyank.
-| highlightedyank_duration                          | 1000      | Integer   | Assign number of time in milliseconds.
-| highlightedyank_style                             | "fill"    | String    | Highlighted Yank style. Valid values are: fill, outline, underline, squiggly_underline, stippled_underline.
 | vintageous_exit_when_quiting_last_window          | true      | Boolean   | When quitting the last window exit Sublime.
 | vintageous_handle_keys                            | \{\}      | Dict      | Delegate configured keys to be handled by Sublime Text. For example to use native Sublime Text behaviour for ctrl+f:<br> `"vintageous_handle_keys": {"<C-f>": false}` <br><br> Keys can be handled for specific modes by using a prefix:<br><br> n_ - Normal<br> i_ - Insert<br> v_ - Visual<br> V_ - Visual line<br> b_ - Visual block<br> s_ - Select<br><br> For example to only delegate <C-w> in insert and visual modes:<br><br> `"vintageous_handle_keys": {"i_<C-w>": false "v_<C-w>": false}`
+| vintageous_i_escape_jj                            | false     | Boolean   | Enable Insert mode jj escape.
+| vintageous_i_escape_jk                            | false     | Boolean   | Enable Insert mode jk escape.
+| vintageous_i_escape_kj                            | false     | Boolean   | Enable Insert mode kj escape.
 | vintageous_lsp_save                               | false     | Boolean   | Override native save to handle LSP Code-Actions-On-Save. <br>See https://github.com/sublimelsp/LSP/issues/1725
 | vintageous_multi_cursor_exit_from_visual_mode     | false     | Boolean   | Exit visual multi cursor visual on quit key.<br> When false then pressing a quit key (e.g. `<Esc>` or J) in multiple cursor visual mode the visual mode exits to normal mode but keeps the cursors.<br> When true then pressing a quit key (e.g. `<Esc>` or J) in multiple cursor visual mode the visual mode exits all multiple cursors.
 | vintageous_reset_mode_when_switching_tabs         | true      | Boolean   | Reset to normal mode when a tab is activated.
@@ -123,8 +126,8 @@ Command Palette → Preferences: NeoVintageous Settings
 | vintageous_sneak_use_ic_scs                       | 0         | Integer   | 0: Always case-sensitive<br> 1: Case sensitivity is determined by `'ignorecase'` and `'smartcase'`.
 | vintageous_source                                 | null      | String    | Read Ex commands from a resource before the neovintageourc resource is sourced. This means you can still override these ex commands in your neovintageousrc file. <br>Example: Packages/NeoVintageousDvorak/dvorak.neovintageous <br>Example: Packages/NeoVintageousColemak/colemak.neovintageous
 | vintageous_terminal                               | null      | String    | Name of program to use when starting a ":shell". <br>Example: gnome-terminal
-| vintageous_use_ctrl_keys                          | true      | Boolean   | Enable Vim ctrl keys.
-| vintageous_use_super_keys                         | true      | Boolean   | Enable Vim super keys. Super key is an alternative name for what is commonly labelled as the Windows key or Command key (Macintosh).
+| vintageous_use_ctrl_keys                          | true      | Boolean   | Enable Vim Ctrl keys.
+| vintageous_use_super_keys                         | true      | Boolean   | Enable Vim Super keys. Super key is an alternative name for what is commonly labelled as the Windows key or Command key (Macintosh).
 | vintageous_use_sys_clipboard                      | false     | Boolean   | Propagate copy actions to the system clipboard.
 
 ## Modes
