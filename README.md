@@ -40,7 +40,7 @@ NeoVintageous is an advanced Vim emulator for [Sublime Text](https://www.sublime
     - [Mapping for Revealing the Side Bar](#mapping-for-revealing-the-side-bar)
     - [Mapping Capslock to Escape](#mapping-capslock-to-escape)
 - [Options](#options)
-- [Search Highlighting](#search-highlighting)
+- [Customize Search Highlighting Colors](#customize-search-highlighting-colors)
 - [Plugins](#plugins)
   - [Highlighted Yank](#highlighted-yank)
     - [Customize Highlighted Yank Colors](#customize-highlighted-yank-colors)
@@ -387,7 +387,7 @@ Please note that the provided example uses `<leader><leader>` as the mapping, bu
 
 #### Mapping Capslock to Escape
 
-Neovintageous cannot directly remap the CapsLock key; however, you can achieve this remapping at the operating system level. For instance, on Ubuntu, you can map the CapsLock key to Escape using a tool called `gsettings`. Follow these steps to make the remapping:
+NeoVintageous cannot directly remap the CapsLock key; however, you can achieve this remapping at the operating system level. For instance, on Ubuntu, you can map the CapsLock key to Escape using a tool called `gsettings`. Follow these steps to make the remapping:
 
 1. Open a terminal.
 
@@ -397,7 +397,7 @@ Neovintageous cannot directly remap the CapsLock key; however, you can achieve t
 gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape']"
 ```
 
-After executing this command, the CapsLock key will act as the Escape key in your system. This means that when using Neovintageous or any other application, pressing CapsLock will have the same effect as pressing the Escape key.
+After executing this command, the CapsLock key will act as the Escape key in your system. This means that when using NeoVintageous or any other application, pressing CapsLock will have the same effect as pressing the Escape key.
 
 Please note that the specific method to remap keys might vary depending on your operating system or desktop environment. Be sure to check the documentation or forums related to your OS for any variations or additional steps.
 
@@ -434,21 +434,23 @@ The list below includes all options, presented with their full names and corresp
 | `'wrap'`                        | Boolean | `word_wrap` <br>sublime setting                 | This option changes how text is displayed.  It doesn't change the text in the buffer, see `'textwidth'` for that.<br> When on, lines longer than the width of the window will wrap and displaying continues on the next line.  When off lines will not wrap and only part of long lines will be displayed.  When the cursor is moved to a part that is not shown, the screen will scroll horizontally.
 | `'wrapscan'`<br>`'ws'`          | Boolean | On                                              |
 
-## Search Highlighting
+## Customize Search Highlighting Colors
 
 You can customize the colors for search highlighting in Sublime Text.
 
-For example, if you are using a color scheme named "Monokai," you can create an override file named `Monokai.sublime-color-scheme` in the User directory. To find the User directory location, go to `Preferences → Browse Packages...`.
+To tailor these colors, follow these steps:
 
-Inside the `Monokai.sublime-color-scheme` file, you can define styles for different search highlighting scopes:
+1. Open the Command Palette by using the shortcut `Ctrl+Shift+P` (or `Cmd+Shift+P` on macOS).
 
-- `neovintageous_search_inc`: This scope is used for highlighting the current search incrementally as you type.
+2. Type and select: `UI: Customize Color Scheme`.
 
-- `neovintageous_search_cur`: This scope is used for highlighting the current search term.
+3. Within the color scheme file, define distinct styles for various search highlighting scopes:
 
-- `neovintageous_search_occ`: This scope is used for highlighting all occurrences of the search term.
+   - `neovintageous_search_inc`: This scope is used for highlighting the current search incrementally as you type.
+   - `neovintageous_search_cur`: This scope is used for highlighting the current search term.
+   - `neovintageous_search_occ`: This scope is used for highlighting all occurrences of the search term.
 
-Here's an example of how to define the styles for these scopes:
+Here's an example of defining styles for these scopes:
 
 ```json
 {
@@ -472,9 +474,9 @@ Here's an example of how to define the styles for these scopes:
 }
 ```
 
-In this example, we are setting custom background and foreground colors for each of the search highlighting scopes. You can replace the color values (`"#a1efe4"`, `"#e6db74"`, etc.) with the colors you prefer.
+Feel free to adjust the color values (`"#a1efe4"`, `"#e6db74"`, etc.) according to your preferences.
 
-By customizing the search highlighting colors, you can make search results more visually distinct and easily identifiable in your code, enhancing your overall coding experience.
+Personalizing search highlighting colors improves the visual distinction of results in your code, enhancing your overall coding experience.
 
 ## Plugins
 
@@ -533,8 +535,11 @@ You can customize the highlighted yank duration and style using the following se
 
 To tailor the colors of highlighted yanks to your preference, you can create a color scheme override using the following steps:
 
-1. Open the Command Palette: `UI Customize Color Scheme`.
-2. Add the following styles using the "highlightedyank" scope, and adjust the background and foreground colors as desired:
+1. Open the Command Palette by using the shortcut `Ctrl+Shift+P` (or `Cmd+Shift+P` on macOS).
+
+2. Open the Command Palette: `UI: Customize Color Scheme`.
+
+3. Add the following styles using the "highlightedyank" scope, and adjust the background and foreground colors as desired:
 
 ```json
 {
@@ -767,8 +772,11 @@ By adjusting this setting, you can control whether marks are displayed in the gu
 
 If you wish to personalize the color of the marks displayed by Markology, you can follow these steps to create a color scheme override:
 
-1. Open the Command Palette: `UI Customize Color Scheme`.
-2. Add the following JSON configuration, adjusting the color as desired:
+1. Open the Command Palette by using the shortcut `Ctrl+Shift+P` (or `Cmd+Shift+P` on macOS).
+
+2. Type and select: `UI: Customize Color Scheme`.
+
+3. Add the following JSON configuration, adjusting the color as desired:
 
 ```json
 {
