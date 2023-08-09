@@ -321,8 +321,8 @@ MULTIPLE WINDOWS AND BUFFERS
 | :heavy_check_mark: | :delm[arks]&nbsp;\{marks\}           | Delete the specified marks.  Marks that can be deleted include A-Z and 0-9.  You cannot delete the ' mark. They can be specified by giving the list of mark names, or with a range, separated with a dash.  Spaces are ignored.  Examples: <br>`:delmarks a` deletes mark a <br>`:delmarks a b c` deletes marks a, b and c <br>`:delmarks Aa` deletes marks A and a <br>`:delmarks p-z` deletes marks in the range p to z
 | :heavy_check_mark: | :delm[arks]!                         | Delete all marks for the current buffer, but not marks A-Z or 0-9.
 | :heavy_check_mark: | `''`<br><code>\`\`</code>            | To the position before the latest jump
-|                    |  '[ or <code>\`[</code>              | To the first character of the previously changed or yanked text. #951
-|                    |  '] or <code>\`]</code>              | To the last character of the previously changed or yanked text. #951
+|                    |  '[ or <code>\`[</code>              | To the first character of the previously changed or yanked text. [#951](https://github.com/NeoVintageous/NeoVintageous/issues/951)
+|                    |  '] or <code>\`]</code>              | To the last character of the previously changed or yanked text. [#951](https://github.com/NeoVintageous/NeoVintageous/issues/951)
 
 ### 8. Jumps `|jump-motions|`
 
@@ -426,7 +426,7 @@ The following commands can be used to insert new text into the buffer.  They can
 | :heavy_check_mark: | `<insert>` or i                                | Insert text before the cursor `[count]` times.
 | :heavy_check_mark: | I                                              | Insert text before the first non-blank in the line `[count]` times.
 |                    | gI                                             | Insert text in column 1 `[count]` times.
-|                    | gi                                             | Insert text in the same position as where Insert mode was stopped last time in the current buffer.<br> This uses the `'^` mark.  It's different from "<code>\`</code>^i" when the mark is past the end of the line.<br> The position is corrected for inserted/deleted lines, but NOT for inserted/deleted characters. #949
+|                    | gi                                             | Insert text in the same position as where Insert mode was stopped last time in the current buffer.<br> This uses the `'^` mark.  It's different from "<code>\`</code>^i" when the mark is past the end of the line.<br> The position is corrected for inserted/deleted lines, but NOT for inserted/deleted characters. [#949](https://github.com/NeoVintageous/NeoVintageous/issues/949)
 | :heavy_check_mark: | o                                              | Begin a new line below the cursor and insert text, repeat `[count]` times.
 | :heavy_check_mark: | O                                              | Begin a new line above the cursor and insert text, repeat `[count]` times.
 
@@ -645,8 +645,8 @@ last one.
 | :heavy_check_mark: | `:!{cmd}`                            | Execute `{cmd}` with the shell.
 | :heavy_check_mark: | `:!!`                                | Repeat last `":!{cmd}"`.
 | :heavy_check_mark: | `:sil[ent] {command}`                | Execute `{command}` silently.
-|                    | `:norm[al][!] {commands}`            | Execute Normal mode commands `{commands}`.
-|                    | `:{range}norm[al][!] {commands}`     | Execute Normal mode commands `{commands}` for each line in the `{range}`.
+|                    | `:norm[al][!] {commands}`            | Execute Normal mode commands `{commands}`. [#128](https://github.com/NeoVintageous/NeoVintageous/issues/128)
+|                    | `:{range}norm[al][!] {commands}`     | Execute Normal mode commands `{commands}` for each line in the `{range}`. [#128](https://github.com/NeoVintageous/NeoVintageous/issues/128)
 
 ## Command-line editing `|cmdline.txt|`
 
@@ -696,9 +696,9 @@ Line numbers may be specified with:
 |                    | `'T`                             | Position of mark T (uppercase); when the mark is in another file it cannot be used in a range.
 | :heavy_check_mark: | `/{pattern}[/]`                  | The next line where `{pattern}` matches (also see `:range-pattern`).
 | :heavy_check_mark: | `?{pattern}[?]`                  | The previous line where `{pattern}` matches (also see `:range-pattern`).
-|                    | `\/`                             | The next line where the previously used search pattern matches.
-|                    | `\?`                             | The previous line where the previously used search pattern matches.
-|                    | `\&`                             | The next line where the previously used substitute pattern matches.
+|                    | `\/`                             | The next line where the previously used search pattern matches. [#126](https://github.com/NeoVintageous/NeoVintageous/issues/126)
+|                    | `\?`                             | The previous line where the previously used search pattern matches. [#126](https://github.com/NeoVintageous/NeoVintageous/issues/126)
+|                    | `\&`                             | The next line where the previously used substitute pattern matches. [#126](https://github.com/NeoVintageous/NeoVintageous/issues/126)
 
 ## Description of all options `|options.txt|`
 
@@ -722,7 +722,7 @@ Some options "proxy" to Sublime Text settings. This means that the option uses t
 | :------------------------------ | :------------------------------ | :------ | :-----------------------------------------------| :----------
 | :heavy_check_mark: :star:       | `'autoindent'`<br>`'ai'`        | String  | `auto_indent` <br>sublime setting               |
 | :heavy_check_mark:              | `'belloff'`<br>`'bo'`           | String  | `''`; accepts 'all'                             |
-|                                 | `'clipboard'`                   | String  |                                                 | #829
+|                                 | `'clipboard'`                   | String  |                                                 | [#829](https://github.com/NeoVintageous/NeoVintageous/issues/829)
 | :heavy_check_mark:              | `'equalalways'`                 | Boolean | On                                              |
 | :heavy_check_mark: :star:       | `'expandtab'`<br>`'et'`         | Boolean | `translate_tabs_to_spaces` <br>sublime setting  |
 | :heavy_check_mark:              | `'hlsearch'`<br>`'hls'`         | Boolean | On                                              | When there is a previous search pattern, highlight all its matches. See also: `'incsearch'`. When you get bored looking at the highlighted matches, you can turn it off with `:nohlsearch`.  This does not change the option value, as soon as you use a search command, the highlighting comes back.
@@ -868,7 +868,7 @@ If you want to you can make a pattern immune to the `'magic'` option being set o
 | :heavy_check_mark: | CTRL-W &lt;Up&gt;<br>CTRL-W CTRL-K<br>CTRL-W k                             | Move cursor to Nth window above current one.
 | :heavy_check_mark: | CTRL-W &lt;Left&gt;<br>CTRL-W CTRL-H<br>CTRL-W &lt;BS&gt;<br>CTRL-W h      | Move cursor to Nth window left of current one.
 | :heavy_check_mark: | CTRL-W &lt;Right&gt;<br>CTRL-W CTRL-L<br>CTRL-W l                          | Move cursor to Nth window right of current one.
-|                    | CTRL-W w<br>CTRL-W CTRL-W                                                  | Move cursor to window below/right of the current one. #839
+|                    | CTRL-W w<br>CTRL-W CTRL-W                                                  | Move cursor to window below/right of the current one. [#839](https://github.com/NeoVintageous/NeoVintageous/issues/839)
 |                    | CTRL-W W                                                                   | Move cursor to window above/left of current one.
 | :heavy_check_mark: | CTRL-W t<br>CTRL-W CTRL-T                                                  | Move cursor to top-left window.
 | :heavy_check_mark: | CTRL-W b<br>CTRL-W CTRL-B                                                  | Move cursor to bottom-right window.
