@@ -148,7 +148,7 @@ Command Palette → Preferences: NeoVintageous Settings
 
 ## neovintageousrc
 
-A file that contains initialization commands is typically referred to as a 'vimrc' file. In NeoVintageous, this file is called 'neovintageousrc.' Each line in the neovintageousrc file is executed as an Ex command at startup.
+A file that contains initialization commands is typically referred to as a "vimrc" file. In NeoVintageous, this file is called "neovintageousrc". Each line in the neovintageousrc file is executed as an Ex command at startup.
 
 To edit the neovintageousrc file, follow these steps:
 
@@ -275,7 +275,7 @@ nnoremap FileType go,html gd :LspSymbolDefinition<CR>
 
 Super keys, also known as the Windows key or Command key (⌘) on Mac, are denoted as `<D-...>`.
 
-For example, to map the `<D-i>` combination to the `goto_symbol_in_project` command, add the following configuration to your NeoVintageous `neovintageousrc` file:
+For example, to map the `<D-i>` combination to the `goto_symbol_in_project` command, add the following configuration to your neovintageousrc file:
 
 ```vim
 nnoremap <D-i> :GotoSymbolInProject<CR>
@@ -291,13 +291,13 @@ All keys are case-sensitive in Sublime Text. This means that `<D-i>` and `<D-I>`
 
 **Example:** Map "Goto Symbol in Project" and "Goto Symbol in File" using case-sensitive mappings
 
-To map the Super-key (Windows key or Command key on Mac) together with the 'i' key to the "Goto Symbol in Project" command, add the following configuration to your NeoVintageous `neovintageousrc` file:
+To map the Super-key (Windows key or Command key on Mac) together with the 'i' key to the "Goto Symbol in Project" command, add the following configuration to your neovintageousrc file:
 
 ```vim
 noremap <D-i> :GotoSymbolInProject<CR>
 ```
 
-To map the Super-key together with the 'Shift' and 'i' keys (`<D-I>`) to the "Goto Symbol in File" command, add the following configuration to your NeoVintageous `neovintageousrc` file:
+To map the Super-key together with the 'Shift' and 'i' keys (`<D-I>`) to the "Goto Symbol in File" command, add the following configuration to your neovintageousrc file:
 
 ```vim
 noremap <D-I> :ShowOverlay overlay=goto text=@<CR>
@@ -309,7 +309,7 @@ Feel free to modify and customize these mappings based on your preferences and w
 
 #### Mapping for Toggling the Side Bar
 
-To toggle the side bar using your preferred mapping (in this example, `<leader>d`), first, add the following configuration to your NeoVintageous `neovintageousrc` file:
+To toggle the side bar using your preferred mapping (in this example, `<leader>d`), first, add the following configuration to your neovintageousrc file:
 
 ```vim
 let mapleader=,
@@ -333,7 +333,7 @@ Next, open the Command Palette and navigate to `Preferences: Key Bindings`. Add 
 
 Please note that the provided example uses `<leader>d` as the mapping, but you can customize it to your preferred mapping by modifying the `<leader>` part and updating the key binding to match your leader and preferred key. For instance, if your preferred mapping is `<leader>t`, you can modify the mapping as follows:
 
-1. Update the mapping in your NeoVintageous `neovintageousrc` file:
+1. Update the mapping in your neovintageousrc file:
 
 ```vim
 let mapleader=,
@@ -359,7 +359,7 @@ By making these modifications, you can now use your preferred mapping (e.g., `<l
 
 #### Mapping for Revealing the Side Bar
 
-To reveal the side bar using your preferred mapping (in this example, `<leader><leader>`), first, add the following configuration to your NeoVintageous `neovintageousrc` file:
+To reveal the side bar using your preferred mapping (in this example, `<leader><leader>`), first, add the following configuration to your neovintageousrc file:
 
 ```vim
 let mapleader=,
