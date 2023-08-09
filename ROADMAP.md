@@ -280,10 +280,10 @@ MULTIPLE WINDOWS AND BUFFERS
 | :heavy_check_mark: | `)`      | a `sentence` forward.
 | :heavy_check_mark: | `{`      | [count] `paragraph`s backward.
 | :heavy_check_mark: | `}`      | [count] `paragraph`s forward.
-|                    | `]]`     | [count] `section`s forward or to the next '\{' in the first column.
-|                    | `][`     | [count] `section`s forward or to the next '\}' in the first column.
-|                    | `[[`     | [count] `section`s backward or to the previous '\{' in the first column.
-|                    | `[]`     | [count] `section`s backward or to the previous '\}' in the first column.
+|                    | `]]`     | [count] `section`s forward or to the next '\{' in the first column. [#32](https://github.com/NeoVintageous/NeoVintageous/issues/32)
+|                    | `][`     | [count] `section`s forward or to the next '\}' in the first column. [#32](https://github.com/NeoVintageous/NeoVintageous/issues/32)
+|                    | `[[`     | [count] `section`s backward or to the previous '\{' in the first column. [#32](https://github.com/NeoVintageous/NeoVintageous/issues/32)
+|                    | `[]`     | [count] `section`s backward or to the previous '\}' in the first column. [#32](https://github.com/NeoVintageous/NeoVintageous/issues/32)
 
 ### 6. Text object selection `|text-objects|`
 
@@ -739,7 +739,6 @@ Some options "proxy" to Sublime Text settings. This means that the option uses t
 | :heavy_check_mark: :star:       | `'scrolloff'`<br>`'so'`         | Number  | `scroll_context_lines` <br>sublime setting      |
 | :heavy_check_mark:              | `'shell'`                       | String  | `$SHELL` or `"sh"`, Win32: `"cmd.exe"`          |
 | :heavy_check_mark:              | `'sidebar'`                     | Boolean | On                                              |
-|                                 | `'sidescrolloff'`<br>`'siso'`   | Number  | 5                                               |
 | :heavy_check_mark:              | `'smartcase'`<br>`'scs'`        | Boolean | Off                                             |
 | :heavy_check_mark: :star:       | `'spell'`                       | Boolean | `spell_check` <br>sublime setting               |
 | :heavy_check_mark:              | `'statusbar'`                   | Boolean | On                                              |
@@ -747,6 +746,11 @@ Some options "proxy" to Sublime Text settings. This means that the option uses t
 | :heavy_check_mark: :star:       | `'textwidth'`<br>`'tw'`         | Number  | `wrap_width` <br>sublime setting                |
 | :heavy_check_mark:              | `'winaltkeys'`<br>`'wak'`       | String  | `menu`                                          |
 | :heavy_check_mark: :star:       | `'wrap'`                        | Boolean | `word_wrap` <br>sublime setting                 | This option changes how text is displayed.  It doesn't change the text in the buffer, see `'textwidth'` for that.<br> When on, lines longer than the width of the window will wrap and displaying continues on the next line.  When off lines will not wrap and only part of long lines will be displayed.  When the cursor is moved to a part that is not shown, the screen will scroll horizontally.| :heavy_check_mark:              | `'wrapscan'`<br>`'ws'`          | Boolean | On                                              |
+
+| Status                          | Option                          | Type    | Default                                         | Description
+| :------------------------------ | :------------------------------ | :------ | :-----------------------------------------------| :----------
+|                                 | `'iskeyword'`<br>`'isk'`        | String  |                                                 | Keywords are used in searching and recognizing with many commands: "w", "*", "[i", etc. [#622](https://github.com/NeoVintageous/NeoVintageous/issues/622)
+|                                 | `'sidescrolloff'`<br>`'siso'`   | Number  | 5                                               | The minimal number of screen columns to keep to the left and to the right of the cursor if `'nowrap'` is set.
 
 ## Regexp patterns and search commands `|pattern.txt|`
 
