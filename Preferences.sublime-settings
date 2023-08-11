@@ -72,9 +72,9 @@
     // - Packages/Name/name.hidden-color-scheme
     "vintageous_bell_color_scheme": "dark",
 
-    //  If you do not type anything on a new line e.g. pressing <Esc> after "o"
-    //  or "O", the indent is deleted again. To preserve the leading whitespace
-    //  on after pressing <esc> set this setting to false.
+    // If you do not type anything on a new line e.g. pressing <Esc> after "o"
+    // or "O", the indent is deleted again. To preserve the leading whitespace
+    // on after pressing <esc> set this setting to false.
     "vintageous_clear_auto_indent_on_esc": true,
 
     // Default mode to use when activating or switching views.

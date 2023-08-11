@@ -730,7 +730,6 @@ Some options "proxy" to Sublime Text settings. This means that the option uses t
 | :------------------------------ | :------------------------------ | :------ | :-----------------------------------------------| :----------
 | :heavy_check_mark: :star:       | `'autoindent'`<br>`'ai'`        | String  | `auto_indent` <br>sublime setting               |
 | :heavy_check_mark:              | `'belloff'`<br>`'bo'`           | String  | `''`; accepts 'all'                             |
-|                                 | `'clipboard'`                   | String  |                                                 | [#829](https://github.com/NeoVintageous/NeoVintageous/issues/829)
 | :heavy_check_mark:              | `'equalalways'`                 | Boolean | On                                              |
 | :heavy_check_mark: :star:       | `'expandtab'`<br>`'et'`         | Boolean | `translate_tabs_to_spaces` <br>sublime setting  |
 | :heavy_check_mark:              | `'hlsearch'`<br>`'hls'`         | Boolean | On                                              | When there is a previous search pattern, highlight all its matches. See also: `'incsearch'`. When you get bored looking at the highlighted matches, you can turn it off with `:nohlsearch`.  This does not change the option value, as soon as you use a search command, the highlighting comes back.
@@ -757,8 +756,11 @@ Some options "proxy" to Sublime Text settings. This means that the option uses t
 
 | Status                          | Option                          | Type    | Default                                         | Description
 | :------------------------------ | :------------------------------ | :------ | :-----------------------------------------------| :----------
+|                                 | `'clipboard'`                   | String  |                                                 | [#829](https://github.com/NeoVintageous/NeoVintageous/issues/829)
 |                                 | `'iskeyword'`<br>`'isk'`        | String  |                                                 | Keywords are used in searching and recognizing with many commands: "w", "*", "[i", etc. [#622](https://github.com/NeoVintageous/NeoVintageous/issues/622)
 |                                 | `'sidescrolloff'`<br>`'siso'`   | Number  | 5                                               | The minimal number of screen columns to keep to the left and to the right of the cursor if `'nowrap'` is set.
+|                                 | `'splitbelow'`<br>`'sb'`        | Boolean | Off                                             | When on, splitting a window will put the new window below the current one. `:split`
+|                                 | `'splitright'`<br>`'spr'`       | Boolean | Off                                             | When on, splitting a window will put the new window right of the current one. `:vsplit`
 
 ## Regexp patterns and search commands `|pattern.txt|`
 
