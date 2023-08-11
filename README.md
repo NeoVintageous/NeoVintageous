@@ -90,7 +90,7 @@ Command Palette → Preferences: NeoVintageous Settings
 | Setting                                           | Default   | Type      | Description
 | :------------------------------------------------ | :-------- | :-------- | :----------
 | vintageous_auto_complete_exit_from_insert_mode    | true      | Boolean   | Close auto complete, if visible, when leaving Insert mode and entering Normal mode. When set to false only the auto complete is closed.
-| vintageous_auto_nohlsearch_on_normal_enter        | true      | Boolean   | If enabled, search highlighting is cleared entering normal mode. This typically means the `<Esc>` key has been pressed. <br><br>To clear search highlighting use: <br><br>`:noh[lsearch]` <br><br>Example mapping: <br><br>`noremap <C-l> :nohlsearch<CR>`
+| vintageous_auto_nohlsearch_on_normal_enter        | true      | Boolean   | When enabled, search highlighting is automatically cleared upon entering normal mode (usually triggered by pressing the `<Esc>` key). To manually clear search highlighting, use: `:noh[lsearch]`. For instance, you can create a mapping like: `noremap <C-l> :nohlsearch<CR>`.
 | vintageous_auto_switch_input_method               | false     | Boolean   | Enable automatic switching of input methods.
 | vintageous_auto_switch_input_method_default       | ""        | String    | The default input method to be used.
 | vintageous_auto_switch_input_method_get_cmd       | ""        | String    | The full path to the command used to retrieve the current input method key.
@@ -106,7 +106,7 @@ Command Palette → Preferences: NeoVintageous Settings
 | vintageous_enable_sublime                         | true      | Boolean   | Enable Sublime Text plugin.
 | vintageous_enable_surround                        | true      | Boolean   | Enable Surround plugin (ported from the [vim-surround](https://github.com/tpope/vim-surround) by @tpope).
 | vintageous_enable_unimpaired                      | true      | Boolean   | Enable Unimpaired plugin (ported from the [vim-unimpaired](https://github.com/tpope/vim-unimpaired) by @tpope).
-| vintageous_exit_when_quiting_last_window          | true      | Boolean   | When quitting the last window exit Sublime.
+| vintageous_exit_when_quitting_last_window         | true      | Boolean   | Controls the behaviour of commands like ZZ, :quit, :wq, etc. When set to `true`, quitting the last view ("window") will also exit Sublime Text. When set to `false`, Sublime Text will remain open even after closing the last view using these commands.
 | vintageous_handle_keys                            | \{\}      | Dict      | Delegate configured keys to be handled by Sublime Text. For example to use native Sublime Text behaviour for ctrl+f:<br> `"vintageous_handle_keys": {"<C-f>": false}` <br><br> Keys can be handled for specific modes by using a prefix:<br><br> n_ - Normal<br> i_ - Insert<br> v_ - Visual<br> V_ - Visual line<br> b_ - Visual block<br> s_ - Select<br><br> For example to only delegate <C-w> in insert and visual modes:<br><br> `"vintageous_handle_keys": {"i_<C-w>": false "v_<C-w>": false}`
 | vintageous_highlighted_yank                       | true      | Boolean   | Enable Highlighted Yank plugin (ported from the [vim-highlightedyank](https://github.com/machakann/vim-highlightedyank) plugin by @machakann).
 | vintageous_highlighted_yank_duration              | 1000      | Integer   | Assign number of time in milliseconds.
