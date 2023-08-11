@@ -178,7 +178,16 @@ def get_exit_when_quitting_last_window(view) -> bool:
     if should_exit is not None:
         return should_exit
 
-    return get_setting(view, 'exit_when_quitting_last_window')
+    should_exit = get_setting(view, 'exit_when_quitting_last_window')
+    if isinstance(should_exit, bool):
+        return should_exit
+
+    if should_exit == 'unless_sidebar_visible':
+        window = view.window()
+        if window and window.is_sidebar_visible():
+            return False
+
+    return bool(should_exit)
 
 
 # Supports repeating the last search commands. For example the command ";"

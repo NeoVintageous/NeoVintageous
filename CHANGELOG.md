@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* [#945](https://github.com/NeoVintageous/NeoVintageous/issues/945): New "unless_sidebar_visible" option for vintageous_exit_when_quitting_last_window setting
 * [#956](https://github.com/NeoVintageous/NeoVintageous/issues/956): Add `:exi[t]!` - same as `:wq!`
 * [#956](https://github.com/NeoVintageous/NeoVintageous/issues/956): Add `:exit[!] [file]` - same as `:wq[!] [file]`
 * [#956](https://github.com/NeoVintageous/NeoVintageous/issues/956): Add `:x[it]!` - same as `:wq!`
