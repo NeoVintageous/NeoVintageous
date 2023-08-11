@@ -56,9 +56,9 @@ def set_internal_setting(obj, name: str, value) -> None:
     _set_private(obj, name, value)
 
 
-# @deprecated use get_setting() instead.
+# @deprecated since v1.32 use get_setting() instead.
 def get_setting_neo(view, name: str):
-    # @deprecated neovintageous_* settings.
+    # @deprecated since v1.32 neovintageous_* settings.
     # The following is for backward compatibility.
     if view.settings().has('neovintageous_%s' % name):
         return view.settings().get('neovintageous_%s' % name)
@@ -66,9 +66,9 @@ def get_setting_neo(view, name: str):
     return get_setting(view, name)
 
 
-# @deprecated use get_setting() instead.
+# @deprecated since v1.32 use get_setting() instead.
 def get_setting_hly(view, name: str):
-    # @deprecated highlightedyank* settings.
+    # @deprecated since v1.32 highlightedyank* settings.
     # The following is for backward compatibility.
     old_name = name.replace('highlighted_yank', 'highlightedyank')
     if view.settings().has(old_name):
@@ -172,8 +172,13 @@ def set_last_substitute_string(replacement: str) -> None:
     set_session_value('last_substitute_string', replacement, persist=True)
 
 
-def get_exit_when_quiting_last_window(view) -> bool:
-    return get_setting(view, 'exit_when_quiting_last_window')
+def get_exit_when_quitting_last_window(view) -> bool:
+    # @deprecated since v1.32 use  exit_when_quitting_last_window instead.
+    should_exit = get_setting(view, 'exit_when_quiting_last_window')
+    if should_exit is not None:
+        return should_exit
+
+    return get_setting(view, 'exit_when_quitting_last_window')
 
 
 # Supports repeating the last search commands. For example the command ";"

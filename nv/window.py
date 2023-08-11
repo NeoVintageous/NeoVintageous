@@ -25,7 +25,7 @@ from NeoVintageous.nv.polyfill import make_all_groups_same_size
 from NeoVintageous.nv.polyfill import set_selection
 from NeoVintageous.nv.registers import get_alternate_file_register
 from NeoVintageous.nv.settings import get_cmdline_cwd
-from NeoVintageous.nv.settings import get_exit_when_quiting_last_window
+from NeoVintageous.nv.settings import get_exit_when_quitting_last_window
 from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import clone_file
 from NeoVintageous.nv.utils import create_pane
@@ -211,13 +211,13 @@ def _close_active_view(window, close_if_last=False) -> None:
 
 
 def window_quit_view(window, **kwargs) -> None:
-    # Need to get the setting before quiting the the view because if closing the
+    # Need to get the setting before quitting the the view because if closing the
     # last view there may not be a view to get the setting from.
-    exit_when_quiting_last_window = get_exit_when_quiting_last_window(window.active_view())
+    exit_when_quitting_last_window = get_exit_when_quitting_last_window(window.active_view())
 
     _close_view(window, **kwargs)
 
-    if len(window.views()) == 0 and exit_when_quiting_last_window:
+    if len(window.views()) == 0 and exit_when_quitting_last_window:
         window.run_command('close')
 
 

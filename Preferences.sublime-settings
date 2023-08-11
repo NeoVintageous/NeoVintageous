@@ -115,8 +115,10 @@
     // (ported from the vim-unimpaired plugin by @tpope).
     "vintageous_enable_unimpaired": true,
 
-    // When quitting the last window exit ST.
-    "vintageous_exit_when_quiting_last_window": true,
+    // Controls the behaviour of commands like ZZ, :quit, :wq, etc. When set to
+    // `true`, quitting the last view will also exit Sublime Text. When set to
+    // `false`, Sublime Text remains open after closing the last view.
+    "vintageous_exit_when_quitting_last_window": true,
 
     // Delegate configured keys to be handled by Sublime Text.
     //

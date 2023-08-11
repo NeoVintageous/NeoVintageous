@@ -288,7 +288,7 @@ def _goto_modification(action: str, view, mode: str, count: int) -> None:
             set_selection(view, a)
             enter_normal_mode(view, mode)
         else:
-            # TODO Remove DEPRECATED code, deprecated since build 3189
+            # @deprecated sinxe build 3189
             view.run_command('git_gutter_' + action + '_change', {'count': count, 'wrap': False})
             line = view.line(view.sel()[0].b)
             if line.size() > 0:

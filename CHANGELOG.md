@@ -29,6 +29,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Deprecated
 
+* [#819](https://github.com/NeoVintageous/NeoVintageous/issues/819): Setting vintageous_exit_when_quiting_last_window is deprecated, use vintageous_exit_when_quitting_last_window instead
 * [#952](https://github.com/NeoVintageous/NeoVintageous/issues/952): Setting highlightedyank is deprecated, use vintageous_highlighted_yank instead
 * [#952](https://github.com/NeoVintageous/NeoVintageous/issues/952): Setting highlightedyank_style is deprecated, use vintageous_highlighted_yank_style instead
 * [#952](https://github.com/NeoVintageous/NeoVintageous/issues/952): Setting highlightedyank_duration is deprecated, use vintageous_highlighted_yank_duration instead
