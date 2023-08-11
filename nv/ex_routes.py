@@ -212,10 +212,6 @@ def _ex_route_edit(state) -> TokenCommand:
             state.ignore()
 
 
-def _ex_route_exit(state) -> TokenCommand:
-    return _create_route(state, 'exit')
-
-
 def _ex_route_file(state) -> TokenCommand:
     return _create_route(state, 'file')
 
@@ -760,7 +756,7 @@ _add_ex_route(r'co(?:py)?', _ex_route_copy, 'copy')
 _add_ex_route(r'cq(?:uit)?', _ex_route_cquit, 'cquit')
 _add_ex_route(r'delm(?:arks)?', _ex_route_delmarks, 'delmarks')
 _add_ex_route(r'd(?:elete)?', _ex_route_delete, 'delete')
-_add_ex_route(r'exi(?:t)?', _ex_route_exit, 'exit')
+_add_ex_route(r'exi(?:t)?', _ex_route_wq, 'exit')
 _add_ex_route(r'e(?:dit)?(?= |$)?', _ex_route_edit, 'edit')
 _add_ex_route(r'f(?:ile)?', _ex_route_file, 'file')
 _add_ex_route(r'g(?:lobal)?', _ex_route_global, 'global')
@@ -817,5 +813,5 @@ _add_ex_route(r'wq(?=[^a-zA-Z]|$)?', _ex_route_wq, 'wq')
 _add_ex_route(r'xa(?:ll)?', _ex_route_wqall, 'xall')
 _add_ex_route(r'xn(?:oremap)?', _ex_route_xnoremap, 'xnoremap')
 _add_ex_route(r'xu(?:nmap)?', _ex_route_xunmap, 'xunmap')
-_add_ex_route(r'x(?:it)?', _ex_route_exit, 'xit')
+_add_ex_route(r'x(?:it)?', _ex_route_wq, 'xit')
 _add_ex_route(r'y(?:ank)?', _ex_route_yank, 'yank')

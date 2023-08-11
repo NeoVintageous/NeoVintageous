@@ -6,6 +6,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+* [#956](https://github.com/NeoVintageous/NeoVintageous/issues/956): Add `:exi[t]!` - same as `:wq!`
+* [#956](https://github.com/NeoVintageous/NeoVintageous/issues/956): Add `:exit[!] [file]` - same as `:wq[!] [file]`
+* [#956](https://github.com/NeoVintageous/NeoVintageous/issues/956): Add `:x[it]!` - same as `:wq!`
+* [#956](https://github.com/NeoVintageous/NeoVintageous/issues/956): Add `:xit[!] [file]` - same as `:wq[!] [file]`
 * [#373](https://github.com/NeoVintageous/NeoVintageous/issues/373): New Input Method plugin - Automatically switch the IM when entering and exiting Insert Mode
 * [#948](https://github.com/NeoVintageous/NeoVintageous/issues/948): New `:delm[arks] {marks}` - Delete the specified marks.  Marks that can be deleted include A-Z and 0-9.
 * [#948](https://github.com/NeoVintageous/NeoVintageous/issues/948): New `:delm[arks]!` - Delete all marks for the current buffer, but not marks A-Z or 0-9.
@@ -24,6 +28,9 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Changed
 
+* [#955](https://github.com/NeoVintageous/NeoVintageous/issues/947): ZZ is now the same as `:wq`
+* [#956](https://github.com/NeoVintageous/NeoVintageous/issues/947): `:exi[t]` is now the same as `:wq`
+* [#956](https://github.com/NeoVintageous/NeoVintageous/issues/947): `:x[it]` is now the same as `:wq`
 * [#947](https://github.com/NeoVintageous/NeoVintageous/issues/947): :vnoremap and vunmap now include Select mode
 * [#946](https://github.com/NeoVintageous/NeoVintageous/issues/946): :noremap and unmap now include Select mode
 

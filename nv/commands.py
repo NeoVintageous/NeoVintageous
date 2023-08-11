@@ -1743,7 +1743,7 @@ class nv_vi_big_z_big_q(WindowCommand):
 class nv_vi_big_z_big_z(WindowCommand):
 
     def run(self, mode=None, count=None, register=None):
-        do_ex_command(self.window, 'exit')
+        do_ex_command(self.window, 'wq')
 
 
 class nv_vi_paste(TextCommand):

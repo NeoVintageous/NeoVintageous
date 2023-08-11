@@ -523,7 +523,6 @@ class TestExCommands(unittest.TestCase):
         self.assertCommand(['edit x/y.txt', 'e x/y.txt'], cmd('edit', params={'file_name': 'x/y.txt'}))  # noqa: E501
         self.assertCommand(['edit!', 'e!'], cmd('edit', params={'file_name': None}, forced=True))  # noqa: E501
         self.assertCommand(['edit', 'e'], cmd('edit', params={'file_name': None}))  # noqa: E501
-        self.assertCommand(['exit', 'exi', 'xit', 'x'], cmd('exit'))
         self.assertCommand(['file', 'f'], cmd('file'))
         self.assertCommand(['global!!x!y', 'g!!x!y'], cmd('global', params={'pattern': 'x', 'cmd': 'y'}, forced=True, addressable=True))  # noqa: E501
         self.assertCommand(['global!/x/y', 'g!/x/y'], cmd('global', params={'pattern': 'x', 'cmd': 'y'}, forced=True, addressable=True))  # noqa: E501
@@ -647,7 +646,7 @@ class TestExCommands(unittest.TestCase):
         self.assertCommand(['wall!', 'wa!'], cmd('wall', forced=True))
         self.assertCommand(['wall', 'wa'], cmd('wall'))
         self.assertCommand(['wq!'], cmd('wq', forced=True))
-        self.assertCommand(['wq'], cmd('wq'))
+        self.assertCommand(['wq', 'exit', 'exi', 'xit', 'x'], cmd('wq'))
         self.assertCommand(['wqall!', 'wqa!', 'xall!', 'xa!'], cmd('wqall', forced=True, addressable=True))
         self.assertCommand(['wqall', 'wqa', 'xall', 'xa'], cmd('wqall', forced=False, addressable=True))
         self.assertCommand(['wqall'], cmd('wqall', forced=False, addressable=True))

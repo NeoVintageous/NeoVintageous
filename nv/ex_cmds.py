@@ -316,15 +316,6 @@ def ex_edit(window, view, file_name: str = None, forceit: bool = False, **kwargs
         status_message("E37: No write since last change")
 
 
-def ex_exit(window, view, **kwargs) -> None:
-    _do_write(view)
-
-    window.run_command('close')
-
-    if len(window.views()) == 0:
-        window.run_command('exit')
-
-
 def ex_file(view, **kwargs) -> None:
     msg = '"{}"'.format(view.file_name() if view.file_name() else '[No Name]')
 
