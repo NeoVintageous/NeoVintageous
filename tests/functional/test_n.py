@@ -89,7 +89,7 @@ class Test_n(unittest.FunctionalTestCase):
         self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
         self.assertSearchCurrent('foo\nabc\nbar\nabc\nmoo\n|abc|\nend')
 
-    def test_n_repeat_slash_matches_all_occurences(self):
+    def test_n_repeat_slash_matches_all_occurrences(self):
         self.normal('|foo\nabc\nbar\nabcmoo\nabc\nend')
         self.feed('n_/abc')
         self.feed('n_n')
@@ -155,7 +155,7 @@ class Test_n(unittest.FunctionalTestCase):
         self.assertSearch('foo\n|abc|\nbar\n|abc|\nmoo\n|abc|\nend')
         self.assertSearchCurrent('foo\n|abc|\nbar\nabc\nmoo\nabc\nend')
 
-    def test_n_repeat_question_mark_matches_all_occurences(self):
+    def test_n_repeat_question_mark_matches_all_occurrences(self):
         self.normal('foo\nabc\nbar\nabcxmoo\nabc\ne|nd')
         self.feed('n_?abc')
         self.feed('n_n')
