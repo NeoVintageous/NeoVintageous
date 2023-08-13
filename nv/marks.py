@@ -98,7 +98,8 @@ def del_mark(view, name: str) -> None:
         except KeyError:
             pass
 
-    view.erase_regions(_get_key(name))
+    if view:
+        view.erase_regions(_get_key(name))
 
 
 def del_marks(view) -> None:

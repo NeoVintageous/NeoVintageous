@@ -87,6 +87,19 @@ class Test_ex_delmarks(unittest.ResetMarks, unittest.ResetCommandLineOutput, uni
 
     @unittest.mock.patch('sublime.Window.find_open_file')
     @unittest.mock.patch('sublime.View.file_name')
+    def test_can_delete_range_uppercase_when_only_some_defined(self, fn, opener):
+        fn.return_value = '/tmp/fizz.txt'
+        opener.return_value = self.view
+        self.normal('fi|zz')
+        for mark in 'ABDGH':
+            self.feed('m')
+            self.feed(mark)
+        self.assertHasMarks('ABDGH')
+        self.feed(':delmarks B-G')
+        self.assertHasMarks('AH')
+
+    @unittest.mock.patch('sublime.Window.find_open_file')
+    @unittest.mock.patch('sublime.View.file_name')
     def test_can_delete_range_uppercase(self, fn, opener):
         fn.return_value = '/tmp/fizz.txt'
         opener.return_value = self.view
