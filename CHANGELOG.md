@@ -6,7 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
-* [#947](https://github.com/NeoVintageous/NeoVintageous/issues/947): Fix issue with deleting a range of uppercase marks when one doesn't exist
+* [#957](https://github.com/NeoVintageous/NeoVintageous/issues/957): Fix issue with deleting a range of uppercase marks when one doesn't exist
 
 ## 1.32.0 - 2023-08-12
 
