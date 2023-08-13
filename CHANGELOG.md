@@ -6,50 +6,50 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
-* [#945](https://github.com/NeoVintageous/NeoVintageous/issues/945): New "unless_sidebar_visible" option for vintageous_exit_when_quitting_last_window setting
-* [#956](https://github.com/NeoVintageous/NeoVintageous/issues/956): Add `:exi[t]!` - same as `:wq!`
-* [#956](https://github.com/NeoVintageous/NeoVintageous/issues/956): Add `:exit[!] [file]` - same as `:wq[!] [file]`
-* [#956](https://github.com/NeoVintageous/NeoVintageous/issues/956): Add `:x[it]!` - same as `:wq!`
-* [#956](https://github.com/NeoVintageous/NeoVintageous/issues/956): Add `:xit[!] [file]` - same as `:wq[!] [file]`
-* [#373](https://github.com/NeoVintageous/NeoVintageous/issues/373): New Input Method plugin - Automatically switch the IM when entering and exiting Insert Mode
-* [#948](https://github.com/NeoVintageous/NeoVintageous/issues/948): New `:delm[arks] {marks}` - Delete the specified marks.  Marks that can be deleted include A-Z and 0-9.
-* [#948](https://github.com/NeoVintageous/NeoVintageous/issues/948): New `:delm[arks]!` - Delete all marks for the current buffer, but not marks A-Z or 0-9.
-* [#919](https://github.com/NeoVintageous/NeoVintageous/issues/919): Support for Dvorak mappings via [NeoVintageousDvorak](https://github.com/gerardroche/NeoVintageousDvorak)
-* [#918](https://github.com/NeoVintageous/NeoVintageous/issues/918): Support for Colemak mappings via [NeoVintageousColemak](https://github.com/gerardroche/NeoVintageousColemak)
-* [#944](https://github.com/NeoVintageous/NeoVintageous/issues/944): New ability to map any character e.g., `nnoremap ø :marks<CR>`
-* [#106](https://github.com/NeoVintageous/NeoVintageous/issues/106): New `g,` Go to `[count]` newer position in change list
-* [#106](https://github.com/NeoVintageous/NeoVintageous/issues/106): New `g;` Go to `[count]` older position in change list
-* [#942](https://github.com/NeoVintageous/NeoVintageous/issues/942): Add `CTRL-M` alias of `Enter`
-* [#943](https://github.com/NeoVintageous/NeoVintageous/issues/943): Add `zuw` alias of `zug`
-* [#841](https://github.com/NeoVintageous/NeoVintageous/issues/841): Add `vintageous_auto_nohlsearch_on_normal_enter` setting to keep highlighting after searches
-* [#936](https://github.com/NeoVintageous/NeoVintageous/issues/936): Add edit settings command "Preferences: NeoVintageous Settings"
-* [#924](https://github.com/NeoVintageous/NeoVintageous/issues/924): Enable super keys, also known as the Windows key or Command key (⌘) on Mac, by default
-* [#915](https://github.com/NeoVintageous/NeoVintageous/issues/915): Show marks in gutter (disable via `vintageous_show_marks_in_gutter` setting)
-* [#921](https://github.com/NeoVintageous/NeoVintageous/issues/921): New `'equalalways'` option. Default on. When on, all the views are made the same size after splitting a view.
+* [#945](https://github.com/NeoVintageous/NeoVintageous/issues/945): Introduces the "unless_sidebar_visible" option for `vintageous_exit_when_quitting_last_window` setting.
+* [#956](https://github.com/NeoVintageous/NeoVintageous/issues/956): Adds new command for quick exit, similar to `:wq!`: `:exi[t]!`
+* [#956](https://github.com/NeoVintageous/NeoVintageous/issues/956): Adds new command for quick exit, similar to `:wq!`: `:exit[!] [file]`
+* [#956](https://github.com/NeoVintageous/NeoVintageous/issues/956): Adds new command for quick exit, similar to `:wq!`: `:x[it]!`
+* [#956](https://github.com/NeoVintageous/NeoVintageous/issues/956): Adds new command for quick exit, similar to `:wq!`: `:xit[!] [file]`
+* [#373](https://github.com/NeoVintageous/NeoVintageous/issues/373): Implements an Input Method plugin for automatic IM switch when entering/exiting Insert Mode.
+* [#948](https://github.com/NeoVintageous/NeoVintageous/issues/948): Introduces new mark deletion commands: `:delm[arks] {marks}` - Delete specified marks (A-Z, 0-9).
+* [#948](https://github.com/NeoVintageous/NeoVintageous/issues/948): Introduces new mark deletion commands: `:delm[arks]!` - Delete all marks for the buffer except A-Z, 0-9.
+* [#919](https://github.com/NeoVintageous/NeoVintageous/issues/919): Adds support for Dvorak mappings via [NeoVintageousDvorak](https://github.com/gerardroche/NeoVintageousDvorak).
+* [#918](https://github.com/NeoVintageous/NeoVintageous/issues/918): Adds support for Colemak mappings via [NeoVintageousColemak](https://github.com/gerardroche/NeoVintageousColemak).
+* [#944](https://github.com/NeoVintageous/NeoVintageous/issues/944): Enables mapping of any character, e.g., `nnoremap ø :marks<CR>`.
+* [#106](https://github.com/NeoVintageous/NeoVintageous/issues/106): Introduces new navigation commands: `g,` Go to `[count]` newer position in change list.
+* [#106](https://github.com/NeoVintageous/NeoVintageous/issues/106): Introduces new navigation commands: `g;` Go to `[count]` older position in change list.
+* [#942](https://github.com/NeoVintageous/NeoVintageous/issues/942): Adds `CTRL-M` alias for `Enter`.
+* [#943](https://github.com/NeoVintageous/NeoVintageous/issues/943): Introduces `zuw` alias for `zug`.
+* [#841](https://github.com/NeoVintageous/NeoVintageous/issues/841): Adds `vintageous_auto_nohlsearch_on_normal_enter` setting to maintain highlighting after searches.
+* [#936](https://github.com/NeoVintageous/NeoVintageous/issues/936): Implements the "Preferences: NeoVintageous Settings" command for editing settings.
+* [#924](https://github.com/NeoVintageous/NeoVintageous/issues/924): Enables super keys (Windows key or Command key) by default.
+* [#915](https://github.com/NeoVintageous/NeoVintageous/issues/915): Adds gutter display for marks (configurable via `vintageous_show_marks_in_gutter`).
+* [#921](https://github.com/NeoVintageous/NeoVintageous/issues/921): Introduces the `'equalalways'` option to equalize view sizes after splitting.
 
 ### Changed
 
-* [#955](https://github.com/NeoVintageous/NeoVintageous/issues/947): ZZ is now the same as `:wq`
-* [#956](https://github.com/NeoVintageous/NeoVintageous/issues/947): `:exi[t]` is now the same as `:wq`
-* [#956](https://github.com/NeoVintageous/NeoVintageous/issues/947): `:x[it]` is now the same as `:wq`
-* [#947](https://github.com/NeoVintageous/NeoVintageous/issues/947): :vnoremap and vunmap now include Select mode
-* [#946](https://github.com/NeoVintageous/NeoVintageous/issues/946): :noremap and unmap now include Select mode
+* [#955](https://github.com/NeoVintageous/NeoVintageous/issues/947): `ZZ` now same as `:wq`
+* [#956](https://github.com/NeoVintageous/NeoVintageous/issues/947): `:exi[t]` now same as `:wq`
+* [#956](https://github.com/NeoVintageous/NeoVintageous/issues/947): `:x[it]` now same as `:wq`
+* [#947](https://github.com/NeoVintageous/NeoVintageous/issues/947): `:vnoremap` and `vunmap` now include Select mode
+* [#946](https://github.com/NeoVintageous/NeoVintageous/issues/946): `:noremap` and `unmap` now include Select mode
 
 ### Deprecated
 
-* [#819](https://github.com/NeoVintageous/NeoVintageous/issues/819): Setting vintageous_exit_when_quiting_last_window is deprecated, use vintageous_exit_when_quitting_last_window instead
-* [#952](https://github.com/NeoVintageous/NeoVintageous/issues/952): Setting highlightedyank is deprecated, use vintageous_highlighted_yank instead
-* [#952](https://github.com/NeoVintageous/NeoVintageous/issues/952): Setting highlightedyank_style is deprecated, use vintageous_highlighted_yank_style instead
-* [#952](https://github.com/NeoVintageous/NeoVintageous/issues/952): Setting highlightedyank_duration is deprecated, use vintageous_highlighted_yank_duration instead
-* [#952](https://github.com/NeoVintageous/NeoVintageous/issues/952): Setting neovintageous_search_cur_style is deprecated, use vintageous_search_cur_style instead
-* [#952](https://github.com/NeoVintageous/NeoVintageous/issues/952): Setting neovintageous_search_inc_style is deprecated, use vintageous_search_inc_style instead
-* [#952](https://github.com/NeoVintageous/NeoVintageous/issues/952): Setting neovintageous_search_occ_style is deprecated, use vintageous_search_occ_style instead
+* [#819](https://github.com/NeoVintageous/NeoVintageous/issues/819): The deprecated setting `vintageous_exit_when_quiting_last_window` should be replaced with `vintageous_exit_when_quitting_last_window`.
+* [#952](https://github.com/NeoVintageous/NeoVintageous/issues/952): The deprecated setting `highlightedyank` should be replaced with `vintageous_highlighted_yank`
+* [#952](https://github.com/NeoVintageous/NeoVintageous/issues/952): The deprecated setting `highlightedyank_style` should be replaced with `vintageous_highlighted_yank_style`
+* [#952](https://github.com/NeoVintageous/NeoVintageous/issues/952): The deprecated setting `highlightedyank_duration` should be replaced with `vintageous_highlighted_yank_duration`
+* [#952](https://github.com/NeoVintageous/NeoVintageous/issues/952): The deprecated setting `neovintageous_search_cur_style` should be replaced with `vintageous_search_cur_style`
+* [#952](https://github.com/NeoVintageous/NeoVintageous/issues/952): The deprecated setting `neovintageous_search_inc_style` should be replaced with `vintageous_search_inc_style`
+* [#952](https://github.com/NeoVintageous/NeoVintageous/issues/952): The deprecated setting `neovintageous_search_occ_style` should be replaced with `vintageous_search_occ_style`
 
 ### Fixed
 
-* [#929](https://github.com/NeoVintageous/NeoVintageous/issues/929): There is no syntax highlighting for `<LocalLeader>`
-* [#879](https://github.com/NeoVintageous/NeoVintageous/issues/879): neovintageousrc file options only set on active view at startup
-* [#922](https://github.com/NeoVintageous/NeoVintageous/issues/922): neovintageousrc file reloading should reset options
+* [#929](https://github.com/NeoVintageous/NeoVintageous/issues/929): No syntax highlighting for `<LocalLeader>`
+* [#879](https://github.com/NeoVintageous/NeoVintageous/issues/879): neovintageousrc options only set on active view at startup
+* [#922](https://github.com/NeoVintageous/NeoVintageous/issues/922): neovintageousrc reloading does not refresh options
 
 ## 1.31.0 - 2023-07-12
 

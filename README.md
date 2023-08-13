@@ -630,6 +630,7 @@ The `{im}` argument in the configurations below represents a command-line option
 3. **Configure the Input Method Auto Switcher**:
 
    1. Open the Command Palette by using the shortcut `Ctrl+Shift+P`.
+
    2. Add the following JSON configuration:
 
       **ibus**
