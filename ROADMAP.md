@@ -416,12 +416,40 @@ For the following four commands the cursor follows the screen.  If the character
 
 ### 7. Insert mode completion
 
+Completing whole lines
+
 | Status             | Command                                        | Description
 | :----------------- | :--------------------------------------------- | :----------
 | :heavy_check_mark: | CTRL-X CTRL-L                                  | Search backwards for a line that starts with the same characters as those in the current line before the cursor.  Indent is ignored.  The matching line is inserted in front of the cursor.
-|                    | CTRL-X CTRL-F                                  | Search for the first file name that starts with the same characters as before the cursor.  The matching file name is inserted in front of the cursor.
-|                    | CTRL-X CTRL-]                                  |
+| :heavy_check_mark: | CTRL-N                                         | Search forward for next matching line.  This line replaces the previous matching line.
+| :heavy_check_mark: | CTRL-P                                         | Search backwards for next matching line.  This line replaces the previous matching line.
+|                    | CTRL-L                                         | Same as CTRL-P.
+
+Completing keywords in current file
+
+| Status             | Command                                        | Description
+| :----------------- | :--------------------------------------------- | :----------
 |                    | CTRL-X CTRL-N                                  |
+|                    | CTRL-N                                         | Search forward for next matching keyword.  This keyword replaces the previous matching keyword.
+|                    | CTRL-P                                         | Search backwards for next matching keyword.  This keyword replaces the previous matching keyword.
+
+Completing file names
+
+| Status             | Command                                        | Description
+| :----------------- | :--------------------------------------------- | :----------
+|                    | CTRL-X CTRL-F                                  | Search for the first file name that starts with the same characters as before the cursor.  The matching file name is inserted in front of the cursor.
+|                    | CTRL-N                                         | Search forwards for next matching file name.  This file name replaces the previous matching file name.
+|                    | CTRL-P                                         | Search backward for previous matching file name. This file name replaces the previous matching file name.
+|                    | CTRL-F                                         | Same as CTRL-N.
+
+Completing tags
+
+| Status             | Command                                        | Description
+| :----------------- | :--------------------------------------------- | :----------
+|                    | CTRL-X CTRL-]                                  | Search for the first tag that starts with the same characters as before the cursor.  The matching tag is inserted in front of the cursor.  See also CTRL-].
+|                    | CTRL-N                                         | Search forwards for next matching tag.  This tag replaces the previous matching tag.
+|                    | CTRL-P                                         | Search backward for previous matching tag.  This tag replaces the previous matching tag.
+|                    | CTRL-]                                         | Same as CTRL-N.
 
 ### 8. Insert mode commands
 
