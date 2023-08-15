@@ -209,6 +209,8 @@ from NeoVintageous.nv.window import window_tab_control
 __all__ = [
     'Neovintageous',
     'SequenceCommand',
+    'nv_cmdline',
+    'nv_cmdline_feed_key',
     'nv_enter_insert_mode',
     'nv_enter_normal_mode',
     'nv_enter_replace_mode',
@@ -216,13 +218,10 @@ __all__ = [
     'nv_enter_visual_block_mode',
     'nv_enter_visual_line_mode',
     'nv_enter_visual_mode',
-    'nv_cmdline',
-    'nv_cmdline_feed_key',
     'nv_ex_cmd_edit_wrap',
     'nv_feed_key',
     'nv_process_notation',
     'nv_run_cmds',
-    'nv_view',
     'nv_vi_a',
     'nv_vi_at',
     'nv_vi_b',
@@ -346,7 +345,8 @@ __all__ = [
     'nv_vi_z_enter',
     'nv_vi_z_minus',
     'nv_vi_zero',
-    'nv_vi_zz'
+    'nv_vi_zz',
+    'nv_view'
 ]
 
 
