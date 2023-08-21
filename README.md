@@ -152,11 +152,11 @@ A file that contains initialization commands is typically referred to as a "vimr
 
 To edit the neovintageousrc file, follow these steps:
 
-1. Open the Command Palette: `Command Palette → NeoVintageous: Open neovintageous file`.
+1. Open the Command Palette: `Command Palette → NeoVintageous: Open neovintageousrc file`.
 
 2. Make the necessary changes to the file.
 
-3. To apply the changes, reload the neovintageousrc from the Command Palette: `Command Palette → NeoVintageous: Reload neovintageous file`.
+3. To apply the changes, reload the neovintageousrc from the Command Palette: `Command Palette → NeoVintageous: Reload neovintageousrc file`.
 
 ## Key mapping
 
