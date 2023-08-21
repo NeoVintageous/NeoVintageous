@@ -354,10 +354,10 @@ CHANGE LIST JUMPS
 | :heavy_check_mark: | `[(`     | Go to previous unmatched '('.
 | :heavy_check_mark: | `[{`     | Go to previous unmatched '\{'.
 | :heavy_check_mark: | `])`     | Go to next unmatched ')'.
-| :heavy_check_mark: | `]}`     | Go to next unmatched '}'.
-| :heavy_check_mark: | `H`      | To line `[count]` from top (Home) of window (default: first line on the window) on the first non-blank character. Cursor is adjusted for `'scrolloff'` option, unless an operator is pending, in which case the text may scroll.  E.g. "yH" yanks from the first visible line until the cursor line (inclusive).
+| :heavy_check_mark: | `]}`     | Go to next unmatched '\}'.
+| :heavy_check_mark: | `H`      | To the first line of the window on the first non-blank character. Cursor is adjusted for `'scrolloff'` option, unless an operator is pending, in which case the text may scroll.  E.g. "yH" yanks from the first visible line until the cursor line (inclusive).
 | :heavy_check_mark: | `M`      | To Middle line of window, on the first non-blank character.
-| :heavy_check_mark: | `L`      | To line `[count]` from bottom of window (default: Last line on the window) on the first non-blank character. Cursor is adjusted for `'scrolloff'` option, unless an operator is pending, in which case the text may scroll.  E.g. "yL" yanks from the cursor to the last visible line.
+| :heavy_check_mark: | `L`      | To last line of the window on the first non-blank character. Cursor is adjusted for `'scrolloff'` option, unless an operator is pending, in which case the text may scroll.  E.g. "yL" yanks from the cursor to the last visible line.
 
 ## Scrolling the text in the window `|scroll.txt|`
 
@@ -387,11 +387,13 @@ The following commands reposition the edit window (the part of the buffer that y
 
 | Status             | Command                                        | Description
 | :----------------- | :--------------------------------------------- | :----------
-| :heavy_check_mark: | z&lt;CR&gt;                                    | Redraw, line [count] at top of window (default cursor line).  Put cursor at first non-blank in the line.
-| :heavy_check_mark: | zt                                             | Like "z&lt;CR&gt;", but leave the cursor in the same column.
+| :heavy_check_mark: | z`<CR>`                                        | Redraw, line [count] at top of window (default cursor line).  Put cursor at first non-blank in the line.
+| :heavy_check_mark: | zt                                             | Like "z`<CR>`", but leave the cursor in the same column.
+|                    | z`{height}<CR>`                                | Redraw, make window `{height}` lines tall.  This is useful to make the number of lines small when screen updating is very slow.  Cannot make the height more than the physical screen height.
 | :heavy_check_mark: | z.                                             | Redraw, line [count] at centre of window (default cursor line).  Put cursor at first non-blank in the line.
 | :heavy_check_mark: | zz                                             | Like "z.", but leave the cursor in the same column. Careful: If caps-lock is on, this command becomes "ZZ": write buffer and exit!
 | :heavy_check_mark: | z-                                             | Redraw, line [count] at bottom of window (default cursor line).  Put cursor at first non-blank in the line.
+| :heavy_check_mark: | zb                                             | Like "z-", but leave the cursor in the same column.
 
 ### 4. Scrolling horizontally
 
@@ -451,6 +453,15 @@ Completing tags
 |                    | CTRL-P                                         | Search backward for previous matching tag.  This tag replaces the previous matching tag.
 |                    | CTRL-]                                         | Same as CTRL-N.
 
+Completing keywords from different sources
+
+| Status             | Command                                        | Description
+| :----------------- | :--------------------------------------------- | :----------
+| :heavy_check_mark: | CTRL-N                                         | Find next match for words that start with the keyword in front of the cursor.
+| :heavy_check_mark: | CTRL-P                                         | Find previous match for words that start with the keyword in front of the cursor.
+| :heavy_check_mark: | CTRL-N                                         | Search forward for next matching keyword.
+| :heavy_check_mark: | CTRL-P                                         | Search backwards for next matching keyword.
+
 ### 8. Insert mode commands
 
 The following commands can be used to insert new text into the buffer.  They can all be undone and repeated with the "." command.
@@ -472,21 +483,21 @@ The following commands can be used to insert new text into the buffer.  They can
 
 | Status             | Command                                                                | Description
 | :----------------- | :--------------------------------------------------------------------- | :----------
-| :heavy_check_mark: | ["x]&lt;Del&gt;<br>["x]x                                               | Delete [count] characters under and after the cursor [into register x] (not `linewise`).  Does the same as "dl".
-| :heavy_check_mark: | ["x]X                                                                  | Delete [count] characters before the cursor [into register x] (not `linewise`).  Does the same as "dh".
-| :heavy_check_mark: | ["x]d\{motion\}                                                        | Delete text that `{motion}` moves over [into register x].
-| :heavy_check_mark: | ["x]dd                                                                 | Delete [count] lines [into register x] `linewise`.
-| :heavy_check_mark: | ["x]D                                                                  | Delete the characters under the cursor until the end of the line and [count]-1 more lines [into register x]; synonym for "d$". (not `linewise`).
-| :heavy_check_mark: | \{Visual\}["x]x<br>\{Visual\}["x]d<br>\{Visual\}["x]&lt;Del&gt;        | Delete the highlighted text [into register x] (for `{Visual}` see `Visual-mode`).
-| :heavy_check_mark: | \{Visual\}["x]X<br>\{Visual\}["x]D                                     | Delete the highlighted lines [into register x] (for `{Visual}` see `Visual-mode`).  In Visual block mode, "D" deletes the highlighted text plus all text until the end of the line.
-| :heavy_check_mark: | :[range]d[elete]&nbsp;[x]                                              | Delete [range] lines (default: current line) [into register x].
+| :heavy_check_mark: | ["x]`<Del>` or<br>["x]x                                                | Delete `[count]` characters under and after the cursor [into register x] (not `linewise`).  Does the same as "dl".
+| :heavy_check_mark: | ["x]X                                                                  | Delete `[count]` characters before the cursor [into register x] (not `linewise`).  Does the same as "dh".
+| :heavy_check_mark: | ["x]d`{motion}`                                                        | Delete text that `{motion}` moves over [into register x]. There are some exceptions.
+| :heavy_check_mark: | ["x]dd                                                                 | Delete `[count]` lines [into register x] `linewise`.
+| :heavy_check_mark: | ["x]D                                                                  | Delete the characters under the cursor until the end of the line and `[count]`-1 more lines [into register x]; synonym for "d$". (not `linewise`).
+| :heavy_check_mark: | `{Visual}`["x]x or<br>`{Visual}`["x]d or<br>`{Visual}`["x]`<Del>`      | Delete the highlighted text [into register x] (for `{Visual}` see `Visual-mode`).
+| :heavy_check_mark: | `{Visual}`["x]X<br>`{Visual}`["x]D                                     | Delete the highlighted lines [into register x] (for `{Visual}` see `Visual-mode`).  In Visual block mode, "D" deletes the highlighted text plus all text until the end of the line.
+| :heavy_check_mark: | :`[range]`d[elete]&nbsp;[x]                                            | Delete `[range]` lines (default: current line) [into register x].
 
 | Status             | Command                      | Description
 | :----------------- | :--------------------------- | :----------
-| :heavy_check_mark: | J                            | Join [count] lines, with a minimum of two lines. Remove the indent and insert up to two spaces (see below).  Fails when on the last line of the buffer. If [count] is too big it is reduced to the number of lines available.
-| :heavy_check_mark: | \{Visual\}J                  | Join the highlighted lines, with a minimum of two lines.  Remove the indent and insert up to two spaces (see below).
-| :heavy_check_mark: | gJ                           | Join [count] lines, with a minimum of two lines. Don't insert or remove any spaces.
-| :heavy_check_mark: | \{Visual\}gJ                 | Join the highlighted lines, with a minimum of two lines.  Don't insert or remove any spaces.
+| :heavy_check_mark: | J                            | Join `[count]` lines, with a minimum of two lines. Remove the indent and insert up to two spaces (see below).  Fails when on the last line of the buffer. If `[count]` is too big it is reduced to the number of lines available.
+| :heavy_check_mark: | `{Visual}`J                  | Join the highlighted lines, with a minimum of two lines.  Remove the indent and insert up to two spaces (see below).
+| :heavy_check_mark: | gJ                           | Join `[count]` lines, with a minimum of two lines. Don't insert or remove any spaces.
+| :heavy_check_mark: | `{Visual}`gJ                 | Join the highlighted lines, with a minimum of two lines.  Don't insert or remove any spaces.
 
 ### 2. Delete and insert
 
@@ -499,7 +510,7 @@ The following commands can be used to insert new text into the buffer.  They can
 | :heavy_check_mark: | ["x]s                                                                  | Delete [count] characters [into register x] and start insert (s stands for Substitute).  Synonym for "cl" (not `linewise`).
 | :heavy_check_mark: | ["x]S                                                                  | Delete [count] lines [into register x] and start insert.  Synonym for "cc" `linewise`.
 | :heavy_check_mark: | \{Visual\}["x]c<br>\{Visual\}["x]s                                     | Delete the highlighted text [into register x] and start insert (for `{Visual}` see `Visual-mode`).
-| :heavy_check_mark: | \{Visual\}r{char}                                                      | Replace all selected characters by `{char}`.
+| :heavy_check_mark: | \{Visual\}r\{char\}                                                    | Replace all selected characters by `{char}`.
 |                    | \{Visual\}["x]C                                                        | Delete the highlighted lines [into register x] and start insert.
 |                    | \{Visual\}["x]S                                                        | Delete the highlighted lines [into register x] and start insert (for `{Visual}` see `Visual-mode`).
 |                    | \{Visual\}["x]R                                                        | Currently just like `{Visual}`["x]S.  In a next version it might work differently.
@@ -577,37 +588,55 @@ The flags that you can use for the substitute commands:
 
 ### 5. Copying and moving text
 
-| Status             | Command                      | Description
-| :----------------- | :--------------------------- | :----------
-| :heavy_check_mark: | :reg[isters]                 | Display the type and contents of all numbered and named registers.
-| :heavy_check_mark: | ["x]y\{motion\}              | Yank `{motion}` text [into register x].
-| :heavy_check_mark: | ["x]yy                       | Yank [count] lines [into register x] `linewise`.
-| :heavy_check_mark: | ["x]Y                        | yank [count] lines [into register x] (synonym for yy, `linewise`).  If you like "Y" to work from the cursor to the end of line (which is more logical, but not Vi-compatible) use ":map Y y$".
-| :heavy_check_mark: | \{Visual\}["x]y              | Yank the highlighted text [into register x] (for `{Visual}` see `Visual-mode`).
-| :heavy_check_mark: | \{Visual\}["x]Y              | Yank the highlighted lines [into register x] (for `{Visual}` see `Visual-mode`).
-| :heavy_check_mark: | :[range]y[ank]&nbsp;[x]      | Yank [range] lines [into register x].
-| :heavy_check_mark: | ["x]p                        | Put the text [from register x] after the cursor [count] times.
-| :heavy_check_mark: | ["x]P                        | Put the text [from register x] before the cursor [count] times.
-| :heavy_check_mark: | ["x]gp                       | Just like "p", but leave the cursor just after the new text.
-| :heavy_check_mark: | ["x]gP                       | Just like "P", but leave the cursor just after the new text.
-| :heavy_check_mark: | ["x]]p                       | Like "p", but adjust the indent to the current line.
-| :heavy_check_mark: | ["x][P<br>["x]]P<br>["x][p   | Like "P", but adjust the indent to the current line.
+| Status             | Command                              | Description
+| :----------------- | :----------------------------------- | :----------
+| :heavy_check_mark: | `"{register}`                        | Use `{register}` for next delete, yank or put.  Use an uppercase character to append with delete and yank. Registers ".", "%", "#" and ":" only work with put.
+| :heavy_check_mark: | `:reg[isters]`                       | Display the type and contents of all numbered and named registers.
+| :heavy_check_mark: | `["x]y{motion}`                      | Yank `{motion}` text [into register x].
+| :heavy_check_mark: | `["x]yy`                             | Yank [count] lines [into register x] `linewise`.
+| :heavy_check_mark: | `["x]Y`                              | yank [count] lines [into register x] (synonym for yy, `linewise`).  If you like "Y" to work from the cursor to the end of line (which is more logical, but not Vi-compatible) use ":map Y y$".
+| :heavy_check_mark: | `{Visual}["x]y`                      | Yank the highlighted text [into register x] (for `{Visual}` see `Visual-mode`).
+| :heavy_check_mark: | `{Visual}["x]Y`                      | Yank the highlighted lines [into register x] (for `{Visual}` see `Visual-mode`).
+| :heavy_check_mark: | <code>:[range]y[ank]&nbsp;[x]</code> | Yank [range] lines [into register x].
+| :heavy_check_mark: | `["x]p`                              | Put the text [from register x] after the cursor [count] times.
+| :heavy_check_mark: | `["x]P`                              | Put the text [from register x] before the cursor [count] times.
+| :heavy_check_mark: | `["x]gp`                             | Just like "p", but leave the cursor just after the new text.
+| :heavy_check_mark: | `["x]gP`                             | Just like "P", but leave the cursor just after the new text.
+| :heavy_check_mark: | `["x]]p`                             | Like "p", but adjust the indent to the current line.
+| :heavy_check_mark: | `["x][P`<br>`["x]]P`<br>`["x][p`     | Like "P", but adjust the indent to the current line.
+
+There are ten types of registers:
+
+
+| Status             | #   | Type
+| :----------------- | :-- | :---
+| :heavy_check_mark: | 1.  | The unnamed register ""
+| :heavy_check_mark: | 2.  | 10 numbered registers "0 to "9
+| :heavy_check_mark: | 3.  | The small delete register "-
+| :heavy_check_mark: | 4.  | 26 named registers "a to "z or "A to "Z
+| :heavy_check_mark: | 5.  | Three read-only registers "%
+|                    | 5.  | Three read-only registers ":, ".
+| :heavy_check_mark: | 6.  | Alternate buffer register "#
+|                    | 7.  | The expression register "=
+| :heavy_check_mark: | 8.  | The selection and drop registers "*, "+
+|                    | 8.  | The selection and drop registers ~
+| :heavy_check_mark: | 9.  | The black hole register "_
+|                    | 10. | Last search pattern register "/
 
 The next two commands always work on whole lines.
 
-| Status             | Command                          | Description
-| :----------------- | :------------------------------- | :----------
-| :heavy_check_mark: | :[range]co[py]&nbsp;\{address\}  | Copy the lines given by `[range]` to below the line given by `{address}`.
-| :heavy_check_mark: | :[range]m[ove]&nbsp;\{address\}  | Move the lines given by `[range]` to below the line given by `{address}`.
-| :heavy_check_mark: | gq\{motion\}                     | Format the lines that `{motion}` moves over. Formatting is done internally. The `'textwidth'` option controls the length of each formatted line (see below). If the `'textwidth'` option is 0, the formatted line length is the screen width (with a maximum width of 79). NOTE: The "Q" command formerly performed this function.  If you still want to use "Q" for formatting, use this mapping: `:nnoremap Q gq`.
-| :heavy_check_mark: | gqgq<br>gqq                      | Format the current line.  With a count format that many lines.
-| :heavy_check_mark: | \{Visual\}gq                     | Format the highlighted text.  (for `{Visual}` see `Visual-mode`).
+| Status             | Command                                      | Description
+| :----------------- | :------------------------------------------- | :----------
+| :heavy_check_mark: | <code>:[range]co[py]&nbsp;\{address\}</code> | Copy the lines given by `[range]` to below the line given by `{address}`.
+| :heavy_check_mark: | <code>:[range]m[ove]&nbsp;\{address\}</code> | Move the lines given by `[range]` to below the line given by `{address}`.
 
 ### 6. Formatting text
 
 | Status             | Command                        | Description
 | :----------------- | :----------------------------- | :----------
-| :heavy_check_mark: | gq\{motion\}                   | Format the lines that \{motion\} moves over.
+| :heavy_check_mark: | `gq{motion}`                   | Format the lines that `{motion}` moves over. Formatting is done internally. The `'textwidth'` option controls the length of each formatted line (see below). If the `'textwidth'` option is 0, the formatted line length is the screen width (with a maximum width of 79). NOTE: The "Q" command formerly performed this function.  If you still want to use "Q" for formatting, use this mapping: `:nnoremap Q gq`.
+| :heavy_check_mark: | `gqgq`<br>`gqq`                | Format the current line.  With a count format that many lines.
+| :heavy_check_mark: | `{Visual}gq`                   | Format the highlighted text.  (for `{Visual}` see `Visual-mode`).
 
 ### 7. Sorting text
 
@@ -880,13 +909,13 @@ If you want to you can make a pattern immune to the `'magic'` option being set o
 
 | Status             | Command                                                                    | Description
 | :----------------- | :------------------------------------------------------------------------- | :----------
-| :heavy_check_mark: | CTRL-W&nbsp;s<br>CTRL-W&nbsp;S<br>CTRL-W&nbsp;CTRL-S<br>:sp[lit] [file]    | Split current window in two.  The result is two viewports on the same file. The windows will be spread out if `'equalalways'` is set. If [file] is given it will be edited in the new window.
+| :heavy_check_mark: | CTRL-W&nbsp;s<br>CTRL-W&nbsp;S<br>CTRL-W&nbsp;CTRL-S<br>:sp[lit] [file]    | Split current window in two.  The result is two viewports on the same file. The windows will be spread out if `'equalalways'` is set. If `[file]` is given it will be edited in the new window.
 | :heavy_check_mark: | CTRL-W&nbsp;CTRL-V<br>CTRL-W&nbsp;v<br>:vs[plit] [file]                    | Like :split, but split vertically. The windows will be spread out if `'equalalways'` is set.
 | :heavy_check_mark: | CTRL-W&nbsp;n<br>CTRL-W&nbsp;CTRL-N<br>:new                                | Create a new window and start editing an empty file in it. The windows will be spread out if `'equalalways'` is set. This behaves like a ":split" first, and then an ":enew" command.
-| :heavy_check_mark: | :new \{file\} <br>:sp[lit] \{file\}                                        | Create a new window and start editing file `{file}` in it.  This behaves almost like a ":split" first, and then an ":edit" command, but the alternate file name in the original window is set to `{file}`. The windows will be spread out if `'equalalways'` is set.
-| :heavy_check_mark: | :vne[w] [file]                                                             | Like `|:new|`, but split vertically. The windows will be spread out if `'equalalways'` is set.
+| :heavy_check_mark: | :vne[w] [file]                                                             | Like `:new`, but split vertically.  If `'equalalways'` is set the windows will be spread out horizontally, unless a width was specified.
+| :heavy_check_mark: | :new `{file}` <br>:sp[lit] `{file}`                                        | Create a new window and start editing file `{file}` in it.  This behaves almost like a ":split" first, and then an ":edit" command, but the alternate file name in the original window is set to `{file}`. The windows will be spread out if `'equalalways'` is set.
 |                    | :sv[iew] [file]                                                            | Same as `":split"`, but set `'readonly'` option for this buffer.
-|                    | :sf[ind] \{file\}                                                          | Same as ":split", but search for `{file}` in `'path'` like in `:find`.  Doesn't split if `{file}` is not found.
+|                    | :sf[ind] `{file}`                                                          | Same as ":split", but search for `{file}` in `'path'` like in `:find`.  Doesn't split if `{file}` is not found.
 | :heavy_check_mark: | CTRL-W CTRL-^<br>CTRL-W ^                                                  | Split the current window in two and edit the alternate file.
 | :heavy_check_mark: | CTRL-W :                                                                   | Does the same as typing `:` - enter a command line
 
@@ -1079,12 +1108,19 @@ OPENING AND CLOSING FOLDS
 | :heavy_check_mark: | p      | Go to parent
 | :heavy_check_mark: | q      | Close
 
-## Overlay motions (e.g. Files, Command Palette, Auto Complete)
+## Overlay motions (e.g. Files, Command Palette)
 
 | Status             | Mode       | Description
 | :----------------- | :--------- | :----------
 | :heavy_check_mark: | `CTRL-J`   | Down
 | :heavy_check_mark: | `CTRL-K`   | Up
+
+## Auto Complete
+
+| Status             | Mode                   | Description
+| :----------------- | :--------------------- | :----------
+| :heavy_check_mark: | `CTRL-N` or `CTRL-J`   | Down
+| :heavy_check_mark: | `CTRL-P` or `CTRL-K`   | Up
 
 ## Plugins
 
@@ -1184,17 +1220,17 @@ Inspired by [vim-markology](https://github.com/jeetsukumaran/vim-markology).
 
 Inspired by [vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors).
 
-| Status             | Command           | Description
-| :----------------- | :---------------- | :----------
-| :heavy_check_mark: | `<C-n>`, `gh`     | Start multiple cursor.
-| :heavy_check_mark: | `<C-n>`, `n`, `j` | Add next match.
-| :heavy_check_mark: | `<C-x>`, `q`, `l` | Skip next match.
-| :heavy_check_mark: | `<C-p>`, `Q`, `k` | Remove current match.
-| :heavy_check_mark: | `<M-n>`, `A`      | Select all matches.
-| :heavy_check_mark: | `<Esc>`, `J`      | Quit and enter normal mode.
-| :heavy_check_mark: | `<M-n>`, `A`      | Select all matches.
-| :heavy_check_mark: | `v`               | Enter normal mode.
-| :heavy_check_mark: | `gH`              | Select all search occurrences (/, ?, *, #).
+| Status             | Command                        | Description
+| :----------------- | :----------------------------- | :----------
+| :heavy_check_mark: | `<C-n>` or `gh`                | Start multiple cursor.
+| :heavy_check_mark: | `<C-n>` or `n` or `j`          | Add next match.
+| :heavy_check_mark: | `<C-x>` or `q` or `l`          | Skip next match.
+| :heavy_check_mark: | `<C-p>` or `N` or `Q` or `k`   | Remove current match.
+| :heavy_check_mark: | `<M-n>` or `A`                 | Select all matches.
+| :heavy_check_mark: | `<Esc>` or `J`                 | Quit or enter normal mode (default).
+| :heavy_check_mark: | `<M-n>` or `A`                 | Select all matches.
+| :heavy_check_mark: | `v` or `<Tab>`                 | Enter normal mode.
+| :heavy_check_mark: | `gH`                           | Select all search occurrences (`/`, `?`, `*`, `#`).
 
 ### Sneak `|sneak.txt|`
 
@@ -1259,6 +1295,32 @@ A port of the awesome [vim-surround](https://github.com/tpope/vim-surround).
 ### Targets
 
 Inspired by [targets.vim](https://github.com/wellle/targets.vim).
+
+| Status             | Command          | Description
+| :----------------- | :----------------------------------------------------------------- | :----------
+|                    | In Pair `i( i) i{ i} iB i[ i] i< i> it`                            |
+|                    | A Pair `a( a) a{ a} aB a[ a] a< a> at`                             |
+|                    | Inside Pair `I( I) I{ I} IB I[ I] I< I> It`                        |
+|                    | Around Pair `A( A) A{ A} AB A[ A] A< A> At`                        |
+|                    | Next and Last Pair `in( an( In( An( il( al( Il( Al(` ...           |
+|                    | Quote Text Objects                                                 |
+|                    | In Quote                                                           |
+|                    | A Quote                                                            |
+|                    | Inside Quote                                                       |
+|                    | Around Quote                                                       |
+|                    | Next and Last Quote                                                |
+| :heavy_check_mark: | In Separator `i, i. i; i: i+ i- i= i~ i_ i* i# i/ i| i\ i& i$`     |
+| :heavy_check_mark: | A Separator `a, a. a; a: a+ a- a= a~ a_ a* a# a/ a| a\ a& a$`      |
+|                    | Inside Separator `I, I. I; I: I+ I- I= I~ I_ I* I# I/ I| I\ I& I$` |
+|                    | Around Separator `A, A. A; A: A+ A- A= A~ A_ A* A# A/ A| A\ A& A$` |
+|                    | Next and Last Separator `in, an, In, An, il, al, Il, Al, ...`      |
+|                    | In Argument `ia`                                                   |
+|                    | An Argument `aa`                                                   |
+|                    | Inside Argument `Ia`                                               |
+|                    | Around Argument `Aa`                                               |
+|                    | Next and Last Argument `ina ana Ina Ana ila ala Ila Ala`           |
+|                    | Any Block `inb anb Inb Anb ilb alb Ilb Alb`                        |
+|                    | Any Quote `inq anq Inq Anq ilq alq Ilq Alq`                        |
 
 ### Unimpaired `|unimpaired.txt|`
 
