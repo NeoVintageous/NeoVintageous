@@ -109,6 +109,7 @@ from NeoVintageous.nv.utils import fixup_eof
 from NeoVintageous.nv.utils import fold
 from NeoVintageous.nv.utils import fold_all
 from NeoVintageous.nv.utils import folded_rows
+from NeoVintageous.nv.utils import get_indentation
 from NeoVintageous.nv.utils import get_insertion_point_at_a
 from NeoVintageous.nv.utils import get_insertion_point_at_b
 from NeoVintageous.nv.utils import get_option_scroll
@@ -1604,12 +1605,8 @@ class nv_vi_greater_than(TextCommand):
 
     def run(self, edit, mode=None, count=1, register=None, motion=None):
         if mode == VISUAL_BLOCK:
-            translate = self.view.settings().get('translate_tabs_to_spaces')
-            size = self.view.settings().get('tab_size')
-
             def f(view, s):
-                block = '\t' if not translate else ' ' * size
-                self.view.insert(edit, s.begin(), block * count)
+                self.view.insert(edit, s.begin(), get_indentation(view, count))
 
                 return Region(s.begin() + 1)
 
@@ -1775,19 +1772,12 @@ class nv_vi_paste(TextCommand):
 
         contents = zip(reversed(contents), reversed(sels))
 
-        def _get_indent(view, level) -> str:
-            translate = view.settings().get('translate_tabs_to_spaces')
-            tab_size = int(view.settings().get('tab_size'))
-            tab_text = ' ' * tab_size if translate else '\t'
-
-            return tab_text * level
-
         def _indent_text(view, text: str, sel: Region) -> str:
             indentation_level = view.indentation_level(get_insertion_point_at_b(sel))
 
             return textwrap.indent(
                 textwrap.dedent(text),
-                _get_indent(view, indentation_level)
+                get_indentation(view, indentation_level)
             )
 
         if mode == INTERNAL_NORMAL:

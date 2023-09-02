@@ -1438,3 +1438,11 @@ def adjust_selection_if_first_non_blank(view, mode: str, first_non_blank: bool, 
         row = view.rowcol(selection.b)[0]
         first_non_blank_pt = next_non_blank(view, view.text_point(row, 0))
         set_selection(view, first_non_blank_pt)
+
+
+def get_indentation(view, level: int) -> str:
+    translate = view.settings().get('translate_tabs_to_spaces')
+    tab_size = int(view.settings().get('tab_size'))
+    tab_text = ' ' * tab_size if translate else '\t'
+
+    return tab_text * level
