@@ -37,6 +37,7 @@ class MultipleCursorsStart(ViOperatorDef):
 
 
 @register(seqs.BIG_J, (SELECT,))
+@register(seqs.TAB, (SELECT,))
 @register(seqs.ESC, (SELECT,))
 class MultipleCursorsExit(ViOperatorDef):
     def init(self):
@@ -66,6 +67,7 @@ class MultipleCursorsAddAll(ViOperatorDef):
 
 @register(seqs.CTRL_P, (SELECT,))
 @register(seqs.K, (SELECT,))
+@register(seqs.BIG_N, (SELECT,))
 @register(seqs.BIG_Q, (SELECT,))
 class MultipleCursorsRemove(ViOperatorDef):
     def init(self):
