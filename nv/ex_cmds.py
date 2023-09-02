@@ -648,29 +648,30 @@ def ex_delmarks(view, forceit: bool = False, marks: str = '', **kwargs) -> None:
 
 def ex_registers(window, view, **kwargs) -> None:
     items = []
-    registers = registers_get_all(view).items()
-    for k, v in registers:
-        if v:
+    for type, name, content in registers_get_all(view):
+        if content:
             multiple_values = []
 
-            for part in v:
+            for part in content:
                 lines = part.splitlines()
                 # ^J indicates a newline
                 part_value = '^J'.join(lines)
 
                 # The splitlines function will remove any trailing newlines. We
                 # need to append one if splitlines() removed a trailing one.
-                if len(''.join(lines)) < len(v[0]):
+                if len(''.join(lines)) < len(content[0]):
+                    # ^J indicates a newline
                     part_value += '^J'
 
                 multiple_values.append(part_value)
 
-            # ^V indicates a visual block
-            items.append('"{}   {}'.format(k, truncate('^V'.join(multiple_values), 120)))
+            # ^V indicates a visual block or multiple selection
+            items.append('  {}  "{}   {}'.format(
+                type, name, truncate('^V'.join(multiple_values), 120)))
 
     items.sort()
     output = CmdlineOutput(window)
-    output.write('Name Content\n')
+    output.write('Type Name Content\n')
     output.write("\n".join(items))
     output.show()
 

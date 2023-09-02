@@ -49,11 +49,11 @@ from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.options import set_option
 from NeoVintageous.nv.polyfill import view_to_region
 from NeoVintageous.nv.polyfill import view_to_str
+from NeoVintageous.nv.registers import _get as _get_register
 from NeoVintageous.nv.registers import _is_register_linewise
 from NeoVintageous.nv.registers import _reset
 from NeoVintageous.nv.registers import _set_data
 from NeoVintageous.nv.registers import _set_numbered_register
-from NeoVintageous.nv.registers import registers_get
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import get_visual_block_direction
@@ -635,7 +635,7 @@ class ViewTestCase(unittest.TestCase):
         if expected is not None and not isinstance(expected, list):
             expected = [expected]
 
-        self.assertEqual(registers_get(self.view, name), expected, msg or 'for register "' + name + '"')
+        self.assertEqual(_get_register(self.view, name), expected, msg or 'for register "' + name + '"')
 
         if expected is not None:
             self.assertEqual(_is_register_linewise(name), linewise, msg or 'register (linewise) = "' + name)

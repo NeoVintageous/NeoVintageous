@@ -24,9 +24,9 @@ class Test_ex_registers(unittest.ResetRegisters, unittest.ResetCommandLineOutput
         self.normal('fi|zz')
         self.feed(':registers')
         output = self.commandLineOutput()
-        self.assertTrue(output.startswith('Name Content'))
-        self.assertIn('\n"*   \n', output)
-        self.assertIn('\n"+   \n', output)
+        self.assertTrue(output.startswith('Type Name Content'))
+        self.assertIn('\n  c  "*   \n', output)
+        self.assertIn('\n  c  "+   \n', output)
         self.assertTrue(output.endswith('Press ENTER to continue'))
 
     def test_yank_registers(self):
@@ -34,21 +34,21 @@ class Test_ex_registers(unittest.ResetRegisters, unittest.ResetCommandLineOutput
         self.feed('yiw')
         self.feed(':registers')
         output = self.commandLineOutput()
-        self.assertIn('\n""   fizz\n', output)
-        self.assertIn('\n"*   \n', output)
-        self.assertIn('\n"+   \n', output)
-        self.assertIn('\n"0   fizz\n', output)
+        self.assertIn('\n  c  ""   fizz\n', output)
+        self.assertIn('\n  c  "*   \n', output)
+        self.assertIn('\n  c  "+   \n', output)
+        self.assertIn('\n  c  "0   fizz\n', output)
 
     def test_newlines(self):
         self.visual('1|\n2\n3\n|4\n')
         self.feed('y')
         self.feed(':registers')
         output = self.commandLineOutput()
-        self.assertIn('\n""   ^J2^J3^J\n', output)
+        self.assertIn('\n  c  ""   ^J2^J3^J\n', output)
 
     def test_truncate(self):
         self.visual('|xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx|')  # noqa: E501
         self.feed('y')
         self.feed(':registers')
         output = self.commandLineOutput()
-        self.assertIn('\n""   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ...\n', output)  # noqa: E501
+        self.assertIn('\n  c  ""   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ...\n', output)  # noqa: E501

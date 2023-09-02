@@ -41,6 +41,7 @@ from NeoVintageous.nv.registers import _SELECTION_AND_DROP
 from NeoVintageous.nv.registers import _SMALL_DELETE
 from NeoVintageous.nv.registers import _SPECIAL
 from NeoVintageous.nv.registers import _UNNAMED
+from NeoVintageous.nv.registers import _get
 from NeoVintageous.nv.registers import _get_data
 from NeoVintageous.nv.registers import _get_selected_text
 from NeoVintageous.nv.registers import _is_register_linewise
@@ -48,7 +49,6 @@ from NeoVintageous.nv.registers import _is_register_writable
 from NeoVintageous.nv.registers import _reset
 from NeoVintageous.nv.registers import _set_unnamed_register
 from NeoVintageous.nv.registers import get_alternate_file_register
-from NeoVintageous.nv.registers import registers_get
 from NeoVintageous.nv.registers import registers_get_all
 from NeoVintageous.nv.registers import registers_get_for_paste
 from NeoVintageous.nv.registers import registers_op_change
@@ -93,10 +93,10 @@ class Test_get_for_paste(RegistersTestCase):
         registers_op_yank(self.view)
         self.visual('x|buzz|x')
         self.assertEqual(registers_get_for_paste(self.view, '"', unittest.VISUAL), (['fizz'], False))
-        self.assertEqual(registers_get(self.view, '"'), ['buzz'])
+        self.assertEqual(_get(self.view, '"'), ['buzz'])
         self.visual('x|fizz|x')
         self.assertEqual(registers_get_for_paste(self.view, '"', unittest.VISUAL), (['buzz'], False))
-        self.assertEqual(registers_get(self.view, '"'), ['fizz'])
+        self.assertEqual(_get(self.view, '"'), ['fizz'])
 
     def test_get_for_paste_fills_existing_visual_selection_patched_linewise(self):
         self.visual('x|fizz|x')
@@ -184,49 +184,49 @@ class TestRegister(RegistersTestCase):
 
     def test_can_set_get_alpha_register(self):
         registers_set(self.view, 'a', ['x'])
-        self.assertEqual(registers_get(self.view, 'a'), ['x'])
+        self.assertEqual(_get(self.view, 'a'), ['x'])
 
     def test_can_set_get_alpha_uppercase_register(self):
         registers_set(self.view, 'B', ['x'])
-        self.assertEqual(registers_get(self.view, 'B'), ['x'])
-        self.assertEqual(registers_get(self.view, 'b'), ['x'])
+        self.assertEqual(_get(self.view, 'B'), ['x'])
+        self.assertEqual(_get(self.view, 'b'), ['x'])
 
     def test_set_get_uppercase_appends_to_register(self):
         registers_set(self.view, 'b', ['x'])
         registers_set(self.view, 'B', ['y'])
         registers_set(self.view, 'B', ['z'])
-        self.assertEqual(registers_get(self.view, 'B'), ['xyz'])
-        self.assertEqual(registers_get(self.view, 'b'), ['xyz'])
+        self.assertEqual(_get(self.view, 'B'), ['xyz'])
+        self.assertEqual(_get(self.view, 'b'), ['xyz'])
 
     def test_can_set_get_zero_register(self):
         registers_set(self.view, '0', ['x'])
-        self.assertEqual(registers_get(self.view, '0'), ['x'])
+        self.assertEqual(_get(self.view, '0'), ['x'])
 
     def test_can_set_get_digit_register(self):
         registers_set(self.view, '4', ['x'])
-        self.assertEqual(registers_get(self.view, '4'), ['x'])
+        self.assertEqual(_get(self.view, '4'), ['x'])
 
     def test_can_set_get_unnamed_register(self):
         registers_set(self.view, '"', ['x'])
-        self.assertEqual(registers_get(self.view, '"'), ['x'])
+        self.assertEqual(_get(self.view, '"'), ['x'])
 
     def test_can_set_get_clipboard_star_register(self):
         registers_set(self.view, '*', ['x'])
-        self.assertEqual(registers_get(self.view, '*'), ['x'])
+        self.assertEqual(_get(self.view, '*'), ['x'])
 
     def test_can_set_get_clipboard_plus_register(self):
         registers_set(self.view, '+', ['x'])
-        self.assertEqual(registers_get(self.view, '+'), ['x'])
+        self.assertEqual(_get(self.view, '+'), ['x'])
 
     def test_can_set_get_expression_register(self):
         registers_set(self.view, '=', ['x'])
-        self.assertEqual(registers_get(self.view, '='), ['x'])
+        self.assertEqual(_get(self.view, '='), ['x'])
         set_expression_register(['y'])
-        self.assertEqual(registers_get(self.view, '='), ['y'])
+        self.assertEqual(_get(self.view, '='), ['y'])
 
     def test_can_set_unanmed_register(self):
         _set_unnamed_register(["foo"])
-        self.assertEqual(registers_get(self.view, _UNNAMED), ["foo"])
+        self.assertEqual(_get(self.view, _UNNAMED), ["foo"])
 
     def test_setting_long_register_name_throws_assertion_error(self):
         with self.assertRaisesRegex(ValueError, 'Register names must be 1 char long: name'):
@@ -238,19 +238,19 @@ class TestRegister(RegistersTestCase):
 
     def test_register_data_is_always_stored_as_string(self):
         registers_set(self.view, '"', [100])
-        self.assertEqual(registers_get(self.view, _UNNAMED), ["100"])
+        self.assertEqual(_get(self.view, _UNNAMED), ["100"])
 
     def test_setting_black_hole_register_does_nothing(self):
         registers_set(self.view, _UNNAMED, ["bar"])
         # In this case it doesn't matter whether we're setting a list or not,
         # because we are discarding the value anyway.
         registers_set(self.view, _BLACK_HOLE, "foo")  # type: ignore[arg-type]
-        self.assertEqual(registers_get(self.view, _BLACK_HOLE), None)
-        self.assertEqual(registers_get(self.view, _UNNAMED), ["bar"])
+        self.assertEqual(_get(self.view, _BLACK_HOLE), None)
+        self.assertEqual(_get(self.view, _UNNAMED), ["bar"])
 
     def test_setting_expression_register_doesnt_populate_unnamed_register(self):
         registers_set(self.view, "=", [100])
-        self.assertEqual(registers_get(self.view, _EXPRESSION), ["100"])
+        self.assertEqual(_get(self.view, _EXPRESSION), ["100"])
 
     def test_can_set_normal_registers(self):
         for name in _NAMED:
@@ -260,17 +260,17 @@ class TestRegister(RegistersTestCase):
             registers_set(self.view, number, [number])
 
         for name in _NAMED:
-            self.assertEqual(registers_get(self.view, name), [name])
+            self.assertEqual(_get(self.view, name), [name])
 
         for number in _NUMBERED:
-            self.assertEqual(registers_get(self.view, number), [number])
+            self.assertEqual(_get(self.view, number), [number])
 
     def test_setting_normal_register_sets_unnamed_register_too(self):
         registers_set(self.view, 'a', [100])
-        self.assertEqual(registers_get(self.view, _UNNAMED), ['100'])
+        self.assertEqual(_get(self.view, _UNNAMED), ['100'])
 
         registers_set(self.view, '0', [200])
-        self.assertEqual(registers_get(self.view, _UNNAMED), ['200'])
+        self.assertEqual(_get(self.view, _UNNAMED), ['200'])
 
     def test_setting_register_sets_clipboard_if_needed(self):
         self.set_setting('use_sys_clipboard', True)
@@ -280,27 +280,27 @@ class TestRegister(RegistersTestCase):
     def test_can_append_to_single_value(self):
         registers_set(self.view, 'a', ['foo'])
         registers_set(self.view, 'A', ['bar'])
-        self.assertEqual(registers_get(self.view, 'a'), ['foobar'])
+        self.assertEqual(_get(self.view, 'a'), ['foobar'])
 
     def test_can_append_to_multiple_balanced_values(self):
         registers_set(self.view, 'a', ['foo', 'bar'])
         registers_set(self.view, 'A', ['fizz', 'buzz'])
-        self.assertEqual(registers_get(self.view, 'a'), ['foofizz', 'barbuzz'])
+        self.assertEqual(_get(self.view, 'a'), ['foofizz', 'barbuzz'])
 
     def test_can_append_to_multiple_values_more_existing_values(self):
         registers_set(self.view, 'a', ['foo', 'bar'])
         registers_set(self.view, 'A', ['fizz'])
-        self.assertEqual(registers_get(self.view, 'a'), ['foofizz', 'bar'])
+        self.assertEqual(_get(self.view, 'a'), ['foofizz', 'bar'])
 
     def test_can_append_to_multiple_values_more_new_values(self):
         registers_set(self.view, 'a', ['foo'])
         registers_set(self.view, 'A', ['fizz', 'buzz'])
-        self.assertEqual(registers_get(self.view, 'a'), ['foofizz', 'buzz'])
+        self.assertEqual(_get(self.view, 'a'), ['foofizz', 'buzz'])
 
     def test_appending_sets_default_register(self):
         registers_set(self.view, 'a', ['foo'])
         registers_set(self.view, 'A', ['bar'])
-        self.assertEqual(registers_get(self.view, _UNNAMED), ['foobar'])
+        self.assertEqual(_get(self.view, _UNNAMED), ['foobar'])
 
     def test_append_sets_clipboard_if_needed(self):
         self.set_setting('use_sys_clipboard', True)
@@ -311,89 +311,93 @@ class TestRegister(RegistersTestCase):
     def test_get_default_to_unnamed_register(self):
         registers_set(self.view, '"', ['foo'])
         self.set_setting('use_sys_clipboard', False)
-        self.assertEqual(registers_get(self.view, _UNNAMED), ['foo'])
+        self.assertEqual(_get(self.view, _UNNAMED), ['foo'])
 
     def test_getting_black_hole_register_returns_none(self):
-        self.assertEqual(registers_get(self.view, _BLACK_HOLE), None)
+        self.assertEqual(_get(self.view, _BLACK_HOLE), None)
 
     def test_can_get_file_name_register(self):
         def fn(): return 'fizz'  # noqa: E704
         self.view.file_name = fn  # type: ignore[method-assign]
-        self.assertEqual(registers_get(self.view, _CURRENT_FILE_NAME), ['fizz'])
+        self.assertEqual(_get(self.view, _CURRENT_FILE_NAME), ['fizz'])
 
     def test_can_get_file_name_register_none(self):
         def fn(): return None  # noqa: E704
         self.view.file_name = fn  # type: ignore[method-assign]
-        self.assertEqual(registers_get(self.view, _CURRENT_FILE_NAME), None)
+        self.assertEqual(_get(self.view, _CURRENT_FILE_NAME), None)
 
     def test_returns_empty_string_if_file_name_not_found_or_error(self):
         self.view.file_name = unittest.mock.Mock(side_effect=AttributeError('error'))  # type: ignore[method-assign]
-        self.assertEqual(registers_get(self.view, _CURRENT_FILE_NAME), None)
+        self.assertEqual(_get(self.view, _CURRENT_FILE_NAME), None)
 
     def test_can_get_clipboard_registers(self):
         registers_set(self.view, _CLIPBOARD_STAR, ['foo'])
-        self.assertEqual(registers_get(self.view, _CLIPBOARD_STAR), ['foo'])
-        self.assertEqual(registers_get(self.view, _CLIPBOARD_PLUS), ['foo'])
+        self.assertEqual(_get(self.view, _CLIPBOARD_STAR), ['foo'])
+        self.assertEqual(_get(self.view, _CLIPBOARD_PLUS), ['foo'])
 
         registers_set(self.view, _CLIPBOARD_PLUS, ['bar'])
-        self.assertEqual(registers_get(self.view, _CLIPBOARD_STAR), ['bar'])
-        self.assertEqual(registers_get(self.view, _CLIPBOARD_PLUS), ['bar'])
+        self.assertEqual(_get(self.view, _CLIPBOARD_STAR), ['bar'])
+        self.assertEqual(_get(self.view, _CLIPBOARD_PLUS), ['bar'])
 
     def test_get_sys_clipboard_always_if_requested(self):
         self.set_setting('use_sys_clipboard', True)
         set_clipboard('foo')
-        self.assertEqual(registers_get(self.view, _UNNAMED), ['foo'])
+        self.assertEqual(_get(self.view, _UNNAMED), ['foo'])
 
     def test_getting_expression_register_clears_expression_register(self):
         registers_set(self.view, _EXPRESSION, ['100'])
         self.set_setting('use_sys_clipboard', False)
-        self.assertEqual(registers_get(self.view, _UNNAMED), ['100'])
-        self.assertEqual(registers_get(self.view, _EXPRESSION), [])
+        self.assertEqual(_get(self.view, _UNNAMED), ['100'])
+        self.assertEqual(_get(self.view, _EXPRESSION), [])
 
     def test_can_get_number_register(self):
         registers_set(self.view, '4', ['foo'])
-        self.assertEqual(registers_get(self.view, '4'), ['foo'])
+        self.assertEqual(_get(self.view, '4'), ['foo'])
 
     def test_can_get_register_even_if_requesting_it_through_a_capital_letter(self):
         registers_set(self.view, 'a', ['foo'])
-        self.assertEqual(registers_get(self.view, 'A'), ['foo'])
+        self.assertEqual(_get(self.view, 'A'), ['foo'])
 
     def test_can_get_registers_with_dict_syntax(self):
         registers_set(self.view, 'a', ['foo'])
-        self.assertEqual(registers_get(self.view, 'a'), registers_get(self.view, 'a'))
+        self.assertEqual(_get(self.view, 'a'), _get(self.view, 'a'))
 
     def test_can_set_registers_with_dict_syntax(self):
         registers_set(self.view, 'a', ['100'])
-        self.assertEqual(registers_get(self.view, 'a'), ['100'])
+        self.assertEqual(_get(self.view, 'a'), ['100'])
 
     def test_can_append_to_registe_with_dict_syntax(self):
         registers_set(self.view, 'a', ['100'])
         registers_set(self.view, 'A', ['100'])
-        self.assertEqual(registers_get(self.view, 'a'), ['100100'])
+        self.assertEqual(_get(self.view, 'a'), ['100100'])
 
-    def test_can_convert_to_dict(self):
+    def test_get_all(self):
         registers_set(self.view, 'a', ['100'])
         registers_set(self.view, 'b', ['200'])
-        values = {name: registers_get(self.view, name) for name in _ALL}
-        values.update({'a': ['100'], 'b': ['200']})
-        self.assertEqual(registers_get_all(self.view), values)
+        self.assertEqual(list(registers_get_all(self.view)), [
+            ('c', '+', ['']),
+            ('c', '*', ['']),
+            ('c', '"', ['200']),
+            ('c', 'a', ['100']),
+            ('c', 'b', ['200']),
+        ])
 
     def test_getting_empty_register_returns_none(self):
-        self.assertEqual(registers_get(self.view, 'a'), None)
+        self.assertEqual(_get(self.view, 'a'), None)
 
     def test_can_set_small_delete_register(self):
         registers_set(self.view, _SMALL_DELETE, ['foo'])
-        self.assertEqual(registers_get(self.view, _SMALL_DELETE), ['foo'])
+        self.assertEqual(_get(self.view, _SMALL_DELETE), ['foo'])
 
     def test_can_get_small_delete_register(self):
         registers_set(self.view, _SMALL_DELETE, ['foo'])
-        self.assertEqual(registers_get(self.view, _SMALL_DELETE), ['foo'])
+        self.assertEqual(_get(self.view, _SMALL_DELETE), ['foo'])
 
     def test_alternate_file_register(self):
         self.assertIsNone(get_alternate_file_register())
         set_alternate_file_register('fname')
         self.assertEqual(get_alternate_file_register(), 'fname')
-        self.assertEqual(registers_get(self.view, _ALTERNATE_FILE), ['fname'])
+        self.assertEqual(_get(self.view, _ALTERNATE_FILE), ['fname'])
         self.assertEqual(registers_get_for_paste(self.view, _ALTERNATE_FILE, unittest.NORMAL), (['fname'], False))
 
 
@@ -473,10 +477,10 @@ class Test_op_change(RegistersTestCase):
     def test_op_change(self):
         self.visual('fi|zz bu|zz')
         registers_op_change(self.view)
-        self.assertEqual(registers_get(self.view, '"'), ['zz bu'])
-        self.assertEqual(registers_get(self.view, '-'), ['zz bu'])
-        self.assertEqual(registers_get(self.view, '0'), None)
-        self.assertEqual(registers_get(self.view, '1'), None)
+        self.assertEqual(_get(self.view, '"'), ['zz bu'])
+        self.assertEqual(_get(self.view, '-'), ['zz bu'])
+        self.assertEqual(_get(self.view, '0'), None)
+        self.assertEqual(_get(self.view, '1'), None)
         self.assertFalse(_is_register_linewise('"'))
         self.assertFalse(_is_register_linewise('-'))
         self.assertEqual(registers_get_for_paste(self.view, '"', unittest.INTERNAL_NORMAL), (['zz bu'], False))
@@ -488,18 +492,18 @@ class Test_op_delete(RegistersTestCase):
     def test_op_delete(self):
         self.visual('fi|zz bu|zz')
         registers_op_delete(self.view)
-        self.assertEqual(registers_get(self.view, '"'), ['zz bu'])
-        self.assertEqual(registers_get(self.view, '-'), ['zz bu'])
-        self.assertEqual(registers_get(self.view, '0'), None)
-        self.assertEqual(registers_get(self.view, '1'), None)
-        self.assertEqual(registers_get(self.view, '2'), None)
-        self.assertEqual(registers_get(self.view, '3'), None)
-        self.assertEqual(registers_get(self.view, '4'), None)
-        self.assertEqual(registers_get(self.view, '5'), None)
-        self.assertEqual(registers_get(self.view, '6'), None)
-        self.assertEqual(registers_get(self.view, '7'), None)
-        self.assertEqual(registers_get(self.view, '8'), None)
-        self.assertEqual(registers_get(self.view, '9'), None)
+        self.assertEqual(_get(self.view, '"'), ['zz bu'])
+        self.assertEqual(_get(self.view, '-'), ['zz bu'])
+        self.assertEqual(_get(self.view, '0'), None)
+        self.assertEqual(_get(self.view, '1'), None)
+        self.assertEqual(_get(self.view, '2'), None)
+        self.assertEqual(_get(self.view, '3'), None)
+        self.assertEqual(_get(self.view, '4'), None)
+        self.assertEqual(_get(self.view, '5'), None)
+        self.assertEqual(_get(self.view, '6'), None)
+        self.assertEqual(_get(self.view, '7'), None)
+        self.assertEqual(_get(self.view, '8'), None)
+        self.assertEqual(_get(self.view, '9'), None)
         self.assertFalse(_is_register_linewise('"'))
         self.assertFalse(_is_register_linewise('-'))
         self.assertEqual(registers_get_for_paste(self.view, '"', unittest.INTERNAL_NORMAL), (['zz bu'], False))
@@ -508,18 +512,18 @@ class Test_op_delete(RegistersTestCase):
     def test_op_delete_multiline(self):
         self.visual('fi|zz\nbu|zz')
         registers_op_delete(self.view)
-        self.assertEqual(registers_get(self.view, '"'), ['zz\nbu'])
-        self.assertEqual(registers_get(self.view, '-'), None)
-        self.assertEqual(registers_get(self.view, '0'), None)
-        self.assertEqual(registers_get(self.view, '1'), ['zz\nbu'])
-        self.assertEqual(registers_get(self.view, '2'), None)
-        self.assertEqual(registers_get(self.view, '3'), None)
-        self.assertEqual(registers_get(self.view, '4'), None)
-        self.assertEqual(registers_get(self.view, '5'), None)
-        self.assertEqual(registers_get(self.view, '6'), None)
-        self.assertEqual(registers_get(self.view, '7'), None)
-        self.assertEqual(registers_get(self.view, '8'), None)
-        self.assertEqual(registers_get(self.view, '9'), None)
+        self.assertEqual(_get(self.view, '"'), ['zz\nbu'])
+        self.assertEqual(_get(self.view, '-'), None)
+        self.assertEqual(_get(self.view, '0'), None)
+        self.assertEqual(_get(self.view, '1'), ['zz\nbu'])
+        self.assertEqual(_get(self.view, '2'), None)
+        self.assertEqual(_get(self.view, '3'), None)
+        self.assertEqual(_get(self.view, '4'), None)
+        self.assertEqual(_get(self.view, '5'), None)
+        self.assertEqual(_get(self.view, '6'), None)
+        self.assertEqual(_get(self.view, '7'), None)
+        self.assertEqual(_get(self.view, '8'), None)
+        self.assertEqual(_get(self.view, '9'), None)
         self.assertFalse(_is_register_linewise('"'))
         self.assertFalse(_is_register_linewise('1'))
         self.assertEqual(registers_get_for_paste(self.view, '"', unittest.INTERNAL_NORMAL), (['zz\nbu'], False))
@@ -528,10 +532,10 @@ class Test_op_delete(RegistersTestCase):
     def test_op_delete_linewise(self):
         self.visual('f|iz|z')
         registers_op_delete(self.view, linewise=True)
-        self.assertEqual(registers_get(self.view, '"'), ['iz\n'])
-        self.assertEqual(registers_get(self.view, '-'), None)
-        self.assertEqual(registers_get(self.view, '0'), None)
-        self.assertEqual(registers_get(self.view, '1'), ['iz\n'])
+        self.assertEqual(_get(self.view, '"'), ['iz\n'])
+        self.assertEqual(_get(self.view, '-'), None)
+        self.assertEqual(_get(self.view, '0'), None)
+        self.assertEqual(_get(self.view, '1'), ['iz\n'])
         self.assertTrue(_is_register_linewise('"'))
         self.assertTrue(_is_register_linewise('1'))
         self.assertEqual(registers_get_for_paste(self.view, '"', unittest.INTERNAL_NORMAL), (['iz\n'], True))
@@ -540,11 +544,11 @@ class Test_op_delete(RegistersTestCase):
     def test_op_delete_into_alpha_register(self):
         self.visual('fi|zz\nbu|zz')
         registers_op_delete(self.view, register='d')
-        self.assertEqual(registers_get(self.view, '"'), ['zz\nbu'])
-        self.assertEqual(registers_get(self.view, '-'), None)
-        self.assertEqual(registers_get(self.view, 'd'), ['zz\nbu'])
-        self.assertEqual(registers_get(self.view, '0'), None)
-        self.assertEqual(registers_get(self.view, '1'), None)
+        self.assertEqual(_get(self.view, '"'), ['zz\nbu'])
+        self.assertEqual(_get(self.view, '-'), None)
+        self.assertEqual(_get(self.view, 'd'), ['zz\nbu'])
+        self.assertEqual(_get(self.view, '0'), None)
+        self.assertEqual(_get(self.view, '1'), None)
         self.assertFalse(_is_register_linewise('"'))
         self.assertFalse(_is_register_linewise('d'))
         self.assertEqual(registers_get_for_paste(self.view, '"', unittest.INTERNAL_NORMAL), (['zz\nbu'], False))
@@ -553,11 +557,11 @@ class Test_op_delete(RegistersTestCase):
     def test_op_delete_into_numbered_register(self):
         self.visual('fi|zz\nbu|zz')
         registers_op_delete(self.view, register='8')
-        self.assertEqual(registers_get(self.view, '"'), ['zz\nbu'])
-        self.assertEqual(registers_get(self.view, '-'), None)
-        self.assertEqual(registers_get(self.view, '8'), ['zz\nbu'])
-        self.assertEqual(registers_get(self.view, '0'), None)
-        self.assertEqual(registers_get(self.view, '1'), None)
+        self.assertEqual(_get(self.view, '"'), ['zz\nbu'])
+        self.assertEqual(_get(self.view, '-'), None)
+        self.assertEqual(_get(self.view, '8'), ['zz\nbu'])
+        self.assertEqual(_get(self.view, '0'), None)
+        self.assertEqual(_get(self.view, '1'), None)
         self.assertFalse(_is_register_linewise('"'))
         self.assertFalse(_is_register_linewise('8'))
         self.assertEqual(registers_get_for_paste(self.view, '"', unittest.INTERNAL_NORMAL), (['zz\nbu'], False))
@@ -572,18 +576,18 @@ class Test_op_delete(RegistersTestCase):
             self.visual('a|x\n{}|b'.format(i))
             registers_op_delete(self.view)
 
-        self.assertEqual(registers_get(self.view, '"'), ['x\n1'])
-        self.assertEqual(registers_get(self.view, '-'), None)
-        self.assertEqual(registers_get(self.view, '0'), None)
-        self.assertEqual(registers_get(self.view, '1'), ['x\n1'])
-        self.assertEqual(registers_get(self.view, '2'), ['x\n2'])
-        self.assertEqual(registers_get(self.view, '3'), ['x\n3'])
-        self.assertEqual(registers_get(self.view, '4'), ['x\n4'])
-        self.assertEqual(registers_get(self.view, '5'), ['x\n5'])
-        self.assertEqual(registers_get(self.view, '6'), ['x\n6'])
-        self.assertEqual(registers_get(self.view, '7'), ['x\n7'])
-        self.assertEqual(registers_get(self.view, '8'), ['x\n8'])
-        self.assertEqual(registers_get(self.view, '9'), ['x\n9'])
+        self.assertEqual(_get(self.view, '"'), ['x\n1'])
+        self.assertEqual(_get(self.view, '-'), None)
+        self.assertEqual(_get(self.view, '0'), None)
+        self.assertEqual(_get(self.view, '1'), ['x\n1'])
+        self.assertEqual(_get(self.view, '2'), ['x\n2'])
+        self.assertEqual(_get(self.view, '3'), ['x\n3'])
+        self.assertEqual(_get(self.view, '4'), ['x\n4'])
+        self.assertEqual(_get(self.view, '5'), ['x\n5'])
+        self.assertEqual(_get(self.view, '6'), ['x\n6'])
+        self.assertEqual(_get(self.view, '7'), ['x\n7'])
+        self.assertEqual(_get(self.view, '8'), ['x\n8'])
+        self.assertEqual(_get(self.view, '9'), ['x\n9'])
         self.assertEqual(len(_get_data()['1-9']), 9)
         self.assertFalse(_is_register_linewise('"'))
         self.assertFalse(_is_register_linewise('8'))
@@ -598,10 +602,10 @@ class Test_op_yank(RegistersTestCase):
     def test_op_yank(self):
         self.visual('fi|zz bu|zz')
         registers_op_yank(self.view)
-        self.assertEqual(registers_get(self.view, '"'), ['zz bu'])
-        self.assertEqual(registers_get(self.view, '-'), None)
-        self.assertEqual(registers_get(self.view, '0'), ['zz bu'])
-        self.assertEqual(registers_get(self.view, '1'), None)
+        self.assertEqual(_get(self.view, '"'), ['zz bu'])
+        self.assertEqual(_get(self.view, '-'), None)
+        self.assertEqual(_get(self.view, '0'), ['zz bu'])
+        self.assertEqual(_get(self.view, '1'), None)
         self.assertFalse(_is_register_linewise('"'))
         self.assertFalse(_is_register_linewise('1'))
         self.assertEqual(registers_get_for_paste(self.view, '"', unittest.INTERNAL_NORMAL), (['zz bu'], False))
@@ -610,10 +614,10 @@ class Test_op_yank(RegistersTestCase):
     def test_op_yank_multiline(self):
         self.visual('fi|zz\nbu|zz')
         registers_op_yank(self.view)
-        self.assertEqual(registers_get(self.view, '"'), ['zz\nbu'])
-        self.assertEqual(registers_get(self.view, '-'), None)
-        self.assertEqual(registers_get(self.view, '0'), ['zz\nbu'])
-        self.assertEqual(registers_get(self.view, '1'), None)
+        self.assertEqual(_get(self.view, '"'), ['zz\nbu'])
+        self.assertEqual(_get(self.view, '-'), None)
+        self.assertEqual(_get(self.view, '0'), ['zz\nbu'])
+        self.assertEqual(_get(self.view, '1'), None)
         self.assertFalse(_is_register_linewise('"'))
         self.assertFalse(_is_register_linewise('0'))
         self.assertEqual(registers_get_for_paste(self.view, '"', unittest.INTERNAL_NORMAL), (['zz\nbu'], False))
@@ -622,83 +626,83 @@ class Test_op_yank(RegistersTestCase):
     def test_op_yank_linewise(self):
         self.visual('fi|zz bu|zz')
         registers_op_yank(self.view, linewise=True)
-        self.assertEqual(registers_get(self.view, '"'), ['zz bu\n'])
-        self.assertEqual(registers_get(self.view, '-'), None)
-        self.assertEqual(registers_get(self.view, '0'), ['zz bu\n'])
-        self.assertEqual(registers_get(self.view, '1'), None)
+        self.assertEqual(_get(self.view, '"'), ['zz bu\n'])
+        self.assertEqual(_get(self.view, '-'), None)
+        self.assertEqual(_get(self.view, '0'), ['zz bu\n'])
+        self.assertEqual(_get(self.view, '1'), None)
         self.assertTrue(_is_register_linewise('"'))
         self.assertTrue(_is_register_linewise('0'))
 
     def test_op_yank_linewise_maybe_when_no_newline(self):
         self.visual('fi|zz bu|zz')
         registers_op_yank(self.view, linewise='maybe')
-        self.assertEqual(registers_get(self.view, '"'), ['zz bu'])
-        self.assertEqual(registers_get(self.view, '-'), None)
-        self.assertEqual(registers_get(self.view, '0'), ['zz bu'])
-        self.assertEqual(registers_get(self.view, '1'), None)
+        self.assertEqual(_get(self.view, '"'), ['zz bu'])
+        self.assertEqual(_get(self.view, '-'), None)
+        self.assertEqual(_get(self.view, '0'), ['zz bu'])
+        self.assertEqual(_get(self.view, '1'), None)
         self.assertFalse(_is_register_linewise('"'))
         self.assertFalse(_is_register_linewise('0'))
 
     def test_op_yank_linewise_maybe_when_newline(self):
         self.visual('fi|zz bu\n|zz')
         registers_op_yank(self.view, linewise='maybe')
-        self.assertEqual(registers_get(self.view, '"'), ['zz bu\n'])
-        self.assertEqual(registers_get(self.view, '-'), None)
-        self.assertEqual(registers_get(self.view, '0'), ['zz bu\n'])
-        self.assertEqual(registers_get(self.view, '1'), None)
+        self.assertEqual(_get(self.view, '"'), ['zz bu\n'])
+        self.assertEqual(_get(self.view, '-'), None)
+        self.assertEqual(_get(self.view, '0'), ['zz bu\n'])
+        self.assertEqual(_get(self.view, '1'), None)
         self.assertTrue(_is_register_linewise('"'))
         self.assertTrue(_is_register_linewise('0'))
 
     def test_op_yank_into_alpha_register(self):
         self.visual('fi|zzxbu|zz')
         registers_op_yank(self.view, register='x')
-        self.assertEqual(registers_get(self.view, '"'), ['zzxbu'])
-        self.assertEqual(registers_get(self.view, '-'), None)
-        self.assertEqual(registers_get(self.view, 'x'), ['zzxbu'])
-        self.assertEqual(registers_get(self.view, '0'), None)
-        self.assertEqual(registers_get(self.view, '1'), None)
+        self.assertEqual(_get(self.view, '"'), ['zzxbu'])
+        self.assertEqual(_get(self.view, '-'), None)
+        self.assertEqual(_get(self.view, 'x'), ['zzxbu'])
+        self.assertEqual(_get(self.view, '0'), None)
+        self.assertEqual(_get(self.view, '1'), None)
         self.assertFalse(_is_register_linewise('"'))
         self.assertFalse(_is_register_linewise('x'))
 
     def test_op_yank_into_alpha_register_linewise(self):
         self.visual('fi\n|zz bu\n|zz')
         registers_op_yank(self.view, register='x', linewise=True)
-        self.assertEqual(registers_get(self.view, '"'), ['zz bu\n'])
-        self.assertEqual(registers_get(self.view, '-'), None)
-        self.assertEqual(registers_get(self.view, 'x'), ['zz bu\n'])
-        self.assertEqual(registers_get(self.view, '0'), None)
-        self.assertEqual(registers_get(self.view, '1'), None)
+        self.assertEqual(_get(self.view, '"'), ['zz bu\n'])
+        self.assertEqual(_get(self.view, '-'), None)
+        self.assertEqual(_get(self.view, 'x'), ['zz bu\n'])
+        self.assertEqual(_get(self.view, '0'), None)
+        self.assertEqual(_get(self.view, '1'), None)
         self.assertTrue(_is_register_linewise('"'))
         self.assertTrue(_is_register_linewise('x'))
 
     def test_op_yank_into_alpha_register_uppercase_append(self):
         self.visual('fizz\n|bu\n|zz')
         registers_op_yank(self.view, register='X')
-        self.assertEqual(registers_get(self.view, '"'), ['bu\n'])
-        self.assertEqual(registers_get(self.view, '-'), None)
-        self.assertEqual(registers_get(self.view, 'x'), ['bu\n'])
-        self.assertEqual(registers_get(self.view, '0'), None)
-        self.assertEqual(registers_get(self.view, '1'), None)
+        self.assertEqual(_get(self.view, '"'), ['bu\n'])
+        self.assertEqual(_get(self.view, '-'), None)
+        self.assertEqual(_get(self.view, 'x'), ['bu\n'])
+        self.assertEqual(_get(self.view, '0'), None)
+        self.assertEqual(_get(self.view, '1'), None)
         self.assertFalse(_is_register_linewise('"'))
         self.assertFalse(_is_register_linewise('x'))
         self.visual('fi\n|zz\n|buzz')
         registers_op_yank(self.view, register='X')
-        self.assertEqual(registers_get(self.view, 'x'), ['bu\nzz\n'])
+        self.assertEqual(_get(self.view, 'x'), ['bu\nzz\n'])
         self.assertFalse(_is_register_linewise('x'))
 
     def test_op_yank_into_alpha_register_uppercase_linewise_append(self):
         self.visual('fizz\n|bu\n|zz')
         registers_op_yank(self.view, register='X', linewise=True)
-        self.assertEqual(registers_get(self.view, '"'), ['bu\n'])
-        self.assertEqual(registers_get(self.view, '-'), None)
-        self.assertEqual(registers_get(self.view, 'x'), ['bu\n'])
-        self.assertEqual(registers_get(self.view, '0'), None)
-        self.assertEqual(registers_get(self.view, '1'), None)
+        self.assertEqual(_get(self.view, '"'), ['bu\n'])
+        self.assertEqual(_get(self.view, '-'), None)
+        self.assertEqual(_get(self.view, 'x'), ['bu\n'])
+        self.assertEqual(_get(self.view, '0'), None)
+        self.assertEqual(_get(self.view, '1'), None)
         self.assertTrue(_is_register_linewise('"'))
         self.assertTrue(_is_register_linewise('x'))
         self.visual('fi\n|zz\n|buzz')
         registers_op_yank(self.view, register='X', linewise=True)
-        self.assertEqual(registers_get(self.view, 'x'), ['bu\nzz\n'])
+        self.assertEqual(_get(self.view, 'x'), ['bu\nzz\n'])
         self.assertTrue(_is_register_linewise('x'))
         self.assertEqual(registers_get_for_paste(self.view, '"', unittest.INTERNAL_NORMAL), (['bu\nzz\n'], True))
         self.assertEqual(registers_get_for_paste(self.view, 'x', unittest.INTERNAL_NORMAL), (['bu\nzz\n'], True))
@@ -706,35 +710,35 @@ class Test_op_yank(RegistersTestCase):
     def test_op_yank_into_numbered_register(self):
         self.visual('fi|zz bu|zz')
         registers_op_yank(self.view, register='4')
-        self.assertEqual(registers_get(self.view, '"'), ['zz bu'])
-        self.assertEqual(registers_get(self.view, '-'), None)
-        self.assertEqual(registers_get(self.view, '0'), None)
-        self.assertEqual(registers_get(self.view, '1'), None)
-        self.assertEqual(registers_get(self.view, '2'), None)
-        self.assertEqual(registers_get(self.view, '3'), None)
-        self.assertEqual(registers_get(self.view, '4'), ['zz bu'])
-        self.assertEqual(registers_get(self.view, '5'), None)
-        self.assertEqual(registers_get(self.view, '6'), None)
-        self.assertEqual(registers_get(self.view, '7'), None)
-        self.assertEqual(registers_get(self.view, '8'), None)
-        self.assertEqual(registers_get(self.view, '9'), None)
+        self.assertEqual(_get(self.view, '"'), ['zz bu'])
+        self.assertEqual(_get(self.view, '-'), None)
+        self.assertEqual(_get(self.view, '0'), None)
+        self.assertEqual(_get(self.view, '1'), None)
+        self.assertEqual(_get(self.view, '2'), None)
+        self.assertEqual(_get(self.view, '3'), None)
+        self.assertEqual(_get(self.view, '4'), ['zz bu'])
+        self.assertEqual(_get(self.view, '5'), None)
+        self.assertEqual(_get(self.view, '6'), None)
+        self.assertEqual(_get(self.view, '7'), None)
+        self.assertEqual(_get(self.view, '8'), None)
+        self.assertEqual(_get(self.view, '9'), None)
         self.assertFalse(_is_register_linewise('"'))
         self.assertFalse(_is_register_linewise('4'))
 
     def test_op_yank_into_linewise_numbered_register(self):
         self.visual('fi\n|zz bu\n|zz')
         registers_op_yank(self.view, register='3', linewise=True)
-        self.assertEqual(registers_get(self.view, '"'), ['zz bu\n'])
-        self.assertEqual(registers_get(self.view, '-'), None)
-        self.assertEqual(registers_get(self.view, '0'), None)
-        self.assertEqual(registers_get(self.view, '1'), None)
-        self.assertEqual(registers_get(self.view, '2'), None)
-        self.assertEqual(registers_get(self.view, '3'), ['zz bu\n'])
-        self.assertEqual(registers_get(self.view, '4'), None)
-        self.assertEqual(registers_get(self.view, '5'), None)
-        self.assertEqual(registers_get(self.view, '6'), None)
-        self.assertEqual(registers_get(self.view, '7'), None)
-        self.assertEqual(registers_get(self.view, '8'), None)
-        self.assertEqual(registers_get(self.view, '9'), None)
+        self.assertEqual(_get(self.view, '"'), ['zz bu\n'])
+        self.assertEqual(_get(self.view, '-'), None)
+        self.assertEqual(_get(self.view, '0'), None)
+        self.assertEqual(_get(self.view, '1'), None)
+        self.assertEqual(_get(self.view, '2'), None)
+        self.assertEqual(_get(self.view, '3'), ['zz bu\n'])
+        self.assertEqual(_get(self.view, '4'), None)
+        self.assertEqual(_get(self.view, '5'), None)
+        self.assertEqual(_get(self.view, '6'), None)
+        self.assertEqual(_get(self.view, '7'), None)
+        self.assertEqual(_get(self.view, '8'), None)
+        self.assertEqual(_get(self.view, '9'), None)
         self.assertTrue(_is_register_linewise('"'))
         self.assertTrue(_is_register_linewise('3'))

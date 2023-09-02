@@ -4,6 +4,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ## 1.33.0 - Unreleased
 
+### Added
+
+- [#961](https://github.com/NeoVintageous/NeoVintageous/issues/961): Add "Type" column to `:registers` output to indicate linewise or characterwise
+
 ### Fixed
 
 - [#962](https://github.com/NeoVintageous/NeoVintageous/issues/962): `zt` should leave the cursor in the same column

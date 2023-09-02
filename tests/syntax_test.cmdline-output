@@ -33,10 +33,13 @@ xx   a^Vb^Vc
 Press ENTER to continue
 " ^^^^^^^^^^^^^^^^^^^^^ markup.raw.inline
 
-Name Content
+Type Name Content
 "^^^^^^^^^^^ entity.name.cmdline-output
 
    Name Content
+"^^^^^^^^^^^^^^ -entity.name.cmdline-output
+
+   Type Name Content
 "^^^^^^^^^^^^^^ -entity.name.cmdline-output
 
 mark line  col file/text

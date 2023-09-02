@@ -219,12 +219,11 @@ def _get(view, name: str = _UNNAMED):
     return _get_data_values(name.lower())
 
 
-def registers_get(view, key: str):
-    return _get(view, key)
-
-
-def registers_get_all(view) -> dict:
-    return {name: _get(view, name) for name in _ALL}
+def registers_get_all(view):
+    for name in _ALL:
+        content = _get(view, name)
+        if content:
+            yield ('l' if _is_register_linewise(name) else 'c', name, content)
 
 
 def registers_get_for_paste(view, register: str, mode: str) -> tuple:
