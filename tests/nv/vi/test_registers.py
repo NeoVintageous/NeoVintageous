@@ -478,13 +478,13 @@ class Test_op_change(RegistersTestCase):
         self.visual('fi|zz bu|zz')
         registers_op_change(self.view)
         self.assertEqual(_get(self.view, '"'), ['zz bu'])
-        self.assertEqual(_get(self.view, '-'), ['zz bu'])
+        self.assertEqual(_get(self.view, '-'), None)
         self.assertEqual(_get(self.view, '0'), None)
         self.assertEqual(_get(self.view, '1'), None)
         self.assertFalse(_is_register_linewise('"'))
         self.assertFalse(_is_register_linewise('-'))
         self.assertEqual(registers_get_for_paste(self.view, '"', unittest.INTERNAL_NORMAL), (['zz bu'], False))
-        self.assertEqual(registers_get_for_paste(self.view, '-', unittest.INTERNAL_NORMAL), (['zz bu'], False))
+        self.assertEqual(registers_get_for_paste(self.view, '-', unittest.INTERNAL_NORMAL), ([], False))
 
 
 class Test_op_delete(RegistersTestCase):
@@ -493,7 +493,7 @@ class Test_op_delete(RegistersTestCase):
         self.visual('fi|zz bu|zz')
         registers_op_delete(self.view)
         self.assertEqual(_get(self.view, '"'), ['zz bu'])
-        self.assertEqual(_get(self.view, '-'), ['zz bu'])
+        self.assertEqual(_get(self.view, '-'), None)
         self.assertEqual(_get(self.view, '0'), None)
         self.assertEqual(_get(self.view, '1'), None)
         self.assertEqual(_get(self.view, '2'), None)
@@ -507,7 +507,7 @@ class Test_op_delete(RegistersTestCase):
         self.assertFalse(_is_register_linewise('"'))
         self.assertFalse(_is_register_linewise('-'))
         self.assertEqual(registers_get_for_paste(self.view, '"', unittest.INTERNAL_NORMAL), (['zz bu'], False))
-        self.assertEqual(registers_get_for_paste(self.view, '-', unittest.INTERNAL_NORMAL), (['zz bu'], False))
+        self.assertEqual(registers_get_for_paste(self.view, '-', unittest.INTERNAL_NORMAL), ([], False))
 
     def test_op_delete_multiline(self):
         self.visual('fi|zz\nbu|zz')

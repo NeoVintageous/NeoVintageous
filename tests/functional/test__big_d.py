@@ -57,3 +57,4 @@ class Test_D(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertNormal('|f\n')
         self.assertRegister('"izz')
         self.assertRegister('aizz')
+        self.assertRegisterEmpty('-')

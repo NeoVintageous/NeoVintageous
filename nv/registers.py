@@ -406,7 +406,7 @@ def _op(view, operation: str, register: str = None, linewise=False) -> None:
         maybe_do_runtime_save_session()
 
     # The small delete register.
-    if operation in ('change', 'delete') and not multiline:
+    if register == _UNNAMED and operation in ('change', 'delete') and not multiline:
         # TODO Improve small delete register implementation.
         is_same_line = (lambda r: view.line(r.begin()) == view.line(r.end() - 1))
         if all(is_same_line(x) for x in list(view.sel())):

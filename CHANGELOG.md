@@ -6,13 +6,14 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
-* [#964](https://github.com/NeoVintageous/NeoVintageous/issues/964): Adds `N` alias for `Q`, `k`, or `CTRL-p` in multiple cursor mode.
-* [#964](https://github.com/NeoVintageous/NeoVintageous/issues/964): Adds `TAB` alias for `Esc` or `J` in multiple cursor mode.
-* [#942](https://github.com/NeoVintageous/NeoVintageous/issues/942): Adds `TAB` alias for `Esc` or `J` in multiple cursor mode.
+- [#964](https://github.com/NeoVintageous/NeoVintageous/issues/964): Adds `N` alias for `Q`, `k`, or `CTRL-p` in multiple cursor mode.
+- [#964](https://github.com/NeoVintageous/NeoVintageous/issues/964): Adds `TAB` alias for `Esc` or `J` in multiple cursor mode.
+- [#942](https://github.com/NeoVintageous/NeoVintageous/issues/942): Adds `TAB` alias for `Esc` or `J` in multiple cursor mode.
 - [#961](https://github.com/NeoVintageous/NeoVintageous/issues/961): Add "Type" column to `:registers` output to indicate linewise or characterwise
 
 ### Fixed
 
+- [#963](https://github.com/NeoVintageous/NeoVintageous/issues/963): Small delete should not be populated when register is specified
 - [#962](https://github.com/NeoVintageous/NeoVintageous/issues/962): `zt` should leave the cursor in the same column
 - [#962](https://github.com/NeoVintageous/NeoVintageous/issues/962): `zb` should leave the cursor in the same column
 - [#962](https://github.com/NeoVintageous/NeoVintageous/issues/962): `zz` should leave the cursor in the same column

@@ -221,6 +221,7 @@ class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertNormal('f|buzz')
         self.assertRegister('"izz ')
         self.assertRegister('aizz ')
+        self.assertRegisterEmpty('-')
 
     def test_dw_with_motion_count(self):
         self.normal('1|11 222 333 444 555 666 777 888')

@@ -1557,6 +1557,7 @@ _SEQ2CMD = {
     '"Byy':         {'command': 'nv_feed_key'},  # noqa: E241
     '"_y':          {'command': 'nv_feed_key'},  # noqa: E241
     '"_yiw':        {'command': 'nv_feed_key'},  # noqa: E241
+    '"a':           {'command': 'nv_feed_key'},  # noqa: E241
     '"aY':          {'command': 'nv_feed_key'},  # noqa: E241
     '"ay':          {'command': 'nv_feed_key'},  # noqa: E241
     '"ayy':         {'command': 'nv_feed_key'},  # noqa: E241
