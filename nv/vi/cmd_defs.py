@@ -1590,7 +1590,7 @@ class ViMoveByWords(ViMotionDef):
 
 @assign(seqs.CTRL_DOWN, MOTION_MODES)
 @assign(seqs.CTRL_J, MOTION_MODES)
-@assign(seqs.CTRL_N, MOTION_MODES)
+@assign(seqs.CTRL_N, MOTION_MODES + (INSERT,))
 @assign(seqs.DOWN, MOTION_MODES)
 @assign(seqs.J, MOTION_MODES)
 class ViMoveDownByLines(ViMotionDef):

@@ -2773,6 +2773,14 @@ class nv_vi_h(TextCommand):
 class nv_vi_j(TextCommand):
 
     def run(self, edit, mode=None, count=1, xpos=0):
+        if mode == INSERT:
+            if self.view.is_auto_complete_visible():
+                self.view.run_command('move', {'by': 'lines', 'forward': True})
+            else:
+                self.view.run_command('auto_complete')
+
+            return
+
         def f(view, s):
             nonlocal xpos
 
