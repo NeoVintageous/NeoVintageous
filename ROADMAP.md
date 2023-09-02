@@ -939,8 +939,8 @@ If you want to you can make a pattern immune to the `'magic'` option being set o
 | :heavy_check_mark: | CTRL-W &lt;Up&gt;<br>CTRL-W CTRL-K<br>CTRL-W k                             | Move cursor to Nth window above current one.
 | :heavy_check_mark: | CTRL-W &lt;Left&gt;<br>CTRL-W CTRL-H<br>CTRL-W &lt;BS&gt;<br>CTRL-W h      | Move cursor to Nth window left of current one.
 | :heavy_check_mark: | CTRL-W &lt;Right&gt;<br>CTRL-W CTRL-L<br>CTRL-W l                          | Move cursor to Nth window right of current one.
-|                    | CTRL-W w<br>CTRL-W CTRL-W                                                  | Move cursor to window below/right of the current one. [#839](https://github.com/NeoVintageous/NeoVintageous/issues/839)
-|                    | CTRL-W W                                                                   | Move cursor to window above/left of current one.
+| :heavy_check_mark: | CTRL-W w<br>CTRL-W CTRL-W                                                  | Move cursor to window below/right of the current one.
+| :heavy_check_mark: | CTRL-W W                                                                   | Move cursor to window above/left of current one.
 | :heavy_check_mark: | CTRL-W t<br>CTRL-W CTRL-T                                                  | Move cursor to top-left window.
 | :heavy_check_mark: | CTRL-W b<br>CTRL-W CTRL-B                                                  | Move cursor to bottom-right window.
 | :heavy_check_mark: | CTRL-W p<br>CTRL-W CTRL-P                                                  | Go to previous (last accessed) window.

@@ -617,7 +617,7 @@ def window_control(window, action: str, mode=None, count: int = 1, register=None
     elif action == 'L':
         _move_active_view_to_far_right(window)
     elif action == 'W':
-        window_buffer_control(window, 'goto', count)
+        _focus_neighbouring_group(window, count, forward=False)
     elif action == 'c':
         _close_active_view(window, **kwargs)
     elif action == '=':
@@ -654,6 +654,8 @@ def window_control(window, action: str, mode=None, count: int = 1, register=None
         _set_group_height(window, count)
     elif action == 'v':
         _vsplit(window, **kwargs)
+    elif action == 'w':
+        _focus_neighbouring_group(window, count)
     elif action == 'x':
         _exchange_view_by_count(window, count)
     elif action == ']':
@@ -662,6 +664,14 @@ def window_control(window, action: str, mode=None, count: int = 1, register=None
         _split_alternate(window)
     else:
         raise ValueError('unknown action')
+
+
+def _focus_neighbouring_group(window, count: int, forward: bool = True) -> None:
+    # TODO only counts > 1 work, the command must accept count of None
+    if count > 1:
+        window.focus_group(min(count, window.num_groups()) - 1)
+    else:
+        window.run_command('focus_neighboring_group', {'forward': forward})
 
 
 def window_open_file(window, file: str, row: int = None, col: int = None) -> bool:

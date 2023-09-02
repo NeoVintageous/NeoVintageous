@@ -834,6 +834,17 @@ class ViMoveCursorToTopLeftWindow(ViOperatorDef):
         }
 
 
+@assign(seqs.CTRL_W_W, ACTION_MODES)
+@assign(seqs.CTRL_W_CTRL_W, ACTION_MODES)
+class ViMoveCursorToNeighbour(ViOperatorDef):
+    def init(self):
+        self.scroll_into_view = True
+        self.command = 'nv_vi_ctrl_w'
+        self.command_args = {
+            'action': 'w'
+        }
+
+
 @assign(seqs.CTRL_W_UNDERSCORE, ACTION_MODES)
 @assign(seqs.CTRL_W_CTRL_UNDERSCORE, ACTION_MODES)
 class ViSetCurrentGroupHeightOrHighestPossible(ViOperatorDef):

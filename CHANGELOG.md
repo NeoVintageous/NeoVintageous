@@ -6,6 +6,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+- [#839](https://github.com/NeoVintageous/NeoVintageous/issues/839): Add the functionality to move the cursor to the neighbouring group in reverse with `CTRL-w W`.
+- [#839](https://github.com/NeoVintageous/NeoVintageous/issues/839): Add the functionality to move the cursor to the neighbouring group with `CTRL-w w` (and provide an alias for `CTRL-w CTRL-w`).
 - [#965](https://github.com/NeoVintageous/NeoVintageous/issues/965): Add the functionality to open auto-complete in insert mode using `CTRL-n`
 - [#964](https://github.com/NeoVintageous/NeoVintageous/issues/964): Adds `N` alias for `Q`, `k`, or `CTRL-p` in multiple cursor mode.
 - [#964](https://github.com/NeoVintageous/NeoVintageous/issues/964): Adds `TAB` alias for `Esc` or `J` in multiple cursor mode.
