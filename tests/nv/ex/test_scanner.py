@@ -619,17 +619,11 @@ class TestExCommands(unittest.TestCase):
         self.assertCommand(['substitute/x/y/', 's/x/y/'], cmd('substitute', params={'pattern': 'x', 'replacement': 'y', 'flags': [], 'count': 1}, addressable=True))  # noqa: E501
         self.assertCommand(['substitute/x/y/ic', 's/x/y/ic'], cmd('substitute', params={'pattern': 'x', 'replacement': 'y', 'flags': ['i', 'c'], 'count': 1}, addressable=True))  # noqa: E501
         self.assertCommand(['sunmap xyz', 'sunm xyz'], cmd('sunmap', params={'lhs': 'xyz'}))
-        self.assertCommand(['tabNext!', 'tabN!', 'tabprevious!', 'tabp!'], cmd('tabprevious', forced=True))
         self.assertCommand(['tabNext', 'tabN', 'tabprevious', 'tabp'], cmd('tabprevious'))
-        self.assertCommand(['tabclose!', 'tabc!'], cmd('tabclose', forced=True))
         self.assertCommand(['tabclose', 'tabc'], cmd('tabclose'))
-        self.assertCommand(['tabfirst!', 'tabfir!', 'tabrewind!', 'tabr!'], cmd('tabfirst', forced=True))
         self.assertCommand(['tabfirst', 'tabfir', 'tabrewind', 'tabr'], cmd('tabfirst'))
-        self.assertCommand(['tablast!', 'tabl!'], cmd('tablast', forced=True))
         self.assertCommand(['tablast', 'tabl'], cmd('tablast'))
-        self.assertCommand(['tabnext!', 'tabn!'], cmd('tabnext', forced=True))
         self.assertCommand(['tabnext', 'tabn'], cmd('tabnext'))
-        self.assertCommand(['tabonly!', 'tabo!'], cmd('tabonly', forced=True))
         self.assertCommand(['tabonly', 'tabo'], cmd('tabonly'))
         self.assertCommand(['unmap xyz', 'unm xyz'], cmd('unmap', params={'lhs': 'xyz'}))
         self.assertCommand(['vnew /tmp/fizz/buzz.txt'], cmd('vnew', params={'file': '/tmp/fizz/buzz.txt'}))  # noqa: E501

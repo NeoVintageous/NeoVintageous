@@ -212,9 +212,6 @@ class Test_ex_route_tabnext(unittest.TestCase):
         actual = _ex_route_tabnext(_ScannerState(''))
         self.assertEqual(actual, TokenCommand('tabnext'))
 
-        actual = _ex_route_tabnext(_ScannerState('!'))
-        self.assertEqual(actual, TokenCommand('tabnext', forced=True))
-
         actual = _ex_route_tabnext(_ScannerState(''))
         self.assertEqual(actual, TokenCommand('tabnext', forced=False))
 

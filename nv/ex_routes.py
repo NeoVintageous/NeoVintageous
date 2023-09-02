@@ -550,19 +550,19 @@ def _ex_route_substitute(state) -> TokenCommand:
 
 
 def _ex_route_tabclose(state) -> TokenCommand:
-    return _create_route(state, 'tabclose', forcable=True)
+    return _create_route(state, 'tabclose')
 
 
 def _ex_route_tabfirst(state) -> TokenCommand:
-    return _create_route(state, 'tabfirst', forcable=True)
+    return _create_route(state, 'tabfirst')
 
 
 def _ex_route_tablast(state) -> TokenCommand:
-    return _create_route(state, 'tablast', forcable=True)
+    return _create_route(state, 'tablast')
 
 
 def _ex_route_tabnext(state) -> TokenCommand:
-    return _create_route(state, 'tabnext', forcable=True)
+    return _create_route(state, 'tabnext')
 
 
 def _ex_route_tabnew(state) -> TokenCommand:
@@ -570,11 +570,11 @@ def _ex_route_tabnew(state) -> TokenCommand:
 
 
 def _ex_route_tabonly(state) -> TokenCommand:
-    return _create_route(state, 'tabonly', forcable=True)
+    return _create_route(state, 'tabonly')
 
 
 def _ex_route_tabprevious(state) -> TokenCommand:
-    return _create_route(state, 'tabprevious', forcable=True)
+    return _create_route(state, 'tabprevious')
 
 
 def _ex_route_unmap(state) -> TokenCommand:
