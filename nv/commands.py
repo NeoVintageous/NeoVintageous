@@ -1752,7 +1752,8 @@ class nv_vi_paste(TextCommand):
     def run(self, edit, before_cursor, mode=None, count=1, register=None, adjust_indent=False, adjust_cursor=False):
         contents, linewise = registers_get_for_paste(self.view, register, mode)
         if not contents:
-            return status_message('E353: Nothing in register ' + register)
+            ui_bell('E353: Nothing in register ' + register)
+            return
 
         contents = resolve_paste_items_with_view_sel(self.view, contents)
         if not contents:
