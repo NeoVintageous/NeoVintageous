@@ -255,6 +255,8 @@ noremap <C-l> :nohlsearch<CR>
 
 Sublime Text commands are mappable. The command must be PascalCase and the parameters must be space separated.
 
+Note: Sublime Text commands are PascalCased for the purpose of distinguishing them from Ex commands, which always start with a lowercase letter. This choice is due to an implementation detail.
+
 **Example:** Map `,f` to the `show_overlay` command with arguments `{"overlay": "goto", "text": "@"}`
 
 ```vim
