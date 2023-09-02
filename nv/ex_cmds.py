@@ -583,6 +583,7 @@ def ex_read(view, edit, line_range: RangeNode, cmd: str = None, file_name: str =
 
 def ex_marks(view, **kwargs) -> None:
     output = CmdlineOutput(view.window())
+    output.disable_highlight_line()
     output.write('mark line  col file/text\n')
 
     for name, info in get_marks(view).items():
