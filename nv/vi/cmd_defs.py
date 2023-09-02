@@ -19,7 +19,6 @@ from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_last_char_search_character
 from NeoVintageous.nv.settings import get_last_char_search_command
 from NeoVintageous.nv.settings import get_partial_sequence
-from NeoVintageous.nv.settings import get_xpos
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import RequireOneCharMixin
@@ -1596,11 +1595,7 @@ class ViMoveByWords(ViMotionDef):
 class ViMoveDownByLines(ViMotionDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_j', {
-            'xpos': get_xpos(view)
-        })
+        self.command = 'nv_vi_j'
 
 
 @assign(seqs.CTRL_P, MOTION_MODES)
@@ -1610,11 +1605,7 @@ class ViMoveDownByLines(ViMotionDef):
 class ViMoveUpByLines(ViMotionDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_k', {
-            'xpos': get_xpos(view)
-        })
+        self.command = 'nv_vi_k'
 
 
 @assign(seqs.HAT, MOTION_MODES)

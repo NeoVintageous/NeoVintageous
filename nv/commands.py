@@ -2772,7 +2772,7 @@ class nv_vi_h(TextCommand):
 
 class nv_vi_j(TextCommand):
 
-    def run(self, edit, mode=None, count=1, xpos=0):
+    def run(self, edit, mode=None, count=1, xpos=None):
         if mode == INSERT:
             if self.view.is_auto_complete_visible():
                 self.view.run_command('move', {'by': 'lines', 'forward': True})
@@ -2780,6 +2780,9 @@ class nv_vi_j(TextCommand):
                 self.view.run_command('auto_complete')
 
             return
+
+        if xpos is None:
+            xpos = get_xpos(self.view)
 
         def f(view, s):
             nonlocal xpos
@@ -2860,7 +2863,10 @@ class nv_vi_jump_forward(TextCommand):
 
 class nv_vi_k(TextCommand):
 
-    def run(self, edit, mode=None, count=1, xpos=0):
+    def run(self, edit, mode=None, count=1, xpos=None):
+        if xpos is None:
+            xpos = get_xpos(self.view)
+
         def f(view, s):
             nonlocal xpos
 
