@@ -2444,13 +2444,19 @@ _SEQ2CMD = {
     'ysiw}':        {'command': 'nv_feed_key'},  # noqa: E241
     'yss)':         {'command': 'nv_feed_key'},  # noqa: E241
     'yy':           {'command': 'nv_feed_key'},  # noqa: E241
+    'z-':           {'command': 'nv_feed_key'},  # noqa: E241
+    'z.':           {'command': 'nv_feed_key'},  # noqa: E241
+    'z<CR>':        {'command': 'nv_feed_key', 'args': {"keys": ['z', '<CR>']}},  # noqa: E241
     'z=':           {'command': 'nv_feed_key'},  # noqa: E241
     'zM':           {'command': 'nv_feed_key'},  # noqa: E241
     'zR':           {'command': 'nv_feed_key'},  # noqa: E241
+    'zb':           {'command': 'nv_feed_key'},  # noqa: E241
     'zc':           {'command': 'nv_feed_key'},  # noqa: E241
     'zg':           {'command': 'nv_feed_key'},  # noqa: E241
     'zo':           {'command': 'nv_feed_key'},  # noqa: E241
+    'zt':           {'command': 'nv_feed_key'},  # noqa: E241
     'zug':          {'command': 'nv_feed_key'},  # noqa: E241
+    'zz':           {'command': 'nv_feed_key'},  # noqa: E241
     '{':            {'command': 'nv_feed_key'},  # noqa: E241
     '|':            {'command': 'nv_feed_key'},  # noqa: E241
     '}':            {'command': 'nv_feed_key'},  # noqa: E241

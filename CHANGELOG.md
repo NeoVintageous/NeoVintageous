@@ -6,8 +6,15 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
-* [#966](https://github.com/NeoVintageous/NeoVintageous/issues/966): Commands like `:tabfirst`, `:tabonly`, `:tabnext`, etc. are not forceable
-* [#960](https://github.com/NeoVintageous/NeoVintageous/issues/960): Disable highlighting the line in cmdline output
+- [#962](https://github.com/NeoVintageous/NeoVintageous/issues/962): `zt` should leave the cursor in the same column
+- [#962](https://github.com/NeoVintageous/NeoVintageous/issues/962): `zb` should leave the cursor in the same column
+- [#962](https://github.com/NeoVintageous/NeoVintageous/issues/962): `zz` should leave the cursor in the same column
+- [#962](https://github.com/NeoVintageous/NeoVintageous/issues/962): `z<CR>` should place the cursor on the first non-blank character
+- [#962](https://github.com/NeoVintageous/NeoVintageous/issues/962): `z.` should place the cursor on the first non-blank character
+- [#962](https://github.com/NeoVintageous/NeoVintageous/issues/962): `z-` should place the cursor on the first non-blank character
+- [#962](https://github.com/NeoVintageous/NeoVintageous/issues/962): `z` scroll command inconsistencies
+- [#966](https://github.com/NeoVintageous/NeoVintageous/issues/966): Commands like `:tabfirst`, `:tabonly`, `:tabnext`, etc. are not forceable
+- [#960](https://github.com/NeoVintageous/NeoVintageous/issues/960): Disable highlighting the line in cmdline output
 
 ## 1.32.1 - 2023-08-13
 

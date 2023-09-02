@@ -98,6 +98,7 @@ from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.ui import ui_highlight_yank
 from NeoVintageous.nv.ui import ui_highlight_yank_clear
 from NeoVintageous.nv.utils import VisualBlockSelection
+from NeoVintageous.nv.utils import adjust_selection_if_first_non_blank
 from NeoVintageous.nv.utils import calculate_xpos
 from NeoVintageous.nv.utils import extract_file_name
 from NeoVintageous.nv.utils import extract_url
@@ -1976,35 +1977,50 @@ class nv_vi_ctrl_w(WindowCommand):
 
 class nv_vi_z_enter(TextCommand):
 
-    def run(self, edit, mode=None, count=1, register=None):
-        pt = get_insertion_point_at_b(self.view.sel()[0])
-        home_line = self.view.line(pt)
-        target_pt = self.view.text_to_layout(home_line.begin())
-        self.view.set_viewport_position(target_pt)
+    def run(self, edit, mode=None, count=1, register=None, first_non_blank=False):
+        viewport = self.view.viewport_position()
+        selection = self.view.sel()[0]
+        point = get_insertion_point_at_b(selection)
+        target = self.view.text_to_layout(point)
+        self.view.set_viewport_position((viewport[0], target[1]))
+        adjust_selection_if_first_non_blank(self.view, mode, first_non_blank, selection)
 
 
 class nv_vi_z_minus(TextCommand):
 
-    def run(self, edit, mode=None, count=1, register=None):
-        layout_coord = self.view.text_to_layout(self.view.sel()[0].b)
-        viewport_extent = self.view.viewport_extent()
-        new_pos = (0.0, layout_coord[1] - viewport_extent[1])
-        self.view.set_viewport_position(new_pos)
+    def run(self, edit, mode=None, count=1, register=None, first_non_blank=False):
+        viewport = self.view.viewport_position()
+        selection = self.view.sel()[0]
+        target = self.view.text_to_layout(selection.b)
+        target_y = target[1] - self.view.viewport_extent()[1]
+        self.view.set_viewport_position((viewport[0], target_y))
+        adjust_selection_if_first_non_blank(self.view, mode, first_non_blank, selection)
 
 
 class nv_vi_zz(TextCommand):
 
     def run(self, edit, mode=None, count=1, register=None, first_non_blank=False):
-        first_sel = self.view.sel()[0]
-        current_position = self.view.text_to_layout(first_sel.b)
+        selection = self.view.sel()[0]
+        current_position = self.view.text_to_layout(selection.b)
+        viewport_pos = self.view.viewport_position()
         viewport_dim = self.view.viewport_extent()
-        new_pos = (0.0, current_position[1] - viewport_dim[1] / 2)
+        line_height = self.view.line_height()
+
+        # Half the current viewport size.
+        new_y_pos = current_position[1] - viewport_dim[1] / 2
+
+        # Adjust for no partial lines on the bottom half.
+        new_y_pos += new_y_pos % line_height
+
+        # Adjust for status bar.
+        if self.view.window().is_status_bar_visible():
+            new_y_pos += line_height
+
+        new_pos = (viewport_pos[0], new_y_pos)
+
         self.view.set_viewport_position(new_pos)
-        if first_non_blank:
-            row = self.view.rowcol(first_sel.b)[0]
-            first_non_blank_pt = next_non_blank(self.view, self.view.text_point(row, 0))
-            if mode in (NORMAL, INTERNAL_NORMAL):
-                set_selection(self.view, first_non_blank_pt)
+
+        adjust_selection_if_first_non_blank(self.view, mode, first_non_blank, selection)
 
 
 class nv_vi_z(TextCommand):

@@ -1431,3 +1431,10 @@ def _resolve_mode(view, mode: str = None) -> str:
         return get_mode(view)
 
     return mode
+
+
+def adjust_selection_if_first_non_blank(view, mode: str, first_non_blank: bool, selection: Region) -> None:
+    if first_non_blank and mode in (NORMAL, INTERNAL_NORMAL):
+        row = view.rowcol(selection.b)[0]
+        first_non_blank_pt = next_non_blank(view, view.text_point(row, 0))
+        set_selection(view, first_non_blank_pt)

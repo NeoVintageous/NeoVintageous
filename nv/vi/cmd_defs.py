@@ -408,6 +408,16 @@ class ViEnterVisualMode(ViOperatorDef):
 
 
 @assign(seqs.Z_ENTER, ACTION_MODES)
+class ViScrollToScreenTopNonBlank(ViOperatorDef):
+    def init(self):
+        self.updates_xpos = True
+        self.scroll_into_view = True
+        self.command = 'nv_vi_z_enter'
+        self.command_args = {
+            'first_non_blank': True
+        }
+
+
 @assign(seqs.ZT, ACTION_MODES)
 class ViScrollToScreenTop(ViOperatorDef):
     def init(self):
@@ -416,13 +426,34 @@ class ViScrollToScreenTop(ViOperatorDef):
         self.command = 'nv_vi_z_enter'
 
 
-@assign(seqs.ZB, ACTION_MODES)
 @assign(seqs.Z_MINUS, ACTION_MODES)
+class ViScrollToScreenBottomNonBlank(ViOperatorDef):
+    def init(self):
+        self.updates_xpos = True
+        self.scroll_into_view = True
+        self.command = 'nv_vi_z_minus'
+        self.command_args = {
+            'first_non_blank': True
+        }
+
+
+@assign(seqs.ZB, ACTION_MODES)
 class ViScrollToScreenBottom(ViOperatorDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.command = 'nv_vi_z_minus'
+
+
+@assign(seqs.Z_DOT, ACTION_MODES)
+class ViScrollToScreenCenterNonBlank(ViOperatorDef):
+    def init(self):
+        self.updates_xpos = True
+        self.scroll_into_view = True
+        self.command = 'nv_vi_zz'
+        self.command_args = {
+            'first_non_blank': True
+        }
 
 
 @assign(seqs.ZZ, ACTION_MODES)
@@ -431,17 +462,6 @@ class ViScrollToScreenCenter(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.command = 'nv_vi_zz'
-
-
-@assign(seqs.Z_DOT, ACTION_MODES)
-class ViZDot(ViOperatorDef):
-    def init(self):
-        self.updates_xpos = True
-        self.scroll_into_view = True
-        self.command = 'nv_vi_zz'
-        self.command_args = {
-            'first_non_blank': True
-        }
 
 
 @assign(seqs.GQ, ACTION_MODES)
