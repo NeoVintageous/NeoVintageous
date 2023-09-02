@@ -167,7 +167,10 @@ def _get_numbered_register(number: str) -> list:
     return _get_data()['1-9'][int(number) - 1][0]
 
 
-def _is_register_linewise(register: str) -> list:
+def _is_register_linewise(register: str) -> bool:
+    if register in _CLIPBOARD:
+        return False
+
     if register in '123456789':
         return _get_data()['1-9'][int(register) - 1][1]
 
