@@ -509,7 +509,7 @@ If you come across any missing features or observe variations in functionality, 
 
 **Enhanced support, install via Package Control:**
 
-- [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter3): Required for jump-to lint-error commands (i.e., `[l` and `]l`).
+- [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter): Required for jump-to lint-error commands (i.e., `[l` and `]l`).
 - [Origami](https://github.com/SublimeText/Origami): Required for some window commands (e.g., `CTRL-w s`, `CTRL-w v`, `CTRL-w ]`).
 
 **Additional keyboard layouts, manual installation:**

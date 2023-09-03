@@ -120,7 +120,7 @@
 | Status             | Command                          | Description
 | :----------------- | :------------------------------- | :----------
 | :heavy_check_mark: | :h[elp]                          | Open a window and display the help file in read-only mode.
-| :heavy_check_mark: | :h[elp] \{subject\}              | Like ":help", additionally jump to the tag `{subject}.` Example: `:help options`
+| :heavy_check_mark: | :h[elp] \{subject\}              | Like ":help", additionally jump to the tag `{subject}`. Example: `:help options`
 
 ## Editing and writing files `|editing.txt|`
 
@@ -401,10 +401,10 @@ For the following four commands the cursor follows the screen.  If the character
 
 | Status             | Command                          | Description
 | :----------------- | :------------------------------- | :----------
-| :heavy_check_mark: | z&lt;Right&gt; zl                | Move the view on the text `[count]` characters to the right, thus scroll the text `[count]` characters to the left.  This only works when `'wrap'` is off.
-| :heavy_check_mark: | z&lt;Left&gt;  zh                | Move the view on the text `[count]` characters to the left, thus scroll the text `[count]` characters to the right.  This only works when `'wrap'` is off.
-| :heavy_check_mark: | zL                               | Move the view on the text half a screenwidth to the right, thus scroll the text half a screenwidth to the left.  This only works when `'wrap'` is off.
-| :heavy_check_mark: | zH                               | Move the view on the text half a screenwidth to the left, thus scroll the text half a screenwidth to the right.  This only works when `'wrap'` is off.
+| :heavy_check_mark: | `z<Right>`<br>`zl`               | Move the view on the text `[count]` characters to the right, thus scroll the text `[count]` characters to the left.  This only works when `'wrap'` is off.
+| :heavy_check_mark: | `z<Left>`<br>`zh`                | Move the view on the text `[count]` characters to the left, thus scroll the text `[count]` characters to the right.  This only works when `'wrap'` is off.
+| :heavy_check_mark: | `zL`                             | Move the view on the text half a screenwidth to the right, thus scroll the text half a screenwidth to the left.  This only works when `'wrap'` is off.
+| :heavy_check_mark: | `zH`                             | Move the view on the text half a screenwidth to the left, thus scroll the text half a screenwidth to the right.  This only works when `'wrap'` is off.
 
 ## Insert and Replace mode `|insert.txt|`
 
@@ -673,7 +673,7 @@ last one.
 | Status             | Command                                  | Description
 | :----------------- | :--------------------------------------- | -----------
 | :heavy_check_mark: | `:[range]g[lobal]/{pattern}/[cmd]`       | Execute the Ex command `[cmd]` (default ":p") on the lines within `[range]` where `{pattern}` matches. *Currently only works with a few commands like print.*
-| :heavy_check_mark: | `[range]g[lobal]!/{pattern}/[cmd]`       | Execute the Ex command `[cmd]` (default ":p") on the lines within `[range]` where `{pattern}` does NOT match. *Currently only works with a few commands like print.*
+| :heavy_check_mark: | `:[range]g[lobal]!/{pattern}/[cmd]`      | Execute the Ex command `[cmd]` (default ":p") on the lines within `[range]` where `{pattern}` does NOT match. *Currently only works with a few commands like print.*
 |                    | `:[range]v[global]/{pattern}/[cmd]`      | Same as :g!.
 
 ### 3. Complex repeats
@@ -904,6 +904,8 @@ If you want to you can make a pattern immune to the `'magic'` option being set o
 | :heavy_check_mark: | CTRL-]                           | Jump to the definition of the keyword under the cursor.
 
 ## Commands for using multiple windows `|windows.txt|`
+
+*Note that some window commands, e.g., `CTRL-w s`, `CTRL-w v`, `CTRL-w ]`, require [Origami](https://github.com/SublimeText/Origami).*
 
 ### 3. Opening and closing a window
 
@@ -1336,8 +1338,8 @@ A port of the awesome [vim-unimpaired](https://github.com/tpope/vim-unimpaired).
 | :heavy_check_mark:  | `]b` | `:bnext`
 | :heavy_check_mark:  | `[B` | `:bfirst`
 | :heavy_check_mark:  | `]B` | `:blast`
-| :heavy_check_mark:  | `[l` | `:lprevious`
-| :heavy_check_mark:  | `]l` | `:lnext`
+| :heavy_check_mark:  | `[l` | `:lprevious` - Jump to previous lint-error (requires [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter)).
+| :heavy_check_mark:  | `]l` | `:lnext` - Jump to next lint-error (requires [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter)).
 |                     | `[L` | `:lfirst`
 |                     | `]L` | `:llast`
 |                     | `[<C-L>` | `:lpfile`
