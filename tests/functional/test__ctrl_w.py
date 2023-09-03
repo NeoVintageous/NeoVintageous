@@ -17,6 +17,7 @@
 
 from NeoVintageous.tests import unittest
 from sublime import FORCE_GROUP
+from unittest.mock import call
 
 
 class Test_ctrl_w(unittest.FunctionalTestCase):
@@ -62,6 +63,30 @@ class Test_ctrl_w(unittest.FunctionalTestCase):
         self.normal('f|izz')
         self.feed('<C-w>W')
         self.assertRunCommand('focus_neighboring_group', {'forward': False})
+
+    @unittest.mock.patch('sublime.Window.num_groups')
+    @unittest.mock.patch('sublime.Window.focus_group')
+    def test_ctrl_w_W_count(self, focus, groups):
+        groups.return_value = 5
+        self.normal('f|izz')
+        self.feed('3<C-w>W')
+        focus.assert_called_once_with(2)
+
+    @unittest.mock.patch('sublime.Window.num_groups')
+    @unittest.mock.patch('sublime.Window.focus_group')
+    def test_ctrl_w_W_count_1(self, focus, groups):
+        groups.return_value = 5
+        self.normal('f|izz')
+        self.feed('1<C-w>W')
+        focus.assert_called_once_with(0)
+
+    @unittest.mock.patch('sublime.Window.num_groups')
+    @unittest.mock.patch('sublime.Window.focus_group')
+    def test_ctrl_w_W_count_max(self, focus, groups):
+        groups.return_value = 5
+        self.normal('f|izz')
+        self.feed('7<C-w>W')
+        focus.assert_called_once_with(4)
 
     @unittest.mock.patch('NeoVintageous.nv.window._close_active_view')
     def test_ctrl_w_c(self, function):
@@ -180,6 +205,33 @@ class Test_ctrl_w(unittest.FunctionalTestCase):
         for feed in ('<C-w>w', '<C-w><C-w>'):
             self.feed(feed)
         self.assertRunCommand('focus_neighboring_group', {'forward': True}, count=2)
+
+    @unittest.mock.patch('sublime.Window.num_groups')
+    @unittest.mock.patch('sublime.Window.focus_group')
+    def test_ctrl_w_w_count(self, focus, groups):
+        groups.return_value = 5
+        self.normal('f|izz')
+        for feed in ('3<C-w>w', '3<C-w><C-w>'):
+            self.feed(feed)
+        focus.assert_has_calls([call(2), call(2)])
+
+    @unittest.mock.patch('sublime.Window.num_groups')
+    @unittest.mock.patch('sublime.Window.focus_group')
+    def test_ctrl_w_w_count_1(self, focus, groups):
+        groups.return_value = 5
+        self.normal('f|izz')
+        for feed in ('1<C-w>w', '1<C-w><C-w>'):
+            self.feed(feed)
+        focus.assert_has_calls([call(0), call(0)])
+
+    @unittest.mock.patch('sublime.Window.num_groups')
+    @unittest.mock.patch('sublime.Window.focus_group')
+    def test_ctrl_w_w_count_max(self, focus, groups):
+        groups.return_value = 5
+        self.normal('f|izz')
+        for feed in ('11<C-w>w', '11<C-w><C-w>'):
+            self.feed(feed)
+        focus.assert_has_calls([call(4), call(4)])
 
     @unittest.mock.patch('NeoVintageous.nv.window._exchange_view_by_count')
     def test_ctrl_w_x(self, function):

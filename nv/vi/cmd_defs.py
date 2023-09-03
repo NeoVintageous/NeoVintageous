@@ -839,10 +839,12 @@ class ViMoveCursorToTopLeftWindow(ViOperatorDef):
 class ViMoveCursorToNeighbour(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-        self.command = 'nv_vi_ctrl_w'
-        self.command_args = {
-            'action': 'w'
-        }
+
+    def translate(self, view):
+        return translate_action(view, 'nv_vi_ctrl_w', {
+            'action': 'w',
+            'count': get_count(view, default=0)
+        })
 
 
 @assign(seqs.CTRL_W_UNDERSCORE, ACTION_MODES)
@@ -871,10 +873,12 @@ class ViSplitTheCurrentWindowInTwoVertically(ViOperatorDef):
 class ViCtrlW_W(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-        self.command = 'nv_vi_ctrl_w'
-        self.command_args = {
+
+    def translate(self, view):
+        return translate_action(view, 'nv_vi_ctrl_w', {
             'action': 'W',
-        }
+            'count': get_count(view, default=0)
+        })
 
 
 @assign(seqs.CTRL_W_X, ACTION_MODES)

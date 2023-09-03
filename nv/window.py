@@ -673,8 +673,7 @@ def window_control(window, action: str, mode=None, count: int = 1, register=None
 
 
 def _focus_neighbouring_group(window, count: int, forward: bool = True) -> None:
-    # TODO only counts > 1 work, the command must accept count of None
-    if count > 1:
+    if count > 0:
         window.focus_group(min(count, window.num_groups()) - 1)
     else:
         window.run_command('focus_neighboring_group', {'forward': forward})
