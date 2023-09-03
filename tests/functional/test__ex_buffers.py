@@ -41,4 +41,4 @@ class Test_ex_buffers(unittest.ResetCommandLineOutput, unittest.FunctionalTestCa
         self.feed(':buffers')
         self.assertRegex(
             self.commandLineOutput(),
-            '\\d %a \\+ "tmp\\/fizz\\.txt"\\s+line 3')
+            '\\d %a \\+ "tmp[\\/\\\\]fizz\\.txt"\\s+line 3')
