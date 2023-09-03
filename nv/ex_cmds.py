@@ -144,6 +144,8 @@ def ex_buffers(window, **kwargs) -> None:
         else:
             path = view.name() or '[No Name]'
 
+        lines = [str(view.rowcol(s.b)[0] + 1) for s in view.sel()]
+
         current_indicator = '%' if view.id() == window.active_view().id() else ' '
         readonly_indicator = '=' if is_view_read_only(view) else ' '
         modified_indicator = '+' if view.is_dirty() else ' '
@@ -151,13 +153,14 @@ def ex_buffers(window, **kwargs) -> None:
         active_group_view = window.active_view_in_group(window.get_view_index(view)[0])
         visibility_indicator = 'a' if active_group_view and view.id() == active_group_view.id() else 'h'
 
-        return '%5d %s%s%s%s "%s"' % (
+        return '%5d %s%s%s%s %-30s %s' % (
             view.id(),
             current_indicator,
             visibility_indicator,
             readonly_indicator,
             modified_indicator,
-            path
+            '"{}"'.format(path),
+            'line {}'.format(','.join(lines))
         )
 
     output = CmdlineOutput(window)

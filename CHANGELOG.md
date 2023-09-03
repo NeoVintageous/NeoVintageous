@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+- [#967](https://github.com/NeoVintageous/NeoVintageous/issues/967): Include a line number column in the `:ls` output.
 - [#839](https://github.com/NeoVintageous/NeoVintageous/issues/839): Add the functionality to move the cursor to the neighbouring group in reverse with `CTRL-w W`.
 - [#839](https://github.com/NeoVintageous/NeoVintageous/issues/839): Add the functionality to move the cursor to the neighbouring group with `CTRL-w w` (and provide an alias for `CTRL-w CTRL-w`).
 - [#965](https://github.com/NeoVintageous/NeoVintageous/issues/965): `CTRL-n` now mappable in insert mode, boosting customization.

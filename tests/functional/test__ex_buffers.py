@@ -23,5 +23,22 @@ class Test_ex_buffers(unittest.ResetCommandLineOutput, unittest.FunctionalTestCa
     def test_buffers(self):
         self.normal('fi|zz')
         self.feed(':buffers')
-        output = self.commandLineOutput()
-        self.assertRegex(output, '\\d %a \\+ "\\[No Name\\]"')
+        self.assertRegex(
+            self.commandLineOutput(),
+            '\\d %a \\+ "\\[No Name\\]"\\s+line 1')
+
+    def test_contains_line_number(self):
+        self.normal('1\n2\nfi|zz\n4\n')
+        self.feed(':buffers')
+        self.assertRegex(
+            self.commandLineOutput(),
+            '\\d %a \\+ "\\[No Name\\]"\\s+line 3')
+
+    @unittest.mock.patch('sublime.View.file_name')
+    def test_contains_file_name(self, file_name):
+        file_name.return_value = 'tmp/fizz.txt'
+        self.normal('1\n2\nfi|zz\n4\n')
+        self.feed(':buffers')
+        self.assertRegex(
+            self.commandLineOutput(),
+            '\\d %a \\+ "tmp\\/fizz\\.txt"\\s+line 3')

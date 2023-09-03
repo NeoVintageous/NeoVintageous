@@ -129,7 +129,7 @@
 | Status             | Command                          | Description
 | :----------------- | :------------------------------- | :----------
 | :heavy_check_mark: | `CTRL-G`, `:f[ile]`              | Prints the current file name.
-| :heavy_check_mark: | `:buffers`, `:files`, `:ls`      | List all the currently known file names.
+| :heavy_check_mark: | `:buffers` or `:files` or `:ls`  | List all the currently known file names.<br>:star: Multiple cursors are presented as a comma-delimited list of line numbers.
 | :heavy_check_mark: | `:e[dit]`                        | Edit the current file. This is useful to re-edit the current file, when it has been changed outside of Sublime.
 | :heavy_check_mark: | `:e[dit]!`                       | Edit the current file always.  Discard any changes to the current buffer. This is useful if you want to start all over again.
 | :heavy_check_mark: | `:e[dit] {file}`                 | Edit `{file}`.
