@@ -229,8 +229,8 @@ FORCING A MOTION TO BE LINEWISE, CHARACTERWISE OR BLOCKWISE
 
 | Status             | Command                              | Description
 | :----------------- | :----------------------------------- | -----------
-| :heavy_check_mark: | `h`, `<Left>`, `CTRL-H`, `<BS>`      | [count] characters to the left.
-| :heavy_check_mark: | `l`, `<Right>`, `<Space>`            | [count] characters to the right.
+| :heavy_check_mark: | `h`, `<Left>`, `CTRL-H`, `<BS>`      | `[count]` characters to the left.
+| :heavy_check_mark: | `l`, `<Right>`, `<Space>`            | `[count]` characters to the right.
 | :heavy_check_mark: | `0`                                  | To the first character of the line.
 | :heavy_check_mark: | `<Home>`                             | To the first character of the line.
 | :heavy_check_mark: | `^`                                  | To the first non-blank character of the line.
@@ -241,44 +241,44 @@ FORCING A MOTION TO BE LINEWISE, CHARACTERWISE OR BLOCKWISE
 | :heavy_check_mark: | `gm`                                 | Like "g0", but half a screenwidth to the right (or as much as possible).
 |                    | `gM`                                 | Like "g0", but to halfway the text of the line.
 | :heavy_check_mark: | `g$` or `g<End>`                     | When lines wrap (`'wrap'` on): To the last character of the screen line and `[count-1]` screen lines downward.
-| :heavy_check_mark: | `|`                                  | To screen column [count] in the current line.
-| :heavy_check_mark: | `f{char}`                            | To [count]'th occurrence of `{char}` to the right.
-| :heavy_check_mark: | `F{char}`                            | To the [count]'th occurrence of `{char}` to the left.
-| :heavy_check_mark: | `t{char}`                            | Till before [count]'th occurrence of `{char}` to the right.
-| :heavy_check_mark: | `T{char}`                            | Till after [count]'th occurrence of `{char}` to the left.
-| :heavy_check_mark: | `;`                                  | Repeat latest f, t, F or T [count] times.
-| :heavy_check_mark: | `,`                                  | Repeat latest f, t, F or T in opposite direction [count] times.
+| :heavy_check_mark: | `|`                                  | To screen column `[count]` in the current line.
+| :heavy_check_mark: | `f{char}`                            | To `[count]`'th occurrence of `{char}` to the right.
+| :heavy_check_mark: | `F{char}`                            | To the `[count]`'th occurrence of `{char}` to the left.
+| :heavy_check_mark: | `t{char}`                            | Till before `[count]`'th occurrence of `{char}` to the right.
+| :heavy_check_mark: | `T{char}`                            | Till after `[count]`'th occurrence of `{char}` to the left.
+| :heavy_check_mark: | `;`                                  | Repeat latest f, t, F or T `[count]` times.
+| :heavy_check_mark: | `,`                                  | Repeat latest f, t, F or T in opposite direction `[count]` times.
 
 ### 3. Up-down motions `|up-down-motions|`
 
 | Status             | Command                                    | Description
 | :----------------- | :----------------------------------------- | -----------
-| :heavy_check_mark: | `k`, `<Up>`, `CTRL-P`                      | [count] lines upward.
-| :heavy_check_mark: | `j`, `<Down>`, `CTRL-J`, `<NL>`, `CTRL-N`  | [count] lines downward.
-| :heavy_check_mark: | `gk`, `g<Up>`                              | [count] display lines upward.
-| :heavy_check_mark: | `gj`, `g<Down>`                            | [count] display lines downward.
-| :heavy_check_mark: | `-`, `<minus>`                             | [count] lines upward, on the first non-blank character.
-| :heavy_check_mark: | `+`, `CTRL-M`, `<CR>`                      | [count] lines downward, on the first non-blank character.
-| :heavy_check_mark: | `_`, `<underscore>`                        | [count] - 1 lines downward, on the first non-blank character.
-| :heavy_check_mark: | `G`                                        | Goto line [count], default last line, on the first non-blank character.
-|                    | `<C-End>`                                  | Goto line [count], default last line, on the last character.
-| :heavy_check_mark: | `<C-Home>`, `gg`                           | Goto line [count], default first line, on the first non-blank character.
+| :heavy_check_mark: | `k`, `<Up>`, `CTRL-P`                      | `[count]` lines upward.
+| :heavy_check_mark: | `j`, `<Down>`, `CTRL-J`, `<NL>`, `CTRL-N`  | `[count]` lines downward.
+| :heavy_check_mark: | `gk`, `g<Up>`                              | `[count]` display lines upward.
+| :heavy_check_mark: | `gj`, `g<Down>`                            | `[count]` display lines downward.
+| :heavy_check_mark: | `-`, `<minus>`                             | `[count]` lines upward, on the first non-blank character.
+| :heavy_check_mark: | `+`, `CTRL-M`, `<CR>`                      | `[count]` lines downward, on the first non-blank character.
+| :heavy_check_mark: | `_`, `<underscore>`                        | `[count]` - 1 lines downward, on the first non-blank character.
+| :heavy_check_mark: | `G`                                        | Goto line `[count]`, default last line, on the first non-blank character.
+|                    | `<C-End>`                                  | Goto line `[count]`, default last line, on the last character.
+| :heavy_check_mark: | `<C-Home>`, `gg`                           | Goto line `[count]`, default first line, on the first non-blank character.
 | :heavy_check_mark: | `:[range]`                                 | Set the cursor on the last line number in [range].
 | :heavy_check_mark: | `{count}%`                                 | Go to `{count}` percentage in the file, on the first non-blank in the line.
-|                    | `:[range]go[to] [count]`, `[count]go`      | Go to [count] byte in the buffer.
+|                    | `:[range]go[to] [count]`, `[count]go`      | Go to `[count]` byte in the buffer.
 
 ### 4. Word motions `|word-motions|`
 
 | Status             | Command            | Description
 | :----------------- | :----------------- | -----------
-| :heavy_check_mark: | `<S-Right>`, w     | [count] words forward.
-| :heavy_check_mark: | `<C-Right>`, W     | [count] WORDS forward.
-| :heavy_check_mark: | e                  | Forward to the end of word [count].
-| :heavy_check_mark: | E                  | Forward to the end of WORD [count].
-| :heavy_check_mark: | `<S-Left>`, b      | [count] words backward.
-| :heavy_check_mark: | `<C-Left>`, B      | [count] WORDS backward.
-| :heavy_check_mark: | ge                 | Backward to the end of word [count].
-| :heavy_check_mark: | gE                 | Backward to the end of WORD [count].
+| :heavy_check_mark: | `<S-Right>`, w     | `[count]` words forward.
+| :heavy_check_mark: | `<C-Right>`, W     | `[count]` WORDS forward.
+| :heavy_check_mark: | e                  | Forward to the end of word `[count]`.
+| :heavy_check_mark: | E                  | Forward to the end of WORD `[count]`.
+| :heavy_check_mark: | `<S-Left>`, b      | `[count]` words backward.
+| :heavy_check_mark: | `<C-Left>`, B      | `[count]` WORDS backward.
+| :heavy_check_mark: | ge                 | Backward to the end of word `[count]`.
+| :heavy_check_mark: | gE                 | Backward to the end of WORD `[count]`.
 
 ### 5. Text object motions `|object-motions|`
 
@@ -286,12 +286,12 @@ FORCING A MOTION TO BE LINEWISE, CHARACTERWISE OR BLOCKWISE
 | :----------------- | :------- | -----------
 | :heavy_check_mark: | `(`      | a `sentence` backward.
 | :heavy_check_mark: | `)`      | a `sentence` forward.
-| :heavy_check_mark: | `{`      | [count] `paragraph`s backward.
-| :heavy_check_mark: | `}`      | [count] `paragraph`s forward.
-|                    | `]]`     | [count] `section`s forward or to the next '\{' in the first column. [#32](https://github.com/NeoVintageous/NeoVintageous/issues/32)
-|                    | `][`     | [count] `section`s forward or to the next '\}' in the first column. [#32](https://github.com/NeoVintageous/NeoVintageous/issues/32)
-|                    | `[[`     | [count] `section`s backward or to the previous '\{' in the first column. [#32](https://github.com/NeoVintageous/NeoVintageous/issues/32)
-|                    | `[]`     | [count] `section`s backward or to the previous '\}' in the first column. [#32](https://github.com/NeoVintageous/NeoVintageous/issues/32)
+| :heavy_check_mark: | `{`      | `[count]` `paragraph`s backward.
+| :heavy_check_mark: | `}`      | `[count]` `paragraph`s forward.
+|                    | `]]`     | `[count]` `section`s forward or to the next '\{' in the first column. [#32](https://github.com/NeoVintageous/NeoVintageous/issues/32)
+|                    | `][`     | `[count]` `section`s forward or to the next '\}' in the first column. [#32](https://github.com/NeoVintageous/NeoVintageous/issues/32)
+|                    | `[[`     | `[count]` `section`s backward or to the previous '\{' in the first column. [#32](https://github.com/NeoVintageous/NeoVintageous/issues/32)
+|                    | `[]`     | `[count]` `section`s backward or to the previous '\}' in the first column. [#32](https://github.com/NeoVintageous/NeoVintageous/issues/32)
 
 ### 6. Text object selection `|text-objects|`
 
@@ -367,9 +367,9 @@ The following commands move the edit window (the part of the buffer that you see
 
 | Status             | Command                                        | Description
 | :----------------- | :--------------------------------------------- | :----------
-| :heavy_check_mark: | CTRL-E                                         | Scroll window [count] lines downwards in the buffer. The text moves upwards on the screen. Mnemonic: Extra lines.
-| :heavy_check_mark: | CTRL-D                                         | Scroll window Downwards in the buffer.  The number of lines comes from the `'scroll'` option (default: half a screen).  If [count] given, first set `'scroll'` option to [count].  The cursor is moved the same number of lines down in the file (if possible; when lines wrap and when hitting the end of the file there may be a difference).  When the cursor is on the last line of the buffer nothing happens and a beep is produced.
-| :heavy_check_mark: | &lt;S-Down&gt;<br>&lt;PageDown&gt;<br>CTRL-F   | Scroll window [count] pages Forwards (downwards) in the buffer.
+| :heavy_check_mark: | CTRL-E                                         | Scroll window `[count]` lines downwards in the buffer. The text moves upwards on the screen. Mnemonic: Extra lines.
+| :heavy_check_mark: | CTRL-D                                         | Scroll window Downwards in the buffer.  The number of lines comes from the `'scroll'` option (default: half a screen).  If `[count]` given, first set `'scroll'` option to `[count]`.  The cursor is moved the same number of lines down in the file (if possible; when lines wrap and when hitting the end of the file there may be a difference).  When the cursor is on the last line of the buffer nothing happens and a beep is produced.
+| :heavy_check_mark: | &lt;S-Down&gt;<br>&lt;PageDown&gt;<br>CTRL-F   | Scroll window `[count]` pages Forwards (downwards) in the buffer.
 
 ### 2. Scrolling upwards
 
@@ -377,9 +377,9 @@ The following commands move the edit window (the part of the buffer that you see
 
 | Status             | Command                                        | Description
 | :----------------- | :--------------------------------------------- | :----------
-| :heavy_check_mark: | CTRL-Y                                         | Scroll window [count] lines upwards in the buffer. The text moves downwards on the screen.
-| :heavy_check_mark: | CTRL-U                                         | Scroll window Upwards in the buffer.  The number of lines comes from the `'scroll'` option (default: half a screen).  If [count] given, first set the `'scroll'` option to [count].  The cursor is moved the same number of lines up in the file (if possible; when lines wrap and when hitting the end of the file there may be a difference).  When the cursor is on the first line of the buffer nothing happens and a beep is produced.
-| :heavy_check_mark: | &lt;S-Up&gt;<br>&lt;PageUp&gt;<br>CTRL-B       | Scroll window [count] pages Backwards (upwards) in the buffer.
+| :heavy_check_mark: | CTRL-Y                                         | Scroll window `[count]` lines upwards in the buffer. The text moves downwards on the screen.
+| :heavy_check_mark: | CTRL-U                                         | Scroll window Upwards in the buffer.  The number of lines comes from the `'scroll'` option (default: half a screen).  If `[count]` given, first set the `'scroll'` option to `[count]`.  The cursor is moved the same number of lines up in the file (if possible; when lines wrap and when hitting the end of the file there may be a difference).  When the cursor is on the first line of the buffer nothing happens and a beep is produced.
+| :heavy_check_mark: | &lt;S-Up&gt;<br>&lt;PageUp&gt;<br>CTRL-B       | Scroll window `[count]` pages Backwards (upwards) in the buffer.
 
 ### 3. Scrolling relative to cursor
 
@@ -387,12 +387,12 @@ The following commands reposition the edit window (the part of the buffer that y
 
 | Status             | Command                                        | Description
 | :----------------- | :--------------------------------------------- | :----------
-| :heavy_check_mark: | z`<CR>`                                        | Redraw, line [count] at top of window (default cursor line).  Put cursor at first non-blank in the line.
+| :heavy_check_mark: | z`<CR>`                                        | Redraw, line `[count]` at top of window (default cursor line).  Put cursor at first non-blank in the line.
 | :heavy_check_mark: | zt                                             | Like "z`<CR>`", but leave the cursor in the same column.
 |                    | z`{height}<CR>`                                | Redraw, make window `{height}` lines tall.  This is useful to make the number of lines small when screen updating is very slow.  Cannot make the height more than the physical screen height.
-| :heavy_check_mark: | z.                                             | Redraw, line [count] at centre of window (default cursor line).  Put cursor at first non-blank in the line.
+| :heavy_check_mark: | z.                                             | Redraw, line `[count]` at centre of window (default cursor line).  Put cursor at first non-blank in the line.
 | :heavy_check_mark: | zz                                             | Like "z.", but leave the cursor in the same column. Careful: If caps-lock is on, this command becomes "ZZ": write buffer and exit!
-| :heavy_check_mark: | z-                                             | Redraw, line [count] at bottom of window (default cursor line).  Put cursor at first non-blank in the line.
+| :heavy_check_mark: | z-                                             | Redraw, line `[count]` at bottom of window (default cursor line).  Put cursor at first non-blank in the line.
 | :heavy_check_mark: | zb                                             | Like "z-", but leave the cursor in the same column.
 
 ### 4. Scrolling horizontally
@@ -401,8 +401,8 @@ For the following four commands the cursor follows the screen.  If the character
 
 | Status             | Command                          | Description
 | :----------------- | :------------------------------- | :----------
-| :heavy_check_mark: | z&lt;Right&gt; zl                | Move the view on the text [count] characters to the right, thus scroll the text [count] characters to the left.  This only works when `'wrap'` is off.
-| :heavy_check_mark: | z&lt;Left&gt;  zh                | Move the view on the text [count] characters to the left, thus scroll the text [count] characters to the right.  This only works when `'wrap'` is off.
+| :heavy_check_mark: | z&lt;Right&gt; zl                | Move the view on the text `[count]` characters to the right, thus scroll the text `[count]` characters to the left.  This only works when `'wrap'` is off.
+| :heavy_check_mark: | z&lt;Left&gt;  zh                | Move the view on the text `[count]` characters to the left, thus scroll the text `[count]` characters to the right.  This only works when `'wrap'` is off.
 | :heavy_check_mark: | zL                               | Move the view on the text half a screenwidth to the right, thus scroll the text half a screenwidth to the left.  This only works when `'wrap'` is off.
 | :heavy_check_mark: | zH                               | Move the view on the text half a screenwidth to the left, thus scroll the text half a screenwidth to the right.  This only works when `'wrap'` is off.
 
@@ -505,10 +505,10 @@ The following commands can be used to insert new text into the buffer.  They can
 | :----------------- | :--------------------------------------------------------------------- | :----------
 | :heavy_check_mark: | R                                                                      | Enter Replace mode: Each character you type replaces an existing character, starting with the character under the cursor.
 | :heavy_check_mark: | ["x]c\{motion\}                                                        | Delete `{motion}` text [into register x] and start insert.
-| :heavy_check_mark: | ["x]cc                                                                 | Delete [count] lines [into register x] and start insert `linewise`.
-| :heavy_check_mark: | ["x]C                                                                  | Delete from the cursor position to the end of the line and [count]-1 more lines [into register x], and start insert.  Synonym for c$ (not `linewise`).
-| :heavy_check_mark: | ["x]s                                                                  | Delete [count] characters [into register x] and start insert (s stands for Substitute).  Synonym for "cl" (not `linewise`).
-| :heavy_check_mark: | ["x]S                                                                  | Delete [count] lines [into register x] and start insert.  Synonym for "cc" `linewise`.
+| :heavy_check_mark: | ["x]cc                                                                 | Delete `[count]` lines [into register x] and start insert `linewise`.
+| :heavy_check_mark: | ["x]C                                                                  | Delete from the cursor position to the end of the line and `[count]`-1 more lines [into register x], and start insert.  Synonym for c$ (not `linewise`).
+| :heavy_check_mark: | ["x]s                                                                  | Delete `[count]` characters [into register x] and start insert (s stands for Substitute).  Synonym for "cl" (not `linewise`).
+| :heavy_check_mark: | ["x]S                                                                  | Delete `[count]` lines [into register x] and start insert.  Synonym for "cc" `linewise`.
 | :heavy_check_mark: | \{Visual\}["x]c<br>\{Visual\}["x]s                                     | Delete the highlighted text [into register x] and start insert (for `{Visual}` see `Visual-mode`).
 | :heavy_check_mark: | \{Visual\}r\{char\}                                                    | Replace all selected characters by `{char}`.
 |                    | \{Visual\}["x]C                                                        | Delete the highlighted lines [into register x] and start insert.
@@ -525,7 +525,7 @@ The following commands change the case of letters.
 
 | Status             | Command          | Description
 | :----------------- | :--------------- | :----------
-| :heavy_check_mark: | \~               | `'notildeop'` option: Switch case of the character under the cursor and move the cursor to the right. If a [count] is given, do that many characters.
+| :heavy_check_mark: | \~               | `'notildeop'` option: Switch case of the character under the cursor and move the cursor to the right. If a `[count]` is given, do that many characters.
 |                    | \~\{motion\}     | `'tildeop'` option: switch case of `{motion}` text.
 | :heavy_check_mark: | g\~\{motion\}    | Switch case of `{motion}` text.
 | :heavy_check_mark: | g\~g\~<br>g\~\~  | Switch case of current line.
@@ -541,37 +541,37 @@ Adding and subtracting
 
 | Status             | Command                      | Description
 | :----------------- | :--------------------------- | :----------
-| :heavy_check_mark: | CTRL-A                       | Add [count] to the number or alphabetic character at or after the cursor.
-| :heavy_check_mark: | \{Visual\}CTRL-A             | Add [count] to the number or alphabetic character in the highlighted text.
-|                    | \{Visual\}g&nbsp;CTRL-A      | Add [count] to the number or alphabetic character in the highlighted text. If several lines are highlighted, each one will be incremented by an additional [count] (so effectively creating a [count] incrementing sequence).
-| :heavy_check_mark: | CTRL-X                       | Subtract [count] from the number or alphabetic character at or after the cursor.
-| :heavy_check_mark: | \{Visual\}CTRL-X             | Subtract [count] from the number or alphabetic character in the highlighted text.
-|                    | \{Visual\}g&nbsp;CTRL-X      | Subtract [count] from the number or alphabetic character in the highlighted text. If several lines are highlighted, each value will be decremented by an additional [count] (so effectively creating a [count] decrementing sequence).
+| :heavy_check_mark: | CTRL-A                       | Add `[count]` to the number or alphabetic character at or after the cursor.
+| :heavy_check_mark: | \{Visual\}CTRL-A             | Add `[count]` to the number or alphabetic character in the highlighted text.
+|                    | \{Visual\}g&nbsp;CTRL-A      | Add `[count]` to the number or alphabetic character in the highlighted text. If several lines are highlighted, each one will be incremented by an additional `[count]` (so effectively creating a `[count]` incrementing sequence).
+| :heavy_check_mark: | CTRL-X                       | Subtract `[count]` from the number or alphabetic character at or after the cursor.
+| :heavy_check_mark: | \{Visual\}CTRL-X             | Subtract `[count]` from the number or alphabetic character in the highlighted text.
+|                    | \{Visual\}g&nbsp;CTRL-X      | Subtract `[count]` from the number or alphabetic character in the highlighted text. If several lines are highlighted, each value will be decremented by an additional `[count]` (so effectively creating a `[count]` decrementing sequence).
 
 SHIFTING LINES LEFT OR RIGHT
 
 | Status             | Command                      | Description
 | :----------------- | :--------------------------- | :----------
 | :heavy_check_mark: | &lt;\{motion\}               | Shift `{motion}` lines leftwards.
-| :heavy_check_mark: | &lt;                         | Shift [count] lines leftwards.
-| :heavy_check_mark: | \{Visual\}[count]&lt;        | Shift the highlighted lines [count] leftwards (for `{Visual}` see `Visual-mode`).
+| :heavy_check_mark: | &lt;                         | Shift `[count]` lines leftwards.
+| :heavy_check_mark: | \{Visual\}[count]&lt;        | Shift the highlighted lines `[count]` leftwards (for `{Visual}` see `Visual-mode`).
 | :heavy_check_mark: | &gt;\{motion\}               | Shift `{motion}` lines one rightwards.
-| :heavy_check_mark: | &gt;                         | Shift [count] lines one rightwards.
-| :heavy_check_mark: | \{Visual\}[count]&gt;        | Shift the highlighted lines [count] rightwards (for `{Visual}` see `Visual-mode`).
+| :heavy_check_mark: | &gt;                         | Shift `[count]` lines one rightwards.
+| :heavy_check_mark: | \{Visual\}[count]&gt;        | Shift the highlighted lines `[count]` rightwards (for `{Visual}` see `Visual-mode`).
 
 ### 4. Complex changes
 
 | Status             | Command                                                                              | Description
 | :----------------- | :----------------------------------------------------------------------------------- | :----------
 | :heavy_check_mark: | =\{motion\}                                                                          | Filter `{motion}` lines through the re-indent command.
-| :heavy_check_mark: | ==                                                                                   | Filter [count] lines like with `={motion}`.
+| :heavy_check_mark: | ==                                                                                   | Filter `[count]` lines like with `={motion}`.
 | :heavy_check_mark: | \{Visual\}=                                                                          | Filter the highlighted lines like with `={motion}`.
 
 #### 4.2 Substitute
 
 | Status             | Command                                                                              | Description
 | :----------------- | :----------------------------------------------------------------------------------- | :----------
-| :heavy_check_mark: | `:[range]s[ubstitute]/{pattern}/{string}/[flags] [count]`                            | For each line in [range] replace a match of \{pattern\} with \{string\}. When [range] and [count] are omitted, replace in the current line only.  When [count] is given, replace in [count] lines, starting with the last line in [range]. When [range] is omitted start in the current line. [count] must be a positive number. See `:s_flags` for [flags].
+| :heavy_check_mark: | `:[range]s[ubstitute]/{pattern}/{string}/[flags] [count]`                            | For each line in [range] replace a match of \{pattern\} with \{string\}. When [range] and `[count]` are omitted, replace in the current line only.  When `[count]` is given, replace in `[count]` lines, starting with the last line in [range]. When [range] is omitted start in the current line. `[count]` must be a positive number. See `:s_flags` for [flags].
 | :heavy_check_mark: | `:[range]s[ubstitute] [flags] [count]`<br><br>`:[range]&[&][flags] [count]`          | Repeat last :substitute with same search pattern and substitute string, but without the same flags.  You may add [flags], see `:s_flags`.
 | :heavy_check_mark: | &                                                                                    | Synonym for `:s` (repeat last substitute).  Note that the flags are not remembered, thus it might actually work differently.  You can use `:&&` to keep the flags.
 |                    | g&                                                                                   | Synonym for `:%s//~/&` (repeat last substitute with last search pattern on all lines with the same flags). For example, when you first do a substitution with `:s/pattern/repl/flags` and then `/search` for something else, `g&` will do `:%s/search/repl/flags`. Mnemonic: global substitute.
@@ -593,13 +593,13 @@ The flags that you can use for the substitute commands:
 | :heavy_check_mark: | `"{register}`                        | Use `{register}` for next delete, yank or put.  Use an uppercase character to append with delete and yank. Registers ".", "%", "#" and ":" only work with put.
 | :heavy_check_mark: | `:reg[isters]`                       | Display the type and contents of all numbered and named registers.
 | :heavy_check_mark: | `["x]y{motion}`                      | Yank `{motion}` text [into register x].
-| :heavy_check_mark: | `["x]yy`                             | Yank [count] lines [into register x] `linewise`.
-| :heavy_check_mark: | `["x]Y`                              | yank [count] lines [into register x] (synonym for yy, `linewise`).  If you like "Y" to work from the cursor to the end of line (which is more logical, but not Vi-compatible) use ":map Y y$".
+| :heavy_check_mark: | `["x]yy`                             | Yank `[count]` lines [into register x] `linewise`.
+| :heavy_check_mark: | `["x]Y`                              | yank `[count]` lines [into register x] (synonym for yy, `linewise`).  If you like "Y" to work from the cursor to the end of line (which is more logical, but not Vi-compatible) use ":map Y y$".
 | :heavy_check_mark: | `{Visual}["x]y`                      | Yank the highlighted text [into register x] (for `{Visual}` see `Visual-mode`).
 | :heavy_check_mark: | `{Visual}["x]Y`                      | Yank the highlighted lines [into register x] (for `{Visual}` see `Visual-mode`).
 | :heavy_check_mark: | <code>:[range]y[ank]&nbsp;[x]</code> | Yank [range] lines [into register x].
-| :heavy_check_mark: | `["x]p`                              | Put the text [from register x] after the cursor [count] times.
-| :heavy_check_mark: | `["x]P`                              | Put the text [from register x] before the cursor [count] times.
+| :heavy_check_mark: | `["x]p`                              | Put the text [from register x] after the cursor `[count]` times.
+| :heavy_check_mark: | `["x]P`                              | Put the text [from register x] before the cursor `[count]` times.
 | :heavy_check_mark: | `["x]gp`                             | Just like "p", but leave the cursor just after the new text.
 | :heavy_check_mark: | `["x]gP`                             | Just like "P", but leave the cursor just after the new text.
 | :heavy_check_mark: | `["x]]p`                             | Like "p", but adjust the indent to the current line.
@@ -825,13 +825,13 @@ Some options "proxy" to Sublime Text settings. This means that the option uses t
 
 | Status             | Command                          | Description
 | :----------------- | :------------------------------- | :----------
-| :heavy_check_mark: | /\{pattern\}&lt;CR&gt;           | Search forward for the [count]'th occurrence of \{pattern\}.
-| :heavy_check_mark: | /&lt;CR&gt;                      | Search forward for the [count]'th occurrence of the latest used pattern.
-| :heavy_check_mark: | ?\{pattern\}&lt;CR&gt;           | Search backward for the [count]'th previous occurrence of \{pattern\}.
-| :heavy_check_mark: | ?&lt;CR&gt;                      | Search backward for the [count]'th occurrence of the latest used pattern.
-| :heavy_check_mark: | n                                | Repeat the latest "/" or "?" [count] times. If the cursor doesn't move the search is repeated with count + 1.
-| :heavy_check_mark: | N                                | Repeat the latest "/" or "?" [count] times in opposite direction.
-| :heavy_check_mark: | *                                | Search forward for the [count]'th occurrence of the word nearest to the cursor. Only whole keywords are searched for, like with the command "/\<keyword\>".  `'ignorecase'` is used, `'smartcase'` is not.
+| :heavy_check_mark: | /\{pattern\}&lt;CR&gt;           | Search forward for the `[count]`'th occurrence of \{pattern\}.
+| :heavy_check_mark: | /&lt;CR&gt;                      | Search forward for the `[count]`'th occurrence of the latest used pattern.
+| :heavy_check_mark: | ?\{pattern\}&lt;CR&gt;           | Search backward for the `[count]`'th previous occurrence of \{pattern\}.
+| :heavy_check_mark: | ?&lt;CR&gt;                      | Search backward for the `[count]`'th occurrence of the latest used pattern.
+| :heavy_check_mark: | n                                | Repeat the latest "/" or "?" `[count]` times. If the cursor doesn't move the search is repeated with count + 1.
+| :heavy_check_mark: | N                                | Repeat the latest "/" or "?" `[count]` times in opposite direction.
+| :heavy_check_mark: | *                                | Search forward for the `[count]`'th occurrence of the word nearest to the cursor. Only whole keywords are searched for, like with the command "/\<keyword\>".  `'ignorecase'` is used, `'smartcase'` is not.
 | :heavy_check_mark: | #                                | Same as "\*", but search backward.  The pound sign (character 163) also works.
 | :heavy_check_mark: | gd                               | Go to local Declaration.
 | :heavy_check_mark: | gD                               | Go to global Declaration.
