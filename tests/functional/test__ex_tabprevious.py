@@ -23,4 +23,9 @@ class Test_ex_tabprevious(unittest.FunctionalTestCase):
     @unittest.mock.patch('NeoVintageous.nv.ex_cmds.window_tab_control')
     def test_n_tabprevious(self, window_tab_control):
         self.eq('f|izz', ':tabprevious', 'f|izz')
-        window_tab_control.assert_called_once_with(self.view.window(), action='previous')
+        window_tab_control.assert_called_once_with(self.view.window(), 'previous', count=1)
+
+    @unittest.mock.patch('NeoVintageous.nv.ex_cmds.window_tab_control')
+    def test_n_with_count(self, window_tab_control):
+        self.eq('f|izz', ':tabprevious', 'f|izz')
+        window_tab_control.assert_called_once_with(self.view.window(), 'previous', count=1)

@@ -106,23 +106,25 @@ _log = logging.getLogger(__name__)
 
 
 def ex_bfirst(window, **kwargs) -> None:
-    window_buffer_control(window, action='first')
+    window_buffer_control(window, 'first')
 
 
 def ex_blast(window, **kwargs) -> None:
-    window_buffer_control(window, action='last')
+    window_buffer_control(window, 'last')
 
 
-def ex_bnext(window, **kwargs) -> None:
-    window_buffer_control(window, action='next')
+def ex_bnext(window, N: int = 1, **kwargs) -> None:
+    window_buffer_control(window, 'next', count=N)
 
 
-def ex_bprevious(window, **kwargs) -> None:
-    window_buffer_control(window, action='previous')
+def ex_bprevious(window, N: int = 1, **kwargs) -> None:
+    window_buffer_control(window, 'previous', count=N)
 
 
 def ex_browse(window, view, **kwargs) -> None:
-    window.run_command('prompt_open_file', {'initial_directory': get_cmdline_cwd()})
+    window.run_command('prompt_open_file', {
+        'initial_directory': get_cmdline_cwd()
+    })
 
 
 def ex_buffer(window, index: int = None, **kwargs) -> None:
@@ -918,31 +920,31 @@ def ex_sunmap(lhs: str, **kwargs) -> None:
 
 
 def ex_tabclose(window, **kwargs) -> None:
-    window_tab_control(window, action='close')
+    window_tab_control(window, 'close')
 
 
 def ex_tabfirst(window, **kwargs) -> None:
-    window_tab_control(window, action='first')
+    window_tab_control(window, 'first')
 
 
 def ex_tablast(window, **kwargs) -> None:
-    window_tab_control(window, action='last')
+    window_tab_control(window, 'last')
 
 
-def ex_tabnext(window, **kwargs) -> None:
-    window_tab_control(window, action='next')
+def ex_tabnext(window, count: int = 1, **kwargs) -> None:
+    window_tab_control(window, 'next', count=count)
 
 
 def ex_tabnew(window, **kwargs) -> None:
-    window_tab_control(window, action='new')
+    window_tab_control(window, 'new')
 
 
 def ex_tabonly(window, **kwargs) -> None:
-    window_tab_control(window, action='only')
+    window_tab_control(window, 'only')
 
 
-def ex_tabprevious(window, **kwargs) -> None:
-    window_tab_control(window, action='previous')
+def ex_tabprevious(window, count: int = 1, **kwargs) -> None:
+    window_tab_control(window, 'previous', count=count)
 
 
 def ex_unmap(lhs: str, **kwargs) -> None:

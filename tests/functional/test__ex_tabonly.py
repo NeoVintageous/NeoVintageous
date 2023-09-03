@@ -21,6 +21,6 @@ from NeoVintageous.tests import unittest
 class Test_ex_tabonly(unittest.FunctionalTestCase):
 
     @unittest.mock.patch('NeoVintageous.nv.ex_cmds.window_tab_control')
-    def test_n_tnext(self, window_tab_control):
+    def test_n_tabonly(self, window_tab_control):
         self.eq('f|izz', ':tabonly', 'f|izz')
-        window_tab_control.assert_called_once_with(self.view.window(), action='only')
+        window_tab_control.assert_called_once_with(self.view.window(), 'only')

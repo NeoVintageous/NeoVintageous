@@ -494,9 +494,11 @@ class TestExCommands(unittest.TestCase):
 
         self.assertCommand(['!ls'], cmd('!', target='shell_out', params={'cmd': 'ls'}, addressable=True))
         self.assertCommand(['&&'], cmd('&&', target='double_ampersand', params={'count': '', 'flags': []}, addressable=True))  # noqa: E501
+        self.assertCommand(['bNext 5', 'bN 5', 'bprevious 5', 'bp 5'], cmd('bprevious', params={'N': 5}))
         self.assertCommand(['bNext', 'bN', 'bprevious', 'bp'], cmd('bprevious'))
         self.assertCommand(['bfirst', 'bf', 'brewind', 'br'], cmd('bfirst'))
         self.assertCommand(['blast', 'bl'], cmd('blast'))
+        self.assertCommand(['bnext 3', 'bn 3'], cmd('bnext', params={'N': 3}))
         self.assertCommand(['bnext', 'bn'], cmd('bnext'))
         self.assertCommand(['browse', 'bro'], cmd('browse'))
         self.assertCommand(['buffer 1', 'b 1'], cmd('buffer', params={'index': '1'}))
@@ -619,10 +621,12 @@ class TestExCommands(unittest.TestCase):
         self.assertCommand(['substitute/x/y/', 's/x/y/'], cmd('substitute', params={'pattern': 'x', 'replacement': 'y', 'flags': [], 'count': 1}, addressable=True))  # noqa: E501
         self.assertCommand(['substitute/x/y/ic', 's/x/y/ic'], cmd('substitute', params={'pattern': 'x', 'replacement': 'y', 'flags': ['i', 'c'], 'count': 1}, addressable=True))  # noqa: E501
         self.assertCommand(['sunmap xyz', 'sunm xyz'], cmd('sunmap', params={'lhs': 'xyz'}))
+        self.assertCommand(['tabNext 11', 'tabN 11', 'tabprevious 11', 'tabp 11'], cmd('tabprevious', params={'count': 11}))  # noqa: E501
         self.assertCommand(['tabNext', 'tabN', 'tabprevious', 'tabp'], cmd('tabprevious'))
         self.assertCommand(['tabclose', 'tabc'], cmd('tabclose'))
         self.assertCommand(['tabfirst', 'tabfir', 'tabrewind', 'tabr'], cmd('tabfirst'))
         self.assertCommand(['tablast', 'tabl'], cmd('tablast'))
+        self.assertCommand(['tabnext 7', 'tabn 7'], cmd('tabnext', params={'count': 7}))
         self.assertCommand(['tabnext', 'tabn'], cmd('tabnext'))
         self.assertCommand(['tabonly', 'tabo'], cmd('tabonly'))
         self.assertCommand(['unmap xyz', 'unm xyz'], cmd('unmap', params={'lhs': 'xyz'}))

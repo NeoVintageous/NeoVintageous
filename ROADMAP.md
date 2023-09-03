@@ -993,8 +993,8 @@ When the option `'equalalways'` (`'ea'`) is set, all the windows are automatical
 | :heavy_check_mark: | :files<br>:buffers<br>:ls                                    | Show all buffers.
 | :heavy_check_mark: | :b[uffer] [N]                                                | Edit buffer `[N]` from the buffer list.  If `[N]` is not given, the current buffer remains being edited.
 |                    | :b[uffer]&nbsp;\{bufname\}                                   | Edit buffer for `{bufname}` from the buffer list.  A partial name also works, so long as it is unique in the list of buffers.
-| :heavy_check_mark: | :bn[ext]                                                     | Go to next buffer in buffer list.  Wraps around the end of the buffer list.
-| :heavy_check_mark: | :bN[ext]<br>:bp[revious]                                     | Go to previous buffer in buffer list. Wraps around the start of the buffer list.
+| :heavy_check_mark: | `:bn[ext] [N]`                                               | Go to `[N]`th next buffer in buffer list.  `[N]` defaults to one.  Wraps around the end of the buffer list.
+| :heavy_check_mark: | `:bN[ext] [N]`<br><code>:bp[revious]&nbsp;[N]</code>         | Go to `[N]`th previous buffer in buffer list.  `[N]` defaults to one.  Wraps around the start of the buffer list.
 | :heavy_check_mark: | :br[ewind]                                                   | Go to first buffer in buffer list.  If the buffer list is empty, go to the first unlisted buffer.
 | :heavy_check_mark: | :bf[irst]                                                    | Same :brewind
 | :heavy_check_mark: | :bl[ast]                                                     | Go to last buffer in buffer list.  If the buffer list is empty, go to the last unlisted buffer.
@@ -1022,10 +1022,12 @@ SWITCHING TO ANOTHER TAB PAGE:
 
 | Status             | Command                                                  | Description
 | :----------------- | :------------------------------------------------------- | :----------
-| :heavy_check_mark: | :tabn[ext]<br>&lt;C-PageDown&gt;<br>gt                   | Go to the next tab page.  Wraps around from the last to the first one.
-| :heavy_check_mark: | :tabp[revious]<br>:tabN[ext]<br>&lt;C-PageUp&gt;<br>gT   | Go to the previous tab page.  Wraps around from the first one to the last one.
-| :heavy_check_mark: | :tabr[ewind]<br>:tabfir[st]                              | Go to the first tab page.
-| :heavy_check_mark: | :tabl[ast]                                               | Go to the last tab page.
+| :heavy_check_mark: | `:tabn[ext]`<br>`<C-PageDown>`<br>`gt`                   | Go to the next tab page.  Wraps around from the last to the first one.
+| :heavy_check_mark: | `:tabp[revious]`<br>`:tabN[ext]`<br>`<C-PageUp>`<br>`gT` | Go to the previous tab page.  Wraps around from the first one to the last one.
+| :heavy_check_mark: | <code>:tabn[ext]&nbsp;\{count\}</code>                   | Go to tab page `{count}`.  The first tab page has number one.  Wraps around from the first one to the last one.
+| :heavy_check_mark: | <code>:tabp[revious]&nbsp;\{count\}</code>               | Go `{count}` tab pages back.  Wraps around from the first one to the last one.
+| :heavy_check_mark: | `:tabr[ewind]`<br>`:tabfir[st]`                          | Go to the first tab page.
+| :heavy_check_mark: | `:tabl[ast]`                                             | Go to the last tab page.
 
 ## Spell checking `|spell.txt|`
 

@@ -6,6 +6,11 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+- [#973](https://github.com/NeoVintageous/NeoVintageous/issues/973): `tabp[revious] [N]` now navigates to the `[N]`th previous tab, defaulting to one.
+- [#972](https://github.com/NeoVintageous/NeoVintageous/issues/972): `tabn[ext] [N]` now takes you to the `[N]`th next tab, defaulting to one.
+- [#971](https://github.com/NeoVintageous/NeoVintageous/issues/971): `bp[revious] [N]` now directs you to the `[N]`th previous buffer in the buffer list, defaulting to one.
+- [#970](https://github.com/NeoVintageous/NeoVintageous/issues/970): `bn[ext] [N]` now leads you to the `[N]`th next buffer in the buffer list, defaulting to one.
+- [#968](https://github.com/NeoVintageous/NeoVintageous/issues/968): Buffer commands like `:bnext` and `:bprevious` now cycle through all views, instead of just cycling through views within a group.
 - [#967](https://github.com/NeoVintageous/NeoVintageous/issues/967): Include a line number column in the `:ls` output.
 - [#839](https://github.com/NeoVintageous/NeoVintageous/issues/839): Add the functionality to move the cursor to the neighbouring group in reverse with `CTRL-w W`.
 - [#839](https://github.com/NeoVintageous/NeoVintageous/issues/839): Add the functionality to move the cursor to the neighbouring group with `CTRL-w w` (and provide an alias for `CTRL-w CTRL-w`).

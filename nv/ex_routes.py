@@ -40,6 +40,16 @@ def _create_word_route(state, name: str, word: str, forcable: bool = False, **kw
     return command
 
 
+def _create_count_param_route(state, name: str, param: str = 'count', forcable: bool = False, **kwargs) -> TokenCommand:
+    command = _create_route(state, name, forcable, **kwargs)
+
+    match = state.match('\\s*(?P<' + param + '>[1-9][0-9]*)')
+    if match:
+        command.params[param] = int(match.group(param))
+
+    return command
+
+
 def _create_map_route(state, name: str) -> TokenCommand:
     command = TokenCommand(name)
 
@@ -69,11 +79,11 @@ def _ex_route_blast(state) -> TokenCommand:
 
 
 def _ex_route_bnext(state) -> TokenCommand:
-    return _create_route(state, 'bnext')
+    return _create_count_param_route(state, 'bnext', param='N')
 
 
 def _ex_route_bprevious(state) -> TokenCommand:
-    return _create_route(state, 'bprevious')
+    return _create_count_param_route(state, 'bprevious', param='N')
 
 
 def _ex_route_browse(state) -> TokenCommand:
@@ -562,7 +572,7 @@ def _ex_route_tablast(state) -> TokenCommand:
 
 
 def _ex_route_tabnext(state) -> TokenCommand:
-    return _create_route(state, 'tabnext')
+    return _create_count_param_route(state, 'tabnext')
 
 
 def _ex_route_tabnew(state) -> TokenCommand:
@@ -574,7 +584,7 @@ def _ex_route_tabonly(state) -> TokenCommand:
 
 
 def _ex_route_tabprevious(state) -> TokenCommand:
-    return _create_route(state, 'tabprevious')
+    return _create_count_param_route(state, 'tabprevious')
 
 
 def _ex_route_unmap(state) -> TokenCommand:
@@ -745,7 +755,7 @@ _add_ex_route(r'(?:files|ls|buffers)!?', _ex_route_buffers, ['files', 'ls', 'buf
 _add_ex_route(r'bf(?:irst)?', _ex_route_bfirst, 'bfirst')
 _add_ex_route(r'bl(?:ast)?', _ex_route_blast, 'blast')
 _add_ex_route(r'bn(?:ext)?', _ex_route_bnext, 'bnext')
-_add_ex_route(r'bN(?:ext)?', _ex_route_bprevious, 'bNext')
+_add_ex_route(r'bN(?:ext)?', _ex_route_bprevious, 'bNext')  # alias of :bprevious
 _add_ex_route(r'bp(?:revious)?', _ex_route_bprevious, 'bprevious')
 _add_ex_route(r'bro(?:wse)?', _ex_route_browse, 'browse')
 _add_ex_route(r'br(?:ewind)?', _ex_route_bfirst, 'brewind')

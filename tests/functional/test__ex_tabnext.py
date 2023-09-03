@@ -21,6 +21,11 @@ from NeoVintageous.tests import unittest
 class Test_ex_tabnext(unittest.FunctionalTestCase):
 
     @unittest.mock.patch('NeoVintageous.nv.ex_cmds.window_tab_control')
-    def test_n_tnext(self, window_tab_control):
+    def test_n_tabnext(self, window_tab_control):
         self.eq('f|izz', ':tabnext', 'f|izz')
-        window_tab_control.assert_called_once_with(self.view.window(), action='next')
+        window_tab_control.assert_called_once_with(self.view.window(), 'next', count=1)
+
+    @unittest.mock.patch('NeoVintageous.nv.ex_cmds.window_tab_control')
+    def test_n_with_count(self, window_tab_control):
+        self.eq('f|izz', ':tabnext 5', 'f|izz')
+        window_tab_control.assert_called_once_with(self.view.window(), 'next', count=5)
