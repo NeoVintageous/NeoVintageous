@@ -263,7 +263,7 @@ FORCING A MOTION TO BE LINEWISE, CHARACTERWISE OR BLOCKWISE
 | :heavy_check_mark: | `G`                                        | Goto line `[count]`, default last line, on the first non-blank character.
 |                    | `<C-End>`                                  | Goto line `[count]`, default last line, on the last character.
 | :heavy_check_mark: | `<C-Home>`, `gg`                           | Goto line `[count]`, default first line, on the first non-blank character.
-| :heavy_check_mark: | `:[range]`                                 | Set the cursor on the last line number in [range].
+| :heavy_check_mark: | `:[range]`                                 | Set the cursor on the last line number in `[range]`.
 | :heavy_check_mark: | `{count}%`                                 | Go to `{count}` percentage in the file, on the first non-blank in the line.
 |                    | `:[range]go[to] [count]`, `[count]go`      | Go to `[count]` byte in the buffer.
 
@@ -571,7 +571,7 @@ SHIFTING LINES LEFT OR RIGHT
 
 | Status             | Command                                                                              | Description
 | :----------------- | :----------------------------------------------------------------------------------- | :----------
-| :heavy_check_mark: | `:[range]s[ubstitute]/{pattern}/{string}/[flags] [count]`                            | For each line in [range] replace a match of \{pattern\} with \{string\}. When [range] and `[count]` are omitted, replace in the current line only.  When `[count]` is given, replace in `[count]` lines, starting with the last line in [range]. When [range] is omitted start in the current line. `[count]` must be a positive number. See `:s_flags` for [flags].
+| :heavy_check_mark: | `:[range]s[ubstitute]/{pattern}/{string}/[flags] [count]`                            | For each line in `[range]` replace a match of \{pattern\} with \{string\}. When `[range]` and `[count]` are omitted, replace in the current line only.  When `[count]` is given, replace in `[count]` lines, starting with the last line in `[range]`. When `[range]` is omitted start in the current line. `[count]` must be a positive number. See `:s_flags` for [flags].
 | :heavy_check_mark: | `:[range]s[ubstitute] [flags] [count]`<br><br>`:[range]&[&][flags] [count]`          | Repeat last :substitute with same search pattern and substitute string, but without the same flags.  You may add [flags], see `:s_flags`.
 | :heavy_check_mark: | &                                                                                    | Synonym for `:s` (repeat last substitute).  Note that the flags are not remembered, thus it might actually work differently.  You can use `:&&` to keep the flags.
 |                    | g&                                                                                   | Synonym for `:%s//~/&` (repeat last substitute with last search pattern on all lines with the same flags). For example, when you first do a substitution with `:s/pattern/repl/flags` and then `/search` for something else, `g&` will do `:%s/search/repl/flags`. Mnemonic: global substitute.
@@ -597,7 +597,7 @@ The flags that you can use for the substitute commands:
 | :heavy_check_mark: | `["x]Y`                              | yank `[count]` lines [into register x] (synonym for yy, `linewise`).  If you like "Y" to work from the cursor to the end of line (which is more logical, but not Vi-compatible) use ":map Y y$".
 | :heavy_check_mark: | `{Visual}["x]y`                      | Yank the highlighted text [into register x] (for `{Visual}` see `Visual-mode`).
 | :heavy_check_mark: | `{Visual}["x]Y`                      | Yank the highlighted lines [into register x] (for `{Visual}` see `Visual-mode`).
-| :heavy_check_mark: | <code>:[range]y[ank]&nbsp;[x]</code> | Yank [range] lines [into register x].
+| :heavy_check_mark: | <code>:[range]y[ank]&nbsp;[x]</code> | Yank `[range]` lines [into register x].
 | :heavy_check_mark: | `["x]p`                              | Put the text [from register x] after the cursor `[count]` times.
 | :heavy_check_mark: | `["x]P`                              | Put the text [from register x] before the cursor `[count]` times.
 | :heavy_check_mark: | `["x]gp`                             | Just like "p", but leave the cursor just after the new text.
@@ -642,7 +642,7 @@ The next two commands always work on whole lines.
 
 | Status             | Command                        | Description
 | :----------------- | :----------------------------- | :----------
-| :heavy_check_mark: | :[range]sor[t]&nbsp;[i][u]       | Sort lines in [range].  When no range is given all lines are sorted.<br><br>With `[i]` case is ignored.<br><br>With `[u]` (u stands for unique) only keep the first of a sequence of identical lines (ignoring case when `[i]` is used).  Without this flag, a sequence of identical lines will be kept in their original order. Note that leading and trailing white space may cause lines to be different.
+| :heavy_check_mark: | :[range]sor[t]&nbsp;[i][u]       | Sort lines in `[range]`.  When no range is given all lines are sorted.<br><br>With `[i]` case is ignored.<br><br>With `[u]` (u stands for unique) only keep the first of a sequence of identical lines (ignoring case when `[i]` is used).  Without this flag, a sequence of identical lines will be kept in their original order. Note that leading and trailing white space may cause lines to be different.
 
 ## Undo and Redo `|undo.txt|`
 
