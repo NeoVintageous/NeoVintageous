@@ -57,11 +57,11 @@ class Test_ctrl_w(unittest.FunctionalTestCase):
         self.feed('<C-w>L')
         function.assert_called_once_with(self.view.window())
 
-    @unittest.mock.patch('NeoVintageous.nv.window.window_buffer_control')
-    def test_ctrl_w_W(self, function):
+    @unittest.mock_commands('focus_neighboring_group')
+    def test_ctrl_w_W(self):
         self.normal('f|izz')
         self.feed('<C-w>W')
-        function.assert_called_once_with(self.view.window(), 'goto', 1)
+        self.assertRunCommand('focus_neighboring_group', {'forward': False})
 
     @unittest.mock.patch('NeoVintageous.nv.window._close_active_view')
     def test_ctrl_w_c(self, function):
@@ -173,6 +173,13 @@ class Test_ctrl_w(unittest.FunctionalTestCase):
         for feed in ('<C-w>v', '<C-w><C-v>', ':vsplit'):
             self.feed(feed)
         self.assertRunCommand('clone_file_to_pane', {'direction': 'right'}, count=3)
+
+    @unittest.mock_commands('focus_neighboring_group')
+    def test_ctrl_w_w(self):
+        self.normal('f|izz')
+        for feed in ('<C-w>w', '<C-w><C-w>'):
+            self.feed(feed)
+        self.assertRunCommand('focus_neighboring_group', {'forward': True}, count=2)
 
     @unittest.mock.patch('NeoVintageous.nv.window._exchange_view_by_count')
     def test_ctrl_w_x(self, function):

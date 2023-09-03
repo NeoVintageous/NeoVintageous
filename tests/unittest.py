@@ -1632,6 +1632,7 @@ _SEQ2CMD = {
     '<C-w><C-n>':   {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', '<C-n>']}},  # noqa: E241
     '<C-w><C-s>':   {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', '<C-s>']}},  # noqa: E241
     '<C-w><C-v>':   {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', '<C-v>']}},  # noqa: E241
+    '<C-w><C-w>':   {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', '<C-w>']}},  # noqa: E241
     '<C-w><bar>':   {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', '<bar>']}},  # noqa: E241
     '<C-w><lt>':    {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', '<lt>']}},  # noqa: E241
     '<C-w>=':       {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', '=']}},  # noqa: E241
@@ -1657,6 +1658,7 @@ _SEQ2CMD = {
     '<C-w>s':       {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', 's']}},  # noqa: E241
     '<C-w>t':       {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', 't']}},  # noqa: E241
     '<C-w>v':       {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', 'v']}},  # noqa: E241
+    '<C-w>w':       {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', 'w']}},  # noqa: E241
     '<C-w>x':       {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', 'x']}},  # noqa: E241
     '<C-x>':        {'command': 'nv_feed_key', 'args': {'key': '<C-x>'}},  # noqa: E241
     '<C-y>':        {'command': 'nv_feed_key', 'args': {'key': '<C-y>'}},  # noqa: E241
