@@ -17,7 +17,6 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 - [#965](https://github.com/NeoVintageous/NeoVintageous/issues/965): `CTRL-n` now mappable in insert mode, boosting customization.
 - [#965](https://github.com/NeoVintageous/NeoVintageous/issues/965): Add the functionality to open auto-complete in insert mode using `CTRL-n`
 - [#964](https://github.com/NeoVintageous/NeoVintageous/issues/964): Adds `N` alias for `Q`, `k`, or `CTRL-p` in multiple cursor mode.
-- [#964](https://github.com/NeoVintageous/NeoVintageous/issues/964): Adds `TAB` alias for `Esc` or `J` in multiple cursor mode.
 - [#942](https://github.com/NeoVintageous/NeoVintageous/issues/942): Adds `TAB` alias for `Esc` or `J` in multiple cursor mode.
 - [#961](https://github.com/NeoVintageous/NeoVintageous/issues/961): Add "Type" column to `:registers` output to indicate linewise or characterwise
 
