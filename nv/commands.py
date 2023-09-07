@@ -1189,15 +1189,19 @@ class nv_vi_cc(TextCommand):
 
 class nv_vi_visual_o(TextCommand):
 
-    def run(self, edit, mode=None, count=1, register=None):
-        def f(view, s):
-            if mode in (VISUAL, VISUAL_LINE):
-                s = Region(s.b, s.a)
-
-            return s
-
-        regions_transformer(self.view, f)
-        self.view.show(self.view.sel()[0].b, False)
+    def run(self, edit, mode=None, count=1, register=None, same_line_if_visual_block: bool = False):
+        if mode == VISUAL_BLOCK:
+            visual_block = VisualBlockSelection(self.view)
+            visual_block.transform_to_other_end(
+                same_line=same_line_if_visual_block)
+            self.view.show(visual_block.b, False)
+        else:
+            def f(view, s):
+                if mode in (VISUAL, VISUAL_LINE):
+                    s = Region(s.b, s.a)
+                return s
+            regions_transformer(self.view, f)
+            self.view.show(self.view.sel()[0].b, False)
 
 
 class nv_vi_yy(TextCommand):

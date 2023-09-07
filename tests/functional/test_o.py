@@ -38,6 +38,14 @@ class Test_o(unittest.FunctionalTestCase):
         self.eq('r_x\n|fizz\n|x', 'V_o', 'x\n|fizz\n|x')
         self.assertStatusLineIsVisualLine()
 
+    def test_ctrl_v(self):
+        self.eq('x\nfi|zz bu|zz\nfi|zz bu|zz\nx', 'b_o', 'r_u_x\nfi|zz bu|zz\nfi|zz bu|zz\nx')
+        self.feed('o')
+        self.assertVblock('x\nfi|zz bu|zz\nfi|zz bu|zz\nx', direction=unittest.DIRECTION_DOWN)
+        self.feed('o')
+        self.assertRVblock('x\nfi|zz bu|zz\nfi|zz bu|zz\nx', direction=unittest.DIRECTION_UP)
+        self.assertStatusLineIsVisualBlock()
+
     def test_issue_974_xpos_should_be_updated(self):
         self.eq('fizz\nfi|zz\nfizz buzz\nfizz bu|zz', 'v_o', 'r_fizz\nfi|zz\nfizz buzz\nfizz bu|zz')
         self.feed('j')

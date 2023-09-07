@@ -1010,6 +1010,14 @@ class VisualBlockSelection():
             sel.b = b
             self.view.sel().add(sel)
 
+    def transform_to_other_end(self, same_line: bool = False):
+        if not same_line:
+            self._set_direction(
+                DIRECTION_UP
+                if self.is_direction_down()
+                else DIRECTION_DOWN)
+        self.transform_reverse()
+
     def _transform(self, region: Region) -> None:
         set_selection(self.view, region)
 

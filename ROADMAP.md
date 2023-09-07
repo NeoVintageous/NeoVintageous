@@ -53,6 +53,8 @@
   - [2. Multiple repeats](#2-multiple-repeats)
   - [3. Complex repeats](#3-complex-repeats)
 - [Using the Visual mode (selecting a text area)](#using-the-visual-mode-selecting-a-text-area-visualtxt)
+  - [2. Starting and stopping Visual mode](#2-starting-and-stopping-visual-mode)
+  - [3. Changing the Visual area](#3-changing-the-visual-area)
 - [Various remaining commands](#various-remaining-commands-varioustxt)
 - [Command-line editing](#command-line-editing-cmdlinetxt)
   - [1. Command-line editing](#1-command-line-editing)
@@ -688,6 +690,8 @@ last one.
 
 ## Using the Visual mode (selecting a text area) `|visual.txt|`
 
+### 2. Starting and stopping Visual mode
+
 | Status             | Command                       | Description
 | :----------------- | :---------------------------- | -----------
 | :heavy_check_mark: | `v`                           | Start Visual mode per character
@@ -696,9 +700,14 @@ last one.
 | :heavy_check_mark: | `gv`                          | Start visual mode with the same area as the previous area and the same mode
 | :heavy_check_mark: | `gn`                          | Search forward for the last used search pattern, like with `n`, and start Visual mode to select the match.
 | :heavy_check_mark: | `gN`                          | Like `gn` but searches backward, like with `N`
-| :heavy_check_mark: | `o`                           | Go to other end of highlighted text
-|                    | `O`                           | Like "o", but in Visual block mode the cursor moves to the other corner in the same line
-| :heavy_check_mark: | `<Esc>`, `CTRL-C`             | Stop Visual mode
+| :heavy_check_mark: | `<Esc>` or `CTRL-C`           | Stop Visual mode.
+
+### 3. Changing the Visual area
+
+| Status             | Command                       | Description
+| :----------------- | :---------------------------- | -----------
+| :heavy_check_mark: | `o`                           | Go to Other end of highlighted text: The current cursor position becomes the start of the highlighted text and the cursor is moved to the other end of the highlighted text.  The highlighted area remains the same.
+| :heavy_check_mark: | `O`                           | Go to Other end of highlighted text.  This is like "o", but in Visual block mode the cursor moves to the other corner in the same line.  The highlighted area remains the same.
 
 ## Various remaining commands `|various.txt|`
 

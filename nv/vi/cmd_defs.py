@@ -58,12 +58,23 @@ class ViDeleteMultipleCursor(ViOperatorDef):
         self.command = 'nv_vi_d'
 
 
-@assign(seqs.BIG_O, ACTION_MODES)
+@assign(seqs.BIG_O, (NORMAL,))
 class ViInsertLineBefore(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
         self.glue_until_normal_mode = True
         self.command = 'nv_vi_big_o'
+
+
+@assign(seqs.BIG_O, (VISUAL, VISUAL_LINE, VISUAL_BLOCK))
+class ViGoToOtherBigEnd(ViOperatorDef):
+    def init(self):
+        self.scroll_into_view = True
+        self.updates_xpos = True
+        self.command = 'nv_vi_visual_o'
+        self.command_args = {
+            'same_line_if_visual_block': True,
+        }
 
 
 @assign(seqs.O, (NORMAL,))
