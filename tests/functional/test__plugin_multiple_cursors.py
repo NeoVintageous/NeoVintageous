@@ -143,7 +143,7 @@ class TestMultipleCursors(unittest.FunctionalTestCase):
             self.assertStatusLineIsBlank()
 
     def test_add_all(self):
-        for seq in ('A', '<M-n>'):
+        for seq in ('A', '<M-n>', '\\\\A'):
             self.eq('|fizz| buzz fizz buzz fizz', 's_' + seq, '|fizz| buzz |fizz| buzz |fizz|')
             self.normal('fizz |fizz| buzz fizz fi zz fizz buzz')
             self.feed('<C-n>')

@@ -1777,6 +1777,7 @@ _SEQ2CMD = {
     '\'a':          {'command': 'nv_feed_key'},  # noqa: E241
     '\'p':          {'command': 'nv_feed_key'},  # noqa: E241
     '\'x':          {'command': 'nv_feed_key'},  # noqa: E241
+    '\\\\A':        {'command': 'nv_feed_key'},  # noqa: E241
     '] ':           {'command': 'nv_feed_key'},  # noqa: E241
     '])':           {'command': 'nv_feed_key'},  # noqa: E241
     ']B':           {'command': 'nv_feed_key'},  # noqa: E241

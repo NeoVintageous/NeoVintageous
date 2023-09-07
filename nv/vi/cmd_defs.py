@@ -1727,6 +1727,8 @@ class ViReverseFindWord(ViMotionDef):
 @assign(seqs.RIGHT_SQUARE_BRACKET, MOTION_MODES)
 @assign(seqs.Z, MOTION_MODES)
 @assign(seqs.ZU, MOTION_MODES)
+@assign(seqs.BACKSLASH, (SELECT,))
+@assign(seqs.BACKSLASH_BACKSLASH, (SELECT,))
 class ViOpenNameSpace(ViMotionDef):  # TODO This should not be a motion.
 
     def translate(self, view):

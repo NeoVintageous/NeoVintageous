@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+- [#977](https://github.com/NeoVintageous/NeoVintageous/issues/977): Add `\\A` select all in multiple cursor mode (same of `<M-A>`)
 - [#976](https://github.com/NeoVintageous/NeoVintageous/issues/976): `O` in Visual mode: Go to Other end of highlighted text.  This is like "o", but in Visual block mode the cursor moves to the other corner in the same line.
 - [#973](https://github.com/NeoVintageous/NeoVintageous/issues/973): `tabp[revious] [N]` now navigates to the `[N]`th previous tab, defaulting to one.
 - [#972](https://github.com/NeoVintageous/NeoVintageous/issues/972): `tabn[ext] [N]` now takes you to the `[N]`th next tab, defaulting to one.

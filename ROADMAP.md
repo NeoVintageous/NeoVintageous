@@ -1239,9 +1239,8 @@ Inspired by [vim-multiple-cursors](https://github.com/terryma/vim-multiple-curso
 | :heavy_check_mark: | `<C-n>` or `n` or `j`          | Add next match.
 | :heavy_check_mark: | `<C-x>` or `n` or `q` or `l`   | Skip next match.
 | :heavy_check_mark: | `<C-p>` or `N` or `Q` or `k`   | Remove current match.
-| :heavy_check_mark: | `<M-n>` or `A`                 | Select all matches.
+| :heavy_check_mark: | `<M-n>` or `A` or `\\A`        | Select all matches. *`A` is deprecated, use `\\A` instead.*
 | :heavy_check_mark: | `<Esc>` or `J` or `<Tab>`      | Quit or enter normal mode (default).
-| :heavy_check_mark: | `<M-n>` or `A`                 | Select all matches.
 | :heavy_check_mark: | `v` or `<Tab>`                 | Enter normal mode.
 | :heavy_check_mark: | `gH`                           | Select all search occurrences (`/`, `?`, `*`, `#`).
 

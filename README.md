@@ -800,16 +800,16 @@ NeoVintageous provides multiple cursor support in normal mode and visual mode. T
 
 **Normal and Visual Mode Commands**
 
-| Command               | Description
-| :---------------------| :----------
-| `<C-n>` or `gh`       | Start multiple cursor.
-| `<C-n>` or `n` or `j` | Add next match.
-| `<C-x>` or `q` or `l` | Skip next match.
-| `<C-p>` or `Q` or `k` | Remove current match.
-| `<M-n>` or `A`        | Select all matches.
-| `<Esc>` or `J`        | Quit and enter normal mode.
-| `v`                   | Enter normal mode.
-| `gH`                  | Select all search occurrences (`/`, `?`, `*`, `#`).
+| Command                       | Description
+| :---------------------------- | :----------
+| `<C-n>` or `gh`               | Start multiple cursor.
+| `<C-n>` or `n` or `j`         | Add next match.
+| `<C-x>` or `n` or `q` or `l`  | Skip next match.
+| `<C-p>` or `N` or `Q` or `k`  | Remove current match.
+| `<M-n>` or `A` or `\\A`       | Select all matches. *`A` is deprecated, use `\\A` instead.*
+| `<Esc>` or `J` or `<Tab>`     | Quit and enter normal mode.
+| `v` or `<Tab>`                | Enter normal mode.
+| `gH`                          | Select all search occurrences (`/`, `?`, `*`, `#`).
 
 You can now use visual commands such as `c`, `I`, `x`, and `y`, which work without any issues.
 
