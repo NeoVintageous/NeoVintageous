@@ -48,6 +48,8 @@ NeoVintageous is an advanced Vim emulator for [Sublime Text](https://www.sublime
   - [Markology :rocket: :new: <small>Since v1.32</small>](#markology-rocket-new-since-v132)
     - [Customize Markology Mark Colors](#customize-markology-mark-colors)
   - [Multiple Cursors](#multiple-cursors)
+  - [Sneak](#sneak)
+    - [Customize sneak mappings](#customize-sneak-mappings)
 - [F.A.Q.](#faq)
   - [Key Presses are Laggy or Slow](#key-presses-are-laggy-or-slow)
     - [On macOS (OSX):](#on-macos-osx)
@@ -820,6 +822,36 @@ At any time, you can press `<Esc>` to exit back to regular Vim.
 To change the behaviour of `<Esc>`, you can set the `vintageous_multi_cursor_exit_from_visual_mode` setting. When set to false, pressing a quit key (e.g., `<Esc>` or `J`) in multiple cursor visual mode exits to normal mode but keeps the cursors. When set to true, pressing a quit key (e.g., `<Esc>` or `J`) in multiple cursor visual mode exits all multiple cursors.
 
 With the multiple cursor feature, you can speed up your editing workflow by applying commands to multiple locations simultaneously, increasing productivity and convenience.
+
+### Sneak
+
+By default, Sneak is disabled to prevent conflicts with certain Vim commands such as `s`, `S`, `z`, and `Z`. To enable Sneak, follow these steps:
+
+1. Open the Command Palette by selecting `Preferences: NeoVintageous Settings`.
+2. Add the following JSON configuration:
+
+```json
+{
+    "vintageous_enable_sneak": true
+}
+```
+
+#### Customize sneak mappings
+
+You can customize the default sneak mappings by setting environment variables.
+
+*The necessity to configure these mappings through environment variables, rather than conventional settings, arises from an implementation detail: plugins are loaded during startup, and access to settings is not available at this stage. Resolving this issue will require making significant design adjustments. In the meantime, employing environment variables provides a viable solution.*
+
+**Example:** For Linux users, consider adding the following lines to your `~/.profile` or `~/.bashrc` file:
+
+```sh
+export NEOVINTAGEOUS_SNEAK_MAP_S=s
+export NEOVINTAGEOUS_SNEAK_MAP_BIG_S=S
+export NEOVINTAGEOUS_SNEAK_MAP_Z=z
+export NEOVINTAGEOUS_SNEAK_MAP_BIG_Z=Z
+```
+
+Please keep in mind that to activate these changes, you will be required to restart Sublime Text and, in some cases, reboot your system.
 
 ## F.A.Q.
 

@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+- [#738](https://github.com/NeoVintageous/NeoVintageous/issues/738): Implement the capability to customize sneak key bindings.
 - [#977](https://github.com/NeoVintageous/NeoVintageous/issues/977): Add `\\A` select all in multiple cursor mode (same of `<M-A>`)
 - [#976](https://github.com/NeoVintageous/NeoVintageous/issues/976): `O` in Visual mode: Go to Other end of highlighted text.  This is like "o", but in Visual block mode the cursor moves to the other corner in the same line.
 - [#973](https://github.com/NeoVintageous/NeoVintageous/issues/973): `tabp[revious] [N]` now navigates to the `[N]`th previous tab, defaulting to one.
