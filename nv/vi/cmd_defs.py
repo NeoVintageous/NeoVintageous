@@ -79,7 +79,7 @@ class ViInsertLineAfter(ViOperatorDef):
 class ViGoToOtherEnd(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-        self.updates_xpos = False
+        self.updates_xpos = True
         self.command = 'nv_vi_visual_o'
 
 

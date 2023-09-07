@@ -22,6 +22,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+- [#974](https://github.com/NeoVintageous/NeoVintageous/issues/974): `v_o` should update the cursor x position.
 - [#963](https://github.com/NeoVintageous/NeoVintageous/issues/963): Don't populate small delete when a register is specified.
 - [#962](https://github.com/NeoVintageous/NeoVintageous/issues/962): `zt`, `zb`, and `zz` should maintain cursor column.
 - [#962](https://github.com/NeoVintageous/NeoVintageous/issues/962): `z<CR>`, `z-`, and `z.` should position the cursor on the first non-blank.

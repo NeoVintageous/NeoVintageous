@@ -38,6 +38,11 @@ class Test_o(unittest.FunctionalTestCase):
         self.eq('r_x\n|fizz\n|x', 'V_o', 'x\n|fizz\n|x')
         self.assertStatusLineIsVisualLine()
 
+    def test_issue_974_xpos_should_be_updated(self):
+        self.eq('fizz\nfi|zz\nfizz buzz\nfizz bu|zz', 'v_o', 'r_fizz\nfi|zz\nfizz buzz\nfizz bu|zz')
+        self.feed('j')
+        self.assertRVisual('fizz\nfizz\nfi|zz buzz\nfizz bu|zz')
+
 
 class Test_o_auto_indent(unittest.FunctionalTestCase):
 
