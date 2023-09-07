@@ -103,7 +103,7 @@
 
 </details>
 
-## Modes `|vim-modes|`
+## Modes [|vim-modes|](https://vimhelp.org/intro.txt.html#vim-modes)
 
 | Status                        | Mode                               | Description
 | :---------------------------- | :----------------------------------| :----------
@@ -117,14 +117,14 @@
 | :heavy_check_mark:            | Command-line mode<br>Cmdline mode  | `:`, `/`, `?`, `!`
 | :heavy_check_mark: :star:     | Multiple-cursor mode               | `CTRL-n` or `gh`
 
-## About using the help files `|helphelp.txt|`
+## About using the help files [|helphelp.txt|](https://vimhelp.org/helphelp.txt.html)
 
 | Status             | Command                          | Description
 | :----------------- | :------------------------------- | :----------
 | :heavy_check_mark: | :h[elp]                          | Open a window and display the help file in read-only mode.
 | :heavy_check_mark: | :h[elp] \{subject\}              | Like ":help", additionally jump to the tag `{subject}`. Example: `:help options`
 
-## Editing and writing files `|editing.txt|`
+## Editing and writing files [|editing.txt|](https://vimhelp.org/editing.txt.html)
 
 ### 1. Introduction
 
@@ -197,7 +197,7 @@ MULTIPLE WINDOWS AND BUFFERS
 | :heavy_check_mark: | :cd[!]&nbsp;\{path\}             | Change the current directory to `{path}`. To change to the directory of the current file: `:cd %:h`.
 | :heavy_check_mark: | :pw[d]                           | Print the current directory name.
 
-## Commands for moving around `|motion.txt|`
+## Commands for moving around [|motion.txt|](https://vimhelp.org/motion.txt.html)
 
 ### 1. Motions and operators `|operator|`
 
@@ -361,7 +361,7 @@ CHANGE LIST JUMPS
 | :heavy_check_mark: | `M`      | To Middle line of window, on the first non-blank character.
 | :heavy_check_mark: | `L`      | To last line of the window on the first non-blank character. Cursor is adjusted for `'scrolloff'` option, unless an operator is pending, in which case the text may scroll.  E.g. "yL" yanks from the cursor to the last visible line.
 
-## Scrolling the text in the window `|scroll.txt|`
+## Scrolling the text in the window [|scroll.txt|](https://vimhelp.org/scroll.txt.html)
 
 ### 1. Scrolling downwards
 
@@ -408,7 +408,7 @@ For the following four commands the cursor follows the screen.  If the character
 | :heavy_check_mark: | `zL`                             | Move the view on the text half a screenwidth to the right, thus scroll the text half a screenwidth to the left.  This only works when `'wrap'` is off.
 | :heavy_check_mark: | `zH`                             | Move the view on the text half a screenwidth to the left, thus scroll the text half a screenwidth to the right.  This only works when `'wrap'` is off.
 
-## Insert and Replace mode `|insert.txt|`
+## Insert and Replace mode [|insert.txt|](https://vimhelp.org/insert.txt.html)
 
 ### 1. Special keys
 
@@ -479,7 +479,7 @@ The following commands can be used to insert new text into the buffer.  They can
 | :heavy_check_mark: | o                                              | Begin a new line below the cursor and insert text, repeat `[count]` times.
 | :heavy_check_mark: | O                                              | Begin a new line above the cursor and insert text, repeat `[count]` times.
 
-## Deleting and replacing text `|change.txt|`
+## Deleting and replacing text [|change.txt|](https://vimhelp.org/change.txt.html)
 
 ### 1. Deleting text
 
@@ -646,7 +646,7 @@ The next two commands always work on whole lines.
 | :----------------- | :----------------------------- | :----------
 | :heavy_check_mark: | :[range]sor[t]&nbsp;[i][u]       | Sort lines in `[range]`.  When no range is given all lines are sorted.<br><br>With `[i]` case is ignored.<br><br>With `[u]` (u stands for unique) only keep the first of a sequence of identical lines (ignoring case when `[i]` is used).  Without this flag, a sequence of identical lines will be kept in their original order. Note that leading and trailing white space may cause lines to be different.
 
-## Undo and Redo `|undo.txt|`
+## Undo and Redo [|undo.txt|](https://vimhelp.org/undo.txt.html)
 
 | Status             | Command                      | Description
 | :----------------- | :--------------------------- | -----------
@@ -654,7 +654,7 @@ The next two commands always work on whole lines.
 | :heavy_check_mark: | `CTRL-R`                     | Redo `[count]` changes which were undone
 |                    | `U`                          | Undo all latest changes on one line, the line where the latest change was made
 
-## Repeating commands `|repeat.txt|`
+## Repeating commands [|repeat.txt|](https://vimhelp.org/repeat.txt.html)
 
 ### 1. Single repeats
 
@@ -688,7 +688,7 @@ last one.
 |                    | `@{=*+}`                     | Execute the contents of register `{=*+}` `[count]` times
 | :heavy_check_mark: | `@@`                         | Repeat the previous `@{0-9a-z":*}` `[count]` times
 
-## Using the Visual mode (selecting a text area) `|visual.txt|`
+## Using the Visual mode (selecting a text area) [|visual.txt|](https://vimhelp.org/visual.txt.html)
 
 ### 2. Starting and stopping Visual mode
 
@@ -709,7 +709,7 @@ last one.
 | :heavy_check_mark: | `o`                           | Go to Other end of highlighted text: The current cursor position becomes the start of the highlighted text and the cursor is moved to the other end of the highlighted text.  The highlighted area remains the same.
 | :heavy_check_mark: | `O`                           | Go to Other end of highlighted text.  This is like "o", but in Visual block mode the cursor moves to the other corner in the same line.  The highlighted area remains the same.
 
-## Various remaining commands `|various.txt|`
+## Various remaining commands [|various.txt|](https://vimhelp.org/various.txt.html)
 
 | Status             | Command                              | Description
 | :----------------- | :----------------------------------- | -----------
@@ -722,7 +722,7 @@ last one.
 |                    | `:norm[al][!] {commands}`            | Execute Normal mode commands `{commands}`. [#128](https://github.com/NeoVintageous/NeoVintageous/issues/128)
 |                    | `:{range}norm[al][!] {commands}`     | Execute Normal mode commands `{commands}` for each line in the `{range}`. [#128](https://github.com/NeoVintageous/NeoVintageous/issues/128)
 
-## Command-line editing `|cmdline.txt|`
+## Command-line editing [|cmdline.txt|](https://vimhelp.org/cmdline.txt.html)
 
 ### 1. Command-line editing
 
@@ -774,7 +774,7 @@ Line numbers may be specified with:
 |                    | `\?`                             | The previous line where the previously used search pattern matches. [#126](https://github.com/NeoVintageous/NeoVintageous/issues/126)
 |                    | `\&`                             | The next line where the previously used substitute pattern matches. [#126](https://github.com/NeoVintageous/NeoVintageous/issues/126)
 
-## Description of all options `|options.txt|`
+## Description of all options [|options.txt|](https://vimhelp.org/options.txt.html)
 
 ### 1. Setting options
 
@@ -821,14 +821,14 @@ Some options "proxy" to Sublime Text settings. This means that the option uses t
 | :heavy_check_mark: :star:       | `'wrap'`                        | Boolean | `word_wrap` <br>sublime setting                 | This option changes how text is displayed.  It doesn't change the text in the buffer, see `'textwidth'` for that.<br> When on, lines longer than the width of the window will wrap and displaying continues on the next line.  When off lines will not wrap and only part of long lines will be displayed.  When the cursor is moved to a part that is not shown, the screen will scroll horizontally.| :heavy_check_mark:              | `'wrapscan'`<br>`'ws'`          | Boolean | On                                              |
 
 | Status                          | Option                          | Type    | Default                                         | Description
-| :------------------------------ | :------------------------------ | :------ | :-----------------------------------------------| :----------
+| :------------------------------ | :------------------------------ | :------ | :---------------------------------------------- | :----------
 |                                 | `'clipboard'`                   | String  |                                                 | [#829](https://github.com/NeoVintageous/NeoVintageous/issues/829)
 |                                 | `'iskeyword'`<br>`'isk'`        | String  |                                                 | Keywords are used in searching and recognizing with many commands: "w", "*", "[i", etc. [#622](https://github.com/NeoVintageous/NeoVintageous/issues/622)
 |                                 | `'sidescrolloff'`<br>`'siso'`   | Number  | 5                                               | The minimal number of screen columns to keep to the left and to the right of the cursor if `'nowrap'` is set.
 |                                 | `'splitbelow'`<br>`'sb'`        | Boolean | Off                                             | When on, splitting a window will put the new window below the current one. `:split`
 |                                 | `'splitright'`<br>`'spr'`       | Boolean | Off                                             | When on, splitting a window will put the new window right of the current one. `:vsplit`
 
-## Regexp patterns and search commands `|pattern.txt|`
+## Regexp patterns and search commands [|pattern.txt|](https://vimhelp.org/pattern.txt.html)
 
 ### 1. Search commands
 
@@ -885,7 +885,7 @@ Examples:
 
 If you want to you can make a pattern immune to the `'magic'` option being set or not by putting "\m" or "\M" at the start of the pattern.
 
-## Key mapping and abbreviations `|map.txt|`
+## Key mapping and abbreviations [|map.txt|](https://vimhelp.org/map.txt.html)
 
 | Status             | Command                                | Description
 | :----------------- | :------------------------------------- | :----------
@@ -906,13 +906,13 @@ If you want to you can make a pattern immune to the `'magic'` option being set o
 
 *Note that currently Select mode means Multiple-cursor mode. In a future version Multiple-cursor mode will have its own designation.*
 
-## Tags and special searches `|tagsrch.txt|`
+## Tags and special searches [|tagsrch.txt|](https://vimhelp.org/tagsrch.txt.html)
 
 | Status             | Command                          | Description
 | :----------------- | :------------------------------- | :----------
 | :heavy_check_mark: | CTRL-]                           | Jump to the definition of the keyword under the cursor.
 
-## Commands for using multiple windows `|windows.txt|`
+## Commands for using multiple windows [|windows.txt|](https://vimhelp.org/windows.txt.html)
 
 *Note that some window commands, e.g., `CTRL-w s`, `CTRL-w v`, `CTRL-w ]`, require [Origami](https://github.com/SublimeText/Origami).*
 
@@ -1008,7 +1008,7 @@ When the option `'equalalways'` (`'ea'`) is set, all the windows are automatical
 | :heavy_check_mark: | :bf[irst]                                                    | Same :brewind
 | :heavy_check_mark: | :bl[ast]                                                     | Go to last buffer in buffer list.  If the buffer list is empty, go to the last unlisted buffer.
 
-## Commands for using multiple tab pages `|tabpage.txt|`
+## Commands for using multiple tab pages [|tabpage.txt|](https://vimhelp.org/tabpage.txt.html)
 
 ### 2. Commands
 
@@ -1038,7 +1038,7 @@ SWITCHING TO ANOTHER TAB PAGE:
 | :heavy_check_mark: | `:tabr[ewind]`<br>`:tabfir[st]`                          | Go to the first tab page.
 | :heavy_check_mark: | `:tabl[ast]`                                             | Go to the last tab page.
 
-## Spell checking `|spell.txt|`
+## Spell checking [|spell.txt|](https://vimhelp.org/spell.txt.html)
 
 To search for the next misspelled word:
 
@@ -1062,7 +1062,7 @@ Finding suggestions for bad words:
 | :----------------- | :------------------------------- | :----------
 | :heavy_check_mark: | z=                               | For the word under/after the cursor suggest correctly spelled words.
 
-## Working with versions of the same file `|diff.txt|`
+## Working with versions of the same file [|diff.txt|](https://vimhelp.org/diff.txt.html)
 
 ### 3. Jumping to diffs
 
@@ -1075,7 +1075,7 @@ Two commands can be used to jump to diffs:
 
 It is an error if there is no change for the cursor to move to.
 
-## Expression evaluation, conditional commands `|eval.txt|`
+## Expression evaluation, conditional commands [|eval.txt|](https://vimhelp.org/eval.txt.html)
 
 ### 7. Commands
 
@@ -1083,7 +1083,7 @@ It is an error if there is no change for the cursor to move to.
 | :----------------- | :------------------------------- | :----------
 | :heavy_check_mark: | `:let {var-name}={expr1}`        | Set internal variable `{var-name}` to the result of the expression `{expr1}.`  The variable will get the type from the `{expr}.`  If `{var-name}` didn't exist yet, it is created. <br>*Only "mapleader" and "maplocalleader" are currently supported.*<br>Example: `let mapleader=,`<br>Example: `let maplocalleader=,`
 
-## Hide (fold) ranges of lines `|fold.txt|`
+## Hide (fold) ranges of lines [|fold.txt|](https://vimhelp.org/fold.txt.html)
 
 ### 2. Fold commands
 
@@ -1098,7 +1098,7 @@ OPENING AND CLOSING FOLDS
 | :heavy_check_mark: | zM                               | Close all folds.
 | :heavy_check_mark: | zR                               | Open all folds.
 
-## Commands for a quick edit-compile-fix cycle `|quickfix.txt|`
+## Commands for a quick edit-compile-fix cycle [|quickfix.txt|](https://vimhelp.org/quickfix.txt.html)
 
 | Status             | Command                          | Description
 | :----------------- | :------------------------------- | :----------
@@ -1163,7 +1163,7 @@ The following Vim plugins have been suggested for future ports:
 | WhichKey | [vim-which-key](https://github.com/liuchengxu/vim-which-key) | Re https://github.com/NeoVintageous/NeoVintageous/issues/758
 | YankStackAndRing | | Re https://github.com/NeoVintageous/NeoVintageous/issues/337
 
-### Abolish `|abolish.txt|`
+### Abolish [|abolish.txt|](https://github.com/tpope/vim-abolish/blob/master/doc/abolish.txt)
 
 A port of the awesome [vim-abolish](https://github.com/tpope/vim-abolish).
 
@@ -1192,7 +1192,7 @@ Abolish's case mutating algorithms can be applied to the word under the cursor u
 
 For example, cru on a lowercase word is a slightly easier to type equivalent to gUiw.
 
-### Commentary `|commentary.txt|`
+### Commentary [|commentary.txt|](https://github.com/tpope/vim-commentary/blob/master/doc/commentary.txt)
 
 Comment stuff out.  Then uncomment it later.
 
@@ -1206,7 +1206,7 @@ A port of the awesome [vim-commentary](https://github.com/tpope/vim-commentary).
 | :heavy_check_mark: | `gc`               | Text object for a comment (operator pending mode only)
 |                    | `gcgc`<br>`gcu`    | Uncomment the current and adjacent commented lines.
 
-### Highlighted Yank `|highlightedyank|`
+### Highlighted Yank [|highlightedyank|](https://github.com/machakann/vim-highlightedyank/blob/master/doc/highlightedyank.txt).
 
 Inspired by [vim-highlightedyank](https://github.com/machakann/vim-highlightedyank).
 
@@ -1214,7 +1214,7 @@ Inspired by [vim-highlightedyank](https://github.com/machakann/vim-highlightedya
 
 Inspired by [vim-xkbswitch](https://github.com/lyokha/vim-xkbswitch) and [VSCodeVim/Vim](https://github.com/VSCodeVim/Vim#input-method).
 
-### Indent Object `|indent-object.txt|`
+### Indent Object [|indent-object.txt|](https://github.com/michaeljsmith/vim-indent-object/blob/master/doc/indent-object.txt)
 
 A port of the awesome [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object).
 
@@ -1244,7 +1244,7 @@ Inspired by [vim-multiple-cursors](https://github.com/terryma/vim-multiple-curso
 | :heavy_check_mark: | `v` or `<Tab>`                 | Enter normal mode.
 | :heavy_check_mark: | `gH`                           | Select all search occurrences (`/`, `?`, `*`, `#`).
 
-### Sneak `|sneak.txt|`
+### Sneak [|sneak.txt|](https://github.com/justinmk/vim-sneak/blob/master/doc/sneak.txt)
 
 A port of the awesome [vim-sneak](https://github.com/justinmk/vim-sneak).
 
@@ -1286,11 +1286,11 @@ LABEL-MODE
 
 | Status              | Command               | Description
 | :------------------ | :-------------------- | :----------
-|                     | `<Space>` or `<Esc>`  | Exit `|sneak-label-mode|` where the cursor is.
+|                     | `<Space>` or `<Esc>`  | Exit `\|sneak-label-mode\|` where the cursor is.
 |                     | `<Tab>`               | Label the next set of matches.
 |                     | `<BS>` or `<S-Tab>`   | Label the previous set of matches.
 
-### Surround `|surround.txt|`
+### Surround [|surround.txt|](https://github.com/tpope/vim-surround/blob/master/doc/surround.txt)
 
 A port of the awesome [vim-surround](https://github.com/tpope/vim-surround).
 
@@ -1309,32 +1309,32 @@ A port of the awesome [vim-surround](https://github.com/tpope/vim-surround).
 Inspired by [targets.vim](https://github.com/wellle/targets.vim).
 
 | Status             | Command          | Description
-| :----------------- | :----------------------------------------------------------------- | :----------
-|                    | In Pair `i( i) i{ i} iB i[ i] i< i> it`                            |
-|                    | A Pair `a( a) a{ a} aB a[ a] a< a> at`                             |
-|                    | Inside Pair `I( I) I{ I} IB I[ I] I< I> It`                        |
-|                    | Around Pair `A( A) A{ A} AB A[ A] A< A> At`                        |
-|                    | Next and Last Pair `in( an( In( An( il( al( Il( Al(` ...           |
-|                    | Quote Text Objects                                                 |
-|                    | In Quote                                                           |
-|                    | A Quote                                                            |
-|                    | Inside Quote                                                       |
-|                    | Around Quote                                                       |
-|                    | Next and Last Quote                                                |
-| :heavy_check_mark: | In Separator `i, i. i; i: i+ i- i= i~ i_ i* i# i/ i| i\ i& i$`     |
-| :heavy_check_mark: | A Separator `a, a. a; a: a+ a- a= a~ a_ a* a# a/ a| a\ a& a$`      |
-|                    | Inside Separator `I, I. I; I: I+ I- I= I~ I_ I* I# I/ I| I\ I& I$` |
-|                    | Around Separator `A, A. A; A: A+ A- A= A~ A_ A* A# A/ A| A\ A& A$` |
-|                    | Next and Last Separator `in, an, In, An, il, al, Il, Al, ...`      |
-|                    | In Argument `ia`                                                   |
-|                    | An Argument `aa`                                                   |
-|                    | Inside Argument `Ia`                                               |
-|                    | Around Argument `Aa`                                               |
-|                    | Next and Last Argument `ina ana Ina Ana ila ala Ila Ala`           |
-|                    | Any Block `inb anb Inb Anb ilb alb Ilb Alb`                        |
-|                    | Any Quote `inq anq Inq Anq ilq alq Ilq Alq`                        |
+| :----------------- | :------------------------------------------------------------------- | :----------
+|                    | In Pair `i( i) i{ i} iB i[ i] i< i> it`                              |
+|                    | A Pair `a( a) a{ a} aB a[ a] a< a> at`                               |
+|                    | Inside Pair `I( I) I{ I} IB I[ I] I< I> It`                          |
+|                    | Around Pair `A( A) A{ A} AB A[ A] A< A> At`                          |
+|                    | Next and Last Pair `in( an( In( An( il( al( Il( Al(` ...             |
+|                    | Quote Text Objects                                                   |
+|                    | In Quote                                                             |
+|                    | A Quote                                                              |
+|                    | Inside Quote                                                         |
+|                    | Around Quote                                                         |
+|                    | Next and Last Quote                                                  |
+| :heavy_check_mark: | In Separator `i, i. i; i: i+ i- i= i~ i_ i* i# i/ i\| i\ i& i$`      |
+| :heavy_check_mark: | A Separator `a, a. a; a: a+ a- a= a~ a_ a* a# a/ a\| a\ a& a$`       |
+|                    | Inside Separator `I, I. I; I: I+ I- I= I~ I_ I* I# I/ I\| I\ I& I$`  |
+|                    | Around Separator `A, A. A; A: A+ A- A= A~ A_ A* A# A/ A\| A\ A& A$`  |
+|                    | Next and Last Separator `in, an, In, An, il, al, Il, Al, ...`        |
+|                    | In Argument `ia`                                                     |
+|                    | An Argument `aa`                                                     |
+|                    | Inside Argument `Ia`                                                 |
+|                    | Around Argument `Aa`                                                 |
+|                    | Next and Last Argument `ina ana Ina Ana ila ala Ila Ala`             |
+|                    | Any Block `inb anb Inb Anb ilb alb Ilb Alb`                          |
+|                    | Any Quote `inq anq Inq Anq ilq alq Ilq Alq`                          |
 
-### Unimpaired `|unimpaired.txt|`
+### Unimpaired [|unimpaired.txt|](https://github.com/tpope/vim-unimpaired/blob/master/doc/unimpaired.txt)
 
 A port of the awesome [vim-unimpaired](https://github.com/tpope/vim-unimpaired).
 
