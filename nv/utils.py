@@ -63,6 +63,7 @@ from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import is_visual_mode
+from NeoVintageous.nv.vim import status_message
 from sublime import CLASS_WORD_END
 from sublime import CLASS_WORD_START
 
@@ -1454,3 +1455,28 @@ def get_indentation(view, level: int) -> str:
     tab_text = ' ' * tab_size if translate else '\t'
 
     return tab_text * level
+
+
+def show_ascii(view) -> None:
+    def _char_to_notation(char: str) -> str:
+        # Convert a char to a key notation. Uses vim key notation.
+        # See https://vimhelp.appspot.com/intro.txt.html#key-notation
+        char_notation_map = {
+            '\0': "Nul",
+            ' ': "Space",
+            '\t': "Tab",
+            '\n': "NL"
+        }
+
+        if char in char_notation_map:
+            char = char_notation_map[char]
+
+        return "<" + char + ">"
+
+    region = view.sel()[-1]
+    c_str = view.substr(get_insertion_point_at_b(region))
+    c_ord = ord(c_str)
+    c_hex = hex(c_ord)
+    c_oct = oct(c_ord)
+    c_not = _char_to_notation(c_str)
+    status_message('%7s %3s,  Hex %4s,  Octal %5s' % (c_not, c_ord, c_hex, c_oct))

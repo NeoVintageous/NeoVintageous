@@ -494,6 +494,7 @@ class TestExCommands(unittest.TestCase):
 
         self.assertCommand(['!ls'], cmd('!', target='shell_out', params={'cmd': 'ls'}, addressable=True))
         self.assertCommand(['&&'], cmd('&&', target='double_ampersand', params={'count': '', 'flags': []}, addressable=True))  # noqa: E501
+        self.assertCommand(['ascii', 'as'], cmd('ascii'))
         self.assertCommand(['bNext 5', 'bN 5', 'bprevious 5', 'bp 5'], cmd('bprevious', params={'N': 5}))
         self.assertCommand(['bNext', 'bN', 'bprevious', 'bp'], cmd('bprevious'))
         self.assertCommand(['bfirst', 'bf', 'brewind', 'br'], cmd('bfirst'))

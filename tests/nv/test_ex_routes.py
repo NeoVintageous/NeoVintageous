@@ -244,6 +244,7 @@ class TestRoutes(unittest.TestCase):
 
     def test_valid_routes(self):
 
+        self.assertRoute('_ex_route_ascii', ['ascii', 'as'])
         self.assertRoute('_ex_route_bfirst', ['bfirst', 'bf', 'brewind', 'br'])
         self.assertRoute('_ex_route_blast', ['blast', 'bl'])
         self.assertRoute('_ex_route_bnext', ['bnext', 'bn'])

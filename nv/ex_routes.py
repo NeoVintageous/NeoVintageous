@@ -70,6 +70,10 @@ def _resolve(state, command: TokenCommand, pattern: str) -> TokenCommand:
     return command
 
 
+def _ex_route_ascii(state) -> TokenCommand:
+    return _create_route(state, 'ascii')
+
+
 def _ex_route_bfirst(state) -> TokenCommand:
     return _create_route(state, 'bfirst')
 
@@ -752,6 +756,7 @@ def _add_ex_route(pattern: str, function, completions=None) -> None:
 _add_ex_route(r'!(?=.+)', _ex_route_shell_out)
 _add_ex_route(r'&&?', _ex_route_double_ampersand)
 _add_ex_route(r'(?:files|ls|buffers)!?', _ex_route_buffers, ['files', 'ls', 'buffers'])
+_add_ex_route(r'as(?:cii)?', _ex_route_ascii, 'ascii')
 _add_ex_route(r'bf(?:irst)?', _ex_route_bfirst, 'bfirst')
 _add_ex_route(r'bl(?:ast)?', _ex_route_blast, 'blast')
 _add_ex_route(r'bn(?:ext)?', _ex_route_bnext, 'bnext')

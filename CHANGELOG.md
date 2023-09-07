@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+- [#975](https://github.com/NeoVintageous/NeoVintageous/issues/975): Add `:ascii` command to display the ASCII value of the character under the cursor in decimal, hexadecimal, and octal formats. The mnemonic is "Get Ascii value," and it functions similarly to `ga`.
 - [#738](https://github.com/NeoVintageous/NeoVintageous/issues/738): Implement the capability to customize sneak key bindings.
 - [#977](https://github.com/NeoVintageous/NeoVintageous/issues/977): Add `\\A` select all in multiple cursor mode (same of `<M-A>`)
 - [#976](https://github.com/NeoVintageous/NeoVintageous/issues/976): `O` in Visual mode: Go to Other end of highlighted text.  This is like "o", but in Visual block mode the cursor moves to the other corner in the same line.

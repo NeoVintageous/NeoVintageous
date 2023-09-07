@@ -156,6 +156,7 @@ from NeoVintageous.nv.utils import scroll_viewport_position
 from NeoVintageous.nv.utils import sel_observer
 from NeoVintageous.nv.utils import sel_to_lines
 from NeoVintageous.nv.utils import should_motion_apply_op_transformer
+from NeoVintageous.nv.utils import show_ascii
 from NeoVintageous.nv.utils import show_if_not_visible
 from NeoVintageous.nv.utils import spell_file_add_word
 from NeoVintageous.nv.utils import spell_file_remove_word
@@ -1881,29 +1882,7 @@ class nv_vi_paste(TextCommand):
 class nv_vi_ga(WindowCommand):
 
     def run(self, mode=None, count=None, register=None, **kwargs):
-        def char_to_notation(char: str) -> str:
-            # Convert a char to a key notation. Uses vim key notation.
-            # See https://vimhelp.appspot.com/intro.txt.html#key-notation
-            char_notation_map = {
-                '\0': "Nul",
-                ' ': "Space",
-                '\t': "Tab",
-                '\n': "NL"
-            }
-
-            if char in char_notation_map:
-                char = char_notation_map[char]
-
-            return "<" + char + ">"
-
-        view = self.window.active_view()
-        region = view.sel()[-1]
-        c_str = view.substr(get_insertion_point_at_b(region))
-        c_ord = ord(c_str)
-        c_hex = hex(c_ord)
-        c_oct = oct(c_ord)
-        c_not = char_to_notation(c_str)
-        status_message('%7s %3s,  Hex %4s,  Octal %5s' % (c_not, c_ord, c_hex, c_oct))
+        show_ascii(self.window.active_view())
 
 
 class nv_vi_gt(WindowCommand):

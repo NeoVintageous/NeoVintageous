@@ -23,25 +23,31 @@ class Test_ga(unittest.FunctionalTestCase):
     @unittest.mock_status_message()
     def test_ga(self):
         self.eq('a|bc', 'ga', 'a|bc')
-        self.assertStatusMessage('    <b>  98,  Hex 0x62,  Octal 0o142')
+        self.eq('a|bc', ':ascii', 'a|bc')
+        self.eq('a|bc', ':as', 'a|bc')
+        self.assertStatusMessage('    <b>  98,  Hex 0x62,  Octal 0o142', count=3)
 
     @unittest.mock_status_message()
     def test_ga_space(self):
         self.eq('a| b', 'ga', 'a| b')
-        self.assertStatusMessage('<Space>  32,  Hex 0x20,  Octal  0o40')
+        self.eq('a| b', ':ascii', 'a| b')
+        self.assertStatusMessage('<Space>  32,  Hex 0x20,  Octal  0o40', count=2)
 
     @unittest.mock_status_message()
     def test_ga_newline(self):
         self.eq('a|\nb', 'ga', 'a|\nb')
-        self.assertStatusMessage('   <NL>  10,  Hex  0xa,  Octal  0o12')
+        self.eq('a|\nb', ':ascii', 'a|\nb')
+        self.assertStatusMessage('   <NL>  10,  Hex  0xa,  Octal  0o12', count=2)
 
     @unittest.mock_status_message()
     def test_ga_null(self):
         self.eq('|', 'ga', '|')
-        self.assertStatusMessage('  <Nul>   0,  Hex  0x0,  Octal   0o0')
+        self.eq('|', ':ascii', '|')
+        self.assertStatusMessage('  <Nul>   0,  Hex  0x0,  Octal   0o0', count=2)
 
     @unittest.mock_status_message()
     def test_ga_tab(self):
         self.settings().set('translate_tabs_to_spaces', False)
         self.eq('a|\tb', 'ga', 'a|\tb')
-        self.assertStatusMessage('  <Tab>   9,  Hex  0x9,  Octal  0o11')
+        self.eq('a|\tb', ':ascii', 'a|\tb')
+        self.assertStatusMessage('  <Tab>   9,  Hex  0x9,  Octal  0o11', count=2)

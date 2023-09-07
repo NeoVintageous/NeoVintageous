@@ -85,6 +85,7 @@ from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.utils import save_view
+from NeoVintageous.nv.utils import show_ascii
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
@@ -103,6 +104,10 @@ from NeoVintageous.nv.window import window_tab_control
 
 
 _log = logging.getLogger(__name__)
+
+
+def ex_ascii(view, **kwargs) -> None:
+    show_ascii(view)
 
 
 def ex_bfirst(window, **kwargs) -> None:
