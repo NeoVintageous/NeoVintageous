@@ -56,7 +56,7 @@ __all__ = ['nv_sneak_command']
 
 def _get_env(name: str, default) -> str:
     seq = os.getenv(name)
-    return seq if seq else seqs.S
+    return seq if seq else default
 
 
 _SNEAK_S = _get_env('NEOVINTAGEOUS_SNEAK_MAP_S', seqs.S)
