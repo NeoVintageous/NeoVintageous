@@ -887,24 +887,43 @@ If you want to you can make a pattern immune to the `'magic'` option being set o
 
 ## Key mapping and abbreviations [|map.txt|](https://vimhelp.org/map.txt.html)
 
-| Status             | Command                                | Description
-| :----------------- | :------------------------------------- | :----------
-| :heavy_check_mark: | :no[remap]&nbsp;\{lhs\}&nbsp;\{rhs\}   | Map the key sequence \{lhs\} to \{rhs\} for Normal, Visual, and Operator Pending modes.
-| :heavy_check_mark: | :nn[oremap]&nbsp;\{lhs\}&nbsp;\{rhs\}  | Map the key sequence \{lhs\} to \{rhs\} for Normal mode.
-| :heavy_check_mark: | :vn[oremap]&nbsp;\{lhs\}&nbsp;\{rhs\}  | Map the key sequence \{lhs\} to \{rhs\} for Visual and Select mode.
-| :heavy_check_mark: | :xn[oremap]&nbsp;\{lhs\}&nbsp;\{rhs\}  | Map the key sequence \{lhs\} to \{rhs\} for Visual mode.
-| :heavy_check_mark: | :snor[emap]&nbsp;\{lhs\}&nbsp;\{rhs\}  | Map the key sequence \{lhs\} to \{rhs\} for Select mode.
-| :heavy_check_mark: | :ono[remap]&nbsp;\{lhs\}&nbsp;\{rhs\}  | Map the key sequence \{lhs\} to \{rhs\} for Operator-pending mode.
-| :heavy_check_mark: | :ino[remap]&nbsp;\{lhs\}&nbsp;\{rhs\}  | Map the key sequence \{lhs\} to \{rhs\} for Insert mode.
-| :heavy_check_mark: | :unm[ap]&nbsp;\{lhs\}                  | Remove the mapping of \{lhs\} for all modes.
-| :heavy_check_mark: | :nun[map]&nbsp;\{lhs\}                 | Remove the mapping of \{lhs\} for Normal mode.
-| :heavy_check_mark: | :vu[nmap]&nbsp;\{lhs\}                 | Remove the mapping of \{lhs\} for Visual and Select mode.
-| :heavy_check_mark: | :xu[nmap]&nbsp;\{lhs\}                 | Remove the mapping of \{lhs\} for Visual mode.
-| :heavy_check_mark: | :sunm[ap]&nbsp;\{lhs\}                 | Remove the mapping of \{lhs\} for Select mode.
-| :heavy_check_mark: | :ou[nmap]&nbsp;\{lhs\}                 | Remove the mapping of \{lhs\} for Operator-pending mode.
-| :heavy_check_mark: | :iu[nmap]&nbsp;\{lhs\}                 | Remove the mapping of \{lhs\} for Insert mode.
+Note: At present, the "Select" mode corresponds to the Multiple Cursor mode. In a forthcoming update, Multiple Cursor mode will be distinguished with its dedicated designation.
 
-*Note that currently Select mode means Multiple-cursor mode. In a future version Multiple-cursor mode will have its own designation.*
+Map the key sequence `{lhs}` to `{rhs}` for the modes where the map command applies.  Disallow mapping of `{rhs}`, to avoid nested and recursive mappings.  Often used to redefine a command.
+
+| Status             | Command                                              | Modes
+| :----------------- | ---------------------------------------------------: | :----
+| :heavy_check_mark: | <code>:no[remap]&nbsp;\{lhs\}&nbsp;\{rhs\}</code>    | Normal, Visual, and Operator-pending modes.
+| :heavy_check_mark: | <code>:nn[oremap]&nbsp;\{lhs\}&nbsp;\{rhs\}</code>   | Normal mode.
+| :heavy_check_mark: | <code>:vn[oremap]&nbsp;\{lhs\}&nbsp;\{rhs\}</code>   | Visual and Select mode.
+| :heavy_check_mark: | <code>:xn[oremap]&nbsp;\{lhs\}&nbsp;\{rhs\}</code>   | Visual mode.
+| :heavy_check_mark: | <code>:snor[emap]&nbsp;\{lhs\}&nbsp;\{rhs\}</code>   | Select mode.
+| :heavy_check_mark: | <code>:ono[remap]&nbsp;\{lhs\}&nbsp;\{rhs\}</code>   | Operator-pending mode.
+| :heavy_check_mark: | <code>:ino[remap]&nbsp;\{lhs\}&nbsp;\{rhs\}</code>   | Insert mode.
+
+Remove the mapping of `{lhs}` for the modes where the map command applies.  The mapping may remain defined for other modes where it applies. It also works when `{lhs}` matches the `{rhs}` of a mapping. This is for when an abbreviation applied. Note: Trailing spaces are included in the `{lhs}`.
+
+| Status             | Command                                | Modes
+| :----------------- | -------------------------------------: | :----
+| :heavy_check_mark: | <code>:unm[ap]&nbsp;\{lhs\}</code>     | All modes.
+| :heavy_check_mark: | <code>:nun[map]&nbsp;\{lhs\}</code>    | Normal mode.
+| :heavy_check_mark: | <code>:vu[nmap]&nbsp;\{lhs\}</code>    | Visual and Select mode.
+| :heavy_check_mark: | <code>:xu[nmap]&nbsp;\{lhs\}</code>    | Visual mode.
+| :heavy_check_mark: | <code>:sunm[ap]&nbsp;\{lhs\}</code>    | Select mode.
+| :heavy_check_mark: | <code>:ou[nmap]&nbsp;\{lhs\}</code>    | Operator-pending mode.
+| :heavy_check_mark: | <code>:iu[nmap]&nbsp;\{lhs\}</code>    | Insert mode.
+
+Map the key sequence `{lhs}` to `{rhs}` for the modes where the map command applies.  The result, including `{rhs}`, is then further scanned for mappings.  This allows for nested and recursive use of mappings. Note: Trailing spaces are included in the `{rhs}`, because space is a valid Normal mode command.
+
+| Status             | Command                                        | Modes
+| :----------------- | ---------------------------------------------: | :----
+|                    | <code>:map&nbsp;\{lhs\}&nbsp;\{rhs\}</code>    | Normal, Visual, and Operator-pending mode.
+|                    | <code>:nm[ap]&nbsp;\{lhs\}&nbsp;\{rhs\}</code> | Normal mode.
+|                    | <code>:vm[ap]&nbsp;\{lhs\}&nbsp;\{rhs\}</code> | Visual and Select mode.
+|                    | <code>:xm[ap]&nbsp;\{lhs\}&nbsp;\{rhs\}</code> | Visual mode.
+|                    | <code>:smap&nbsp;\{lhs\}&nbsp;\{rhs\}</code>   | Select mode.
+|                    | <code>:om[ap]&nbsp;\{lhs\}&nbsp;\{rhs\}</code> | Operator-pending mode.
+|                    | <code>:im[ap]&nbsp;\{lhs\}&nbsp;\{rhs\}</code> | Insert mode.
 
 ## Tags and special searches [|tagsrch.txt|](https://vimhelp.org/tagsrch.txt.html)
 
