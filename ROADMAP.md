@@ -85,8 +85,8 @@
 - [Hide (fold) ranges of lines](#hide-fold-ranges-of-lines-foldtxt)
   - [2. Fold commands](#2-fold-commands)
 - [Commands for a quick edit-compile-fix cycle](#commands-for-a-quick-edit-compile-fix-cycle-quickfixtxt)
-- [Sidebar motions](#sidebar-motions)
-- [Overlay motions (e.g. Files, Command Palette, Auto Complete)](#overlay-motions-eg-files-command-palette-auto-complete)
+- [Sidebar navigation](#sidebar-navigation)
+- [Overlay navigation (e.g., Command Palette, Goto File, etc.)](#overlay-navigation-eg-command-palette-goto-file-etc)
 - [Plugins](#plugins)
   - [Abolish](#abolish-abolishtxt)
   - [Commentary](#commentary-commentarytxt)
@@ -1127,32 +1127,32 @@ OPENING AND CLOSING FOLDS
 |                    | `:lla[st]`                       |
 | :heavy_check_mark: | `:cq[uit]`                       | Quit Sublime.
 
-## Sidebar motions
+## Sidebar navigation
 
-| Status             | Mode   | Description
-| :----------------- | :----- | :----------
-| :heavy_check_mark: | J      | Go to last child
-| :heavy_check_mark: | P      | Go to root
-| :heavy_check_mark: | h      | Left
-| :heavy_check_mark: | j      | Down
-| :heavy_check_mark: | k      | Up
-| :heavy_check_mark: | l      | Right
-| :heavy_check_mark: | p      | Go to parent
-| :heavy_check_mark: | q      | Close
+| Status             | Command   | Description
+| :----------------- | :-------- | :----------
+| :heavy_check_mark: | J         | Go to last child.
+| :heavy_check_mark: | P         | Go to root.
+| :heavy_check_mark: | h         | Left.
+| :heavy_check_mark: | j         | Down.
+| :heavy_check_mark: | k         | Up.
+| :heavy_check_mark: | l         | Right.
+| :heavy_check_mark: | p         | Go to parent.
+| :heavy_check_mark: | q         | Close.
 
-## Overlay motions (e.g. Files, Command Palette)
+## Overlay navigation (e.g., Command Palette, Goto File, etc.)
 
-| Status             | Mode       | Description
-| :----------------- | :--------- | :----------
-| :heavy_check_mark: | `CTRL-J`   | Down
-| :heavy_check_mark: | `CTRL-K`   | Up
+| Status             | Command                | Description
+| :----------------- | :--------------------- | :----------
+| :heavy_check_mark: | `CTRL-n` or `CTRL-j`   | Next item.
+| :heavy_check_mark: | `CTRL-p` or `CTRL-k`   | Previous item.
 
 ## Auto Complete
 
-| Status             | Mode                   | Description
+| Status             | Command                | Description
 | :----------------- | :--------------------- | :----------
-| :heavy_check_mark: | `CTRL-N` or `CTRL-J`   | Down
-| :heavy_check_mark: | `CTRL-P` or `CTRL-K`   | Up
+| :heavy_check_mark: | `CTRL-n` or `CTRL-j`   | Next item.
+| :heavy_check_mark: | `CTRL-p` or `CTRL-k`   | Previous item.
 
 ## Plugins
 
