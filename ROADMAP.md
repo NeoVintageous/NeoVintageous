@@ -766,8 +766,8 @@ Line numbers may be specified with:
 | :heavy_check_mark: | `.`                              | The current line.
 | :heavy_check_mark: | `$`                              | The last line in the file.
 | :heavy_check_mark: | `%`                              | Equal to 1,$ (the entire file).
-|                    | `'t`                             | Position of mark t (lowercase).
-|                    | `'T`                             | Position of mark T (uppercase); when the mark is in another file it cannot be used in a range.
+| :heavy_check_mark: | `'t`                             | Position of mark t (lowercase).
+| :heavy_check_mark: | `'T`                             | Position of mark T (uppercase); when the mark is in another file it cannot be used in a range.
 | :heavy_check_mark: | `/{pattern}[/]`                  | The next line where `{pattern}` matches (also see `:range-pattern`).
 | :heavy_check_mark: | `?{pattern}[?]`                  | The previous line where `{pattern}` matches (also see `:range-pattern`).
 |                    | `\/`                             | The next line where the previously used search pattern matches. [#126](https://github.com/NeoVintageous/NeoVintageous/issues/126)
