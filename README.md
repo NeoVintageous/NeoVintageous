@@ -883,6 +883,15 @@ You can customize the default sneak mappings by setting environment variables.
 
 *The necessity to configure these mappings through environment variables, rather than conventional settings, arises from an implementation detail: plugins are loaded during startup, and access to settings is not available at this stage. Resolving this issue will require making significant design adjustments. In the meantime, employing environment variables provides a viable solution.*
 
+The environment variables:
+
+```sh
+NEOVINTAGEOUS_SNEAK_MAP_S=s
+NEOVINTAGEOUS_SNEAK_MAP_BIG_S=S
+NEOVINTAGEOUS_SNEAK_MAP_Z=z
+NEOVINTAGEOUS_SNEAK_MAP_BIG_Z=Z
+```
+
 **Example:** For Linux users, consider adding the following lines to your `~/.profile` or `~/.bashrc` file:
 
 ```sh
@@ -891,6 +900,18 @@ export NEOVINTAGEOUS_SNEAK_MAP_BIG_S=S
 export NEOVINTAGEOUS_SNEAK_MAP_Z=z
 export NEOVINTAGEOUS_SNEAK_MAP_BIG_Z=Z
 ```
+
+Please keep in mind that to activate these changes, you will be required to restart Sublime Text and, in some cases, reboot your system.
+
+**Example:** For Windows users:
+
+You can set environment variables for each user separately through the System Properties dialog box. The steps to do that:
+
+1. Type Windows Key + R to open the "Run" dialog box.
+2. Enter "sysdm.cpl" and press the "OK" button. The "System Properties" dialog box will open.
+3. Select the "Advanced" tab and press the "Environment Variables..." button. The "Environment Variables" dialog box will open.
+4. Select an existing variable in the "User variables" list and press the "Edit..." button to edit it. Or press the "New..." button to add a new variable.
+5. After you finished editing variables, press the "OK" button to save the changes.
 
 Please keep in mind that to activate these changes, you will be required to restart Sublime Text and, in some cases, reboot your system.
 
