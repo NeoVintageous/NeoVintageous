@@ -85,6 +85,19 @@ def _recursively_convert_dict_digit_keys_to_int(value) -> dict:
     ) for k, v in value.items())
 
 
+_ACCEPT_KEYS = (
+    'history',
+    'last_search_pattern',
+    'last_search_pattern_command',
+    'last_substitute_search_pattern',
+    'last_substitute_string',
+    'last_used_register_name',
+    'macros',
+    'marks',
+    'registers',
+)
+
+
 def load_session() -> None:
     try:
         with open(_get_session_file(), 'r', encoding='utf-8', errors='replace') as f:
@@ -92,22 +105,11 @@ def load_session() -> None:
             if content.strip():
                 session = json.loads(content)
                 if session:
-                    accept_keys = (
-                        'history',
-                        'last_search_pattern',
-                        'last_search_pattern_command',
-                        'last_substitute_search_pattern',
-                        'last_substitute_string',
-                        'last_used_register_name',
-                        'macros',
-                        'marks',
-                        'registers',
-                    )
-
                     for k, v in session.items():
-                        if k not in accept_keys:
+                        if k not in _ACCEPT_KEYS:
                             continue
 
+                        # history is a special case.
                         # TODO Refactor history module to be session friendly.
                         if k == 'history':
                             # Import inline to avoid circular reference.
@@ -119,9 +121,10 @@ def load_session() -> None:
                                 # the keys need to be deserialized to ints.
                                 _storage[int(_k)] = _recursively_convert_dict_digit_keys_to_int(_v)
 
-                            # history is a special case.
+                            set_session_value('history', _storage, persist=True)
                             continue
 
+                        # registers is a special case.
                         # TODO Refactor registers module to be session friendly.
                         if k == 'registers':
                             _session['registers'] = {}
@@ -130,8 +133,6 @@ def load_session() -> None:
                                     _v = deque(_v, maxlen=9)
 
                                 _session['registers'][_k] = _v
-
-                            # registers is a special case.
                             continue
 
                         _session[k] = v
