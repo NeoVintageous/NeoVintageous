@@ -121,7 +121,7 @@ def load_session() -> None:
                                 # the keys need to be deserialized to ints.
                                 _storage[int(_k)] = _recursively_convert_dict_digit_keys_to_int(_v)
 
-                            set_session_value('history', _storage, persist=True)
+                            set_session_value('history', _storage)
                             continue
 
                         # registers is a special case.
