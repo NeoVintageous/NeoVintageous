@@ -35,7 +35,10 @@ class Test_equal(unittest.FunctionalTestCase):
         self.eq('def x():\n|x = 1\nx| = 2\nx = 3\n', 'v_=', 'n_def x():\n  |x = 1\n  x = 2\nx = 3\n')
 
     def test_V(self):
-        self.eq('def x():\n|x = 1\n|x = 2\nx = 3\n', 'V_=', 'n_def x():\n  |x = 1\n  x = 2\nx = 3\n')
+        if unittest.ST_VERSION >= 4155:
+            self.eq('def x():\n|x = 1\n|x = 2\nx = 3\n', 'V_=', 'n_def x():\n  |x = 1\nx = 2\nx = 3\n')
+        else:
+            self.eq('def x():\n|x = 1\n|x = 2\nx = 3\n', 'V_=', 'n_def x():\n  |x = 1\n  x = 2\nx = 3\n')
 
     def test_b(self):
         self.eq('def x():\n|x = |1\n|x = |2\nx = 3\n', 'b_=', 'n_def x():\n  |x = 1\n  x = 2\nx = 3\n')

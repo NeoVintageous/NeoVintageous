@@ -62,5 +62,5 @@ class Test_o_auto_indent(unittest.FunctionalTestCase):
     def test_N(self):
         self.eq('def x():\n    |x = 1', 'o', 'i_def x():\n    x = 1\n    |')
         self.eq('def x():\n    def y():\n        |x = 1', 'o', 'i_def x():\n    def y():\n        x = 1\n        |')
-        self.eq('def x():\n    |x = 1', '3o', 'i_def x():\n    x = 1\n    |\n    |\n    |')
+        self.eq('def x():\n    |x = 1\n', '3o', 'i_def x():\n    x = 1\n    |\n    |\n    |\n')
         self.assertStatusLineIsInsert()
