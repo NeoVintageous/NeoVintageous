@@ -6,8 +6,14 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+
+Changelog Improvement:
+
+- You can now map the `<Right>` and `<Left>` keys in insert mode.
+- Added support for `<Right>` key in insert mode, allowing you to move the cursor one character to the right.
+- Added support for `<Left>` key in insert mode, enabling you to move the cursor one character to the left.
 - `CTRL-i` and `CTRL-o` now support counting for navigating to newer and older cursor positions in the jump list respectively. [#981](https://github.com/NeoVintageous/NeoVintageous/issues/981) [#980](https://github.com/NeoVintageous/NeoVintageous/issues/980)
-- Added `CTRL-n` for next item and `CTRL-p` for previous item navigation in the Command Palette and Goto File overlays. [#979](https://github.com/NeoVintageous/NeoVintageous/issues/979)
+- Add `CTRL-n` for next item and `CTRL-p` for previous item navigation in the Command Palette and Goto File overlays. [#979](https://github.com/NeoVintageous/NeoVintageous/issues/979)
 - Add `:ascii` command to display the ASCII value of the character under the cursor in decimal, hexadecimal, and octal formats. The mnemonic is "Get Ascii value," and it functions similarly to `ga`. [#975](https://github.com/NeoVintageous/NeoVintageous/issues/975)
 - Implement the capability to customize sneak key bindings. [#738](https://github.com/NeoVintageous/NeoVintageous/issues/738)
 - Add `\\A` select all in multiple cursor mode (same of `<M-A>`) [#977](https://github.com/NeoVintageous/NeoVintageous/issues/977)
@@ -22,8 +28,8 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 - Add the functionality to move the cursor to the neighbouring group with `CTRL-w w` (and provide an alias for `CTRL-w CTRL-w`). [#839](https://github.com/NeoVintageous/NeoVintageous/issues/839)
 - `CTRL-n` now mappable in insert mode, boosting customization. [#965](https://github.com/NeoVintageous/NeoVintageous/issues/965)
 - Add the functionality to open auto-complete in insert mode using `CTRL-n` [#965](https://github.com/NeoVintageous/NeoVintageous/issues/965)
-- Adds `N` alias for `Q`, `k`, or `CTRL-p` in multiple cursor mode. [#964](https://github.com/NeoVintageous/NeoVintageous/issues/964)
-- Adds `TAB` alias for `Esc` or `J` in multiple cursor mode. [#942](https://github.com/NeoVintageous/NeoVintageous/issues/942)
+- Add `N` alias for `Q`, `k`, or `CTRL-p` in multiple cursor mode. [#964](https://github.com/NeoVintageous/NeoVintageous/issues/964)
+- Add `TAB` alias for `Esc` or `J` in multiple cursor mode. [#942](https://github.com/NeoVintageous/NeoVintageous/issues/942)
 - Add "Type" column to `:registers` output to indicate linewise or characterwise [#961](https://github.com/NeoVintageous/NeoVintageous/issues/961)
 
 ### Fixed

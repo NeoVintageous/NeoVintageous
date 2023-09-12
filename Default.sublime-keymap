@@ -68,10 +68,10 @@
     {"keys": ["enter"],     "command": "nv_feed_key", "args": {"key": "<cr>"},         "context": [{"key": "vi_command_mode_aware"}, {"key": "nv_handle_key", "operand": "<CR>"}]},
     {"keys": ["home"],      "command": "nv_feed_key", "args": {"key": "<home>"},       "context": [{"key": "vi_command_mode_aware"}, {"key": "nv_handle_key", "operand": "<Home>"}]},
     {"keys": ["insert"],    "command": "nv_feed_key", "args": {"key": "<insert>"},     "context": [{"key": "vi_command_mode_aware"}, {"key": "nv_handle_key", "operand": "<Insert>"}]},
-    {"keys": ["left"],      "command": "nv_feed_key", "args": {"key": "<left>"},       "context": [{"key": "vi_command_mode_aware"}, {"key": "nv_handle_key", "operand": "<Left>"}]},
+    {"keys": ["left"],      "command": "nv_feed_key", "args": {"key": "<left>"},       "context": [{"key": "nv_command_or_insert"}, {"key": "nv_handle_key", "operand": "<Left>"}]},
     {"keys": ["pagedown"],  "command": "nv_feed_key", "args": {"key": "<pagedown>"},   "context": [{"key": "vi_command_mode_aware"}, {"key": "nv_handle_key", "operand": "<PageDown>"}]},
     {"keys": ["pageup"],    "command": "nv_feed_key", "args": {"key": "<pageup>"},     "context": [{"key": "vi_command_mode_aware"}, {"key": "nv_handle_key", "operand": "<PageUp>"}]},
-    {"keys": ["right"],     "command": "nv_feed_key", "args": {"key": "<right>"},      "context": [{"key": "vi_command_mode_aware"}, {"key": "nv_handle_key", "operand": "<Right>"}]},
+    {"keys": ["right"],     "command": "nv_feed_key", "args": {"key": "<right>"},      "context": [{"key": "nv_command_or_insert"}, {"key": "nv_handle_key", "operand": "<Right>"}]},
     {"keys": ["tab"],       "command": "nv_feed_key", "args": {"key": "<tab>"},        "context": [{"key": "vi_command_mode_aware"}, {"key": "nv_handle_key", "operand": "<Tab>"}]},
     {"keys": ["up"],        "command": "nv_feed_key", "args": {"key": "<up>"},         "context": [{"key": "vi_command_mode_aware"}, {"key": "nv_handle_key", "operand": "<Up>"}]},
 

@@ -36,6 +36,7 @@
   - [4. Scrolling horizontally](#4-scrolling-horizontally)
 - [Insert and Replace mode](#insert-and-replace-mode-inserttxt)
   - [1. Special keys](#1-special-keys)
+  - [2. Special special keys](#2-special-special-keys)
   - [7. Insert mode completion](#7-insert-mode-completion)
   - [8. Insert mode commands](#8-insert-mode-commands)
 - [Deleting and replacing text](#deleting-and-replacing-text-changetxt)
@@ -417,6 +418,13 @@ For the following four commands the cursor follows the screen.  If the character
 | :heavy_check_mark: | &lt;Esc&gt;<br>CTRL-[                          | End insert or Replace mode, go back to Normal mode. Note: If your `<Esc>` key is hard to hit on your keyboard, train yourself to use `CTRL-[`.
 | :heavy_check_mark: | CTRL-C                                         | Quit insert mode, go back to Normal mode.
 | :heavy_check_mark: | CTRL-W                                         | Delete the word before the cursor.
+
+### 2. Special special keys
+
+| Status             | Command                                        | Description
+| :----------------- | :--------------------------------------------- | :----------
+| :heavy_check_mark: | `<Left>`                                       | Cursor one character left.
+| :heavy_check_mark: | `<Right>`                                      | Cursor one character right.
 
 ### 7. Insert mode completion
 
