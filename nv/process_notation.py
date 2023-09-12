@@ -112,7 +112,8 @@ class ProcessNotationHandler():
                 set_interactive(self.view, True)
                 return
 
-            keys = keys[len(leading_motions):]
+            leading_motions_len = len(list(tokenize_keys(leading_motions)))
+            keys = ''.join(list(tokenize_keys(keys))[leading_motions_len:])
 
         if not (get_motion(self.view) and not get_action(self.view)):
             with gluing_undo_groups(self.view):
