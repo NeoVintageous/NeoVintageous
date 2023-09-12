@@ -6,9 +6,6 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
-
-Changelog Improvement:
-
 - You can now map the `<Right>` and `<Left>` keys in insert mode.
 - Added support for `<Right>` key in insert mode, allowing you to move the cursor one character to the right.
 - Added support for `<Left>` key in insert mode, enabling you to move the cursor one character to the left.
