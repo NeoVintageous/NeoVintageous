@@ -51,17 +51,18 @@ class ProcessNotationHandler():
         self.keys = keys
         self.repeat_count = repeat_count
         self.check_user_mappings = check_user_mappings
-        _log.info(
-            'process notation: %s count=%s mappings=%s',
-            keys,
-            repeat_count,
-            check_user_mappings)
 
     def handle(self) -> None:
         keys = self.keys
         repeat_count = self.repeat_count
         check_user_mappings = self.check_user_mappings
         initial_mode = get_mode(self.view)
+
+        _log.info(
+            'processing notation %s count=%s mappings=%s',
+            keys,
+            repeat_count,
+            check_user_mappings)
 
         # Disable interactive prompts. For example, supress interactive input
         # collecting for the command-line and search: :ls<CR> and /foo<CR>.
