@@ -2835,13 +2835,15 @@ class nv_vi_j(TextCommand):
 class nv_vi_jump_back(TextCommand):
 
     def run(self, edit, mode=None, count=1, register=None):
-        self.view.run_command('jump_back')
+        for i in range(count):
+            self.view.run_command('jump_back')
 
 
 class nv_vi_jump_forward(TextCommand):
 
     def run(self, edit, mode=None, count=1, register=None):
-        self.view.run_command('jump_forward')
+        for i in range(count):
+            self.view.run_command('jump_forward')
 
 
 class nv_vi_k(TextCommand):

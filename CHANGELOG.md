@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+- `CTRL-i` and `CTRL-o` now support counting for navigating to newer and older cursor positions in the jump list respectively. [#981](https://github.com/NeoVintageous/NeoVintageous/issues/981) [#980](https://github.com/NeoVintageous/NeoVintageous/issues/980)
 - Added `CTRL-n` for next item and `CTRL-p` for previous item navigation in the Command Palette and Goto File overlays. [#979](https://github.com/NeoVintageous/NeoVintageous/issues/979)
 - Add `:ascii` command to display the ASCII value of the character under the cursor in decimal, hexadecimal, and octal formats. The mnemonic is "Get Ascii value," and it functions similarly to `ga`. [#975](https://github.com/NeoVintageous/NeoVintageous/issues/975)
 - Implement the capability to customize sneak key bindings. [#738](https://github.com/NeoVintageous/NeoVintageous/issues/738)

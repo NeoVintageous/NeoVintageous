@@ -26,6 +26,11 @@ class Test_ctrl_o(unittest.FunctionalTestCase):
         self.assertRunCommand('jump_back')
 
     @unittest.mock_commands('jump_back')
+    def test_n_count(self):
+        self.eq('f|izz', '3<C-o>', 'f|izz')
+        self.assertRunCommand('jump_back', count=3)
+
+    @unittest.mock_commands('jump_back')
     def test_v_jump_back(self):
         self.eq('f|iz|z', 'v_<C-o>', 'f|iz|z')
         self.assertRunCommand('jump_back')

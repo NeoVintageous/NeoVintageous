@@ -338,8 +338,8 @@ FORCING A MOTION TO BE LINEWISE, CHARACTERWISE OR BLOCKWISE
 
 | Status             | Command                        | Description
 | :----------------- | :----------------------------- | -----------
-| :heavy_check_mark: | `CTRL-O`                       | Go to older cursor position in jump list (not a motion command)
-| :heavy_check_mark: | `<Tab>`, `CTRL-I`              | Go to newer cursor position in jump list (not a motion command)
+| :heavy_check_mark: | `CTRL-o`                       | Go to `[count]` older cursor position in jump list (not a motion command).
+| :heavy_check_mark: | `<Tab>` or `CTRL-i`            | Go to `[count]` newer cursor position in jump list (not a motion command).
 
 CHANGE LIST JUMPS
 
