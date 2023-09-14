@@ -1263,8 +1263,8 @@ def _split_cmdline_lines(line: str) -> list:
 
 def _parse_user_cmdline_split(line: str):
     re_cmd = '[A-Z][a-zA-Z_0-9]*'
-    re_arg_name = '[a-zA-Z_][a-zA-Z0-9_]*'
-    re_arg_value = '[a-zA-Z0-9\\:\\.,\n\t#@_-]+'
+    re_arg_name = '[a-zA-Z_][a-zA-Z0-9_-]*'
+    re_arg_value = '[a-zA-Z0-9\\:\\.,\n\t#\\*@_-]+'
 
     match = re.match('^\\:(?P<cmd>' + re_cmd + ')(?P<args>(?:\\s' + re_arg_name + '=' + re_arg_value + ')+)?$', line)
     if not match:
