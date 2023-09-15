@@ -608,7 +608,7 @@ class TestExCommands(unittest.TestCase):
         self.assertCommand(['sort!', 'sor!'], cmd('sort', forced=True, addressable=True))
         self.assertCommand(['sort i', 'sor i'], cmd('sort', params={'options': 'i'}, addressable=True))
         self.assertCommand(['sort iu', 'sor iu'], cmd('sort', params={'options': 'iu'}, addressable=True))
-        self.assertCommand(['sort! iu', 'sor! iu'], cmd('sort', params={'options': 'iu'}, forced=True, addressable=True))
+        self.assertCommand(['sort! iu', 'sor! iu'], cmd('sort', params={'options': 'iu'}, forced=True, addressable=True))  # noqa: E501
         self.assertCommand(['sort u', 'sor u'], cmd('sort', params={'options': 'u'}, addressable=True))
         self.assertCommand(['sort ui', 'sor ui'], cmd('sort', params={'options': 'ui'}, addressable=True))
         self.assertCommand(['sort', 'sor'], cmd('sort', addressable=True))
