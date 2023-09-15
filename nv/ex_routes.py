@@ -478,7 +478,7 @@ def _ex_route_sunmap(state) -> TokenCommand:
 
 
 def _ex_route_sort(state) -> TokenCommand:
-    command = _create_route(state, 'sort', addressable=True)
+    command = _create_route(state, 'sort', forcable=True, addressable=True)
 
     return _resolve(state, command, r'\s*(?P<options>[iu]+)')
 

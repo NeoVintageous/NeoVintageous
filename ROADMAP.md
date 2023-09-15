@@ -650,9 +650,9 @@ The next two commands always work on whole lines.
 
 ### 7. Sorting text
 
-| Status             | Command                        | Description
-| :----------------- | :----------------------------- | :----------
-| :heavy_check_mark: | :[range]sor[t]&nbsp;[i][u]       | Sort lines in `[range]`.  When no range is given all lines are sorted.<br><br>With `[i]` case is ignored.<br><br>With `[u]` (u stands for unique) only keep the first of a sequence of identical lines (ignoring case when `[i]` is used).  Without this flag, a sequence of identical lines will be kept in their original order. Note that leading and trailing white space may cause lines to be different.
+| Status             | Command                                    | Description
+| :----------------- | ------------------------------------------ | :----------
+| :heavy_check_mark: | <code>:[range]sor[t]!&nbsp;[i][u]</code>   | Sort lines in `[range]`.  When no range is given all lines are sorted. <br><br>With `[!]` the order is reversed. <br><br>With `[i]` case is ignored.<br><br>With `[u]` (u stands for unique) only keep the first of a sequence of identical lines (ignoring case when `[i]` is used).  Without this flag, a sequence of identical lines will be kept in their original order. Note that leading and trailing white space may cause lines to be different.
 
 ## Undo and Redo [|undo.txt|](https://vimhelp.org/undo.txt.html)
 

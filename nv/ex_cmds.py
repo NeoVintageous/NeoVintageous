@@ -776,11 +776,14 @@ def ex_snoremap(lhs: str = None, rhs: str = None, **kwargs) -> None:
     mappings_add(SELECT, lhs, rhs)
 
 
-def ex_sort(view, options: str = '', **kwargs) -> None:
+def ex_sort(view, options: str = '', forceit=False, **kwargs) -> None:
     case_sensitive = True if 'i' not in options else False
 
     with glue_undo_groups(view):
-        view.run_command('sort_lines', {'case_sensitive': case_sensitive})
+        view.run_command('sort_lines', {
+            'case_sensitive': case_sensitive,
+            'reverse': forceit
+        })
 
         if 'u' in options:
             view.run_command('permute_lines', {'operation': 'unique'})

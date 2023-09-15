@@ -605,8 +605,10 @@ class TestExCommands(unittest.TestCase):
         self.assertCommand(['silent! ls', 'sil! ls'], cmd('silent', params={'command': 'ls'}, forced=True))  # noqa: E501
         self.assertCommand(['snoremap abc xyz', 'snor abc xyz'], cmd('snoremap', params={'lhs': 'abc', 'rhs': 'xyz'}))  # noqa: E501
         self.assertCommand(['snoremap', 'snor'], cmd('snoremap'))
+        self.assertCommand(['sort!', 'sor!'], cmd('sort', forced=True, addressable=True))
         self.assertCommand(['sort i', 'sor i'], cmd('sort', params={'options': 'i'}, addressable=True))
         self.assertCommand(['sort iu', 'sor iu'], cmd('sort', params={'options': 'iu'}, addressable=True))
+        self.assertCommand(['sort! iu', 'sor! iu'], cmd('sort', params={'options': 'iu'}, forced=True, addressable=True))
         self.assertCommand(['sort u', 'sor u'], cmd('sort', params={'options': 'u'}, addressable=True))
         self.assertCommand(['sort ui', 'sor ui'], cmd('sort', params={'options': 'ui'}, addressable=True))
         self.assertCommand(['sort', 'sor'], cmd('sort', addressable=True))
