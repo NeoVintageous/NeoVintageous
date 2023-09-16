@@ -16,6 +16,18 @@
     { "keys": ["ctrl+n"], "command": "move", "args": {"by": "lines", "forward": true}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     { "keys": ["ctrl+p"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
 
+    // Overlay: Goto Symbol
+    { "keys": ["ctrl+j"], "command": "move", "args": {"by": "lines", "forward": true}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control goto_symbol kind_info"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    { "keys": ["ctrl+k"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control goto_symbol kind_info"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    { "keys": ["ctrl+n"], "command": "move", "args": {"by": "lines", "forward": true}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control goto_symbol kind_info"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    { "keys": ["ctrl+p"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control goto_symbol kind_info"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+
+    // Overlay: Goto Symbol in Project
+    { "keys": ["ctrl+j"], "command": "move", "args": {"by": "lines", "forward": true}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control goto_symbol_in_project kind_info"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    { "keys": ["ctrl+k"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control goto_symbol_in_project kind_info"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    { "keys": ["ctrl+n"], "command": "move", "args": {"by": "lines", "forward": true}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control goto_symbol_in_project kind_info"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    { "keys": ["ctrl+p"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control goto_symbol_in_project kind_info"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+
     // Overlay: Command Palette
     { "keys": ["ctrl+j"], "command": "move", "args": {"by": "lines", "forward": true}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control command_palette"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     { "keys": ["ctrl+k"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [{"key": "overlay_visible"}, {"key": "control", "operand": "overlay_control command_palette"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
