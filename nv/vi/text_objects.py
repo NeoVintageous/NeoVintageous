@@ -319,7 +319,7 @@ def _get_text_object_bracket(view, s: Region, inclusive: bool, count: int, delim
     if b > a:
         line = view.line(b)
 
-        if next_non_blank(view, line.a) + 1 == line.b:
+        if b == next_non_blank(view, line.a):
             row_a, col_a = view.rowcol(a - 1)
             row_b, col_b = view.rowcol(b + 1)
             if (row_b - 1) > row_a:

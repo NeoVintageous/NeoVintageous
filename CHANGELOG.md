@@ -32,6 +32,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+- Bracket text object, e.g., `vi{`, `vi}`, `viB`, should not include trailing whitespace on last line
 - Special keys like `<Esc>` don't work in complex mappings in some cases e.g., `<Esc>li`
 - Session history is not saved in some cases
 - `v_o` should update the cursor x position. [#974](https://github.com/NeoVintageous/NeoVintageous/issues/974)
