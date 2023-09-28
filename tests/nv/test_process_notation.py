@@ -31,3 +31,13 @@ class TestProcessNotationHandler(unittest.ViewTestCase):
         self.assertEqual('w', handler.keys)
         self.assertEqual(0, handler.repeat_count)
         self.assertEqual(True, handler.check_user_mappings)
+
+    def test_can_process_escape_key(self):
+        self.insert('f|izz')
+        ProcessNotationHandler(self.view, '<Esc>l', 0, False).handle()
+        self.assertNormal('fi|zz')
+
+    def test_can_process_escape_key_and_insert(self):
+        self.insert('f|izz')
+        ProcessNotationHandler(self.view, '<Esc>li', 0, False).handle()
+        self.assertInsert('fi|zz')

@@ -20,7 +20,12 @@ from NeoVintageous.tests import unittest
 
 class Test_ex_bprevious(unittest.FunctionalTestCase):
 
-    @unittest.mock_commands('prev_view')
-    def test_n_bprevious(self):
+    @unittest.mock.patch('NeoVintageous.nv.ex_cmds.window_buffer_control')
+    def test_n_bprevious(self, control):
         self.eq('f|izz', ':bprevious', 'f|izz')
-        self.assertRunCommand('prev_view')
+        control.assert_called_once_with(self.view.window(), 'previous', count=1)
+
+    @unittest.mock.patch('NeoVintageous.nv.ex_cmds.window_buffer_control')
+    def test_n_with_count(self, control):
+        self.eq('f|izz', ':bprevious 11', 'f|izz')
+        control.assert_called_once_with(self.view.window(), 'previous', count=11)

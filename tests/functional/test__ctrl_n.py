@@ -18,19 +18,16 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_ctrl_o(unittest.FunctionalTestCase):
+class Test_ctrl_n(unittest.FunctionalTestCase):
 
-    @unittest.mock_commands('jump_back')
-    def test_n_jump_back(self):
-        self.eq('f|izz', '<C-o>', 'f|izz')
-        self.assertRunCommand('jump_back')
+    @unittest.mock_commands('auto_complete')
+    def test_i_triggers_auto_complete(self):
+        self.eq('fi|\n', 'i_<C-n>', 'i_fi|\n')
+        self.assertRunCommand('auto_complete')
 
-    @unittest.mock_commands('jump_back')
-    def test_n_count(self):
-        self.eq('f|izz', '3<C-o>', 'f|izz')
-        self.assertRunCommand('jump_back', count=3)
-
-    @unittest.mock_commands('jump_back')
-    def test_v_jump_back(self):
-        self.eq('f|iz|z', 'v_<C-o>', 'f|iz|z')
-        self.assertRunCommand('jump_back')
+    @unittest.mock_commands('move')
+    @unittest.mock.patch('sublime.View.is_auto_complete_visible')
+    def test_i_when_auto_complete_visibe(self, is_auto_complete_visible):
+        is_auto_complete_visible.return_value = True
+        self.eq('fi|\n', 'i_<C-n>', 'i_fi|\n')
+        self.assertRunCommand('move', {'by': 'lines', 'forward': True})

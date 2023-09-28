@@ -659,6 +659,7 @@ class Test_parse_user_cmdline(unittest.TestCase):
         self.assert_parsed(':N FOO=BAR', {'cmd': 'n', 'args': {'FOO': 'BAR'}})
         self.assert_parsed(':Name FooBar=FizzBuzz', {'cmd': 'name', 'args': {'FooBar': 'FizzBuzz'}})
         self.assert_parsed(':N a_b_c=d_e_f', {'cmd': 'n', 'args': {'a_b_c': 'd_e_f'}})
+        self.assert_parsed(':FizzBuzz date-order=true', {'cmd': 'fizz_buzz', 'args': {'date-order': True}})
 
     def test_non_printable_argument_values(self):
         self.assert_parsed(':FizzBuzz characters=\n', {'cmd': 'fizz_buzz', 'args': {'characters': '\n'}})
@@ -688,6 +689,10 @@ class Test_parse_user_cmdline(unittest.TestCase):
         self.assert_parsed(':FizzBuzz x=1.0', {'cmd': 'fizz_buzz', 'args': {'x': 1.0}})
         self.assert_parsed(':FizzBuzz x=4.1 y=2.3', {'cmd': 'fizz_buzz', 'args': {'x': 4.1, 'y': 2.3}})
         self.assert_parsed(':FizzBuzz x=42.0', {'cmd': 'fizz_buzz', 'args': {'x': 42.0}})
+
+    def test_special_argument_values(self):
+        for char in ('*', '#'):
+            self.assert_parsed(':A b=' + char, {'cmd': 'a', 'args': {'b': char}})
 
     def test_invalid_command(self):
         self.assert_parsed(':foobar', None)

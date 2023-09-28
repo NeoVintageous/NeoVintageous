@@ -49,11 +49,11 @@ from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.options import set_option
 from NeoVintageous.nv.polyfill import view_to_region
 from NeoVintageous.nv.polyfill import view_to_str
+from NeoVintageous.nv.registers import _get as _get_register
 from NeoVintageous.nv.registers import _is_register_linewise
 from NeoVintageous.nv.registers import _reset
 from NeoVintageous.nv.registers import _set_data
 from NeoVintageous.nv.registers import _set_numbered_register
-from NeoVintageous.nv.registers import registers_get
 from NeoVintageous.nv.settings import get_mode
 from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.settings import get_visual_block_direction
@@ -635,7 +635,7 @@ class ViewTestCase(unittest.TestCase):
         if expected is not None and not isinstance(expected, list):
             expected = [expected]
 
-        self.assertEqual(registers_get(self.view, name), expected, msg or 'for register "' + name + '"')
+        self.assertEqual(_get_register(self.view, name), expected, msg or 'for register "' + name + '"')
 
         if expected is not None:
             self.assertEqual(_is_register_linewise(name), linewise, msg or 'register (linewise) = "' + name)
@@ -1557,6 +1557,7 @@ _SEQ2CMD = {
     '"Byy':         {'command': 'nv_feed_key'},  # noqa: E241
     '"_y':          {'command': 'nv_feed_key'},  # noqa: E241
     '"_yiw':        {'command': 'nv_feed_key'},  # noqa: E241
+    '"a':           {'command': 'nv_feed_key'},  # noqa: E241
     '"aY':          {'command': 'nv_feed_key'},  # noqa: E241
     '"ay':          {'command': 'nv_feed_key'},  # noqa: E241
     '"ayy':         {'command': 'nv_feed_key'},  # noqa: E241
@@ -1631,6 +1632,7 @@ _SEQ2CMD = {
     '<C-w><C-n>':   {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', '<C-n>']}},  # noqa: E241
     '<C-w><C-s>':   {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', '<C-s>']}},  # noqa: E241
     '<C-w><C-v>':   {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', '<C-v>']}},  # noqa: E241
+    '<C-w><C-w>':   {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', '<C-w>']}},  # noqa: E241
     '<C-w><bar>':   {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', '<bar>']}},  # noqa: E241
     '<C-w><lt>':    {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', '<lt>']}},  # noqa: E241
     '<C-w>=':       {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', '=']}},  # noqa: E241
@@ -1656,6 +1658,7 @@ _SEQ2CMD = {
     '<C-w>s':       {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', 's']}},  # noqa: E241
     '<C-w>t':       {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', 't']}},  # noqa: E241
     '<C-w>v':       {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', 'v']}},  # noqa: E241
+    '<C-w>w':       {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', 'w']}},  # noqa: E241
     '<C-w>x':       {'command': 'nv_feed_key', 'args': {'keys': ['<C-w>', 'x']}},  # noqa: E241
     '<C-x>':        {'command': 'nv_feed_key', 'args': {'key': '<C-x>'}},  # noqa: E241
     '<C-y>':        {'command': 'nv_feed_key', 'args': {'key': '<C-y>'}},  # noqa: E241
@@ -1685,6 +1688,8 @@ _SEQ2CMD = {
     '<k7>':         {'command': 'nv_feed_key', 'args': {'key': '<k7>'}},  # noqa: E241
     '<k8>':         {'command': 'nv_feed_key', 'args': {'key': '<k8>'}},  # noqa: E241
     '<k9>':         {'command': 'nv_feed_key', 'args': {'key': '<k9>'}},  # noqa: E241
+    '<left>':       {'command': 'nv_feed_key', 'args': {'keys': ['<left>']}},  # noqa: E241
+    '<right>':      {'command': 'nv_feed_key', 'args': {'keys': ['<right>']}},  # noqa: E241
     '<{':           {'command': 'nv_feed_key'},  # noqa: E241
     '=':            {'command': 'nv_feed_key'},  # noqa: E241
     '==':           {'command': 'nv_feed_key'},  # noqa: E241
@@ -1774,6 +1779,7 @@ _SEQ2CMD = {
     '\'a':          {'command': 'nv_feed_key'},  # noqa: E241
     '\'p':          {'command': 'nv_feed_key'},  # noqa: E241
     '\'x':          {'command': 'nv_feed_key'},  # noqa: E241
+    '\\\\A':        {'command': 'nv_feed_key'},  # noqa: E241
     '] ':           {'command': 'nv_feed_key'},  # noqa: E241
     '])':           {'command': 'nv_feed_key'},  # noqa: E241
     ']B':           {'command': 'nv_feed_key'},  # noqa: E241
@@ -2444,13 +2450,19 @@ _SEQ2CMD = {
     'ysiw}':        {'command': 'nv_feed_key'},  # noqa: E241
     'yss)':         {'command': 'nv_feed_key'},  # noqa: E241
     'yy':           {'command': 'nv_feed_key'},  # noqa: E241
+    'z-':           {'command': 'nv_feed_key'},  # noqa: E241
+    'z.':           {'command': 'nv_feed_key'},  # noqa: E241
+    'z<CR>':        {'command': 'nv_feed_key', 'args': {"keys": ['z', '<CR>']}},  # noqa: E241
     'z=':           {'command': 'nv_feed_key'},  # noqa: E241
     'zM':           {'command': 'nv_feed_key'},  # noqa: E241
     'zR':           {'command': 'nv_feed_key'},  # noqa: E241
+    'zb':           {'command': 'nv_feed_key'},  # noqa: E241
     'zc':           {'command': 'nv_feed_key'},  # noqa: E241
     'zg':           {'command': 'nv_feed_key'},  # noqa: E241
     'zo':           {'command': 'nv_feed_key'},  # noqa: E241
+    'zt':           {'command': 'nv_feed_key'},  # noqa: E241
     'zug':          {'command': 'nv_feed_key'},  # noqa: E241
+    'zz':           {'command': 'nv_feed_key'},  # noqa: E241
     '{':            {'command': 'nv_feed_key'},  # noqa: E241
     '|':            {'command': 'nv_feed_key'},  # noqa: E241
     '}':            {'command': 'nv_feed_key'},  # noqa: E241

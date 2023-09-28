@@ -214,8 +214,8 @@ class TestFeedKey(unittest.ResetRegisters, unittest.ResetCommandLineOutput, unit
         self.feedkey('w')
         self.assertNormal('fi|buzz')
         self.assertStatusLineIsNormal()
-        self.assertRegisters('"-c', 'zz ')
-        self.assertRegistersEmpty('012abde')
+        self.assertRegisters('"c', 'zz ')
+        self.assertRegistersEmpty('-012abde')
 
     def test_undo_redo(self):
         self.normal('fizz\n|xyz\nbuzz\nbong')

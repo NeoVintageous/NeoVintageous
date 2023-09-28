@@ -85,6 +85,7 @@ from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import regions_transformer
 from NeoVintageous.nv.utils import row_at
 from NeoVintageous.nv.utils import save_view
+from NeoVintageous.nv.utils import show_ascii
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
@@ -105,24 +106,30 @@ from NeoVintageous.nv.window import window_tab_control
 _log = logging.getLogger(__name__)
 
 
+def ex_ascii(view, **kwargs) -> None:
+    show_ascii(view)
+
+
 def ex_bfirst(window, **kwargs) -> None:
-    window_buffer_control(window, action='first')
+    window_buffer_control(window, 'first')
 
 
 def ex_blast(window, **kwargs) -> None:
-    window_buffer_control(window, action='last')
+    window_buffer_control(window, 'last')
 
 
-def ex_bnext(window, **kwargs) -> None:
-    window_buffer_control(window, action='next')
+def ex_bnext(window, N: int = 1, **kwargs) -> None:
+    window_buffer_control(window, 'next', count=N)
 
 
-def ex_bprevious(window, **kwargs) -> None:
-    window_buffer_control(window, action='previous')
+def ex_bprevious(window, N: int = 1, **kwargs) -> None:
+    window_buffer_control(window, 'previous', count=N)
 
 
 def ex_browse(window, view, **kwargs) -> None:
-    window.run_command('prompt_open_file', {'initial_directory': get_cmdline_cwd()})
+    window.run_command('prompt_open_file', {
+        'initial_directory': get_cmdline_cwd()
+    })
 
 
 def ex_buffer(window, index: int = None, **kwargs) -> None:
@@ -144,6 +151,8 @@ def ex_buffers(window, **kwargs) -> None:
         else:
             path = view.name() or '[No Name]'
 
+        lines = [str(view.rowcol(s.b)[0] + 1) for s in view.sel()]
+
         current_indicator = '%' if view.id() == window.active_view().id() else ' '
         readonly_indicator = '=' if is_view_read_only(view) else ' '
         modified_indicator = '+' if view.is_dirty() else ' '
@@ -151,13 +160,14 @@ def ex_buffers(window, **kwargs) -> None:
         active_group_view = window.active_view_in_group(window.get_view_index(view)[0])
         visibility_indicator = 'a' if active_group_view and view.id() == active_group_view.id() else 'h'
 
-        return '%5d %s%s%s%s "%s"' % (
+        return '%5d %s%s%s%s %-30s %s' % (
             view.id(),
             current_indicator,
             visibility_indicator,
             readonly_indicator,
             modified_indicator,
-            path
+            '"{}"'.format(path),
+            'line {}'.format(','.join(lines))
         )
 
     output = CmdlineOutput(window)
@@ -583,6 +593,7 @@ def ex_read(view, edit, line_range: RangeNode, cmd: str = None, file_name: str =
 
 def ex_marks(view, **kwargs) -> None:
     output = CmdlineOutput(view.window())
+    output.disable_highlight_line()
     output.write('mark line  col file/text\n')
 
     for name, info in get_marks(view).items():
@@ -647,29 +658,30 @@ def ex_delmarks(view, forceit: bool = False, marks: str = '', **kwargs) -> None:
 
 def ex_registers(window, view, **kwargs) -> None:
     items = []
-    registers = registers_get_all(view).items()
-    for k, v in registers:
-        if v:
+    for type, name, content in registers_get_all(view):
+        if content:
             multiple_values = []
 
-            for part in v:
+            for part in content:
                 lines = part.splitlines()
                 # ^J indicates a newline
                 part_value = '^J'.join(lines)
 
                 # The splitlines function will remove any trailing newlines. We
                 # need to append one if splitlines() removed a trailing one.
-                if len(''.join(lines)) < len(v[0]):
+                if len(''.join(lines)) < len(content[0]):
+                    # ^J indicates a newline
                     part_value += '^J'
 
                 multiple_values.append(part_value)
 
-            # ^V indicates a visual block
-            items.append('"{}   {}'.format(k, truncate('^V'.join(multiple_values), 120)))
+            # ^V indicates a visual block or multiple selection
+            items.append('  {}  "{}   {}'.format(
+                type, name, truncate('^V'.join(multiple_values), 120)))
 
     items.sort()
     output = CmdlineOutput(window)
-    output.write('Name Content\n')
+    output.write('Type Name Content\n')
     output.write("\n".join(items))
     output.show()
 
@@ -764,11 +776,14 @@ def ex_snoremap(lhs: str = None, rhs: str = None, **kwargs) -> None:
     mappings_add(SELECT, lhs, rhs)
 
 
-def ex_sort(view, options: str = '', **kwargs) -> None:
+def ex_sort(view, options: str = '', forceit=False, **kwargs) -> None:
     case_sensitive = True if 'i' not in options else False
 
     with glue_undo_groups(view):
-        view.run_command('sort_lines', {'case_sensitive': case_sensitive})
+        view.run_command('sort_lines', {
+            'case_sensitive': case_sensitive,
+            'reverse': forceit
+        })
 
         if 'u' in options:
             view.run_command('permute_lines', {'operation': 'unique'})
@@ -913,31 +928,31 @@ def ex_sunmap(lhs: str, **kwargs) -> None:
 
 
 def ex_tabclose(window, **kwargs) -> None:
-    window_tab_control(window, action='close')
+    window_tab_control(window, 'close')
 
 
 def ex_tabfirst(window, **kwargs) -> None:
-    window_tab_control(window, action='first')
+    window_tab_control(window, 'first')
 
 
 def ex_tablast(window, **kwargs) -> None:
-    window_tab_control(window, action='last')
+    window_tab_control(window, 'last')
 
 
-def ex_tabnext(window, **kwargs) -> None:
-    window_tab_control(window, action='next')
+def ex_tabnext(window, count: int = 1, **kwargs) -> None:
+    window_tab_control(window, 'next', count=count)
 
 
 def ex_tabnew(window, **kwargs) -> None:
-    window_tab_control(window, action='new')
+    window_tab_control(window, 'new')
 
 
 def ex_tabonly(window, **kwargs) -> None:
-    window_tab_control(window, action='only')
+    window_tab_control(window, 'only')
 
 
-def ex_tabprevious(window, **kwargs) -> None:
-    window_tab_control(window, action='previous')
+def ex_tabprevious(window, count: int = 1, **kwargs) -> None:
+    window_tab_control(window, 'previous', count=count)
 
 
 def ex_unmap(lhs: str, **kwargs) -> None:
@@ -1251,8 +1266,8 @@ def _split_cmdline_lines(line: str) -> list:
 
 def _parse_user_cmdline_split(line: str):
     re_cmd = '[A-Z][a-zA-Z_0-9]*'
-    re_arg_name = '[a-zA-Z_][a-zA-Z0-9_]*'
-    re_arg_value = '[a-zA-Z0-9\\:\\.,\n\t#@_-]+'
+    re_arg_name = '[a-zA-Z_][a-zA-Z0-9_-]*'
+    re_arg_value = '[a-zA-Z0-9\\:\\.,\n\t#\\*@_-]+'
 
     match = re.match('^\\:(?P<cmd>' + re_cmd + ')(?P<args>(?:\\s' + re_arg_name + '=' + re_arg_value + ')+)?$', line)
     if not match:

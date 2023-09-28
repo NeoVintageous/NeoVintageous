@@ -98,8 +98,6 @@ def _winaltkeys(view, operator: int, operand: str, match_all: bool) -> bool:
     #   menu  Using ALT in combination with a character that is a menu
     #         shortcut key, will be handled by the windowing system.  Other
     #         keys can be mapped.
-    # If the menu is disabled by excluding 'm' from 'guioptions', the ALT
-    # key is never used for the menu.
     winaltkeys = get_option(view, 'winaltkeys')
     if winaltkeys == 'menu':
         return (operand not in tuple('efghinpstv') or not view.window().is_menu_visible()) and _is_command_mode(view)

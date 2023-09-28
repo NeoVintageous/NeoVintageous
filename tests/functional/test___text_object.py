@@ -120,6 +120,8 @@ class TestTextObjectSelection(unittest.FunctionalTestCase):
             self.resetRegisters()
             self.eq('x{\nfi|zz\n}y', 'ya' + target, 'x|{\nfizz\n}y')
             self.assertLinewiseRegisters('"0', '{\nfizz\n}', '-1')
+            self.eq('x({\nfi|zz\n})y', 'ya' + target, 'x(|{\nfizz\n})y')
+            self.eq('x({  \n  fi|zz  \n  })y', 'ya' + target, 'x(|{  \n  fizz  \n  })y')
 
     def test_yi__one_line_targets(self):
         for t in all_one_line_targets:
@@ -182,10 +184,20 @@ class TestTextObjectSelection(unittest.FunctionalTestCase):
         self.eq('<div>  |  <h1>fizz</h1>  </div>', 'v_it', '<div>|    <h1>fizz</h1>  |</div>')
 
     def test_vi__brace__(self):
-        for target in ('{', '}'):
+        for target in ('{', '}', 'B'):
             self.eq('{\na\n|b\nc\n}\n', 'v_i' + target, '{\n|a\nb\nc\n|}\n')
             self.eq('{\na\n|b\nc\n}\n', 'v_i' + target, '{\n|a\nb\nc\n|}\n')
             self.eq('{xx\na\n|b\nc\nxx}\n', 'v_i' + target, '{|xx\na\nb\nc\nxx|}\n')
+            self.eq('{\na\n|b\nc\n   }\n', 'v_i' + target, '{\n|a\nb\nc\n|   }\n')
+            self.eq('{\na\n|b\nc\n   } // ...\n', 'v_i' + target, '{\n|a\nb\nc\n|   } // ...\n')
+            self.eq('({\na\n|b\nc\n   })\n', 'v_i' + target, '({\n|a\nb\nc\n|   })\n')
+
+    def test_va__brace__(self):
+        for target in ('{', '}', 'B'):
+            self.eq('{\na\n|b\nc\n}\n', 'v_a' + target, '|{\na\nb\nc\n}|\n')
+            self.eq('x{\na\n|b\nc\n}x\n', 'v_a' + target, 'x|{\na\nb\nc\n}|x\n')
+            self.eq('x{  \n  a\n|b\nc\n  }  x\n', 'v_a' + target, 'x|{  \n  a\nb\nc\n  }|  x\n')
+            self.eq('({\na\n|b\nc\n   })\n', 'v_a' + target, '(|{\na\nb\nc\n   }|)\n')
 
     def test_va__one_line_targets(self):
         for mark in all_one_line_targets:

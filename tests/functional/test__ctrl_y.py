@@ -20,6 +20,11 @@ from NeoVintageous.tests import unittest
 
 class Test_ctrl_y(unittest.FunctionalTestCase):
 
+    def setUp(self):
+        super().setUp()
+        self.settings().set('line_padding_bottom', 0)
+        self.settings().set('line_padding_top', 0)
+
     @unittest.skipIf(unittest.is_osx(), 'Test does not work on OSX')
     def test_n(self):
         self.normal('1\n2\n3\n4\n5\n6\n7\n|8\n9\n10')

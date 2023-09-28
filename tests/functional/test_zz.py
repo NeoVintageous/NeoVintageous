@@ -1,4 +1,4 @@
-# Copyright (C) 2018-2023 The NeoVintageous Team (NeoVintageous).
+# Copyright (C) 2018 The NeoVintageous Team (NeoVintageous).
 #
 # This file is part of NeoVintageous.
 #
@@ -18,19 +18,7 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_ctrl_o(unittest.FunctionalTestCase):
+class Test_zz(unittest.FunctionalTestCase):
 
-    @unittest.mock_commands('jump_back')
-    def test_n_jump_back(self):
-        self.eq('f|izz', '<C-o>', 'f|izz')
-        self.assertRunCommand('jump_back')
-
-    @unittest.mock_commands('jump_back')
-    def test_n_count(self):
-        self.eq('f|izz', '3<C-o>', 'f|izz')
-        self.assertRunCommand('jump_back', count=3)
-
-    @unittest.mock_commands('jump_back')
-    def test_v_jump_back(self):
-        self.eq('f|iz|z', 'v_<C-o>', 'f|iz|z')
-        self.assertRunCommand('jump_back')
+    def test_zz_leaves_cursor_in_same_column(self):
+        self.eq('  fi|zz', 'zz', '  fi|zz')

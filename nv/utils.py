@@ -63,6 +63,7 @@ from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import VISUAL
 from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import is_visual_mode
+from NeoVintageous.nv.vim import status_message
 from sublime import CLASS_WORD_END
 from sublime import CLASS_WORD_START
 
@@ -1010,6 +1011,14 @@ class VisualBlockSelection():
             sel.b = b
             self.view.sel().add(sel)
 
+    def transform_to_other_end(self, same_line: bool = False):
+        if not same_line:
+            self._set_direction(
+                DIRECTION_UP
+                if self.is_direction_down()
+                else DIRECTION_DOWN)
+        self.transform_reverse()
+
     def _transform(self, region: Region) -> None:
         set_selection(self.view, region)
 
@@ -1431,3 +1440,43 @@ def _resolve_mode(view, mode: str = None) -> str:
         return get_mode(view)
 
     return mode
+
+
+def adjust_selection_if_first_non_blank(view, mode: str, first_non_blank: bool, selection: Region) -> None:
+    if first_non_blank and mode in (NORMAL, INTERNAL_NORMAL):
+        row = view.rowcol(selection.b)[0]
+        first_non_blank_pt = next_non_blank(view, view.text_point(row, 0))
+        set_selection(view, first_non_blank_pt)
+
+
+def get_indentation(view, level: int) -> str:
+    translate = view.settings().get('translate_tabs_to_spaces')
+    tab_size = int(view.settings().get('tab_size'))
+    tab_text = ' ' * tab_size if translate else '\t'
+
+    return tab_text * level
+
+
+def show_ascii(view) -> None:
+    def _char_to_notation(char: str) -> str:
+        # Convert a char to a key notation. Uses vim key notation.
+        # See https://vimhelp.appspot.com/intro.txt.html#key-notation
+        char_notation_map = {
+            '\0': "Nul",
+            ' ': "Space",
+            '\t': "Tab",
+            '\n': "NL"
+        }
+
+        if char in char_notation_map:
+            char = char_notation_map[char]
+
+        return "<" + char + ">"
+
+    region = view.sel()[-1]
+    c_str = view.substr(get_insertion_point_at_b(region))
+    c_ord = ord(c_str)
+    c_hex = hex(c_ord)
+    c_oct = oct(c_ord)
+    c_not = _char_to_notation(c_str)
+    status_message('%7s %3s,  Hex %4s,  Octal %5s' % (c_not, c_ord, c_hex, c_oct))

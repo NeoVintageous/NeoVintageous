@@ -87,3 +87,4 @@ class Test_s(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertInsert('f|zz\n')
         self.assertRegister('"i')
         self.assertRegister('ai')
+        self.assertRegisterEmpty('-')

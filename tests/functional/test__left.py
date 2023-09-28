@@ -18,19 +18,10 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_ctrl_o(unittest.FunctionalTestCase):
+class Test_left(unittest.FunctionalTestCase):
 
-    @unittest.mock_commands('jump_back')
-    def test_n_jump_back(self):
-        self.eq('f|izz', '<C-o>', 'f|izz')
-        self.assertRunCommand('jump_back')
-
-    @unittest.mock_commands('jump_back')
-    def test_n_count(self):
-        self.eq('f|izz', '3<C-o>', 'f|izz')
-        self.assertRunCommand('jump_back', count=3)
-
-    @unittest.mock_commands('jump_back')
-    def test_v_jump_back(self):
-        self.eq('f|iz|z', 'v_<C-o>', 'f|iz|z')
-        self.assertRunCommand('jump_back')
+    def test_i(self):
+        self.eq('ab|c', 'i_<left>', 'i_a|bc')
+        self.eq('x\na|bc', 'i_<left>', 'i_x\n|abc')
+        self.eq('x\n|abc', 'i_<left>', 'i_x\n|abc')
+        self.eq('\n\n|\n\n', 'i_<left>', 'i_\n\n|\n\n')

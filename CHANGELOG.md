@@ -2,6 +2,43 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.33.0 - Unreleased
+
+### Added
+
+- Add reverse sorting support for sort command by appending `!` e.g., `:sort!`
+- Add support for `<Left>` and `<Right>` in insert mode, allowing you to move the cursor one character to the left and right.
+- Add `[count]` support for `CTRL-i` and `CTRL-o`: navigate to newer and older cursor positions in the jump list. [#981](https://github.com/NeoVintageous/NeoVintageous/issues/981) [#980](https://github.com/NeoVintageous/NeoVintageous/issues/980)
+- Add `CTRL-n` and `CTRL-p` for next and previous item navigation in the Command Palette, Goto File, Goto Symbol, and Goto Symbol in Project. [#979](https://github.com/NeoVintageous/NeoVintageous/issues/979)
+- Add `:ascii` to display the ASCII value of the character under the cursor in decimal, hexadecimal, and octal formats. The mnemonic is "Get Ascii value," and it functions similarly to `ga`. [#975](https://github.com/NeoVintageous/NeoVintageous/issues/975)
+- Add support for customizing sneak key bindings. [#738](https://github.com/NeoVintageous/NeoVintageous/issues/738)
+- Add `\\A` (same as `<M-A>`) select all in multiple cursor mode [#977](https://github.com/NeoVintageous/NeoVintageous/issues/977)
+- Add `O` in visual mode: Go to Other end of highlighted text.  This is like "o", but in Visual block mode the cursor moves to the other corner in the same line. [#976](https://github.com/NeoVintageous/NeoVintageous/issues/976)
+- Add `tabprevious [N]` go to the `[N]`th previous tab, defaulting to one. [#973](https://github.com/NeoVintageous/NeoVintageous/issues/973)
+- Add `tabnext [N]` go to `[N]`th next tab, defaulting to one. [#972](https://github.com/NeoVintageous/NeoVintageous/issues/972)
+- Add `bprevious [N]` go to the `[N]`th previous buffer in the buffer list, defaulting to one. [#971](https://github.com/NeoVintageous/NeoVintageous/issues/971)
+- Add `bnext [N]` go to the `[N]`th next buffer in the buffer list, defaulting to one. [#970](https://github.com/NeoVintageous/NeoVintageous/issues/970)
+- Add `CTRL-w w` and `CTRL-w W` to move cursor forward and back through neighbouring groups. [#839](https://github.com/NeoVintageous/NeoVintageous/issues/839)
+- Add `CTRL-n` in insert mode to open auto-complete. [#965](https://github.com/NeoVintageous/NeoVintageous/issues/965)
+- Add `N` (same as `Q`, `k`, and `CTRL-p`) remove cursor in multiple cursor mode. [#964](https://github.com/NeoVintageous/NeoVintageous/issues/964)
+- Add `TAB` (same as `Esc` and `J`) quit multiple cursor mode. [#942](https://github.com/NeoVintageous/NeoVintageous/issues/942)
+- `:ls` now displays line numbers. [#967](https://github.com/NeoVintageous/NeoVintageous/issues/967)
+- `:registers` now displays type, linewise or characterwise [#961](https://github.com/NeoVintageous/NeoVintageous/issues/961)
+- Buffer commands like `:bnext` and `:bprevious` now cycle through all views, instead of just cycling through views within a group. [#968](https://github.com/NeoVintageous/NeoVintageous/issues/968)
+
+### Fixed
+
+- Bracket text object, e.g., `vi{`, `vi}`, `viB`, should not include trailing whitespace on last line
+- Special keys like `<Esc>` don't work in complex mappings in some cases e.g., `<Esc>li`
+- Session history is not saved in some cases
+- `v_o` should update the cursor x position. [#974](https://github.com/NeoVintageous/NeoVintageous/issues/974)
+- Don't populate small delete when a register is specified. [#963](https://github.com/NeoVintageous/NeoVintageous/issues/963)
+- `zt`, `zb`, and `zz` should maintain cursor column. [#962](https://github.com/NeoVintageous/NeoVintageous/issues/962)
+- `z<CR>`, `z-`, and `z.` should position the cursor on the first non-blank. [#962](https://github.com/NeoVintageous/NeoVintageous/issues/962)
+- `zt`, `zb`, `zz`, `z<CR>`, `z-`, and `z.` scroll command inconsistencies. [#962](https://github.com/NeoVintageous/NeoVintageous/issues/962)
+- Commands like `:tabfirst`, `:tabonly`, `:tabnext`, should not be forceable. [#966](https://github.com/NeoVintageous/NeoVintageous/issues/966)
+- Disable line highlighting in Cmdline output. [#960](https://github.com/NeoVintageous/NeoVintageous/issues/960)
+
 ## 1.32.1 - 2023-08-13
 
 ### Fixed

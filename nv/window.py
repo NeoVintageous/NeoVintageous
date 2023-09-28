@@ -531,27 +531,33 @@ def _split_alternate(window):
 
 
 def window_buffer_control(window, action: str, count: int = 1) -> None:
-    if action == 'next':
-        for i in range(count):
-            window.run_command('next_view')
+    if action in ('next', 'previous'):
+        views = window.views()
+        active_view = window.active_view()
+        active_index = views.index(active_view)
+        view_count = len(views)
 
-    elif action == 'previous':
-        for i in range(count):
-            window.run_command('prev_view')
+        if action == 'next':
+            index = (active_index + count) % view_count
+        else:
+            index = (active_index + view_count - count) % view_count
+
+        window.focus_view(views[index])
 
     elif action == 'first':
         window.focus_group(0)
         window.run_command('select_by_index', {'index': 0})
 
     elif action == 'goto':
-        view_id = int(count)
+        goto_id = int(count)
         for view in window.views():
-            if view.id() == view_id:
+            if view.id() == goto_id:
                 window.focus_view(view)
 
     elif action == 'last':
         window.focus_group(window.num_groups() - 1)
-        window.run_command('select_by_index', {'index': len(window.views_in_group(window.num_groups() - 1)) - 1})
+        index = len(window.views_in_group(window.num_groups() - 1)) - 1
+        window.run_command('select_by_index', {'index': index})
 
     else:
         raise ValueError('unknown buffer control action: %s' % action)
@@ -617,7 +623,7 @@ def window_control(window, action: str, mode=None, count: int = 1, register=None
     elif action == 'L':
         _move_active_view_to_far_right(window)
     elif action == 'W':
-        window_buffer_control(window, 'goto', count)
+        _focus_neighbouring_group(window, count, forward=False)
     elif action == 'c':
         _close_active_view(window, **kwargs)
     elif action == '=':
@@ -654,6 +660,8 @@ def window_control(window, action: str, mode=None, count: int = 1, register=None
         _set_group_height(window, count)
     elif action == 'v':
         _vsplit(window, **kwargs)
+    elif action == 'w':
+        _focus_neighbouring_group(window, count)
     elif action == 'x':
         _exchange_view_by_count(window, count)
     elif action == ']':
@@ -662,6 +670,13 @@ def window_control(window, action: str, mode=None, count: int = 1, register=None
         _split_alternate(window)
     else:
         raise ValueError('unknown action')
+
+
+def _focus_neighbouring_group(window, count: int, forward: bool = True) -> None:
+    if count > 0:
+        window.focus_group(min(count, window.num_groups()) - 1)
+    else:
+        window.run_command('focus_neighboring_group', {'forward': forward})
 
 
 def window_open_file(window, file: str, row: int = None, col: int = None) -> bool:

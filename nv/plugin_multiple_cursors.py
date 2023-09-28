@@ -37,6 +37,7 @@ class MultipleCursorsStart(ViOperatorDef):
 
 
 @register(seqs.BIG_J, (SELECT,))
+@register(seqs.TAB, (SELECT,))
 @register(seqs.ESC, (SELECT,))
 class MultipleCursorsExit(ViOperatorDef):
     def init(self):
@@ -57,7 +58,8 @@ class MultipleCursorsAdd(ViOperatorDef):
 
 
 @register(seqs.ALT_N, (SELECT,))
-@register(seqs.BIG_A, (SELECT,))
+@register(seqs.BACKSLASH_BACKSLASH_BIG_A, (SELECT,))
+@register(seqs.BIG_A, (SELECT,))  # DEPRECATED; use \\A instead and change A to append
 class MultipleCursorsAddAll(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
@@ -66,6 +68,7 @@ class MultipleCursorsAddAll(ViOperatorDef):
 
 @register(seqs.CTRL_P, (SELECT,))
 @register(seqs.K, (SELECT,))
+@register(seqs.BIG_N, (SELECT,))
 @register(seqs.BIG_Q, (SELECT,))
 class MultipleCursorsRemove(ViOperatorDef):
     def init(self):

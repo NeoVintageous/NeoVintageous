@@ -19,7 +19,6 @@ from NeoVintageous.nv.settings import get_count
 from NeoVintageous.nv.settings import get_last_char_search_character
 from NeoVintageous.nv.settings import get_last_char_search_command
 from NeoVintageous.nv.settings import get_partial_sequence
-from NeoVintageous.nv.settings import get_xpos
 from NeoVintageous.nv.utils import InputParser
 from NeoVintageous.nv.vi import seqs
 from NeoVintageous.nv.vi.cmd_base import RequireOneCharMixin
@@ -59,12 +58,23 @@ class ViDeleteMultipleCursor(ViOperatorDef):
         self.command = 'nv_vi_d'
 
 
-@assign(seqs.BIG_O, ACTION_MODES)
+@assign(seqs.BIG_O, (NORMAL,))
 class ViInsertLineBefore(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
         self.glue_until_normal_mode = True
         self.command = 'nv_vi_big_o'
+
+
+@assign(seqs.BIG_O, (VISUAL, VISUAL_LINE, VISUAL_BLOCK))
+class ViGoToOtherBigEnd(ViOperatorDef):
+    def init(self):
+        self.scroll_into_view = True
+        self.updates_xpos = True
+        self.command = 'nv_vi_visual_o'
+        self.command_args = {
+            'same_line_if_visual_block': True,
+        }
 
 
 @assign(seqs.O, (NORMAL,))
@@ -80,7 +90,7 @@ class ViInsertLineAfter(ViOperatorDef):
 class ViGoToOtherEnd(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-        self.updates_xpos = False
+        self.updates_xpos = True
         self.command = 'nv_vi_visual_o'
 
 
@@ -408,6 +418,16 @@ class ViEnterVisualMode(ViOperatorDef):
 
 
 @assign(seqs.Z_ENTER, ACTION_MODES)
+class ViScrollToScreenTopNonBlank(ViOperatorDef):
+    def init(self):
+        self.updates_xpos = True
+        self.scroll_into_view = True
+        self.command = 'nv_vi_z_enter'
+        self.command_args = {
+            'first_non_blank': True
+        }
+
+
 @assign(seqs.ZT, ACTION_MODES)
 class ViScrollToScreenTop(ViOperatorDef):
     def init(self):
@@ -416,13 +436,34 @@ class ViScrollToScreenTop(ViOperatorDef):
         self.command = 'nv_vi_z_enter'
 
 
-@assign(seqs.ZB, ACTION_MODES)
 @assign(seqs.Z_MINUS, ACTION_MODES)
+class ViScrollToScreenBottomNonBlank(ViOperatorDef):
+    def init(self):
+        self.updates_xpos = True
+        self.scroll_into_view = True
+        self.command = 'nv_vi_z_minus'
+        self.command_args = {
+            'first_non_blank': True
+        }
+
+
+@assign(seqs.ZB, ACTION_MODES)
 class ViScrollToScreenBottom(ViOperatorDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.command = 'nv_vi_z_minus'
+
+
+@assign(seqs.Z_DOT, ACTION_MODES)
+class ViScrollToScreenCenterNonBlank(ViOperatorDef):
+    def init(self):
+        self.updates_xpos = True
+        self.scroll_into_view = True
+        self.command = 'nv_vi_zz'
+        self.command_args = {
+            'first_non_blank': True
+        }
 
 
 @assign(seqs.ZZ, ACTION_MODES)
@@ -431,17 +472,6 @@ class ViScrollToScreenCenter(ViOperatorDef):
         self.updates_xpos = True
         self.scroll_into_view = True
         self.command = 'nv_vi_zz'
-
-
-@assign(seqs.Z_DOT, ACTION_MODES)
-class ViZDot(ViOperatorDef):
-    def init(self):
-        self.updates_xpos = True
-        self.scroll_into_view = True
-        self.command = 'nv_vi_zz'
-        self.command_args = {
-            'first_non_blank': True
-        }
 
 
 @assign(seqs.GQ, ACTION_MODES)
@@ -815,6 +845,19 @@ class ViMoveCursorToTopLeftWindow(ViOperatorDef):
         }
 
 
+@assign(seqs.CTRL_W_W, ACTION_MODES)
+@assign(seqs.CTRL_W_CTRL_W, ACTION_MODES)
+class ViMoveCursorToNeighbour(ViOperatorDef):
+    def init(self):
+        self.scroll_into_view = True
+
+    def translate(self, view):
+        return translate_action(view, 'nv_vi_ctrl_w', {
+            'action': 'w',
+            'count': get_count(view, default=0)
+        })
+
+
 @assign(seqs.CTRL_W_UNDERSCORE, ACTION_MODES)
 @assign(seqs.CTRL_W_CTRL_UNDERSCORE, ACTION_MODES)
 class ViSetCurrentGroupHeightOrHighestPossible(ViOperatorDef):
@@ -841,10 +884,12 @@ class ViSplitTheCurrentWindowInTwoVertically(ViOperatorDef):
 class ViCtrlW_W(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
-        self.command = 'nv_vi_ctrl_w'
-        self.command_args = {
+
+    def translate(self, view):
+        return translate_action(view, 'nv_vi_ctrl_w', {
             'action': 'W',
-        }
+            'count': get_count(view, default=0)
+        })
 
 
 @assign(seqs.CTRL_W_X, ACTION_MODES)
@@ -1105,7 +1150,7 @@ class ViGotoSymbolInFile(ViMotionDef):
 
 @assign(seqs.ALT_RIGHT, MOTION_MODES)
 @assign(seqs.L, MOTION_MODES)
-@assign(seqs.RIGHT, MOTION_MODES)
+@assign(seqs.RIGHT, MOTION_MODES + (INSERT,))
 @assign(seqs.SPACE, MOTION_MODES)
 class ViMoveRightByChars(ViMotionDef):
     def init(self):
@@ -1551,7 +1596,7 @@ class ViMoveByBigWordEnds(ViMotionDef):
 @assign(seqs.CTRL_BACKSPACE, MOTION_MODES)
 @assign(seqs.CTRL_H, MOTION_MODES)
 @assign(seqs.H, MOTION_MODES)
-@assign(seqs.LEFT, MOTION_MODES)
+@assign(seqs.LEFT, MOTION_MODES + (INSERT,))
 class ViMoveLeftByChars(ViMotionDef):
     def init(self):
         self.updates_xpos = True
@@ -1570,17 +1615,13 @@ class ViMoveByWords(ViMotionDef):
 
 @assign(seqs.CTRL_DOWN, MOTION_MODES)
 @assign(seqs.CTRL_J, MOTION_MODES)
-@assign(seqs.CTRL_N, MOTION_MODES)
+@assign(seqs.CTRL_N, MOTION_MODES + (INSERT,))
 @assign(seqs.DOWN, MOTION_MODES)
 @assign(seqs.J, MOTION_MODES)
 class ViMoveDownByLines(ViMotionDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_j', {
-            'xpos': get_xpos(view)
-        })
+        self.command = 'nv_vi_j'
 
 
 @assign(seqs.CTRL_P, MOTION_MODES)
@@ -1590,11 +1631,7 @@ class ViMoveDownByLines(ViMotionDef):
 class ViMoveUpByLines(ViMotionDef):
     def init(self):
         self.scroll_into_view = True
-
-    def translate(self, view):
-        return translate_motion(view, 'nv_vi_k', {
-            'xpos': get_xpos(view)
-        })
+        self.command = 'nv_vi_k'
 
 
 @assign(seqs.HAT, MOTION_MODES)
@@ -1690,6 +1727,8 @@ class ViReverseFindWord(ViMotionDef):
 @assign(seqs.RIGHT_SQUARE_BRACKET, MOTION_MODES)
 @assign(seqs.Z, MOTION_MODES)
 @assign(seqs.ZU, MOTION_MODES)
+@assign(seqs.BACKSLASH, (SELECT,))
+@assign(seqs.BACKSLASH_BACKSLASH, (SELECT,))
 class ViOpenNameSpace(ViMotionDef):  # TODO This should not be a motion.
 
     def translate(self, view):

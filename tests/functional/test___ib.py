@@ -29,6 +29,10 @@ class Test_ib(unittest.ResetRegisters, unittest.FunctionalTestCase):
             self.eq('(\n    fiz|z\n)', 'v_i' + target, '(\n|    fizz\n|)')
             self.eq('(\nfi|zz\nbuzz\n)', 'v_i' + target, '(\n|fizz\nbuzz\n|)')
             self.eq('(\n    fi|zz\n    buzz\n)', 'v_i' + target, '(\n|    fizz\n    buzz\n|)')
+            self.eq('(\n|    fizz\n    )', 'v_i' + target, '(\n|    fizz\n|    )')
+            self.eq('(\n|    fizz\n    ) //', 'v_i' + target, '(\n|    fizz\n|    ) //')
+            self.eq('{(\n|    fizz\n    )}', 'v_i' + target, '{(\n|    fizz\n|    )}')
+            self.eq('x(fi|zz)x', 'v_i' + target, 'x(|fizz|)x')
 
     def test_cib(self):
         for target in ('(', ')', 'b'):

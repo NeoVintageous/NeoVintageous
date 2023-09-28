@@ -98,6 +98,7 @@ from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.ui import ui_highlight_yank
 from NeoVintageous.nv.ui import ui_highlight_yank_clear
 from NeoVintageous.nv.utils import VisualBlockSelection
+from NeoVintageous.nv.utils import adjust_selection_if_first_non_blank
 from NeoVintageous.nv.utils import calculate_xpos
 from NeoVintageous.nv.utils import extract_file_name
 from NeoVintageous.nv.utils import extract_url
@@ -108,6 +109,7 @@ from NeoVintageous.nv.utils import fixup_eof
 from NeoVintageous.nv.utils import fold
 from NeoVintageous.nv.utils import fold_all
 from NeoVintageous.nv.utils import folded_rows
+from NeoVintageous.nv.utils import get_indentation
 from NeoVintageous.nv.utils import get_insertion_point_at_a
 from NeoVintageous.nv.utils import get_insertion_point_at_b
 from NeoVintageous.nv.utils import get_option_scroll
@@ -154,6 +156,7 @@ from NeoVintageous.nv.utils import scroll_viewport_position
 from NeoVintageous.nv.utils import sel_observer
 from NeoVintageous.nv.utils import sel_to_lines
 from NeoVintageous.nv.utils import should_motion_apply_op_transformer
+from NeoVintageous.nv.utils import show_ascii
 from NeoVintageous.nv.utils import show_if_not_visible
 from NeoVintageous.nv.utils import spell_file_add_word
 from NeoVintageous.nv.utils import spell_file_remove_word
@@ -1187,15 +1190,19 @@ class nv_vi_cc(TextCommand):
 
 class nv_vi_visual_o(TextCommand):
 
-    def run(self, edit, mode=None, count=1, register=None):
-        def f(view, s):
-            if mode in (VISUAL, VISUAL_LINE):
-                s = Region(s.b, s.a)
-
-            return s
-
-        regions_transformer(self.view, f)
-        self.view.show(self.view.sel()[0].b, False)
+    def run(self, edit, mode=None, count=1, register=None, same_line_if_visual_block: bool = False):
+        if mode == VISUAL_BLOCK:
+            visual_block = VisualBlockSelection(self.view)
+            visual_block.transform_to_other_end(
+                same_line=same_line_if_visual_block)
+            self.view.show(visual_block.b, False)
+        else:
+            def f(view, s):
+                if mode in (VISUAL, VISUAL_LINE):
+                    s = Region(s.b, s.a)
+                return s
+            regions_transformer(self.view, f)
+            self.view.show(self.view.sel()[0].b, False)
 
 
 class nv_vi_yy(TextCommand):
@@ -1603,12 +1610,8 @@ class nv_vi_greater_than(TextCommand):
 
     def run(self, edit, mode=None, count=1, register=None, motion=None):
         if mode == VISUAL_BLOCK:
-            translate = self.view.settings().get('translate_tabs_to_spaces')
-            size = self.view.settings().get('tab_size')
-
             def f(view, s):
-                block = '\t' if not translate else ' ' * size
-                self.view.insert(edit, s.begin(), block * count)
+                self.view.insert(edit, s.begin(), get_indentation(view, count))
 
                 return Region(s.begin() + 1)
 
@@ -1751,7 +1754,8 @@ class nv_vi_paste(TextCommand):
     def run(self, edit, before_cursor, mode=None, count=1, register=None, adjust_indent=False, adjust_cursor=False):
         contents, linewise = registers_get_for_paste(self.view, register, mode)
         if not contents:
-            return status_message('E353: Nothing in register ' + register)
+            ui_bell('E353: Nothing in register ' + register)
+            return
 
         contents = resolve_paste_items_with_view_sel(self.view, contents)
         if not contents:
@@ -1773,19 +1777,12 @@ class nv_vi_paste(TextCommand):
 
         contents = zip(reversed(contents), reversed(sels))
 
-        def _get_indent(view, level) -> str:
-            translate = view.settings().get('translate_tabs_to_spaces')
-            tab_size = int(view.settings().get('tab_size'))
-            tab_text = ' ' * tab_size if translate else '\t'
-
-            return tab_text * level
-
         def _indent_text(view, text: str, sel: Region) -> str:
             indentation_level = view.indentation_level(get_insertion_point_at_b(sel))
 
             return textwrap.indent(
                 textwrap.dedent(text),
-                _get_indent(view, indentation_level)
+                get_indentation(view, indentation_level)
             )
 
         if mode == INTERNAL_NORMAL:
@@ -1885,29 +1882,7 @@ class nv_vi_paste(TextCommand):
 class nv_vi_ga(WindowCommand):
 
     def run(self, mode=None, count=None, register=None, **kwargs):
-        def char_to_notation(char: str) -> str:
-            # Convert a char to a key notation. Uses vim key notation.
-            # See https://vimhelp.appspot.com/intro.txt.html#key-notation
-            char_notation_map = {
-                '\0': "Nul",
-                ' ': "Space",
-                '\t': "Tab",
-                '\n': "NL"
-            }
-
-            if char in char_notation_map:
-                char = char_notation_map[char]
-
-            return "<" + char + ">"
-
-        view = self.window.active_view()
-        region = view.sel()[-1]
-        c_str = view.substr(get_insertion_point_at_b(region))
-        c_ord = ord(c_str)
-        c_hex = hex(c_ord)
-        c_oct = oct(c_ord)
-        c_not = char_to_notation(c_str)
-        status_message('%7s %3s,  Hex %4s,  Octal %5s' % (c_not, c_ord, c_hex, c_oct))
+        show_ascii(self.window.active_view())
 
 
 class nv_vi_gt(WindowCommand):
@@ -1976,35 +1951,50 @@ class nv_vi_ctrl_w(WindowCommand):
 
 class nv_vi_z_enter(TextCommand):
 
-    def run(self, edit, mode=None, count=1, register=None):
-        pt = get_insertion_point_at_b(self.view.sel()[0])
-        home_line = self.view.line(pt)
-        target_pt = self.view.text_to_layout(home_line.begin())
-        self.view.set_viewport_position(target_pt)
+    def run(self, edit, mode=None, count=1, register=None, first_non_blank=False):
+        viewport = self.view.viewport_position()
+        selection = self.view.sel()[0]
+        point = get_insertion_point_at_b(selection)
+        target = self.view.text_to_layout(point)
+        self.view.set_viewport_position((viewport[0], target[1]))
+        adjust_selection_if_first_non_blank(self.view, mode, first_non_blank, selection)
 
 
 class nv_vi_z_minus(TextCommand):
 
-    def run(self, edit, mode=None, count=1, register=None):
-        layout_coord = self.view.text_to_layout(self.view.sel()[0].b)
-        viewport_extent = self.view.viewport_extent()
-        new_pos = (0.0, layout_coord[1] - viewport_extent[1])
-        self.view.set_viewport_position(new_pos)
+    def run(self, edit, mode=None, count=1, register=None, first_non_blank=False):
+        viewport = self.view.viewport_position()
+        selection = self.view.sel()[0]
+        target = self.view.text_to_layout(selection.b)
+        target_y = target[1] - self.view.viewport_extent()[1]
+        self.view.set_viewport_position((viewport[0], target_y))
+        adjust_selection_if_first_non_blank(self.view, mode, first_non_blank, selection)
 
 
 class nv_vi_zz(TextCommand):
 
     def run(self, edit, mode=None, count=1, register=None, first_non_blank=False):
-        first_sel = self.view.sel()[0]
-        current_position = self.view.text_to_layout(first_sel.b)
+        selection = self.view.sel()[0]
+        current_position = self.view.text_to_layout(selection.b)
+        viewport_pos = self.view.viewport_position()
         viewport_dim = self.view.viewport_extent()
-        new_pos = (0.0, current_position[1] - viewport_dim[1] / 2)
+        line_height = self.view.line_height()
+
+        # Half the current viewport size.
+        new_y_pos = current_position[1] - viewport_dim[1] / 2
+
+        # Adjust for no partial lines on the bottom half.
+        new_y_pos += new_y_pos % line_height
+
+        # Adjust for status bar.
+        if self.view.window().is_status_bar_visible():
+            new_y_pos += line_height
+
+        new_pos = (viewport_pos[0], new_y_pos)
+
         self.view.set_viewport_position(new_pos)
-        if first_non_blank:
-            row = self.view.rowcol(first_sel.b)[0]
-            first_non_blank_pt = next_non_blank(self.view, self.view.text_point(row, 0))
-            if mode in (NORMAL, INTERNAL_NORMAL):
-                set_selection(self.view, first_non_blank_pt)
+
+        adjust_selection_if_first_non_blank(self.view, mode, first_non_blank, selection)
 
 
 class nv_vi_z(TextCommand):
@@ -2687,6 +2677,13 @@ class nv_vi_l(TextCommand):
                 x_limit = min(view.line(s.b).b - 1, s.b + count, view.size())
                 return Region(x_limit, x_limit)
 
+            if mode == INSERT:
+                if view.line(s.b).empty():
+                    return s
+
+                x_limit = min(view.line(s.b).b, s.b + count, view.size())
+                return Region(x_limit, x_limit)
+
             if mode == INTERNAL_NORMAL:
                 x_limit = min(view.line(s.b).b, s.b + count)
                 x_limit = max(0, x_limit)
@@ -2741,6 +2738,10 @@ class nv_vi_h(TextCommand):
                 x_limit = max(view.line(s.b).a, s.b - count)
                 return Region(x_limit, x_limit)
 
+            elif mode == INSERT:
+                x_limit = max(view.line(s.b).a, s.b - count)
+                return Region(x_limit, x_limit)
+
             # XXX: We should never reach this.
             return s
 
@@ -2765,7 +2766,18 @@ class nv_vi_h(TextCommand):
 
 class nv_vi_j(TextCommand):
 
-    def run(self, edit, mode=None, count=1, xpos=0):
+    def run(self, edit, mode=None, count=1, xpos=None):
+        if mode == INSERT:
+            if self.view.is_auto_complete_visible():
+                self.view.run_command('move', {'by': 'lines', 'forward': True})
+            else:
+                self.view.run_command('auto_complete')
+
+            return
+
+        if xpos is None:
+            xpos = get_xpos(self.view)
+
         def f(view, s):
             nonlocal xpos
 
@@ -2834,18 +2846,23 @@ class nv_vi_j(TextCommand):
 class nv_vi_jump_back(TextCommand):
 
     def run(self, edit, mode=None, count=1, register=None):
-        self.view.run_command('jump_back')
+        for i in range(count):
+            self.view.run_command('jump_back')
 
 
 class nv_vi_jump_forward(TextCommand):
 
     def run(self, edit, mode=None, count=1, register=None):
-        self.view.run_command('jump_forward')
+        for i in range(count):
+            self.view.run_command('jump_forward')
 
 
 class nv_vi_k(TextCommand):
 
-    def run(self, edit, mode=None, count=1, xpos=0):
+    def run(self, edit, mode=None, count=1, xpos=None):
+        if xpos is None:
+            xpos = get_xpos(self.view)
+
         def f(view, s):
             nonlocal xpos
 

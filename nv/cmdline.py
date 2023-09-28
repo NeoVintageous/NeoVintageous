@@ -123,6 +123,9 @@ class CmdlineOutput():
 
         _init_common_panel_settings(self._output)
 
+    def disable_highlight_line(self):
+        self._output.settings().set('highlight_line', False)
+
     def show(self) -> None:
         self._window.run_command('show_panel', {'panel': 'output.' + self._name})
         self._output.settings().set('nv_cmdline_output', True)

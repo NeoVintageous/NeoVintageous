@@ -308,15 +308,25 @@ class TestUnimpairedCommands(unittest.FunctionalTestCase):
         self.eq('fi|zz', 'n_5]l', 'fi|zz')
         self.assertRunCommand('sublime_linter_goto_error', {'direction': 'next', 'count': 5})
 
-    @unittest.mock_commands('prev_view')
-    def test_n_bprevious(self):
+    @unittest.mock.patch('NeoVintageous.nv.plugin_unimpaired.window_buffer_control')
+    def test_n_bprevious(self, control):
         self.eq('f|izz', 'n_[b', 'f|izz')
-        self.assertRunCommand('prev_view')
+        control.assert_called_once_with(self.view.window(), 'previous', 1)
 
-    @unittest.mock_commands('next_view')
-    def test_n_bnext(self):
+    @unittest.mock.patch('NeoVintageous.nv.plugin_unimpaired.window_buffer_control')
+    def test_n_bprevious_count(self, control):
+        self.eq('f|izz', 'n_3[b', 'f|izz')
+        control.assert_called_once_with(self.view.window(), 'previous', 3)
+
+    @unittest.mock.patch('NeoVintageous.nv.plugin_unimpaired.window_buffer_control')
+    def test_n_bnext(self, control):
         self.eq('f|izz', 'n_]b', 'f|izz')
-        self.assertRunCommand('next_view')
+        control.assert_called_once_with(self.view.window(), 'next', 1)
+
+    @unittest.mock.patch('NeoVintageous.nv.plugin_unimpaired.window_buffer_control')
+    def test_n_bnext_count(self, control):
+        self.eq('f|izz', 'n_5]b', 'f|izz')
+        control.assert_called_once_with(self.view.window(), 'next', 5)
 
     @unittest.mock_commands('select_by_index')
     def test_n_bfirst(self):

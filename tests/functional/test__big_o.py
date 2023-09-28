@@ -33,6 +33,24 @@ class Test_O(unittest.FunctionalTestCase):
     def test_O_count_with_multiple_cursor(self):
         self.eq('1\na|bc\n3\nx|yz\n5', '3O', 'i_1\n|\n|\n|\nabc\n3\n|\n|\n|\nxyz\n5')
 
+    def test_v(self):
+        self.eq('x|fizz|x', 'v_O', 'r_x|fizz|x')
+        self.eq('r_x|fizz|x', 'v_O', 'x|fizz|x')
+        self.assertStatusLineIsVisual()
+
+    def test_V(self):
+        self.eq('x\n|fizz\n|x', 'V_O', 'r_x\n|fizz\n|x')
+        self.eq('r_x\n|fizz\n|x', 'V_O', 'x\n|fizz\n|x')
+        self.assertStatusLineIsVisualLine()
+
+    def test_ctrl_v(self):
+        self.eq('x\nfi|zz bu|zz\nfi|zz bu|zz\nx', 'b_O', 'r_x\nfi|zz bu|zz\nfi|zz bu|zz\nx')
+        self.feed('O')
+        self.assertVblock('x\nfi|zz bu|zz\nfi|zz bu|zz\nx', direction=unittest.DIRECTION_DOWN)
+        self.feed('O')
+        self.assertRVblock('x\nfi|zz bu|zz\nfi|zz bu|zz\nx', direction=unittest.DIRECTION_DOWN)
+        self.assertStatusLineIsVisualBlock()
+
 
 class Test_O_auto_indent(unittest.FunctionalTestCase):
 

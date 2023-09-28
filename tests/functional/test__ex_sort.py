@@ -26,6 +26,14 @@ class Test_ex_sort(unittest.FunctionalTestCase):
         else:
             self.eq('d\nb\n|c\na', ':sort', 'a\nb\n|c\nd')
 
+    def test_sort_reverse(self):
+        if unittest.ST_VERSION >= 4138:  # fixed in 4138
+            self.eq('|1\n2\n3\n4\n5\n', ':sort!', '|5\n4\n3\n2\n1\n')
+            self.eq('|1\n2\n5\n3\n4\n2\n5\n', ':sort! u', '|5\n4\n3\n2\n1\n')
+        else:
+            self.eq('|1\n2\n3\n4\n5\n', ':sort!', '|5\n4\n3\n2\n1')
+            self.eq('|1\n2\n5\n3\n4\n2\n5\n', ':sort! u', '|5\n4\n3\n2\n1')
+
     def test_sort_options(self):
         if unittest.ST_VERSION >= 4138:  # fixed in 4138
             self.eq('1\n1\n2\n|3\n2\n4', ':sort u', '|1\n2\n3\n4')

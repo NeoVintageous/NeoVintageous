@@ -30,15 +30,18 @@ NeoVintageous is an advanced Vim emulator for [Sublime Text](https://www.sublime
   - [Leader mapleader](#leader-mapleader)
   - [LocalLeader maplocalleader](#localleader-maplocalleader)
   - [Map commands](#map-commands)
-    - [map-overview](#map-overview)
-    - [Mapping Ex Commands](#mapping-ex-commands)
-    - [Mapping Sublime Text Commands](#mapping-sublime-text-commands)
+  - [Special arguments](#special-arguments)
     - [Mapping Specific File-Types](#mapping-specific-file-types)
-    - [Mapping Super-Keys](#mapping-super-keys)
-    - [Mapping Case-Sensitivity](#mapping-case-sensitivity)
-    - [Mapping for Toggling the Side Bar](#mapping-for-toggling-the-side-bar)
-    - [Mapping for Revealing the Side Bar](#mapping-for-revealing-the-side-bar)
-    - [Mapping Capslock to Escape](#mapping-capslock-to-escape)
+  - [Mapping and modes](#mapping-and-modes)
+    - [map-overview](#map-overview)
+  - [Mapping special keys](#mapping-special-keys)
+  - [Mapping Ex Commands](#mapping-ex-commands)
+  - [Mapping Sublime Text Commands](#mapping-sublime-text-commands)
+  - [Mapping Super-Keys](#mapping-super-keys)
+  - [Mapping Case-Sensitivity](#mapping-case-sensitivity)
+  - [Mapping for Toggling the Side Bar](#mapping-for-toggling-the-side-bar)
+  - [Mapping for Revealing the Side Bar](#mapping-for-revealing-the-side-bar)
+  - [Mapping Capslock to Escape](#mapping-capslock-to-escape)
 - [Options](#options)
 - [Customize Search Highlighting Colors](#customize-search-highlighting-colors)
 - [Plugins](#plugins)
@@ -48,6 +51,8 @@ NeoVintageous is an advanced Vim emulator for [Sublime Text](https://www.sublime
   - [Markology :rocket: :new: <small>Since v1.32</small>](#markology-rocket-new-since-v132)
     - [Customize Markology Mark Colors](#customize-markology-mark-colors)
   - [Multiple Cursors](#multiple-cursors)
+  - [Sneak](#sneak)
+    - [Customize sneak mappings](#customize-sneak-mappings)
 - [F.A.Q.](#faq)
   - [Key Presses are Laggy or Slow](#key-presses-are-laggy-or-slow)
     - [On macOS (OSX):](#on-macos-osx)
@@ -206,8 +211,8 @@ noremap: <LocalLeader>A  oanother line<Esc>
 ### Map commands
 
 There are commands to enter new mappings, remove mappings and list mappings.
-See [map-overview](#map-overview) for the various forms of "map" and their relationships with
-modes.
+
+See [map-overview](#map-overview) for the various forms of "map" and their relationships with modes.
 
 `{lhs}`   means left-hand-side.
 
@@ -216,6 +221,32 @@ modes.
 | Commands | Description
 | -------: | :----------
 | :no[remap]&nbsp;`{lhs}`&nbsp;`{rhs}` <br>:nn[oremap]&nbsp;`{lhs}`&nbsp;`{rhs}` <br>:ino[remap]&nbsp;`{lhs}`&nbsp;`{rhs}` <br>:vn[oremap]&nbsp;`{lhs}`&nbsp;`{rhs}` <br>:xn[oremap]&nbsp;`{lhs}`&nbsp;`{rhs}` <br>:snor[emap]&nbsp;`{lhs}`&nbsp;`{rhs}` <br>:ono[remap]&nbsp;`{lhs}`&nbsp;`{rhs}` | Map the key sequence `{lhs}` to `{rhs}` for the modes where the map command applies.  Disallow mapping of `{rhs},` to avoid nested and recursive mappings.  Often used to redefine a command.
+
+### Special arguments
+
+`FileType <type>` can be used to limit a mapping to specific file types. It must appear right after the command, before any other arguments. This feature is specific to Sublime Text.
+
+#### Mapping Specific File-Types
+
+File type specific mappings are supported by the `FileType` keyword that accepts a comma-delimited list of file-types.
+
+**Example:** Map `gd` to the `lsp_symbol_definition` command for \*.go and \*.html files.
+
+```vim
+nnoremap FileType go,html gd :LspSymbolDefinition<CR>
+```
+
+### Mapping and modes
+
+There are seven sets of mappings
+
+- For Normal mode: When typing commands.
+- For Visual mode: When typing commands while the Visual area is highlighted.
+- For Select mode: like Visual mode but typing text replaces the selection.
+- For Operator-pending mode: When an operator is pending (after "`d`", "`y`", "`c`", etc.).
+- For Insert mode.  These are also used in Replace mode.
+
+Special case: While typing a count for a command in Normal mode, mapping zero is disabled.  This makes it possible to map zero without making it impossible to type a count with a zero.
 
 #### map-overview
 
@@ -243,7 +274,29 @@ Same information in a table:
 | s[nore]map     |  -   |  -  |  -  | yes |  -  |
 | o[nore]map     |  -   |  -  |  -  |  -  | yes |
 
-#### Mapping Ex Commands
+| Command   | Command  | Normal | Visual+Select | Operator-pending
+| :-------- | :------- | :----- | :------------ | :---------------
+| :noremap  | :unmap   | yes    | yes           | yes
+| :nnoremap | :nunmap  | yes    | -             | -
+| :vnoremap | :vunmap  | -      | yes           | -
+| :onoremap | :ounmap  | -      | -             | yes
+
+### Mapping special keys
+
+Some keys are special. To map a special key use [key-notation](https://vimhelp.org/intro.txt.html#key-notation).
+
+**Examples**
+
+| Key        | Meaning
+| :--------- | :------
+| `<tab>`    | tab
+| `<space>`  | space
+| `<lt>`     | less-than `<`
+| `<bslash>` | backslash `\`
+
+See table of [key-notation](https://vimhelp.org/intro.txt.html#key-notation).
+
+### Mapping Ex Commands
 
 **Example:** Map CTRL-l to the :nohlsearch command to stop the highlighting for the 'hlsearch' option.
 
@@ -251,7 +304,7 @@ Same information in a table:
 noremap <C-l> :nohlsearch<CR>
 ```
 
-#### Mapping Sublime Text Commands
+### Mapping Sublime Text Commands
 
 Sublime Text commands are mappable. The command must be PascalCase and the parameters must be space separated.
 
@@ -263,17 +316,7 @@ Note: Sublime Text commands are PascalCased for the purpose of distinguishing th
 nnoremap ,f :ShowOverlay overlay=goto text=@<CR>
 ```
 
-#### Mapping Specific File-Types
-
-File type specific mappings are supported by the `FileType` keyword that accepts a comma-delimited list of file-types.
-
-**Example:** Map `gd` to the `lsp_symbol_definition` command for \*.go and \*.html files.
-
-```vim
-nnoremap FileType go,html gd :LspSymbolDefinition<CR>
-```
-
-#### Mapping Super-Keys
+### Mapping Super-Keys
 
 Super keys, also known as the Windows key or Command key (⌘) on Mac, are denoted as `<D-...>`.
 
@@ -287,7 +330,7 @@ With this mapping in place, pressing the Super key (Windows key or Command key o
 
 Please note that this example demonstrates mapping the `<D-i>` combination for illustrative purposes. You can map other Super-key combinations or any desired key combinations to different commands based on your needs and preferences.
 
-#### Mapping Case-Sensitivity
+### Mapping Case-Sensitivity
 
 All keys are case-sensitive in Sublime Text. This means that `<D-i>` and `<D-I>` are treated as two distinct key events, allowing you to map actions to both.
 
@@ -309,7 +352,7 @@ With these mappings in place, you can now use both `<D-i>` and `<D-I>` combinati
 
 Feel free to modify and customize these mappings based on your preferences and workflow. The case-sensitivity of the keys allows you to create distinct mappings for different actions, providing you with greater flexibility in your keybindings.
 
-#### Mapping for Toggling the Side Bar
+### Mapping for Toggling the Side Bar
 
 To toggle the side bar using your preferred mapping (in this example, `<leader>d`), first, add the following configuration to your neovintageousrc file:
 
@@ -359,7 +402,7 @@ nnoremap <leader>t :Neovintageous action=toggle_side_bar<CR>
 
 By making these modifications, you can now use your preferred mapping (e.g., `<leader>t`) to easily toggle the side bar while using NeoVintageous in Sublime Text. This flexibility allows you to choose a keyboard combination that suits your workflow and personal preferences.
 
-#### Mapping for Revealing the Side Bar
+### Mapping for Revealing the Side Bar
 
 To reveal the side bar using your preferred mapping (in this example, `<leader><leader>`), first, add the following configuration to your neovintageousrc file:
 
@@ -387,7 +430,7 @@ With this setup, you can now use the specified key bindings to easily toggle and
 
 Please note that the provided example uses `<leader><leader>` as the mapping, but you can customize it to your preferred mapping by modifying the `<leader>` part and updating the key binding to match your leader and preferred key. See [Mapping for Toggling the Side Bar](#mapping-for-toggling-the-side-bar) for a more detailed example.
 
-#### Mapping Capslock to Escape
+### Mapping Capslock to Escape
 
 NeoVintageous cannot directly remap the CapsLock key; however, you can achieve this remapping at the operating system level. For instance, on Ubuntu, you can map the CapsLock key to Escape using a tool called `gsettings`. Follow these steps to make the remapping:
 
@@ -509,7 +552,7 @@ If you come across any missing features or observe variations in functionality, 
 
 **Enhanced support, install via Package Control:**
 
-- [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter3): Required for jump-to lint-error commands (i.e., `[l` and `]l`).
+- [SublimeLinter](https://github.com/SublimeLinter/SublimeLinter): Required for jump-to lint-error commands (i.e., `[l` and `]l`).
 - [Origami](https://github.com/SublimeText/Origami): Required for some window commands (e.g., `CTRL-w s`, `CTRL-w v`, `CTRL-w ]`).
 
 **Additional keyboard layouts, manual installation:**
@@ -800,16 +843,16 @@ NeoVintageous provides multiple cursor support in normal mode and visual mode. T
 
 **Normal and Visual Mode Commands**
 
-| Command               | Description
-| :---------------------| :----------
-| `<C-n>` or `gh`       | Start multiple cursor.
-| `<C-n>` or `n` or `j` | Add next match.
-| `<C-x>` or `q` or `l` | Skip next match.
-| `<C-p>` or `Q` or `k` | Remove current match.
-| `<M-n>` or `A`        | Select all matches.
-| `<Esc>` or `J`        | Quit and enter normal mode.
-| `v`                   | Enter normal mode.
-| `gH`                  | Select all search occurrences (`/`, `?`, `*`, `#`).
+| Command                       | Description
+| :---------------------------- | :----------
+| `<C-n>` or `gh`               | Start multiple cursor.
+| `<C-n>` or `n` or `j`         | Add next match.
+| `<C-x>` or `n` or `q` or `l`  | Skip next match.
+| `<C-p>` or `N` or `Q` or `k`  | Remove current match.
+| `<M-n>` or `A` or `\\A`       | Select all matches. *`A` is deprecated, use `\\A` instead.*
+| `<Esc>` or `J` or `<Tab>`     | Quit and enter normal mode.
+| `v` or `<Tab>`                | Enter normal mode.
+| `gH`                          | Select all search occurrences (`/`, `?`, `*`, `#`).
 
 You can now use visual commands such as `c`, `I`, `x`, and `y`, which work without any issues.
 
@@ -820,6 +863,57 @@ At any time, you can press `<Esc>` to exit back to regular Vim.
 To change the behaviour of `<Esc>`, you can set the `vintageous_multi_cursor_exit_from_visual_mode` setting. When set to false, pressing a quit key (e.g., `<Esc>` or `J`) in multiple cursor visual mode exits to normal mode but keeps the cursors. When set to true, pressing a quit key (e.g., `<Esc>` or `J`) in multiple cursor visual mode exits all multiple cursors.
 
 With the multiple cursor feature, you can speed up your editing workflow by applying commands to multiple locations simultaneously, increasing productivity and convenience.
+
+### Sneak
+
+By default, Sneak is disabled to prevent conflicts with certain Vim commands such as `s`, `S`, `z`, and `Z`. To enable Sneak, follow these steps:
+
+1. Open the Command Palette by selecting `Preferences: NeoVintageous Settings`.
+2. Add the following JSON configuration:
+
+```json
+{
+    "vintageous_enable_sneak": true
+}
+```
+
+#### Customize sneak mappings
+
+You can customize the default sneak mappings by setting environment variables.
+
+*The necessity to configure these mappings through environment variables, rather than conventional settings, arises from an implementation detail: plugins are loaded during startup, and access to settings is not available at this stage. Resolving this issue will require making significant design adjustments. In the meantime, employing environment variables provides a viable solution.*
+
+The environment variables:
+
+```sh
+NEOVINTAGEOUS_SNEAK_MAP_S=s
+NEOVINTAGEOUS_SNEAK_MAP_BIG_S=S
+NEOVINTAGEOUS_SNEAK_MAP_Z=z
+NEOVINTAGEOUS_SNEAK_MAP_BIG_Z=Z
+```
+
+**Example:** For Linux users, consider adding the following lines to your `~/.profile` or `~/.bashrc` file:
+
+```sh
+export NEOVINTAGEOUS_SNEAK_MAP_S=s
+export NEOVINTAGEOUS_SNEAK_MAP_BIG_S=S
+export NEOVINTAGEOUS_SNEAK_MAP_Z=z
+export NEOVINTAGEOUS_SNEAK_MAP_BIG_Z=Z
+```
+
+Please keep in mind that to activate these changes, you will be required to restart Sublime Text and, in some cases, reboot your system.
+
+**Example:** For Windows users:
+
+You can set environment variables for each user separately through the System Properties dialog box. The steps to do that:
+
+1. Type Windows Key + R to open the "Run" dialog box.
+2. Enter "sysdm.cpl" and press the "OK" button. The "System Properties" dialog box will open.
+3. Select the "Advanced" tab and press the "Environment Variables..." button. The "Environment Variables" dialog box will open.
+4. Select an existing variable in the "User variables" list and press the "Edit..." button to edit it. Or press the "New..." button to add a new variable.
+5. After you finished editing variables, press the "OK" button to save the changes.
+
+Please keep in mind that to activate these changes, you will be required to restart Sublime Text and, in some cases, reboot your system.
 
 ## F.A.Q.
 

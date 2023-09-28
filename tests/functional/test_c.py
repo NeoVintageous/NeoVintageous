@@ -38,6 +38,15 @@ class Test_c(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertRegisterEmpty('0')
         self.assertRegisterEmpty('1')
 
+    def test_ce_to_register(self):
+        self.normal('one t|wo three')
+        self.feed('"a')
+        self.feed('ce')
+        self.assertRegister('"wo')
+        self.assertRegisterEmpty('0')
+        self.assertRegisterEmpty('1')
+        self.assertRegisterEmpty('-')
+
     def test_v(self):
         self.eq('fi|zz bu|zz', 'v_c', 'i_fi|zz')
         self.eq('r_fi|zz bu|zz', 'v_c', 'i_fi|zz')

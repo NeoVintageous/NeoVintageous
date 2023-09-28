@@ -60,6 +60,7 @@ class Test_x(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.assertNormal('f|zz\n')
         self.assertRegister('"i')
         self.assertRegister('ai')
+        self.assertRegisterEmpty('-')
 
     def test_v_x(self):
         self.eq('|a', 'v_x', 'n_|')
