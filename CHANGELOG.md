@@ -6,29 +6,25 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
-- Introduced support for reverse sorting using `[!]`, e.g., `:sort!` and `:sort! u`.
-- You can now map the `<Right>` and `<Left>` keys in insert mode.
-- Added support for `<Right>` key in insert mode, allowing you to move the cursor one character to the right.
-- Added support for `<Left>` key in insert mode, enabling you to move the cursor one character to the left.
-- `CTRL-i` and `CTRL-o` now support counting for navigating to newer and older cursor positions in the jump list respectively. [#981](https://github.com/NeoVintageous/NeoVintageous/issues/981) [#980](https://github.com/NeoVintageous/NeoVintageous/issues/980)
-- Add `CTRL-n` for next item and `CTRL-p` for previous item navigation in the Command Palette, Goto File, Goto Symbol, and Goto Symbol in Project overlays. [#979](https://github.com/NeoVintageous/NeoVintageous/issues/979)
-- Add `:ascii` command to display the ASCII value of the character under the cursor in decimal, hexadecimal, and octal formats. The mnemonic is "Get Ascii value," and it functions similarly to `ga`. [#975](https://github.com/NeoVintageous/NeoVintageous/issues/975)
-- Implement the capability to customize sneak key bindings. [#738](https://github.com/NeoVintageous/NeoVintageous/issues/738)
-- Add `\\A` select all in multiple cursor mode (same of `<M-A>`) [#977](https://github.com/NeoVintageous/NeoVintageous/issues/977)
-- `O` in Visual mode: Go to Other end of highlighted text.  This is like "o", but in Visual block mode the cursor moves to the other corner in the same line. [#976](https://github.com/NeoVintageous/NeoVintageous/issues/976)
-- `tabp[revious] [N]` now navigates to the `[N]`th previous tab, defaulting to one. [#973](https://github.com/NeoVintageous/NeoVintageous/issues/973)
-- `tabn[ext] [N]` now takes you to the `[N]`th next tab, defaulting to one. [#972](https://github.com/NeoVintageous/NeoVintageous/issues/972)
-- `bp[revious] [N]` now directs you to the `[N]`th previous buffer in the buffer list, defaulting to one. [#971](https://github.com/NeoVintageous/NeoVintageous/issues/971)
-- `bn[ext] [N]` now leads you to the `[N]`th next buffer in the buffer list, defaulting to one. [#970](https://github.com/NeoVintageous/NeoVintageous/issues/970)
+- Add reverse sorting support for sort command by appending `!` e.g., `:sort!`
+- Add support for `<Left>` and `<Right>` in insert mode, allowing you to move the cursor one character to the left and right.
+- Add `[count]` support for `CTRL-i` and `CTRL-o`: navigate to newer and older cursor positions in the jump list. [#981](https://github.com/NeoVintageous/NeoVintageous/issues/981) [#980](https://github.com/NeoVintageous/NeoVintageous/issues/980)
+- Add `CTRL-n` and `CTRL-p` for next and previous item navigation in the Command Palette, Goto File, Goto Symbol, and Goto Symbol in Project. [#979](https://github.com/NeoVintageous/NeoVintageous/issues/979)
+- Add `:ascii` to display the ASCII value of the character under the cursor in decimal, hexadecimal, and octal formats. The mnemonic is "Get Ascii value," and it functions similarly to `ga`. [#975](https://github.com/NeoVintageous/NeoVintageous/issues/975)
+- Add support for customizing sneak key bindings. [#738](https://github.com/NeoVintageous/NeoVintageous/issues/738)
+- Add `\\A` (same as `<M-A>`) select all in multiple cursor mode [#977](https://github.com/NeoVintageous/NeoVintageous/issues/977)
+- Add `O` in visual mode: Go to Other end of highlighted text.  This is like "o", but in Visual block mode the cursor moves to the other corner in the same line. [#976](https://github.com/NeoVintageous/NeoVintageous/issues/976)
+- Add `tabprevious [N]` go to the `[N]`th previous tab, defaulting to one. [#973](https://github.com/NeoVintageous/NeoVintageous/issues/973)
+- Add `tabnext [N]` go to `[N]`th next tab, defaulting to one. [#972](https://github.com/NeoVintageous/NeoVintageous/issues/972)
+- Add `bprevious [N]` go to the `[N]`th previous buffer in the buffer list, defaulting to one. [#971](https://github.com/NeoVintageous/NeoVintageous/issues/971)
+- Add `bnext [N]` go to the `[N]`th next buffer in the buffer list, defaulting to one. [#970](https://github.com/NeoVintageous/NeoVintageous/issues/970)
+- Add `CTRL-w w` and `CTRL-w W` to move cursor forward and back through neighbouring groups. [#839](https://github.com/NeoVintageous/NeoVintageous/issues/839)
+- Add `CTRL-n` in insert mode to open auto-complete. [#965](https://github.com/NeoVintageous/NeoVintageous/issues/965)
+- Add `N` (same as `Q`, `k`, and `CTRL-p`) remove cursor in multiple cursor mode. [#964](https://github.com/NeoVintageous/NeoVintageous/issues/964)
+- Add `TAB` (same as `Esc` and `J`) quit multiple cursor mode. [#942](https://github.com/NeoVintageous/NeoVintageous/issues/942)
+- `:ls` now displays line numbers. [#967](https://github.com/NeoVintageous/NeoVintageous/issues/967)
+- `:registers` now displays type, linewise or characterwise [#961](https://github.com/NeoVintageous/NeoVintageous/issues/961)
 - Buffer commands like `:bnext` and `:bprevious` now cycle through all views, instead of just cycling through views within a group. [#968](https://github.com/NeoVintageous/NeoVintageous/issues/968)
-- Include a line number column in the `:ls` output. [#967](https://github.com/NeoVintageous/NeoVintageous/issues/967)
-- Add the functionality to move the cursor to the neighbouring group in reverse with `CTRL-w W`. [#839](https://github.com/NeoVintageous/NeoVintageous/issues/839)
-- Add the functionality to move the cursor to the neighbouring group with `CTRL-w w` (and provide an alias for `CTRL-w CTRL-w`). [#839](https://github.com/NeoVintageous/NeoVintageous/issues/839)
-- `CTRL-n` now mappable in insert mode, boosting customization. [#965](https://github.com/NeoVintageous/NeoVintageous/issues/965)
-- Add the functionality to open auto-complete in insert mode using `CTRL-n` [#965](https://github.com/NeoVintageous/NeoVintageous/issues/965)
-- Add `N` alias for `Q`, `k`, or `CTRL-p` in multiple cursor mode. [#964](https://github.com/NeoVintageous/NeoVintageous/issues/964)
-- Add `TAB` alias for `Esc` or `J` in multiple cursor mode. [#942](https://github.com/NeoVintageous/NeoVintageous/issues/942)
-- Add "Type" column to `:registers` output to indicate linewise or characterwise [#961](https://github.com/NeoVintageous/NeoVintageous/issues/961)
 
 ### Fixed
 
@@ -41,7 +37,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 - `z<CR>`, `z-`, and `z.` should position the cursor on the first non-blank. [#962](https://github.com/NeoVintageous/NeoVintageous/issues/962)
 - `zt`, `zb`, `zz`, `z<CR>`, `z-`, and `z.` scroll command inconsistencies. [#962](https://github.com/NeoVintageous/NeoVintageous/issues/962)
 - Commands like `:tabfirst`, `:tabonly`, `:tabnext`, should not be forceable. [#966](https://github.com/NeoVintageous/NeoVintageous/issues/966)
-- Disable line highlighting in cmdline output. [#960](https://github.com/NeoVintageous/NeoVintageous/issues/960)
+- Disable line highlighting in Cmdline output. [#960](https://github.com/NeoVintageous/NeoVintageous/issues/960)
 
 ## 1.32.1 - 2023-08-13
 
