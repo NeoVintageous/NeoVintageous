@@ -1688,8 +1688,6 @@ _SEQ2CMD = {
     '<k7>':         {'command': 'nv_feed_key', 'args': {'key': '<k7>'}},  # noqa: E241
     '<k8>':         {'command': 'nv_feed_key', 'args': {'key': '<k8>'}},  # noqa: E241
     '<k9>':         {'command': 'nv_feed_key', 'args': {'key': '<k9>'}},  # noqa: E241
-    '<left>':       {'command': 'nv_feed_key', 'args': {'keys': ['<left>']}},  # noqa: E241
-    '<right>':      {'command': 'nv_feed_key', 'args': {'keys': ['<right>']}},  # noqa: E241
     '<{':           {'command': 'nv_feed_key'},  # noqa: E241
     '=':            {'command': 'nv_feed_key'},  # noqa: E241
     '==':           {'command': 'nv_feed_key'},  # noqa: E241

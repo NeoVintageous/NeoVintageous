@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.33.1 - 2023-09-29
+
+### Fixed
+
+- Revert support for `<Left>` and `<Right>` insert mode [#985](https://github.com/NeoVintageous/NeoVintageous/issues/985), [#986](https://github.com/NeoVintageous/NeoVintageous/discussions/986)
+
 ## 1.33.0 - 2023-09-28
 
 ### Added

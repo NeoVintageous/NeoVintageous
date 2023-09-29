@@ -2677,13 +2677,6 @@ class nv_vi_l(TextCommand):
                 x_limit = min(view.line(s.b).b - 1, s.b + count, view.size())
                 return Region(x_limit, x_limit)
 
-            if mode == INSERT:
-                if view.line(s.b).empty():
-                    return s
-
-                x_limit = min(view.line(s.b).b, s.b + count, view.size())
-                return Region(x_limit, x_limit)
-
             if mode == INTERNAL_NORMAL:
                 x_limit = min(view.line(s.b).b, s.b + count)
                 x_limit = max(0, x_limit)
@@ -2735,10 +2728,6 @@ class nv_vi_h(TextCommand):
                     return Region(s.a, x_limit)
 
             elif mode == NORMAL:
-                x_limit = max(view.line(s.b).a, s.b - count)
-                return Region(x_limit, x_limit)
-
-            elif mode == INSERT:
                 x_limit = max(view.line(s.b).a, s.b - count)
                 return Region(x_limit, x_limit)
 

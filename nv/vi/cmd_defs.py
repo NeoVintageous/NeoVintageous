@@ -1150,7 +1150,7 @@ class ViGotoSymbolInFile(ViMotionDef):
 
 @assign(seqs.ALT_RIGHT, MOTION_MODES)
 @assign(seqs.L, MOTION_MODES)
-@assign(seqs.RIGHT, MOTION_MODES + (INSERT,))
+@assign(seqs.RIGHT, MOTION_MODES)
 @assign(seqs.SPACE, MOTION_MODES)
 class ViMoveRightByChars(ViMotionDef):
     def init(self):
@@ -1596,7 +1596,7 @@ class ViMoveByBigWordEnds(ViMotionDef):
 @assign(seqs.CTRL_BACKSPACE, MOTION_MODES)
 @assign(seqs.CTRL_H, MOTION_MODES)
 @assign(seqs.H, MOTION_MODES)
-@assign(seqs.LEFT, MOTION_MODES + (INSERT,))
+@assign(seqs.LEFT, MOTION_MODES)
 class ViMoveLeftByChars(ViMotionDef):
     def init(self):
         self.updates_xpos = True
