@@ -842,16 +842,16 @@ Some options "proxy" to Sublime Text settings. This means that the option uses t
 
 | Status             | Command                          | Description
 | :----------------- | :------------------------------- | :----------
-| :heavy_check_mark: | /\{pattern\}&lt;CR&gt;           | Search forward for the `[count]`'th occurrence of \{pattern\}.
-| :heavy_check_mark: | /&lt;CR&gt;                      | Search forward for the `[count]`'th occurrence of the latest used pattern.
-| :heavy_check_mark: | ?\{pattern\}&lt;CR&gt;           | Search backward for the `[count]`'th previous occurrence of \{pattern\}.
-| :heavy_check_mark: | ?&lt;CR&gt;                      | Search backward for the `[count]`'th occurrence of the latest used pattern.
-| :heavy_check_mark: | n                                | Repeat the latest "/" or "?" `[count]` times. If the cursor doesn't move the search is repeated with count + 1.
-| :heavy_check_mark: | N                                | Repeat the latest "/" or "?" `[count]` times in opposite direction.
-| :heavy_check_mark: | *                                | Search forward for the `[count]`'th occurrence of the word nearest to the cursor. Only whole keywords are searched for, like with the command "/\<keyword\>".  `'ignorecase'` is used, `'smartcase'` is not.
-| :heavy_check_mark: | #                                | Same as "\*", but search backward.  The pound sign (character 163) also works.
-| :heavy_check_mark: | gd                               | Go to local Declaration.
-| :heavy_check_mark: | gD                               | Go to global Declaration.
+| :heavy_check_mark: | `/{pattern}<CR>`                 | Search forward for the `[count]`'th occurrence of `{pattern}` `exclusive`.
+| :heavy_check_mark: | `/<CR>`                          | Search forward for the `[count]`'th occurrence of the latest used pattern.
+| :heavy_check_mark: | `?{pattern}<CR>`                 | Search backward for the `[count]`'th previous occurrence of `{pattern}` `exclusive`.
+| :heavy_check_mark: | `?<CR>`                          | Search backward for the `[count]`'th occurrence of the latest used pattern.
+| :heavy_check_mark: | `n`                              | Repeat the latest "/" or "?" `[count]` times. If the cursor doesn't move the search is repeated with count + 1.
+| :heavy_check_mark: | `N`                              | Repeat the latest "/" or "?" `[count]` times in opposite direction.
+| :heavy_check_mark: | `*`                              | Search forward for the `[count]`'th occurrence of the word nearest to the cursor. Only whole keywords are searched for, like with the command "/\\&lt;keyword\\&gt;".  `'ignorecase'` is used, `'smartcase'` is not.
+| :heavy_check_mark: | `#`                              | Same as "\*", but search backward.  The pound sign (character 163) also works.
+| :heavy_check_mark: | `gd`                             | Go to local Declaration.
+| :heavy_check_mark: | `gD`                             | Go to global Declaration.
 | :heavy_check_mark: | `:noh[lsearch]`                  | Stop the highlighting for the `'hlsearch'` option.  It is automatically turned back on when using a search command, or setting the `'hlsearch'` option.
 
 While typing the search pattern the current match will be shown if the `'incsearch'` option is on.  Remember that you still have to finish the search command with `<CR>` to actually position the cursor at the displayed match.  Or use `<Esc>` to abandon the search.

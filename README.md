@@ -453,7 +453,7 @@ The list below includes all options, presented with their full names and corresp
 | Option                          | Type    | Default                                         | Description
 | :------------------------------ | :-------| :-----------------------------------------------| :----------
 | `'autoindent'`<br>`'ai'`        | String  | `auto_indent` <br>sublime setting               |
-| `'belloff'`<br>`'bo'`           | String  | `''`; accepts 'all'                             |
+| `'belloff'`<br>`'bo'`           | String  | `''`                                            | Valid values: `''` and `'all'`.
 | `'equalalways'`                 | Boolean | On                                              |
 | `'expandtab'`<br>`'et'`         | Boolean | `translate_tabs_to_spaces` <br>sublime setting  |
 | `'hlsearch'`<br>`'hls'`         | Boolean | On                                              | When there is a previous search pattern, highlight all its matches. See also: `'incsearch'`. When you get bored looking at the highlighted matches, you can turn it off with `:nohlsearch`.  This does not change the option value, as soon as you use a search command, the highlighting comes back.
@@ -847,9 +847,9 @@ NeoVintageous provides multiple cursor support in normal mode and visual mode. T
 | :---------------------------- | :----------
 | `<C-n>` or `gh`               | Start multiple cursor.
 | `<C-n>` or `n` or `j`         | Add next match.
-| `<C-x>` or `n` or `q` or `l`  | Skip next match.
-| `<C-p>` or `N` or `Q` or `k`  | Remove current match.
-| `<M-n>` or `A` or `\\A`       | Select all matches. *`A` is deprecated, use `\\A` instead.*
+| `<C-x>` or `q` or `l`         | Skip next match.
+| `<C-p>` or `N` or `k` or `Q`  | Remove current match.
+| `<M-n>` or `\\A`              | Select all matches.
 | `<Esc>` or `J` or `<Tab>`     | Quit and enter normal mode.
 | `v` or `<Tab>`                | Enter normal mode.
 | `gH`                          | Select all search occurrences (`/`, `?`, `*`, `#`).
