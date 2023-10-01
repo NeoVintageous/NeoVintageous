@@ -283,7 +283,7 @@ Same information in a table:
 
 ### Mapping special keys
 
-Some keys are special. To map a special key use [key-notation](https://vimhelp.org/intro.txt.html#key-notation).
+In Vim, certain keys hold special significance. You can find a useful list of these special keys, along with their notations and codes, in the Vim documentation's [key-notation and key-codes section](https://vimhelp.org/intro.txt.html#key-notation).
 
 **Examples**
 
@@ -294,8 +294,6 @@ Some keys are special. To map a special key use [key-notation](https://vimhelp.o
 | `<lt>`     | less-than `<`
 | `<bslash>` | backslash `\`
 
-See table of [key-notation](https://vimhelp.org/intro.txt.html#key-notation).
-
 ### Mapping Ex Commands
 
 **Example:** Map CTRL-l to the :nohlsearch command to stop the highlighting for the 'hlsearch' option.
@@ -303,6 +301,8 @@ See table of [key-notation](https://vimhelp.org/intro.txt.html#key-notation).
 ```vim
 noremap <C-l> :nohlsearch<CR>
 ```
+
+For a full list of supported ex commands, please refer to our [roadmap](https://github.com/NeoVintageous/NeoVintageous/blob/master/ROADMAP.md).
 
 ### Mapping Sublime Text Commands
 
@@ -314,6 +314,25 @@ Note: Sublime Text commands are PascalCased for the purpose of distinguishing th
 
 ```vim
 nnoremap ,f :ShowOverlay overlay=goto text=@<CR>
+```
+
+**Where do these commands come from?**
+
+When you run a command in Sublime Text, you can inspect the console log to discover the command and arguments needed to map it.
+
+1. Console Logging: View console logging by navigating to `Menu → View → Show Console`.
+
+2. Command and Input Logging: Enable command and input logging by running the following commands in the console:
+
+   ```
+   sublime.log_commands(True)
+   sublime.log_input(True)
+   ```
+
+For example, let's say you want to map "Goto Symbol" command above. Run the command, e.g., "Menu → Goto → Goto Symbol" command and Sublime Text will print the following in the console:
+
+```
+command: show_overlay {"overlay": "goto", "text": "@"}
 ```
 
 ### Mapping Super-Keys
