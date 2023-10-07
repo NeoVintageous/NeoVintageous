@@ -550,17 +550,17 @@ If you come across any missing features or observe variations in functionality, 
 
 | Plugin              | Original Vim plugin
 | :------------------ | :------------------
-| Abolish             | [vim-abolish](https://github.com/tpope/vim-abolish)
-| Commentary          | [vim-commentary](https://github.com/tpope/vim-commentary)
+| Abolish             | Port of [vim-abolish](https://github.com/tpope/vim-abolish)
+| Commentary          | Port of [vim-commentary](https://github.com/tpope/vim-commentary)
 | Highlighted Yank    | Inspired by [vim-highlightedyank](https://github.com/machakann/vim-highlightedyank)
 | Input Method        | Inspired by [vim-xkbswitch](https://github.com/lyokha/vim-xkbswitch) and [VSCodeVim/Vim](https://github.com/VSCodeVim/Vim#input-method) :rocket: :new:
-| Indent Object       | [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object)
+| Indent Object       | Port of [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object)
 | Markology           | Inspired by [vim-markology](https://github.com/jeetsukumaran/vim-markology) :rocket: :new:
 | Multiple Cursors    | Inspired by [vim-multiple-cursors](https://github.com/terryma/vim-multiple-cursors) and [mg979/vim-visual-multi](https://github.com/mg979/vim-visual-multi)
-| Sneak               | [vim-sneak](https://github.com/justinmk/vim-sneak) (disabled by default)
-| Surround            | [vim-surround](https://github.com/tpope/vim-surround)
-| Targets             | [vim-targets](https://github.com/wellle/targets.vim)
-| Unimpaired          | [vim-unimpaired](https://github.com/tpope/vim-unimpaired)
+| Sneak               | Port of [vim-sneak](https://github.com/justinmk/vim-sneak) (disabled by default)
+| Surround            | Port of [vim-surround](https://github.com/tpope/vim-surround)
+| Targets             | Port of [vim-targets](https://github.com/wellle/targets.vim)
+| Unimpaired          | Port of [vim-unimpaired](https://github.com/tpope/vim-unimpaired)
 
 **Additional plugins, install via Package Control:**
 
