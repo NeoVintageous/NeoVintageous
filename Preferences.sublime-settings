@@ -79,14 +79,20 @@
 
     // Default mode to use when activating or switching views.
     //
-    // Valid values are: "insert"
+    // Valid values are: null, "insert", and "visual"
     //
-    // mode   | description
-    // ------ | -----------
-    // insert | Enter insert mode when opening or switching views or when
-    //          the window receives focus and is not in visual mode i.e. visual
-    //          mode selections are retained when the window loses focus.
-    "vintageous_default_mode": "",
+    // null - Default behaviour. Enter normal mode when opening or switching
+    // views or when the window receives focus and is not in visual mode i.e.
+    // visual mode selections are retained when the window loses focus.
+    //
+    // "insert" - Enter insert mode when opening or switching views or when the
+    //  window receives focus and is not in visual mode i.e. visual mode
+    //  selections are retained when the window loses focus.
+    //
+    // "visual" - Enter insert mode when opening or switching views or when the
+    //  window receives focus and is not already in visual mode i.e. visual
+    //  mode selections are retained when the window loses focus.
+    "vintageous_default_mode": null,
 
     // Enable Abolish plugin.
     // (ported from the vim-abolish plugin by @tpope).

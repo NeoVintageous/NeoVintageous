@@ -11,4 +11,4 @@ max-line-length = 120
 # W504  https://gitlab.com/pycqa/flake8/issues/463
 ignore = D100,D101,D102,D103,D104,D105,D107,W504
 
-max-complexity = 30
+max-complexity = 31

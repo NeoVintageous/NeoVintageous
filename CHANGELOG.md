@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+- Support for default visual mode via `vintageous_default_mode` setting
 - Support for `[count]` in `ai` and `aI` commands (indent-object)
 - Support for `block_caret` in insert mode
 - Add `zO`, alias of `zo`, open fold
