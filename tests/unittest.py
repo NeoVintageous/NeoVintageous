@@ -2452,7 +2452,9 @@ _SEQ2CMD = {
     'z.':           {'command': 'nv_feed_key'},  # noqa: E241
     'z<CR>':        {'command': 'nv_feed_key', 'args': {"keys": ['z', '<CR>']}},  # noqa: E241
     'z=':           {'command': 'nv_feed_key'},  # noqa: E241
+    'zC':           {'command': 'nv_feed_key'},  # noqa: E241
     'zM':           {'command': 'nv_feed_key'},  # noqa: E241
+    'zO':           {'command': 'nv_feed_key'},  # noqa: E241
     'zR':           {'command': 'nv_feed_key'},  # noqa: E241
     'zb':           {'command': 'nv_feed_key'},  # noqa: E241
     'zc':           {'command': 'nv_feed_key'},  # noqa: E241

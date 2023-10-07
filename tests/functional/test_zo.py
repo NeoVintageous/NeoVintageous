@@ -21,4 +21,5 @@ from NeoVintageous.tests import unittest
 class Test_zo(unittest.FunctionalTestCase):
 
     def test_n(self):
-        self.eq('x\nfi|zz x', 'n_zo', 'x\n|fizz x')
+        for seq in ('zo', 'zO'):
+            self.eq('x\nfi|zz x', 'n_' + seq, 'x\n|fizz x')

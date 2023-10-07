@@ -2000,7 +2000,7 @@ class nv_vi_zz(TextCommand):
 class nv_vi_z(TextCommand):
 
     def run(self, edit, action, count, **kwargs):
-        if action == 'c':
+        if action in ('c', 'C'):
             fold(self.view)
         elif action == 'g':
             spell_file_add_word(self.view, kwargs.get('mode'), count)
@@ -2010,7 +2010,7 @@ class nv_vi_z(TextCommand):
             scroll_horizontally(self.view, edit, amount=-count)
         elif action in ('l', '<right>'):
             scroll_horizontally(self.view, edit, amount=count)
-        elif action == 'o':
+        elif action in ('o', 'O'):
             unfold(self.view)
         elif action == 'H':
             scroll_horizontally(self.view, edit, amount=-count, half_screen=True)

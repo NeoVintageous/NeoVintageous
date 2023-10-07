@@ -1121,7 +1121,9 @@ OPENING AND CLOSING FOLDS
 | Status             | Command                          | Description
 | :----------------- | :------------------------------- | :----------
 | :heavy_check_mark: | zo                               | Open one fold under the cursor.
+| :heavy_check_mark: | zO                               | Same as zo.
 | :heavy_check_mark: | zc                               | Close one fold under the cursor.
+| :heavy_check_mark: | zC                               | Same as zc.
 | :heavy_check_mark: | zM                               | Close all folds.
 | :heavy_check_mark: | zR                               | Open all folds.
 
