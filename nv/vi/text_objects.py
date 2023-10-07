@@ -33,6 +33,7 @@ from NeoVintageous.nv.polyfill import view_find_in_range
 from NeoVintageous.nv.polyfill import view_indentation_level
 from NeoVintageous.nv.polyfill import view_indented_region
 from NeoVintageous.nv.polyfill import view_rfind_all
+from NeoVintageous.nv.settings import get_setting
 from NeoVintageous.nv.utils import get_insertion_point_at_b
 from NeoVintageous.nv.utils import next_non_blank
 from NeoVintageous.nv.utils import next_non_ws
@@ -301,10 +302,25 @@ def _get_text_object_paragraph(view, s: Region, inclusive: bool, count: int) -> 
 
 
 def _get_text_object_bracket(view, s: Region, inclusive: bool, count: int, delims: tuple) -> Region:
-    opening = find_prev_lone_bracket(view, max(0, s.begin()), delims)
-    closing = find_next_lone_bracket(view, s.end(), delims)
+    start = get_insertion_point_at_b(s)
+    opening = find_prev_lone_bracket(view, start, delims)
 
-    if not (opening and closing):
+    start_next_bracket_pt = get_insertion_point_at_b(s)
+
+    # Support for vim-targets In Pair and A Pair.
+    if not opening and get_setting(view, 'enable_targets'):
+        start = get_insertion_point_at_b(s)
+        match = view_find(view, delims[0], start)
+        if match:
+            opening = find_prev_lone_bracket(view, match.begin(), delims)
+            if opening:
+                start_next_bracket_pt = max(start_next_bracket_pt, opening.end())
+
+    if not opening:
+        return s
+
+    closing = find_next_lone_bracket(view, start_next_bracket_pt, delims)
+    if not closing:
         return s
 
     if inclusive:

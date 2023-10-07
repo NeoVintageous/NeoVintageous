@@ -117,6 +117,10 @@
     // (ported from the vim-surround plugin by @tpope).
     "vintageous_enable_surround": true,
 
+    // Enable Targets plugin.
+    // (ported from the vim-targets plugin by @wellle).
+    "vintageous_enable_targets": true,
+
     // Enable Unimpaired plugin.
     // (ported from the vim-unimpaired plugin by @tpope).
     "vintageous_enable_unimpaired": true,

@@ -6,8 +6,11 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+- Support for In Pair targets `i( i) ib i{ i} iB i[ i] i< i> it` (Targets)
+- Support for A Pair targets `a( a) ab a{ a} aB a[ a] a< a> at` (Targets)
+- Add `vintageous_enable_targets` setting, default true, to control plugin (Targets)
 - Support for default visual mode via `vintageous_default_mode` setting
-- Support for `[count]` in `ai` and `aI` commands (indent-object)
+- Support for `[count]` in `ai` and `aI` commands (Indent Object)
 - Support for `block_caret` in insert mode
 - Add `zO`, alias of `zo`, open fold
 - Add `zC`, alias of `zC`, close fold

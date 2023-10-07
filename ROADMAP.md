@@ -1340,8 +1340,8 @@ Inspired by [targets.vim](https://github.com/wellle/targets.vim).
 
 | Status             | Command          | Description
 | :----------------- | :------------------------------------------------------------------- | :----------
-|                    | In Pair `i( i) i{ i} iB i[ i] i< i> it`                              |
-|                    | A Pair `a( a) a{ a} aB a[ a] a< a> at`                               |
+| :heavy_check_mark: | In Pair `i( i) ib i{ i} iB i[ i] i< i> it`                           |
+| :heavy_check_mark: | A Pair `a( a) ab a{ a} aB a[ a] a< a> at`                            |
 |                    | Inside Pair `I( I) I{ I} IB I[ I] I< I> It`                          |
 |                    | Around Pair `A( A) A{ A} AB A[ A] A< A> At`                          |
 |                    | Next and Last Pair `in( an( In( An( il( al( Il( Al(` ...             |

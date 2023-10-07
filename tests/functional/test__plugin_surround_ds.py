@@ -125,7 +125,7 @@ class TestSurround_ds(unittest.FunctionalTestCase):
 
     def test_should_do_nothing_when_no_target_is_found(self):
         for t in quote_targets + other_targets + punctuation_targets + noop_targets + invalid_targets:
-            self.eq('x a|bc y', 'ds' + t, 'x a|bc y')
+            self.eq('x a|bc y', 'ds' + t, 'x a|bc y', 'Failed on target: ' + t)
 
     def test_invalid_targets_should_do_nothing(self):
         for t in invalid_targets:
