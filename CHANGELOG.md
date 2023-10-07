@@ -11,6 +11,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+- CTRL-n/CTRL-p and CTRL-j/CTRL-k don't work for some overlays
 - Closing folds, e.g., `zc`, when the fold is at the EOL doesn't work
 
 ## 1.33.1 - 2023-09-29
