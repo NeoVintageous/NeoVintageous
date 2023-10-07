@@ -790,7 +790,9 @@ class nv_enter_normal_mode(TextCommand):
         if is_insert_mode(self.view, mode):
             listener.on_insert_leave(self.view, new_mode=NORMAL)
 
-        self.view.window().run_command('hide_auto_complete')
+        if self.view.is_auto_complete_visible():
+            self.view.window().run_command('hide_auto_complete')
+
         self.view.window().run_command('hide_overlay')
 
         if ((not from_init and (mode == NORMAL) and not get_sequence(self.view)) or not is_view(self.view)):
