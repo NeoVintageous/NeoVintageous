@@ -807,6 +807,7 @@ class nv_enter_normal_mode(TextCommand):
             if not from_init and len(self.view.sel()) < 2:
                 hide_panel(self.view.window())
 
+        self.view.settings().erase('block_caret')
         self.view.settings().set('command_mode', True)
         self.view.settings().set('inverse_caret_state', True)
         self.view.set_overwrite_status(False)  # Exit replace mode.
@@ -959,7 +960,11 @@ class nv_enter_insert_mode(TextCommand):
 
         regions_transformer(self.view, f)
 
-        self.view.settings().set('inverse_caret_state', False)
+        if self.view.settings().get('block_caret'):
+            self.view.settings().set('block_caret', True)
+        else:
+            self.view.settings().set('inverse_caret_state', False)
+
         self.view.settings().set('command_mode', False)
 
         set_mode(self.view, INSERT)

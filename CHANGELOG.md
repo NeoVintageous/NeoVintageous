@@ -6,6 +6,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Added
 
+- Support for `block_caret` in insert mode
 - Add `zO`, alias of `zo`, open fold
 - Add `zC`, alias of `zC`, close fold
 
