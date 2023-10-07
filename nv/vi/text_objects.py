@@ -428,7 +428,9 @@ def get_text_object_region(view, s: Region, text_object: str, inclusive: bool = 
         return _get_text_object_line(view, s, inclusive, count)
     elif type_ in (INDENT, BIG_INDENT):
         # A port of https://github.com/michaeljsmith/vim-indent-object. {not in Vim}
-        resolve_indent_text_object(view, s, inclusive, big=(type_ == BIG_INDENT))
+        # Only inclusive indent-objects are countable, e.g., vai, vaI
+        for _ in range(count if inclusive else 1):
+            resolve_indent_text_object(view, s, inclusive, big=(type_ == BIG_INDENT))
 
     return s
 

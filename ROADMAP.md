@@ -1247,12 +1247,13 @@ Inspired by [vim-xkbswitch](https://github.com/lyokha/vim-xkbswitch) and [VSCode
 
 A port of the awesome [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object).
 
-| Status             | Command           | Description
-| :----------------- | :---------------- | :----------
-| :heavy_check_mark: | `<count>ai` | (A)n (I)ndentation level and line above.
-| :heavy_check_mark: | `<count>ii` | (I)nner (I)ndentation level (no line above).
-| :heavy_check_mark: | `<count>aI` | (A)n (I)ndentation level and lines above/below.
-| :heavy_check_mark: | `<count>iI` | (I)nner (I)ndentation level (no lines above/below).
+| Status             | Command          | Description
+| :----------------- | :--------------- | :----------
+| :heavy_check_mark: | `[count]ai`      | (A)n (I)ndentation level and line above.
+| :heavy_check_mark: | `ii`             | (I)nner (I)ndentation level (no line above).
+|                    | `[count]ii`      | (I)nner (I)ndentation level (no line above).
+| :heavy_check_mark: | `[count]aI`      | (A)n (I)ndentation level and lines above/below.
+|                    | `[count]iI`      | (I)nner (I)ndentation level (no lines above/below).
 
 ### Markology `|markology|`
 
