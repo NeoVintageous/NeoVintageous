@@ -9,6 +9,10 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 - Add `zO`, alias of `zo`, open fold
 - Add `zC`, alias of `zC`, close fold
 
+### Fixed
+
+- Closing folds, e.g., `zc`, when the fold is at the EOL doesn't work
+
 ## 1.33.1 - 2023-09-29
 
 ### Fixed

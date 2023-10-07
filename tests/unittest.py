@@ -792,6 +792,21 @@ class ViewTestCase(unittest.TestCase):
     def assertXpos(self, expected, msg: str = None) -> None:
         self.assertEqual(get_xpos(self.view), expected, msg)
 
+    # >>> assertFolded([Region(5, 14)])
+    # >>> assertFolded(Region(5, 14))
+    # >>> assertFolded('<div>|\n    xxxx|\n</div>')
+    def assertFolded(self, expected) -> None:
+        if isinstance(expected, str):
+            self._assertContentSelection(self.view.folded_regions(), expected)
+        else:
+            if isinstance(expected, Region):
+                expected = [expected]
+
+            self.assertEqual(expected, self.view.folded_regions())
+
+    def assertNotFolded(self):
+        self.assertEqual([], self.view.folded_regions())
+
     def setXpos(self, xpos: int) -> None:
         set_xpos(self.view, xpos)
 

@@ -1120,7 +1120,13 @@ def fold(view) -> None:
 
 
 def unfold(view) -> None:
-    view.run_command('unfold')
+    # Sublime's "unfold" command doesn't unfold when a fold is at the end of the
+    # line, so we need to call unfold directly with the full line region.
+    if any([s.empty() for s in view.sel()]):
+        for sel in view.sel():
+            view.unfold(view.full_line(sel))
+    else:
+        view.run_command('unfold')
     _clear_visual_selection(view)
 
 

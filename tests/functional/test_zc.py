@@ -23,3 +23,8 @@ class Test_zc(unittest.FunctionalTestCase):
     def test_n(self):
         for seq in ('zc', 'zC'):
             self.eq('x\nfi|zz x', 'n_' + seq, 'x\n|fizz x')
+
+    def test_n_html(self):
+        self.syntax('Packages/HTML/HTML.sublime-syntax')
+        self.eq('<div>\n|    test\n</div>\n', 'n_zc', '|<div>\n    test\n</div>\n')
+        self.assertFolded('<div>|\n    test|\n</div>\n')
