@@ -17,6 +17,7 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Fixed
 
+- Package Control 4 fix for updating orphaned conflicting packages
 - CTRL-n/CTRL-p and CTRL-j/CTRL-k don't work for some overlays in some cases
 - Closing folds, e.g., `zc`, when the fold is at the EOL doesn't work
 

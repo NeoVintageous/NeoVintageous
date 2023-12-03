@@ -85,11 +85,22 @@ def _update_ignored_packages():
     # obsolete, or cause problems due to conflicts e.g. Vintage, Vintageous,
     # etc.
 
+    if int(sublime.version()) >= 3143:
+        # In Package Control 4, orphaned packages, e.g., packages listed as
+        # ignored, but not actually installed, are pruned. So only packages
+        # that actually installed should be considered as conflicting.
+        installed_packages = sublime.load_settings('Package Control.sublime-settings').get('installed_packages', [])
+        conflict_candidates = [p for p in ['Six', 'Vintageous'] if p in installed_packages]
+        # The Vintage is bundled with ST so it is always installed.
+        conflict_candidates.append('Vintage')
+    else:
+        conflict_candidates = ['Six', 'Vintage', 'Vintageous']
+
     settings = sublime.load_settings('Preferences.sublime-settings')
     ignored_packages = settings.get('ignored_packages', [])
     if not isinstance(ignored_packages, list):
         ignored_packages = []
-    conflict_packages = [x for x in ['Six', 'Vintage', 'Vintageous'] if x not in ignored_packages]
+    conflict_packages = [x for x in conflict_candidates if x not in ignored_packages]
     if conflict_packages:  # pragma: no cover
         print('NeoVintageous: update ignored packages with conflicts {}'.format(conflict_packages))
         ignored_packages = sorted(ignored_packages + conflict_packages)
