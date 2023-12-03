@@ -2,6 +2,25 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.34.0 - Unreleased
+
+### Added
+
+- Support for In Pair targets `i( i) ib i{ i} iB i[ i] i< i> it` (Targets)
+- Support for A Pair targets `a( a) ab a{ a} aB a[ a] a< a> at` (Targets)
+- Add `vintageous_enable_targets` setting, default true, to control plugin (Targets)
+- Support for default visual mode via `vintageous_default_mode` setting
+- Support for `[count]` in `ai` and `aI` commands (Indent Object)
+- Support for `block_caret` in insert mode
+- Add `zO`, alias of `zo`, open fold
+- Add `zC`, alias of `zC`, close fold
+
+### Fixed
+
+- Package Control 4 fix for updating orphaned conflicting packages
+- CTRL-n/CTRL-p and CTRL-j/CTRL-k don't work for some overlays in some cases
+- Closing folds, e.g., `zc`, when the fold is at the EOL doesn't work
+
 ## 1.33.1 - 2023-09-29
 
 ### Fixed

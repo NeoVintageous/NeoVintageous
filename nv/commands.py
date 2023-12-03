@@ -790,7 +790,9 @@ class nv_enter_normal_mode(TextCommand):
         if is_insert_mode(self.view, mode):
             listener.on_insert_leave(self.view, new_mode=NORMAL)
 
-        self.view.window().run_command('hide_auto_complete')
+        if self.view.is_auto_complete_visible():
+            self.view.window().run_command('hide_auto_complete')
+
         self.view.window().run_command('hide_overlay')
 
         if ((not from_init and (mode == NORMAL) and not get_sequence(self.view)) or not is_view(self.view)):
@@ -807,6 +809,7 @@ class nv_enter_normal_mode(TextCommand):
             if not from_init and len(self.view.sel()) < 2:
                 hide_panel(self.view.window())
 
+        self.view.settings().erase('block_caret')
         self.view.settings().set('command_mode', True)
         self.view.settings().set('inverse_caret_state', True)
         self.view.set_overwrite_status(False)  # Exit replace mode.
@@ -959,7 +962,11 @@ class nv_enter_insert_mode(TextCommand):
 
         regions_transformer(self.view, f)
 
-        self.view.settings().set('inverse_caret_state', False)
+        if self.view.settings().get('block_caret'):
+            self.view.settings().set('block_caret', True)
+        else:
+            self.view.settings().set('inverse_caret_state', False)
+
         self.view.settings().set('command_mode', False)
 
         set_mode(self.view, INSERT)
@@ -2000,7 +2007,7 @@ class nv_vi_zz(TextCommand):
 class nv_vi_z(TextCommand):
 
     def run(self, edit, action, count, **kwargs):
-        if action == 'c':
+        if action in ('c', 'C'):
             fold(self.view)
         elif action == 'g':
             spell_file_add_word(self.view, kwargs.get('mode'), count)
@@ -2010,7 +2017,7 @@ class nv_vi_z(TextCommand):
             scroll_horizontally(self.view, edit, amount=-count)
         elif action in ('l', '<right>'):
             scroll_horizontally(self.view, edit, amount=count)
-        elif action == 'o':
+        elif action in ('o', 'O'):
             unfold(self.view)
         elif action == 'H':
             scroll_horizontally(self.view, edit, amount=-count, half_screen=True)

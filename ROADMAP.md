@@ -1121,7 +1121,9 @@ OPENING AND CLOSING FOLDS
 | Status             | Command                          | Description
 | :----------------- | :------------------------------- | :----------
 | :heavy_check_mark: | zo                               | Open one fold under the cursor.
+| :heavy_check_mark: | zO                               | Same as zo.
 | :heavy_check_mark: | zc                               | Close one fold under the cursor.
+| :heavy_check_mark: | zC                               | Same as zc.
 | :heavy_check_mark: | zM                               | Close all folds.
 | :heavy_check_mark: | zR                               | Open all folds.
 
@@ -1245,12 +1247,13 @@ Inspired by [vim-xkbswitch](https://github.com/lyokha/vim-xkbswitch) and [VSCode
 
 A port of the awesome [vim-indent-object](https://github.com/michaeljsmith/vim-indent-object).
 
-| Status             | Command           | Description
-| :----------------- | :---------------- | :----------
-| :heavy_check_mark: | `<count>ai` | (A)n (I)ndentation level and line above.
-| :heavy_check_mark: | `<count>ii` | (I)nner (I)ndentation level (no line above).
-| :heavy_check_mark: | `<count>aI` | (A)n (I)ndentation level and lines above/below.
-| :heavy_check_mark: | `<count>iI` | (I)nner (I)ndentation level (no lines above/below).
+| Status             | Command          | Description
+| :----------------- | :--------------- | :----------
+| :heavy_check_mark: | `[count]ai`      | (A)n (I)ndentation level and line above.
+| :heavy_check_mark: | `ii`             | (I)nner (I)ndentation level (no line above).
+|                    | `[count]ii`      | (I)nner (I)ndentation level (no line above).
+| :heavy_check_mark: | `[count]aI`      | (A)n (I)ndentation level and lines above/below.
+|                    | `[count]iI`      | (I)nner (I)ndentation level (no lines above/below).
 
 ### Markology `|markology|`
 
@@ -1337,8 +1340,8 @@ Inspired by [targets.vim](https://github.com/wellle/targets.vim).
 
 | Status             | Command          | Description
 | :----------------- | :------------------------------------------------------------------- | :----------
-|                    | In Pair `i( i) i{ i} iB i[ i] i< i> it`                              |
-|                    | A Pair `a( a) a{ a} aB a[ a] a< a> at`                               |
+| :heavy_check_mark: | In Pair `i( i) ib i{ i} iB i[ i] i< i> it`                           |
+| :heavy_check_mark: | A Pair `a( a) ab a{ a} aB a[ a] a< a> at`                            |
 |                    | Inside Pair `I( I) I{ I} IB I[ I] I< I> It`                          |
 |                    | Around Pair `A( A) A{ A} AB A[ A] A< A> At`                          |
 |                    | Next and Last Pair `in( an( In( An( il( al( Il( Al(` ...             |

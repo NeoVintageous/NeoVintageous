@@ -61,6 +61,8 @@ from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import clean_view
 from NeoVintageous.nv.vim import enter_insert_mode
+from NeoVintageous.nv.vim import enter_normal_mode
+from NeoVintageous.nv.vim import enter_visual_mode
 from NeoVintageous.nv.vim import is_visual_mode
 from NeoVintageous.nv.vim import mode_to_name
 from NeoVintageous.nv.vim import reset_status_line
@@ -386,9 +388,16 @@ def init_view(view) -> None:
     if len(view.sel()) == 0:
         view.sel().add(0)
 
-    if get_setting(view, 'default_mode') == 'insert':
-        if mode in (NORMAL, UNKNOWN):
-            enter_insert_mode(view, mode)
+    default_mode = get_setting(view, 'default_mode')
+
+    if default_mode:
+        if default_mode == 'insert':
+            if mode in (NORMAL, UNKNOWN):
+                enter_insert_mode(view, mode)
+        elif default_mode == 'visual':
+            if mode in (NORMAL, UNKNOWN):
+                enter_normal_mode(view, mode)
+                enter_visual_mode(view, mode)
     elif mode in (VISUAL, VISUAL_LINE, VISUAL_BLOCK):
         # Visual modes are not reset (to normal mode), because actions like
         # pressing the super key or opening a command-palette/overlay will cause

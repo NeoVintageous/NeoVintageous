@@ -68,6 +68,9 @@ class TestIndentObject(unittest.FunctionalTestCase):
         self.eq('1\n  xx\n  if\n\n\n\n    fi|zz\n\n\n\n  end\n  xx\n  x', 'v_ai', '1\n  xx\n|  if\n\n\n\n    fizz\n\n\n\n|  end\n  xx\n  x')  # noqa: E501
         self.eq('1\nxx\n\n\nfi|zz\nbuzz\n\nxx\nx', 'v_ai', '1\nxx\n\n|\nfizz\nbuzz\n|\nxx\nx')
 
+    def test_vai_count(self):
+        self.eq('x\nfun\n  1\n  2\n  if\n    |3\n  end\nend\nx', 'v_2ai', 'x\n|fun\n  1\n  2\n  if\n    3\n  end\n|end\nx')  # noqa: E501
+
     def test_vaI(self):
         self.eq('1\n222\nif\n  fi|zz\nend\nxx\nx', 'v_aI', '1\n222\n|if\n  fizz\nend\n|xx\nx')
         self.eq('x\nxx\nif\n\n|\n\n  fizz\nend\nxx\nx', 'v_aI', 'x\nxx\n|if\n\n\n\n  fizz\nend\n|xx\nx')
@@ -82,7 +85,11 @@ class TestIndentObject(unittest.FunctionalTestCase):
         self.eq('1\n  if\n\n\n\n    fi|zz\n\n\n\n  end\n  xx\n  x', 'v_aI', '1\n|  if\n\n\n\n    fizz\n\n\n\n  end\n|  xx\n  x')  # noqa: E501
         self.eq('1\n  xx\n  if\n\n\n\n    fi|zz\n\n\n\n  end\n  xx\n  x', 'v_aI', '1\n  xx\n|  if\n\n\n\n    fizz\n\n\n\n  end\n|  xx\n  x')  # noqa: E501
 
-    def test_viix(self):
+    def test_vaI_count(self):
+        self.eq('x\nfun\n  1\n  2\n  if\n    |3\n  end\nend\nx', 'v_2aI', 'x\n|fun\n  1\n  2\n  if\n    3\n  end\nend\n|x')  # noqa: E501
+        self.eq('x\nif\n  1\n  if\n    2\n    if\n      |3\n    end\n  end\nend\nx', 'v_3aI', 'x\n|if\n  1\n  if\n    2\n    if\n      3\n    end\n  end\nend\n|x')  # noqa: E501
+
+    def test_vii(self):
         self.eq('a\n\nfi|zz\n\nb', 'v_ii', 'a\n\n|fizz\n|\nb')
         self.eq('a\n\nfi|zz\nbuzz\n\nb', 'v_ii', 'a\n\n|fizz\nbuzz\n|\nb')
         self.eq('a\n\n  fi|zz\n\nb', 'v_ii', 'a\n\n|  fizz\n|\nb')

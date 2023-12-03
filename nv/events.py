@@ -127,9 +127,25 @@ def _handle_key(view, operator: int, operand: str, match_all: bool) -> bool:
     return True
 
 
+_OVERLAY_CONTROL_ELEMENTS = (
+    'command_palette:input',
+    'goto_anything:input',
+    'quick_panel:input'
+)
+
+if int(version()) >= 4050:
+    def _overlay_control(view, *args):
+        return view.element() in _OVERLAY_CONTROL_ELEMENTS
+else:
+    # Not supported in ST < 4050: the view.element() api is available.
+    def _overlay_control(view, *args):
+        return None
+
+
 _query_contexts = {
     'nv_command_or_insert': _command_or_insert,
     'nv_handle_key': _handle_key,
+    'nv_overlay_control': _overlay_control,
     'nv_winaltkeys': _winaltkeys,
     'vi_command_mode_aware': _is_command_mode,
     'vi_insert_mode_aware': _is_insert_mode,

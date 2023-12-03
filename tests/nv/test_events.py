@@ -337,6 +337,15 @@ class TestOnActivated(unittest.ViewTestCase):
         self.set_setting('default_mode', 'insert')
         self.events.on_activated(self.view)
         self.assertInsert('fi|zz')
+        self.set_setting('default_mode', None)
+        self.events.on_activated(self.view)
+        self.assertNormal('fi|zz')
+
+    def test_can_set_default_mode_insert_when_empty(self):
+        self.normal('fi|zz')
+        self.set_setting('default_mode', 'insert')
+        self.events.on_activated(self.view)
+        self.assertInsert('fi|zz')
         self.set_setting('default_mode', '')
         self.events.on_activated(self.view)
         self.assertNormal('fi|zz')

@@ -792,6 +792,21 @@ class ViewTestCase(unittest.TestCase):
     def assertXpos(self, expected, msg: str = None) -> None:
         self.assertEqual(get_xpos(self.view), expected, msg)
 
+    # >>> assertFolded([Region(5, 14)])
+    # >>> assertFolded(Region(5, 14))
+    # >>> assertFolded('<div>|\n    xxxx|\n</div>')
+    def assertFolded(self, expected) -> None:
+        if isinstance(expected, str):
+            self._assertContentSelection(self.view.folded_regions(), expected)
+        else:
+            if isinstance(expected, Region):
+                expected = [expected]
+
+            self.assertEqual(expected, self.view.folded_regions())
+
+    def assertNotFolded(self):
+        self.assertEqual([], self.view.folded_regions())
+
     def setXpos(self, xpos: int) -> None:
         set_xpos(self.view, xpos)
 
@@ -2452,7 +2467,9 @@ _SEQ2CMD = {
     'z.':           {'command': 'nv_feed_key'},  # noqa: E241
     'z<CR>':        {'command': 'nv_feed_key', 'args': {"keys": ['z', '<CR>']}},  # noqa: E241
     'z=':           {'command': 'nv_feed_key'},  # noqa: E241
+    'zC':           {'command': 'nv_feed_key'},  # noqa: E241
     'zM':           {'command': 'nv_feed_key'},  # noqa: E241
+    'zO':           {'command': 'nv_feed_key'},  # noqa: E241
     'zR':           {'command': 'nv_feed_key'},  # noqa: E241
     'zb':           {'command': 'nv_feed_key'},  # noqa: E241
     'zc':           {'command': 'nv_feed_key'},  # noqa: E241
