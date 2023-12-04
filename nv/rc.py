@@ -76,14 +76,14 @@ def _load() -> None:
     if source and isinstance(source, str):
         try:
             _source(window, iter(sublime.load_resource(source).splitlines()))
-            print('NeoVintageous: sourced {}'.format(source))
+            _log.info('sourced %s', source)
         except FileNotFoundError as e:
             print('NeoVintageous:', e)
 
     try:
         with builtins.open(_file_path(), 'r', encoding='utf-8', errors='replace') as f:
             _source(window, f)
-            print('NeoVintageous: sourced %s' % _file_path())
+            _log.info('sourced %s', _file_path())
 
     except FileNotFoundError:
         _log.info('%s file not found', _file_path())
