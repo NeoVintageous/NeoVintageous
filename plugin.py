@@ -89,8 +89,11 @@ def _update_ignored_packages():
         # In Package Control 4, orphaned packages, e.g., packages listed as
         # ignored, but not actually installed, are pruned. So only packages
         # that actually installed should be considered as conflicting.
-        installed_packages = sublime.load_settings('Package Control.sublime-settings').get('installed_packages', [])
-        conflict_candidates = [p for p in ['Six', 'Vintageous'] if p in installed_packages]
+        installed_packages = sublime.load_settings('Package Control.sublime-settings').get('installed_packages')
+        if installed_packages and isinstance(installed_packages, list):
+            conflict_candidates = [p for p in ['Six', 'Vintageous'] if p in installed_packages]
+        else:
+            conflict_candidates = []
         # The Vintage is bundled with ST so it is always installed.
         conflict_candidates.append('Vintage')
     else:
