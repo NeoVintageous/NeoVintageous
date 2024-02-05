@@ -158,7 +158,7 @@ class TestMappings(unittest.ViewTestCase):
     def test_can_remove_normalised_mapping(self):
         for seq in ('<Space>', '<SPACE>', '<Space>', '<SpAcE>'):
             mappings_add(NORMAL, '<Space>', 'a')
-            self.assertMapping(NORMAL, '<space>', 'a')  # type: ignore[arg-type]
+            self.assertMapping(NORMAL, '<space>', 'a')
             mappings_remove(NORMAL, seq)
             self.assertMappingsEmpty()
 

@@ -420,7 +420,7 @@ class ViewTestCase(unittest.TestCase):
     def assertNoMarksOutput(self):
         self.assertMarksOutput('')
 
-    def assertMapping(self, mode: int, lhs: str, rhs: str) -> None:
+    def assertMapping(self, mode: str, lhs: str, rhs: str) -> None:
         self.assertIn(lhs, _mappings[mode])
         self.assertEqual(_mappings[mode][lhs], rhs)
 
@@ -438,7 +438,7 @@ class ViewTestCase(unittest.TestCase):
             VISUAL: {},
         })
 
-    def assertNotMapping(self, lhs: str, mode: int = None) -> None:
+    def assertNotMapping(self, lhs: str, mode: str = None) -> None:
         if mode is None:
             for m in _MODES:
                 self.assertNotIn(lhs, _mappings[m])
