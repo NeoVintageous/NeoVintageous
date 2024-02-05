@@ -75,8 +75,8 @@ class StToggleSideBar(ViOperatorDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-        self.command = 'toggle_side_bar'
         self.builtin = True
+        self.command = 'toggle_side_bar'
 
 
 @register(seqs.COMMAND_P, ACTION_MODES)
