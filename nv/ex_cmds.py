@@ -26,6 +26,7 @@ from sublime import DIALOG_CANCEL
 from sublime import DIALOG_YES
 from sublime import Region
 from sublime import set_timeout
+from sublime import version
 from sublime import yes_no_cancel_dialog
 
 from NeoVintageous.nv import shell
@@ -157,8 +158,14 @@ def ex_buffers(window, **kwargs) -> None:
         readonly_indicator = '=' if is_view_read_only(view) else ' '
         modified_indicator = '+' if view.is_dirty() else ' '
 
-        active_group_view = window.active_view_in_group(window.get_view_index(view)[0])
+        group = window.get_view_index(view)[0]
+        active_group_view = window.active_view_in_group(group)
         visibility_indicator = 'a' if active_group_view and view.id() == active_group_view.id() else 'h'
+
+        if int(version()) >= 4083:
+            # When a view is selected it becomes visible.
+            if view.id() in [s.view().id() for s in window.selected_sheets_in_group(group)]:
+                visibility_indicator = 'a'
 
         return '%5d %s%s%s%s %-30s %s' % (
             view.id(),
