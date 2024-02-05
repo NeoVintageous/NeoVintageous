@@ -60,7 +60,6 @@ from NeoVintageous.nv.polyfill import toggle_side_bar
 from NeoVintageous.nv.process_notation import ProcessNotationHandler
 from NeoVintageous.nv.rc import open_rc
 from NeoVintageous.nv.rc import reload_rc
-from NeoVintageous.nv.registers import get_alternate_file_register
 from NeoVintageous.nv.registers import registers_get_for_paste
 from NeoVintageous.nv.registers import registers_op_change
 from NeoVintageous.nv.registers import registers_op_delete
@@ -204,6 +203,7 @@ from NeoVintageous.nv.vim import is_visual_mode
 from NeoVintageous.nv.vim import reset_status_line
 from NeoVintageous.nv.vim import run_motion
 from NeoVintageous.nv.vim import status_message
+from NeoVintageous.nv.window import open_alternate_file
 from NeoVintageous.nv.window import window_control
 from NeoVintageous.nv.window import window_open_file
 from NeoVintageous.nv.window import window_tab_control
@@ -1929,12 +1929,7 @@ class nv_vi_g(TextCommand):
 class nv_vi_ctrl_hat(WindowCommand):
 
     def run(self, mode=None, count=None, register=None, **kwargs):
-        alternate_file = get_alternate_file_register()
-        if not alternate_file:
-            ui_bell('E23: No alternate file')
-            return
-
-        self.window.open_file(alternate_file)
+        open_alternate_file(self.window)
 
 
 class nv_vi_ctrl_right_square_bracket(WindowCommand):

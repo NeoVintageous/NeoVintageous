@@ -502,10 +502,13 @@ class TestExCommands(unittest.TestCase):
         self.assertCommand(['bnext 3', 'bn 3'], cmd('bnext', params={'N': 3}))
         self.assertCommand(['bnext', 'bn'], cmd('bnext'))
         self.assertCommand(['browse', 'bro'], cmd('browse'))
+        self.assertCommand(['buffer #', 'b #'], cmd('buffer', params={'index': '#'}))
         self.assertCommand(['buffer 1', 'b 1'], cmd('buffer', params={'index': '1'}))
         self.assertCommand(['buffer 3', 'b 3'], cmd('buffer', params={'index': '3'}))
         self.assertCommand(['buffer!', 'b!'], cmd('buffer', forced=True))
+        self.assertCommand(['buffer#', 'b#'], cmd('buffer', params={'index': '#'}))
         self.assertCommand(['buffer', 'b'], cmd('buffer'))
+        self.assertCommand(['buffer3', 'b3'], cmd('buffer', params={'index': '3'}))
         self.assertCommand(['buffers', 'files', 'ls'], cmd('buffers'))
         self.assertCommand(['cd /tmp/path'], cmd('cd', params={'path': '/tmp/path'}))
         self.assertCommand(['cd ~'], cmd('cd', params={'path': '~'}))
@@ -605,12 +608,12 @@ class TestExCommands(unittest.TestCase):
         self.assertCommand(['silent! ls', 'sil! ls'], cmd('silent', params={'command': 'ls'}, forced=True))  # noqa: E501
         self.assertCommand(['snoremap abc xyz', 'snor abc xyz'], cmd('snoremap', params={'lhs': 'abc', 'rhs': 'xyz'}))  # noqa: E501
         self.assertCommand(['snoremap', 'snor'], cmd('snoremap'))
-        self.assertCommand(['sort!', 'sor!'], cmd('sort', forced=True, addressable=True))
         self.assertCommand(['sort i', 'sor i'], cmd('sort', params={'options': 'i'}, addressable=True))
         self.assertCommand(['sort iu', 'sor iu'], cmd('sort', params={'options': 'iu'}, addressable=True))
-        self.assertCommand(['sort! iu', 'sor! iu'], cmd('sort', params={'options': 'iu'}, forced=True, addressable=True))  # noqa: E501
         self.assertCommand(['sort u', 'sor u'], cmd('sort', params={'options': 'u'}, addressable=True))
         self.assertCommand(['sort ui', 'sor ui'], cmd('sort', params={'options': 'ui'}, addressable=True))
+        self.assertCommand(['sort! iu', 'sor! iu'], cmd('sort', params={'options': 'iu'}, forced=True, addressable=True))  # noqa: E501
+        self.assertCommand(['sort!', 'sor!'], cmd('sort', forced=True, addressable=True))
         self.assertCommand(['sort', 'sor'], cmd('sort', addressable=True))
         self.assertCommand(['spellgood fizz', 'spe fizz'], cmd('spellgood', params={'word': 'fizz'}))
         self.assertCommand(['spellundo fizz', 'spellu fizz'], cmd('spellundo', params={'word': 'fizz'}))

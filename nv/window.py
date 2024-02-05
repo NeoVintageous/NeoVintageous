@@ -530,6 +530,15 @@ def _split_alternate(window):
     create_pane(window, 'down', alternate_file)
 
 
+def open_alternate_file(window) -> None:
+    alternate_file = get_alternate_file_register()
+    if not alternate_file:
+        ui_bell('E23: No alternate file')
+        return
+
+    window.open_file(alternate_file)
+
+
 def window_buffer_control(window, action: str, count: int = 1) -> None:
     if action in ('next', 'previous'):
         views = window.views()

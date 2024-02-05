@@ -2,6 +2,13 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.35.0 - Unreleased
+
+### Added
+
+- Edit the alternate buffer `:b#` (alias `CTRL-^` or `CTRL-6`) [#993](https://github.com/NeoVintageous/NeoVintageous/issues/993)
+- Add alternate buffer indicator (`#`) for `:ls`
+
 ## 1.34.2 - 2024-02-05
 
 ### Fixed

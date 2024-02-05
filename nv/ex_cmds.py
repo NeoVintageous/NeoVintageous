@@ -57,6 +57,8 @@ from NeoVintageous.nv.polyfill import spell_undo
 from NeoVintageous.nv.polyfill import truncate
 from NeoVintageous.nv.polyfill import view_find_all_in_range
 from NeoVintageous.nv.polyfill import view_to_region
+from NeoVintageous.nv.registers import get_alternate_file_register
+from NeoVintageous.nv.registers import is_alternate_file_register
 from NeoVintageous.nv.registers import registers_get_all
 from NeoVintageous.nv.registers import registers_set
 from NeoVintageous.nv.search import clear_search_highlighting
@@ -96,6 +98,7 @@ from NeoVintageous.nv.vim import VISUAL_BLOCK
 from NeoVintageous.nv.vim import VISUAL_LINE
 from NeoVintageous.nv.vim import enter_normal_mode
 from NeoVintageous.nv.vim import status_message
+from NeoVintageous.nv.window import open_alternate_file
 from NeoVintageous.nv.window import vnew
 from NeoVintageous.nv.window import window_buffer_control
 from NeoVintageous.nv.window import window_control
@@ -133,8 +136,12 @@ def ex_browse(window, view, **kwargs) -> None:
     })
 
 
-def ex_buffer(window, index: int = None, **kwargs) -> None:
+def ex_buffer(window, index=None, **kwargs) -> None:
     if index is None:
+        return
+
+    if is_alternate_file_register(index):
+        open_alternate_file(window)
         return
 
     index = int(index)
@@ -145,9 +152,9 @@ def ex_buffer(window, index: int = None, **kwargs) -> None:
 
 def ex_buffers(window, **kwargs) -> None:
     def _format_buffer_line(view) -> str:
-        path = view.file_name()
-        if path:
-            parent, leaf = os.path.split(path)
+        file_name = view.file_name()
+        if file_name:
+            parent, leaf = os.path.split(file_name)
             path = os.path.join(os.path.basename(parent), leaf)
         else:
             path = view.name() or '[No Name]'
@@ -157,6 +164,7 @@ def ex_buffers(window, **kwargs) -> None:
         current_indicator = '%' if view.id() == window.active_view().id() else ' '
         readonly_indicator = '=' if is_view_read_only(view) else ' '
         modified_indicator = '+' if view.is_dirty() else ' '
+        alternate_indicator = '#' if file_name and file_name == get_alternate_file_register() else ' '
 
         group = window.get_view_index(view)[0]
         active_group_view = window.active_view_in_group(group)
@@ -169,7 +177,7 @@ def ex_buffers(window, **kwargs) -> None:
 
         return '%5d %s%s%s%s %-30s %s' % (
             view.id(),
-            current_indicator,
+            current_indicator if current_indicator.strip() else alternate_indicator,
             visibility_indicator,
             readonly_indicator,
             modified_indicator,

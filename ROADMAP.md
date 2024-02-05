@@ -1027,8 +1027,9 @@ When the option `'equalalways'` (`'ea'`) is set, all the windows are automatical
 | Status             | Command                                                      | Description
 | :----------------- | :----------------------------------------------------------- | :----------
 | :heavy_check_mark: | :files<br>:buffers<br>:ls                                    | Show all buffers.
-| :heavy_check_mark: | :b[uffer] [N]                                                | Edit buffer `[N]` from the buffer list.  If `[N]` is not given, the current buffer remains being edited.
-|                    | :b[uffer]&nbsp;\{bufname\}                                   | Edit buffer for `{bufname}` from the buffer list.  A partial name also works, so long as it is unique in the list of buffers.
+| :heavy_check_mark: | `:b[uffer] [N]`                                              | Edit buffer `[N]` from the buffer list.  If `[N]` is not given, the current buffer remains being edited.
+| :heavy_check_mark: | `:b[uffer] #`                                                | Edit alternate file buffer `#` from the buffer list.  If `#` is not given, the current buffer remains being edited.
+|                    | <code>b[uffer]&nbsp;\{bufname\}</code>                       | Edit buffer for `{bufname}` from the buffer list.  A partial name also works, so long as it is unique in the list of buffers.
 | :heavy_check_mark: | `:bn[ext] [N]`                                               | Go to `[N]`th next buffer in buffer list.  `[N]` defaults to one.  Wraps around the end of the buffer list.
 | :heavy_check_mark: | `:bN[ext] [N]`<br><code>:bp[revious]&nbsp;[N]</code>         | Go to `[N]`th previous buffer in buffer list.  `[N]` defaults to one.  Wraps around the start of the buffer list.
 | :heavy_check_mark: | :br[ewind]                                                   | Go to first buffer in buffer list.  If the buffer list is empty, go to the first unlisted buffer.
