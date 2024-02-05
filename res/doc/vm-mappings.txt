@@ -1,0 +1,235 @@
+*vm-mappings.txt*    Version 0.3.0    Last change: June 11 2019
+
+MAPPINGS                                                      *vm-mappings-all*
+===============================================================================
+                                                                    *g:VM_maps*
+To change any mapping you must first initialize the variable:
+>
+    let g:VM_maps = {}
+<
+Then you can assign it to a new key:
+>
+    let g:VM_maps["Select Operator"] = 'gs'
+<
+To disable a specific mapping, set it to an empty string:
+>
+    let g:VM_maps["Select Operator"] = ''
+<
+To enable undo/redo (still experimental):
+>
+    let g:VM_maps["Undo"] = 'u'
+    let g:VM_maps["Redo"] = '<C-r>'
+
+Example of SublimeText-like mappings:
+>
+    let g:VM_maps['Find Under']         = '<C-d>'
+    let g:VM_maps['Find Subword Under'] = '<C-d>'
+    let g:VM_maps["Select Cursor Down"] = '<M-C-Down>'
+    let g:VM_maps["Select Cursor Up"]   = '<M-C-Up>'
+<
+Example of |vim-multiple-cursors| -like mappings:
+>
+    let g:VM_maps['Select All']  = '<M-n>'
+    let g:VM_maps['Visual All']  = '<M-n>'
+    let g:VM_maps['Skip Region'] = '<C-x>'
+    let g:VM_maps['Increase']    = '+'
+    let g:VM_maps['Decrease']    = '-'
+<
+For Colemak users, see |vm-colemak|.
+
+
+-------------------------------------------------------------------------------
+DEFAULT MAPPINGS                                          *vm-mappings-default*
+                                                        *g:VM_default_mappings*
+
+Default mappings are `permanent`, that is, always available, and applied when
+Vim starts. Buffer mappings instead are applied per-buffer, when VM is started.
+
+Permanent mappings, except <C-n>, can be disabled with:
+>
+    let g:VM_default_mappings = 0
+<                                                          *g:VM_mouse_mappings*
+Mouse mappings (also permanent) can be enabled with:
+>
+    let g:VM_mouse_mappings = 1
+<
+                                                             *g:VM_leader-dict*
+Mappings preceded by \\ are meant prefixed with |g:VM_leader|.
+
+Some of the permanent/visual mappings use the |g:VM_leader| as well, and you
+could want to use a different one for them. In this case you can define the
+leader as a dictionary:
+>
+    let g:VM_leader = {'default': '\', 'visual': '\', 'buffer': 'z'}
+
+That is, the VM leader used for default (permanent) normal mode mappings,
+visual mappings, and buffer mappings.
+
+-------------------------------------------------------------------------------
+  Name                Keys        Notes ~
+-------------------------------------------------------------------------------
+                                                               *vm-mappings-qr*
+Exit                  <Esc>       quit VM
+Find Under            <C-n>       select the word under cursor
+Find Subword Under    <C-n>       from visual mode, without word boundaries
+Add Cursor Down       <C-Down>    create cursors vertically
+Add Cursor Up         <C-Up>      ,,       ,,      ,,
+Select All            \\A         select all occurrences of a word
+Start Regex Search    \\/         create a selection with regex search
+Add Cursor At Pos     \\\         add a single cursor at current position
+Reselect Last         \\gS        reselect set of regions of last VM session
+
+Mouse Cursor    <C-LeftMouse>     create a cursor where clicked
+Mouse Word      <C-RightMouse>    select a word where clicked
+Mouse Column    <M-C-RightMouse>  create a column, from current cursor to
+                                  clicked position
+
+
+-------------------------------------------------------------------------------
+VISUAL MODE MAPPINGS                                       *vm-mappings-visual*
+
+Of these, `Visual Subtract` and `Visual Reduce` are buffer mappings.
+
+-------------------------------------------------------------------------------
+  Name                Keys        Notes ~
+-------------------------------------------------------------------------------
+
+Visual All             \\A        select all occurrences of visual selection
+Visual Regex           \\/        find a pattern in visual selection
+Visual Find            \\f        find all patterns ( or @/ ) from visual mode
+Visual Cursors         \\c        create a column of cursors from visual mode
+Visual Add             \\a        create a region from visual mode
+Visual Subtract        \\s        remove regions in current visual selection
+Visual Reduce          \\r        remove regions outside of visual selection
+
+
+
+-------------------------------------------------------------------------------
+BUFFER MAPPINGS                                            *vm-mappings-buffer*
+
+Not included are the mappings that mimic default vim commands (motions, several
+text objects), unless specified.
+
+-------------------------------------------------------------------------------
+  Name                Keys        Notes ~
+-------------------------------------------------------------------------------
+
+Find Next               n         find next occurrence
+Find Prev               N         find previous occurrence
+Goto Next               ]         go to next selected region
+Goto Prev               [         go to previous selected region
+Seek Next             <C-f>       fast go to next (from next page)
+Seek Prev             <C-b>       fast go to previous (from previous page)
+Skip Region             q         skip and find to next
+Remove Region           Q         remove region under cursor
+Slash Search            g/        extend/move cursors with /
+Replace                 R         replace in regions, or start replace mode
+Toggle Multiline        M         see |vm-multiline-mode|
+
+The following are valid in extend-mode: ~
+
+Surround                S         requires |vim-surround| plugin
+Move Right          <M-S-Right>   move all selections to the right
+Move Left           <M-S-Left>    ,,      ,,          to the left
+
+The following are valid in insert-mode and single-region-mode: ~
+
+I Next                <Tab>       move to next cursor
+I Prev               <S-Tab>      move to previous cursor
+
+Operators: ~
+
+Select Operator         s         see |vm-select-operator|
+Find Operator           m         see |vm-find-operator|
+
+Special commands: ~
+
+Increase              <C-A>       increase numbers (same as vim)
+Decrease              <C-X>       decrease numbers (same as vim)
+gIncrease             g<C-A>      progressively increase numbers (like |v_g_CTRL-A|)
+gDecrease             g<C-X>      progressively decrease numbers (like |v_g_CTRL-X|)
+Alpha-Increase        \\<C-A>     same but +alpha (see |'nrformats'|)
+Alpha-Decrease        \\<C-X>     ,,
+
+Commands:~
+
+Transpose             \\t         transpose
+Align                 \\a         align regions
+Align Char            \\<         align by character
+Align Regex           \\>         align by regex
+Split Regions         \\s         subtract pattern from regions
+Filter Regions        \\f         filter regions by pattern/expression
+Transform Regions     \\e         transform regions with expression
+Rewrite Last Search   \\r         rewrite last pattern to match current region
+Merge Regions         \\m         merge overlapping regions
+Duplicate             \\d         duplicate regions
+Shrink                \\-         reduce regions from the sides
+Enlarge               \\+         enlarge regions from the sides
+One Per Line          \\L         keep at most one region per line
+Numbers               \\n         see |vm-numbering|
+Numbers Append        \\N         ,,
+
+Run Normal            \\z         Run Normal
+Run Visual            \\v         Run Visual
+Run Ex                \\x         Run Ex
+Run Last Normal       \\Z         Run Last Normal
+Run Last Visual       \\V         Run Last Visual
+Run Last Ex           \\X         Run Last Ex
+Run Macro             \\@         Run Macro
+
+Options and menus: ~
+
+Tools Menu            \\`         filter lines to buffer, etc
+Case Conversion Menu  \\C         works better in extend mode
+Show Registers        \\"         show VM registers in the command line
+Toggle Whole Word     \\w         toggle whole word search
+Case Setting          \\c         cycle case setting ('scs' -> 'noic' -> 'ic')
+Toggle Mappings       \\<Space>   toggle VM mappings
+Toggle Single Region  \\<CR>      toggle single region mode
+
+
+-------------------------------------------------------------------------------
+COLEMAK MAPPINGS                                                   *vm-colemak*
+
+For Colemak users or more extensive remappings: this mapping system wasn't
+really designed for that. Take into account that when you assign keys this way,
+you assign a `VM <Plug>` to a key, you aren't remapping a key to another key.
+For example if you do:
+>
+  let g:VM_maps['i'] = 'a'
+  let g:VM_maps['I'] = 'A'
+  let g:VM_maps['a'] = 'o'
+  let g:VM_maps['A'] = 'O'
+
+You aren't remapping `i` to `a`, but the other way around. This translates to:
+>
+  nmap a <Plug>(VM-i)
+  nmap A <Plug>(VM-I)
+  nmap o <Plug>(VM-a)
+  nmap O <Plug>(VM-A)
+
+And the VM plugs have a fixed meaning: if you remapped `i`, it's not that
+`<Plug>(VM-i)` means something different, it still means "start insert mode
+before the cursor".
+
+This means that you have to take other VM mappings into account, that could
+overwrite your mappings. In this case you would also need to map something to
+overtake `o` and `O` functions, so this would work:
+>
+  let g:VM_maps['i'] = 'a'
+  let g:VM_maps['I'] = 'A'
+  let g:VM_maps['a'] = 'o'
+  let g:VM_maps['A'] = 'O'
+  let g:VM_maps['o'] = 'i'
+  let g:VM_maps['O'] = 'I'
+<
+In general if you switch `A` and `B`, writing
+>
+  map[A] = B
+  map[B] = A
+
+is enough, but if you want to change more keys, you have to remap all
+combinations to avoid that some of the mappings won't work.
+
+
+ vim: ft=help et sw=2 ts=2 sts=2 tw=79
