@@ -2,6 +2,12 @@
 
 All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## 1.34.2 - Unreleased
+
+### Fixed
+
+- f9/f12 keys do not work in normal mode [#1002](https://github.com/NeoVintageous/NeoVintageous/issues/1002)
+
 ## 1.34.1 - 2024-12-08
 
 ### Fixed

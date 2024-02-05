@@ -20,16 +20,13 @@ from NeoVintageous.tests import unittest
 
 class TestSublime(unittest.FunctionalTestCase):
 
+    def assertBuiltInCommand(self, command: str, args: dict = None) -> None:
+        self.assertRunCommand(command, {} if args is None else args)
+
     @unittest.mock_commands('prompt_select_workspace')
     def test_ctrl_alt_p_should_prompt_select_workspace(self):
         self.eq('|fizz', 'n_<C-M-p>', '|fizz')
         self.assertBuiltInCommand('prompt_select_workspace')
-
-    def assertBuiltInCommand(self, command: str, args: dict = None) -> None:
-        # TODO mode, count, register, etc. params should not be passed to built-in commands
-        args = {} if args is None else args
-        args.update({'mode': unittest.INTERNAL_NORMAL, 'count': 1, 'register': "\""})
-        self.assertRunCommand(command, args)
 
     @unittest.mock_commands('focus_side_bar')
     def test_ctrl_o_should_focus_side_bar(self):

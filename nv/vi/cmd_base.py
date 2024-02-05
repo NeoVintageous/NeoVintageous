@@ -105,6 +105,7 @@ class ViOperatorDef(ViCommandDefBase):
         self.motion_required = False
         self.repeatable = False
         self.glue_until_normal_mode = False
+        self.builtin = False
         self.command = ''
         self.command_args = None
         self.init()
@@ -115,6 +116,9 @@ class ViOperatorDef(ViCommandDefBase):
     def translate(self, view):
         if self.glue_until_normal_mode:
             set_glue_until_normal_mode(view, True)
+
+        if self.builtin:
+            return translate_builtin_action(self.command, self.command_args)
 
         return translate_action(view, self.command, self.command_args)
 
@@ -133,6 +137,13 @@ class RequireOneCharMixin(ViCommandDefBase):
         self.inp += translate_char(key)
 
         return True
+
+
+def translate_builtin_action(command: str, args: dict = None) -> dict:
+    return {
+        'action': command,
+        'action_args': args if args else {},
+    }
 
 
 def translate_action(view, command: str, args: dict = None) -> dict:
