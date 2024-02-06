@@ -37,10 +37,34 @@ set hlsearch
 set winaltkeys=menu
 " ^ keyword
 "   ^^^^^^^^^^ entity
+"             ^ keyword.operator.assignment
+"              ^^^^ string
 
 :set winaltkeys=no
 " ^ keyword
 "    ^^^^^^^^^^ entity
+"              ^ keyword.operator.assignment
+"               ^^ string
+
+set modelines=5
+"            ^ keyword.operator.assignment
+"             ^ constant.numeric
+
+set modelines=42
+"            ^ keyword.operator.assignment
+"             ^^ constant.numeric
+
+set winaltkeys="menu"
+" ^^^^^^^^^^^^^^^^^^^ invalid
+
+set winaltkeys='menu'
+" ^^^^^^^^^^^^^^^^^^^ invalid
+
+set modelines="4"
+" ^^^^^^^^^^^^^^^ invalid
+
+set modelines='4'
+" ^^^^^^^^^^^^^^^ invalid
 
 nnoremap <space> :
 " ^^^^^^ keyword.control
