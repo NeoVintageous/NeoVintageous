@@ -1,24 +1,21 @@
 ---
-name: Bug report
-about: Create a report to help us improve
-title: ''
-labels: bug
-assignees: ''
-
+name: Bug Report
+description: File a bug report
+labels: ["bug", "triage"]
 ---
 
-**Describe the bug**
+**Description**
 
 A clear and concise description of what the bug is.
 
-**To Reproduce**
+**Steps to reproduce**
 
 Steps to reproduce the behaviour:
 
 1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+1. Click on '....'
+1. Scroll down to '....'
+1. See error
 
 **Expected behaviour**
 
@@ -28,12 +25,16 @@ A clear and concise description of what you expected to happen.
 
 A clear and concise description of what actually happened.
 
-**Versions**
+**Version**
 
-To access the Sublime Text console log, navigate to `Menu → View → Show Console`.
+To access the version view the console log:
 
-Here's an example of what you might see in the console log: `startup, version: 3200 linux x64 channel: stable`.
+**Menu → View → Show Console**
+
+```
+startup, version: 3200 linux x64 channel: stable
+```
 
 **Additional Information**
 
-Any additional information, configuration, or data that might be necessary to reproduce the issue.
+Any additional information, configuration, or data that might be necessary or useful to reproduce the issue.

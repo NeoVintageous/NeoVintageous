@@ -705,15 +705,15 @@ All notable changes are documented in this file using the [Keep a CHANGELOG](htt
 
 ### Deprecated
 
-* [#404](404): `vintageous_belloff` setting; use `set belloff` in neovintageousrc file
-* [#404](404): `vintageous_hlsearch` setting; use `set hlsearch` in neovintageousrc file
-* [#404](404): `vintageous_ignorecase` setting; use `set ignorecase` in neovintageousrc file
-* [#404](404): `vintageous_incsearch` setting; use `set incsearch` in neovintageousrc file
-* [#404](404): `vintageous_magic` setting; use `set magic` in neovintageousrc file
-* [#404](404): `vintageous_modeline` setting; use `set modeline` in neovintageousrc file
-* [#404](404): `vintageous_modelines` setting; use `set modelines` in neovintageousrc file
-* [#404](404): `vintageous_winaltkeys` setting; use `set winaltkeys` in neovintageousrc file
-* [#404](404): `vintageous_wrapscan` setting; use `set wrapscan` in neovintageousrc file
+* [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `vintageous_belloff` setting; use `set belloff` in neovintageousrc file
+* [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `vintageous_hlsearch` setting; use `set hlsearch` in neovintageousrc file
+* [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `vintageous_ignorecase` setting; use `set ignorecase` in neovintageousrc file
+* [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `vintageous_incsearch` setting; use `set incsearch` in neovintageousrc file
+* [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `vintageous_magic` setting; use `set magic` in neovintageousrc file
+* [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `vintageous_modeline` setting; use `set modeline` in neovintageousrc file
+* [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `vintageous_modelines` setting; use `set modelines` in neovintageousrc file
+* [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `vintageous_winaltkeys` setting; use `set winaltkeys` in neovintageousrc file
+* [#404](https://github.com/NeoVintageous/NeoVintageous/issues/404): `vintageous_wrapscan` setting; use `set wrapscan` in neovintageousrc file
 
 ### Fixed
 
