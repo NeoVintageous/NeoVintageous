@@ -472,31 +472,31 @@ The list below includes all options, presented with their full names and corresp
 
 | Option                          | Type    | Default                                         | Description
 | :------------------------------ | :-------| :-----------------------------------------------| :----------
-| `'autoindent'`<br>`'ai'`        | String  | `auto_indent` <br>sublime setting               |
+| `'autoindent'`<br>`'ai'`        | String  | `auto_indent` sublime-setting                   |
 | `'belloff'`<br>`'bo'`           | String  | `''`                                            | Valid values: `''` and `'all'`.
 | `'equalalways'`                 | Boolean | On                                              |
-| `'expandtab'`<br>`'et'`         | Boolean | `translate_tabs_to_spaces` <br>sublime setting  |
+| `'expandtab'`<br>`'et'`         | Boolean | `translate_tabs_to_spaces` sublime-setting      |
 | `'hlsearch'`<br>`'hls'`         | Boolean | On                                              | When there is a previous search pattern, highlight all its matches. See also: `'incsearch'`. When you get bored looking at the highlighted matches, you can turn it off with `:nohlsearch`.  This does not change the option value, as soon as you use a search command, the highlighting comes back.
 | `'ignorecase'`<br>`'ic'`        | Boolean | Off                                             |
 | `'incsearch'`<br>`'is'`         | Boolean | On                                              | While typing a search command, show where the pattern, as it was typed so far, matches.  The matched string is highlighted.  If the pattern is invalid or not found, nothing is shown.  The screen will be updated often.<br> Note that the match will be shown, but the cursor will return to its original position when no match is found and when pressing `<Esc>.`  You still need to finish the search command with `<Enter>` to move the cursor to the match.<br> When `'hlsearch'` is on, all matched strings are highlighted too while typing a search command. See also: `'hlsearch'.`
-| `'list'`                        | Boolean | `draw_white_space` <br>sublime setting          | Useful to see the difference between tabs and spaces and for trailing blanks.
+| `'list'`                        | Boolean | `draw_white_space` sublime-setting              | Useful to see the difference between tabs and spaces and for trailing blanks.
 | `'magic'`                       | Boolean | On                                              |
 | `'menu'`                        | Boolean | On                                              |
 | `'minimap'`                     | Boolean | On                                              |
 | `'modeline'`<br>`'ml'`          | Boolean | On                                              |
 | `'modelines'`<br>`'mls'`        | Number  | 5                                               |
-| `'number'`<br>`'nu'`            | Boolean | `line_numbers` <br>sublime setting              | Print the line number in front of each line.
-| `'relativenumber'`<br>`'rnu'`   | Boolean | `relative_line_numbers` <br>sublime setting     | Show the line number relative to the line with the cursor in front of each line. Relative line numbers help you use the `count` you can precede some vertical motion commands (e.g., `j` `k` `+` `-`) with, without having to calculate it yourself. Especially useful in combination with other commands (e.g., `y` `d` `c` `<` `>` `gq` `gw` `=`).
-| `'scrolloff'`<br>`'so'`         | Number  | `scroll_context_lines` <br>sublime setting      |
+| `'number'`<br>`'nu'`            | Boolean | `line_numbers` sublime-setting                  | Print the line number in front of each line.
+| `'relativenumber'`<br>`'rnu'`   | Boolean | `relative_line_numbers` sublime-setting         | Show the line number relative to the line with the cursor in front of each line. Relative line numbers help you use the `count` you can precede some vertical motion commands (e.g., `j` `k` `+` `-`) with, without having to calculate it yourself. Especially useful in combination with other commands (e.g., `y` `d` `c` `<` `>` `gq` `gw` `=`).
+| `'scrolloff'`<br>`'so'`         | Number  | `scroll_context_lines` sublime-setting          |
 | `'shell'`                       | String  | `$SHELL` or `"sh"`, Win32: `"cmd.exe"`          |
 | `'sidebar'`                     | Boolean | On                                              |
 | `'smartcase'`<br>`'scs'`        | Boolean | Off                                             |
-| `'spell'`                       | Boolean | `spell_check` <br>sublime setting               |
+| `'spell'`                       | Boolean | `spell_check` sublime-setting                   |
 | `'statusbar'`                   | Boolean | On                                              |
-| `'tabstop'`<br>`'ts'`           | Number  | `tab_size` <br>sublime setting                  |
-| `'textwidth'`<br>`'tw'`         | Number  | `wrap_width` <br>sublime setting                |
-| `'winaltkeys'`<br>`'wak'`       | String  | `menu`                                          |
-| `'wrap'`                        | Boolean | `word_wrap` <br>sublime setting                 | This option changes how text is displayed.  It doesn't change the text in the buffer, see `'textwidth'` for that.<br> When on, lines longer than the width of the window will wrap and displaying continues on the next line.  When off lines will not wrap and only part of long lines will be displayed.  When the cursor is moved to a part that is not shown, the screen will scroll horizontally.
+| `'tabstop'`<br>`'ts'`           | Number  | `tab_size` sublime-setting                      |
+| `'textwidth'`<br>`'tw'`         | Number  | `wrap_width` sublime-setting                    |
+| `'winaltkeys'`<br>`'wak'`       | String  | `menu`                                          | Some GUI versions allow the access to menu entries by using the ALT key in combination with a character that appears underlined in the menu.  This conflicts with the use of the ALT key for mappings and entering special characters.  This option tells what to do:<br> - `no` Don't use ALT keys for menus.  ALT key combinations can be mapped, but there is no automatic handling.<br> - `yes` ALT key handling is done by the windowing system.  ALT key combinations cannot be mapped.<br> - `menu` Using ALT in combination with a character that is a menu shortcut key, will be handled by the windowing system.  Other keys can be mapped.
+| `'wrap'`                        | Boolean | `word_wrap` sublime-setting                     | This option changes how text is displayed.  It doesn't change the text in the buffer, see `'textwidth'` for that.<br> When on, lines longer than the width of the window will wrap and displaying continues on the next line.  When off lines will not wrap and only part of long lines will be displayed.  When the cursor is moved to a part that is not shown, the screen will scroll horizontally.
 | `'wrapscan'`<br>`'ws'`          | Boolean | On                                              |
 
 ## Customize Search Highlighting Colors
