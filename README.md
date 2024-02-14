@@ -1,4 +1,4 @@
-![NeoVintageous Logo](res/neovintageous.png)
+![NeoVintageous logo](res/neovintageous.png)
 
 <p align="center">
     <a href="https://github.com/NeoVintageous/NeoVintageous/actions/workflows/ci.yml"><img alt="Continuous Integration" src="https://github.com/NeoVintageous/NeoVintageous/actions/workflows/ci.yml/badge.svg?branch=master"></a>
@@ -9,30 +9,19 @@
 
 ## About NeoVintageous
 
-NeoVintageous is an advanced Vim emulator for [Sublime Text](https://www.sublimetext.com).
-
-- :sparkles: For a full list of supported Vim features, please refer to our [roadmap](https://github.com/neovintageous/neovintageous.github.io/roadmap).
-- :rocket: The [changelog](CHANGELOG.md) outlines the breaking/major/minor updates between releases.
-- :page_facing_up: Vim's full documentation is accessible via `:help {subject}` and [online](https://vimhelp.org).
-- Report missing features/bugs on [GitHub](https://github.com/NeoVintageous/NeoVintageous/issues).
-- Drop-in replacement for Vintageous
-- Zero configuration required
+NeoVintageous is the Vim engine for [Sublime Text](https://www.sublimetext.com/), designed to be fast, reliable, and zero configuration required. A fork of Vintageous, it is the ideal drop-in replacement.
 
 ## Documentation
 
-To check out docs, visit [neovintageous.github.io](https://github.com/neovintageous/neovintageous.github.io/contributing).
+To check out docs, visit [neovintageous.github.io](https://neovintageous.github.io).
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+The contribution guide can be found in the [NeoVintageous documentation](https://neovintageous.github.io/contributing).
 
 ## Changelog
 
 See [CHANGELOG.md](CHANGELOG.md).
-
-## Credits
-
-NeoVintageous is a fork of the discontinued Vintageous plugin.
 
 ## License
 
