@@ -1,10 +1,10 @@
 ---
 name: Bug Report
 about: Create a report to help us improve
-description: File a bug report
 title: ''
-labels: bug
+labels: bug, triage
 assignees: ''
+
 ---
 
 **Description**
