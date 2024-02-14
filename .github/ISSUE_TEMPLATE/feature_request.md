@@ -1,5 +1,10 @@
 ---
 name: Feature Request
-description: File a feature request
-labels: ["feature"]
+about: Suggest an idea for this project
+title: ''
+labels: feature, triage
+assignees: ''
+
 ---
+
+
