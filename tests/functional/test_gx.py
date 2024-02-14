@@ -26,6 +26,11 @@ class Test_gx(unittest.FunctionalTestCase):
         open_new_tab.assert_called_once_with('https://example.com')
 
     @unittest.mock.patch('webbrowser.open_new_tab')
+    def test_gx_localhost(self, open_new_tab):
+        self.eq('x http://local|host:5173 x', 'n_gx', 'x http://local|host:5173 x')
+        open_new_tab.assert_called_once_with('http://localhost:5173')
+
+    @unittest.mock.patch('webbrowser.open_new_tab')
     def test_gx_noop(self, open_new_tab):
         self.eq('fi|zz', 'n_gx', 'fi|zz')
         self.assertMockNotCalled(open_new_tab)

@@ -7,6 +7,10 @@
 - Edit the alternate buffer `:b#` (alias `CTRL-^` or `CTRL-6`) [#993](https://github.com/NeoVintageous/NeoVintageous/issues/993)
 - Add alternate buffer indicator (`#`) for `:ls`
 
+### Fixed
+
+- `gx` doesn't work on localhost URLs or with ports: `https://localhost:5173`
+
 ## 1.34.2 - 2024-02-05
 
 ### Fixed
