@@ -35,7 +35,7 @@ else:
 if not logger.hasHandlers():
     stream_handler = logging.StreamHandler()
     stream_handler.setFormatter(logging.Formatter(
-        'NeoVintageous.%(levelname)-7s [%(filename)15s:%(lineno)-4d] %(message)s'
+        'NeoVintageous.%(levelname)-7s [%(filename)20s:%(lineno)-4d] %(message)s'
     ))
     logger.addHandler(stream_handler)
 
