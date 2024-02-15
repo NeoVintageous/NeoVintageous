@@ -32,6 +32,7 @@ from NeoVintageous.nv.ui import ui_bell
 from NeoVintageous.nv.utils import gluing_undo_groups
 from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.vi.keys import tokenize_keys
+from NeoVintageous.nv.vi.seqs import ESC
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
@@ -119,7 +120,7 @@ class ProcessNotationHandler():
             with gluing_undo_groups(self.view):
                 try:
                     for key in tokenize_keys(keys):
-                        if key.lower() == '<esc>':
+                        if key.lower() == ESC:
                             # XXX: We should pass a mode here?
                             enter_normal_mode(self.window)
                             continue

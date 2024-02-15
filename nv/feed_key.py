@@ -56,6 +56,7 @@ from NeoVintageous.nv.vi.cmd_defs import ViOpenNameSpace
 from NeoVintageous.nv.vi.cmd_defs import ViOpenRegister
 from NeoVintageous.nv.vi.keys import resolve_keypad_count
 from NeoVintageous.nv.vi.keys import to_bare_command_name
+from NeoVintageous.nv.vi.seqs import ESC
 from NeoVintageous.nv.vim import INSERT
 from NeoVintageous.nv.vim import NORMAL
 from NeoVintageous.nv.vim import OPERATOR_PENDING
@@ -109,7 +110,7 @@ class FeedKeyHandler():
             self.mode = _fix_malformed_selection(self.view, self.mode)
 
     def _handle_escape(self) -> bool:
-        if self.key.lower() == '<esc>':
+        if self.key.lower() == ESC:
             should_hide_auto_complete_on_escape = (
                 self.mode == INSERT and
                 self.view.is_auto_complete_visible() and
