@@ -1973,23 +1973,34 @@ class ViMoveHalfScreenHorizontally(ViMotionDef):
         self.command = 'nv_vi_gm'
 
 
-@assign(seqs.ZC, ACTION_MODES)
-@assign(seqs.ZG, ACTION_MODES)
 @assign(seqs.ZH, ACTION_MODES)
 @assign(seqs.ZL, ACTION_MODES)
+@assign(seqs.Z_BIG_H, ACTION_MODES)
+@assign(seqs.Z_BIG_L, ACTION_MODES)
+@assign(seqs.Z_LEFT, ACTION_MODES)
+@assign(seqs.Z_RIGHT, ACTION_MODES)
+class VizMotion(ViMotionDef):
+    def init(self):
+        self.scroll_into_view = True
+        self.updates_xpos = True
+
+    def translate(self, view):
+        return translate_motion(view, 'nv_vi_z', {
+            'action': get_partial_sequence(view)[1:],
+        })
+
+
+@assign(seqs.ZC, ACTION_MODES)
+@assign(seqs.ZG, ACTION_MODES)
 @assign(seqs.ZO, ACTION_MODES)
 @assign(seqs.ZUG, ACTION_MODES)
 @assign(seqs.ZUW, ACTION_MODES)
 @assign(seqs.Z_BIG_C, ACTION_MODES)
-@assign(seqs.Z_BIG_H, ACTION_MODES)
-@assign(seqs.Z_BIG_L, ACTION_MODES)
 @assign(seqs.Z_BIG_M, ACTION_MODES)
 @assign(seqs.Z_BIG_O, ACTION_MODES)
 @assign(seqs.Z_BIG_R, ACTION_MODES)
 @assign(seqs.Z_EQUAL, ACTION_MODES)
-@assign(seqs.Z_LEFT, ACTION_MODES)
-@assign(seqs.Z_RIGHT, ACTION_MODES)
-class Viz(ViOperatorDef):
+class VizAction(ViOperatorDef):
     def init(self):
         self.scroll_into_view = True
         self.updates_xpos = True

@@ -10,6 +10,7 @@
 
 ### Fixed
 
+-  z scroll commands do not accept count [#1007](https://github.com/NeoVintageous/NeoVintageous/issues/1007)
 - `gx` should work on localhost and with ports
 
 ## 1.34.2 - 2024-02-05
