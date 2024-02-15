@@ -1,248 +1,124 @@
 {
-
-    // If enabled, search highlighting is cleared when entering normal mode. This
-    // usually occurs when the <Esc> key is pressed.
-    //
-    // To clear search highlighting directly, you can use the following command:
-    //
-    //     :noh[lsearch]
-    //
-    // For example, you can map a key combination to clear search highlighting:
-    //
-    //     noremap <C-l> :nohlsearch<CR>
-    "vintageous_auto_nohlsearch_on_normal_enter": true,
-
-    // On Esc, close auto complete, if visible, and exit to normal mode.
-    //
-    // When set to false, only the auto complete is closed.
+    // See https://neovintageous.github.com/reference/settings#vintageous-auto-complete-exit-from-insert-mode
     "vintageous_auto_complete_exit_from_insert_mode": true,
 
-    // Enable automatic switching of input methods.
+    // See https://neovintageous.github.com/reference/settings#vintageous-auto-nohlsearch-on-normal-enter
+    "vintageous_auto_nohlsearch_on_normal_enter": true,
+
+    // See https://neovintageous.github.com/reference/settings#vintageous-auto-switch-input-method
     "vintageous_auto_switch_input_method": false,
 
-    // Configure the default input method to be used.
-    // Examples:
-    // - "xkb:us::eng"
-    // - "us"
-    // - "0"
-    // - "1"
-    // - "2"
-    // - "com.apple.keylayout.US"
-    // - "1033"
+    // See https://neovintageous.github.com/reference/settings#vintageous-auto-switch-input-method-default
     "vintageous_auto_switch_input_method_default": "",
 
-    // Specify the complete command path for retrieving the current input method key.
-    // Examples:
-    // - /usr/bin/ibus engine
-    // - /usr/local/bin/xkb-switch
-    // - /usr/bin/fcitx-remote
-    // - /path/to/im-get
-    // - /usr/bin/qdbus org.kde.keyboard /Layouts getLayout
-    // - /usr/local/bin/im-select
-    // - D:\\bin\\im-select.exe
+    // See https://neovintageous.github.com/reference/settings#vintageous-auto-switch-input-method-get-cmd
     "vintageous_auto_switch_input_method_get_cmd": "/path/to/im-select",
 
-    // Provide the complete command path for switching input methods, using
-    // {im} as a placeholder for the input method key.
-    // Examples:
-    // - /usr/bin/ibus engine {im}
-    // - /usr/local/bin/xkb-switch -s {im}
-    // - /usr/bin/fcitx-remote -t {im}
-    // - /path/to/im-set {im}
-    // - /usr/bin/qdbus org.kde.keyboard /Layouts setLayout {im}
-    // - /usr/local/bin/im-select {im}
-    // - D:\\bin\\im-select.exe {im}
+    // See https://neovintageous.github.com/reference/settings#vintageous-auto-switch-input-method-set-cmd
     "vintageous_auto_switch_input_method_set_cmd": "/path/to/im-select {im}",
 
-    // Choose the style for the visual bell.
-    //
-    // Valid options include:
-    // - "blink"
-    // - "view"
-    // - "views"
-    // - "none"
+    // See https://neovintageous.github.com/reference/settings#vintageous-bell
     "vintageous_bell": "blink",
 
-    // Choose the color scheme for the visual bell.
-    //
-    // Valid options are:
-    // - "dark"
-    // - "light"
-    // Or you can specify a color scheme resource path:
-    // - Packages/Name/name.hidden-color-scheme
+    // See https://neovintageous.github.com/reference/settings#vintageous-bell-color-scheme
     "vintageous_bell_color_scheme": "dark",
 
-    // If you do not type anything on a new line e.g. pressing <Esc> after "o"
-    // or "O", the indent is deleted again. To preserve the leading whitespace
-    // on after pressing <esc> set this setting to false.
+    // See https://neovintageous.github.com/reference/settings#vintageous-clear-auto-indent-on-esc
     "vintageous_clear_auto_indent_on_esc": true,
 
-    // Default mode to use when activating or switching views.
-    //
-    // Valid values are: null, "insert", and "visual"
-    //
-    // null - Default behaviour. Enter normal mode when opening or switching
-    // views or when the window receives focus and is not in visual mode i.e.
-    // visual mode selections are retained when the window loses focus.
-    //
-    // "insert" - Enter insert mode when opening or switching views or when the
-    //  window receives focus and is not in visual mode i.e. visual mode
-    //  selections are retained when the window loses focus.
-    //
-    // "visual" - Enter insert mode when opening or switching views or when the
-    //  window receives focus and is not already in visual mode i.e. visual
-    //  mode selections are retained when the window loses focus.
+    // See https://neovintageous.github.com/reference/settings#vintageous-default-mode
     "vintageous_default_mode": null,
 
-    // Enable Abolish plugin.
-    // (ported from the vim-abolish plugin by @tpope).
+    // See https://neovintageous.github.com/reference/settings#vintageous-enable-abolish
     "vintageous_enable_abolish": true,
 
-    // Enable Commentary plugin.
-    // (ported from the vim-commentary plugin by @tpope).
+    // See https://neovintageous.github.com/reference/settings#vintageous-enable-commentary
     "vintageous_enable_commentary": true,
 
-    // Enable Multiple Cursors plugin.
-    // (ported from the vim-multiple-cursors plugin by @terryma).
-    "vintageous_enable_multiple_cursors": true,
-
-    // Enable Sneak plugin.
-    // (ported from the vim-sneak plugin by @justinmk).
-    "vintageous_enable_sneak": false,
-
-    // Enable Sublime Text tweaks plugin..
-    "vintageous_enable_sublime": true,
-
-    // Enable Surround plugin.
-    // (ported from the vim-surround plugin by @tpope).
-    "vintageous_enable_surround": true,
-
-    // Enable Targets plugin.
-    // (ported from the vim-targets plugin by @wellle).
-    "vintageous_enable_targets": true,
-
-    // Enable Unimpaired plugin.
-    // (ported from the vim-unimpaired plugin by @tpope).
-    "vintageous_enable_unimpaired": true,
-
-    // Configures the behavior of commands like ZZ, :quit, :wq, etc.:
-    // - Setting it to `true` makes quitting the last view exit Sublime Text.
-    // - Setting it to `false` keeps Sublime Text open after closing the last view.
-    // - Setting it to "unless_sidebar_visible" exits only if the sidebar is hidden.
-    "vintageous_exit_when_quitting_last_window": true,
-
-    // Delegate configured keys to be handled by Sublime Text.
-    //
-    // For example to use native Sublime Text behaviour for ctrl+f:
-    //
-    //     "vintageous_handle_keys": {
-    //         "<C-f>": false
-    //     }
-    //
-    // Keys can be handled for specific modes by using a prefix:
-    //
-    //     n_ - Normal
-    //     i_ - Insert
-    //     v_ - Visual
-    //     V_ - Visual line
-    //     b_ - Visual block
-    //     s_ - Select
-    //
-    // For example to only delegate <C-w> in insert and visual modes:
-    //
-    //     "vintageous_handle_keys": {
-    //         "i_<C-w>": false
-    //         "v_<C-w>": false
-    //     }
-    "vintageous_handle_keys": {},
-
-    // Enable Highlighted Yank plugin.
-    // (ported from the vim-highlightedyank plugin by @machakann)
+    // See https://neovintageous.github.com/reference/settings#vintageous-highlighted-yank
     "vintageous_highlighted_yank": true,
 
-    // Assign number of time in milliseconds.
+    // See https://neovintageous.github.com/reference/settings#vintageous-highlighted-yank-duration
     "vintageous_highlighted_yank_duration": 1000,
 
-    // Specify the style for highlighted yank indicator.
-    // Available options:
-    // - "fill"
-    // - "outline"
-    // - "underline"
-    // - "squiggly_underline"
-    // - "stippled_underline"
+    // See https://neovintageous.github.com/reference/settings#vintageous-highlighted-yank-style
     "vintageous_highlighted_yank_style": "fill",
 
-    // Toggle the use of "jj" as an escape sequence in Insert mode.
-    "vintageous_i_escape_jj": false,
+    // See https://neovintageous.github.com/reference/settings#vintageous-show-marks-in-gutter
+    "vintageous_show_marks_in_gutter": true, // markology
 
-    // Toggle the use of "jk" as an escape sequence in Insert mode.
-    "vintageous_i_escape_jk": false,
+    // See https://neovintageous.github.com/reference/settings#vintageous-enable-multiple-cursors
+    "vintageous_enable_multiple_cursors": true,
 
-    // Toggle the use of "kj" as an escape sequence in Insert mode.
-    "vintageous_i_escape_kj": false,
-
-    // Override native save to handle LSP Code-Actions-On-Save.
-    // See https://github.com/sublimelsp/LSP/issues/1725
-    "vintageous_lsp_save": false,
-
-    // Exit visual multi cursor visual on quit key.
-    //
-    // When false then pressing a quit key (e.g. <Esc> or J) in multiple cursor
-    // visual mode the visual mode exits to normal mode but keeps the cursors.
-    //
-    // When true then pressing a quit key (e.g. <Esc> or J) in multiple cursor
-    // visual mode the visual mode exits all multiple cursors.
+    // See https://neovintageous.github.com/reference/settings#vintageous-multi-cursor-exit-from-visual-mode
     "vintageous_multi_cursor_exit_from_visual_mode": false,
 
-    // Reset to normal mode when a tab is activated.
-    "vintageous_reset_mode_when_switching_tabs": true,
+    // See https://neovintageous.github.com/reference/settings#vintageous-enable-sneak
+    "vintageous_enable_sneak": false,
 
-    // Asynchronous file saving with commands like :w, :wq.
-    "vintageous_save_async": false,
-
-    // Style for highlighting the current match in a search. Options: fill,
-    // outline, underline, squiggly_underline, stippled_underline
-    "vintageous_search_cur_style": "fill",
-
-    // Style for highlighting during incremental search. Options: fill, outline,
-    // underline, squiggly_underline, stippled_underline
-    "vintageous_search_inc_style": "fill",
-
-    // Style for highlighting search occurrences. Options: fill, outline,
-    // underline, squiggly_underline, stippled_underline
-    "vintageous_search_occ_style": "fill",
-
-    // Show output panel from shell commands.
-    "vintageous_shell_silent": false,
-
-    // Show marks in the gutter.
-    "vintageous_show_marks_in_gutter": true,
-
-    // Specify case sensitivity mode for Sneak:
-    // - 0: Always case-sensitive
-    // - 1: Case sensitivity based on 'ignorecase' and 'smartcase'.
+    // See https://neovintageous.github.com/reference/settings#vintageous-sneak-use-ic-scs
     "vintageous_sneak_use_ic_scs": 0,
 
-    // Read Ex commands from a resource before the neovintageousrc resource is
-    // sourced. This means you can still override these ex commands in your
-    // neovintageousrc file.
-    // See https://github.com/gerardroche/NeoVintageousColemak
-    // See https://github.com/gerardroche/NeoVintageousDvorak
-    // Example: Packages/NeoVintageousDvorak/dvorak.neovintageous
-    // Example: Packages/NeoVintageousColemak/colemak.neovintageous
+    // See https://neovintageous.github.com/reference/settings#vintageous-enable-sublime
+    "vintageous_enable_sublime": true,
+
+    // See https://neovintageous.github.com/reference/settings#vintageous-enable-surround
+    "vintageous_enable_surround": true,
+
+    // See https://neovintageous.github.com/reference/settings#vintageous-enable-targets
+    "vintageous_enable_targets": true,
+
+    // See https://neovintageous.github.com/reference/settings#vintageous-enable-unimpaired
+    "vintageous_enable_unimpaired": true,
+
+    // See https://neovintageous.github.com/reference/settings#vintageous-exit-when-quitting-last-window
+    "vintageous_exit_when_quitting_last_window": true,
+
+    // See https://neovintageous.github.com/reference/settings#vintageous-handle-keys
+    "vintageous_handle_keys": {},
+
+    // See https://neovintageous.github.com/reference/settings#vintageous-i-escape-jj
+    "vintageous_i_escape_jj": false,
+
+    // See https://neovintageous.github.com/reference/settings#vintageous-i-escape-jk
+    "vintageous_i_escape_jk": false,
+
+    // See https://neovintageous.github.com/reference/settings#vintageous-i-escape-kj
+    "vintageous_i_escape_kj": false,
+
+    // See https://neovintageous.github.com/reference/settings#vintageous-lsp-save
+    "vintageous_lsp_save": false,
+
+    // See https://neovintageous.github.com/reference/settings#vintageous-reset-mode-when-switching-tabs
+    "vintageous_reset_mode_when_switching_tabs": true,
+
+    // See https://neovintageous.github.com/reference/settings#vintageous-save-async
+    "vintageous_save_async": false,
+
+    // See https://neovintageous.github.com/reference/settings#vintageous-search-cur-style
+    "vintageous_search_cur_style": "fill",
+
+    // See https://neovintageous.github.com/reference/settings#vintageous-search-inc-style
+    "vintageous_search_inc_style": "fill",
+
+    // See https://neovintageous.github.com/reference/settings#vintageous-search-occ-style
+    "vintageous_search_occ_style": "fill",
+
+    // See https://neovintageous.github.com/reference/settings#vintageous-shell-silent
+    "vintageous_shell_silent": false,
+
+    // See https://neovintageous.github.com/reference/settings#vintageous-source
     "vintageous_source": null,
 
-    // Define the program to use when initiating a ":shell" command.
-    // Example: "gnome-terminal"
+    // See https://neovintageous.github.com/reference/settings#vintageous-terminal
     "vintageous_terminal": null,
 
-    // Enable Vim Ctrl keys.
+    // See https://neovintageous.github.com/reference/settings#vintageous-use-ctrl-keys
     "vintageous_use_ctrl_keys": true,
 
-    // Enable Vim Super keys.
-    // Super key refers to the Windows key or Command key (Macintosh).
+    // See https://neovintageous.github.com/reference/settings#vintageous-use-super-keys
     "vintageous_use_super_keys": true,
 
-    // Propagate copy actions to the system clipboard.
+    // See https://neovintageous.github.com/reference/settings#vintageous-use-sys-clipboard
     "vintageous_use_sys_clipboard": false
 }
