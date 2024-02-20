@@ -513,6 +513,18 @@ class TestFeedKey(unittest.ResetRegisters, unittest.ResetCommandLineOutput, unit
         self.assertNormal('fizz |buzz')
         self.assertNoBell()
 
+    # Breaks ci https://github.com/NeoVintageous/NeoVintageous/actions/runs/7969839600/job/21756321760
+    # @unittest.mock_ui(em_width=10)
+    # @unittest.mock_mappings((unittest.NORMAL, 'a', 'zl'))
+    # @unittest.mock.patch('sublime.View.set_viewport_position')
+    # def test_can_map_zl_with_count(self, position):
+    #     self.normal('fizz| buzz')
+    #     self.feedkey('a')
+    #     position.assert_called_with((10.0, 0.0))
+    #     self.feedkey('5')
+    #     self.feedkey('a')
+    #     position.assert_called_with((50.0, 0.0))
+
     @unittest.mock_bell()
     @unittest.mock_mappings(
         (unittest.NORMAL, ',m1', ':fizz'),

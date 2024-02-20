@@ -314,6 +314,10 @@ def set_alternate_file_register(value: str) -> None:
     maybe_do_runtime_save_session()
 
 
+def is_alternate_file_register(value) -> bool:
+    return value == _ALTERNATE_FILE
+
+
 def set_expression_register(values: list) -> None:
     _set_data(_EXPRESSION, _list_values_to_str(values), False)
     maybe_do_runtime_save_session()

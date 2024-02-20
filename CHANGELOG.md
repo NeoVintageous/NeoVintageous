@@ -1,6 +1,17 @@
 # Changelog
 
-All notable changes are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
+## 1.35.0 - Unreleased
+
+### Added
+
+- New documentation site, to check it out, visit [neovintageous.github.io](https://neovintageous.github.io).
+- Edit the alternate buffer `:b#` (alias `CTRL-^` or `CTRL-6`) [#993](https://github.com/NeoVintageous/NeoVintageous/issues/993)
+- Add alternate buffer indicator (`#`) for `:ls`
+
+### Fixed
+
+-  z scroll commands do not accept count [#1007](https://github.com/NeoVintageous/NeoVintageous/issues/1007)
+- `gx` should work on localhost and with ports
 
 ## 1.34.2 - 2024-02-05
 

@@ -103,6 +103,13 @@ class TestExtractUrl(unittest.ViewTestCase):
     def test_dashes(self):
         self.assertExtractUrl('http://api-v1.example.com', 'http://api-v1.example.com.')
 
+    def test_localhost(self):
+        self.assertExtractUrl('http://localhost', 'http://localhost')
+
+    def test_port(self):
+        self.assertExtractUrl('http://example.com:5173', 'http://example.com:5173')
+        self.assertExtractUrl('http://localhost:5173', 'http://localhost:5173')
+
 
 class TestResolveVisualTarget(unittest.TestCase):
 

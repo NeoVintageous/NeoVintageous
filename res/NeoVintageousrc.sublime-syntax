@@ -42,10 +42,13 @@ contexts:
         3: keyword.operator.assignment.neovintageousrc
 
     # Set.
-    - match: ^\s*:?(set) ([a-z]+)(=)?(.+)?$
+    - match: ^\s*:?(set) ([a-z]+)(=)?(?:([a-z]+)|([0-9]+))?$
       captures:
         1: keyword.control.neovintageousrc
         2: entity.name.neovintageousrc
+        3: keyword.operator.assignment.neovintageousrc
+        4: string.neovintageousrc
+        5: constant.numeric.neovintageousrc
 
     # Keys <{named}>
     - match: (?i)\<(bs|bar|bslash|cr|csi|del|down|eol|end|enter|esc|ff|help|home|insert|(local)?leader|left|nl|nul|pagedown|pageup|return|right|space|tab|undo|up|lt|xcsi)>

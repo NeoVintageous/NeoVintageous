@@ -97,7 +97,7 @@ def _ex_route_browse(state) -> TokenCommand:
 def _ex_route_buffer(state) -> TokenCommand:
     command = _create_route(state, 'buffer', forcable=True)
 
-    return _resolve(state, command, '\\s*(?P<index>[0-9]+)\\s*$')
+    return _resolve(state, command, '\\s*(?P<index>(?:[0-9]+|\\#))\\s*$')
 
 
 def _ex_route_buffers(state) -> TokenCommand:

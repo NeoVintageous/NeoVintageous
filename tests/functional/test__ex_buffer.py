@@ -18,20 +18,22 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_ctrl_hat(unittest.FunctionalTestCase):
+class Test_ex_buffer(unittest.ResetCommandLineOutput, unittest.FunctionalTestCase):
 
     @unittest.mock_bell()
     @unittest.mock.patch('NeoVintageous.nv.window.get_alternate_file_register')
-    def test_n_no_alternate_file(self, get_alternate_file_register):
+    def test_no_alternate_buffer(self, get_alternate_file_register):
         get_alternate_file_register.return_value = None
-        self.eq('fi|zz', 'n_<C-^>', 'fi|zz')
+        self.normal('fi|zz')
+        self.feed(':buffer #')
         self.assertBell("E23: No alternate file")
 
     @unittest.mock_bell()
     @unittest.mock.patch('sublime.Window.open_file')
     @unittest.mock.patch('NeoVintageous.nv.window.get_alternate_file_register')
-    def test_n(self, get_alternate_file_register, open_file):
+    def test_alternate_buffer(self, get_alternate_file_register, open_file):
         get_alternate_file_register.return_value = 'fname'
-        self.eq('fi|zz', 'n_<C-^>', 'fi|zz')
+        self.normal('fi|zz')
+        self.feed(':buffer #')
         open_file.assert_called_once_with('fname')
         self.assertNoBell()

@@ -465,8 +465,9 @@ def extract_url(view):
         .*(?P<url>
             https?://               # http:// or https://
             (?:www\.)?              # www.
-            (?:[a-zA-Z0-9-]+\.)+    # domain
-            [a-zA-Z]+               # tld
+            (?:[a-zA-Z0-9-]+\.?)+   # domain
+            (?:[a-zA-Z]+)?          # tld
+            (?:\:[0-9]+)?           # port
             /?[a-zA-Z0-9\-._?,!'(){}\[\]/+&@%$#=:"|~;]*     # url path
         )
     """
