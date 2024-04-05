@@ -16,6 +16,7 @@ jobs:
       - name: Setup
         uses: SublimeText/UnitTesting/actions/setup@v1
         with:
+          unittesting-version: ${{ matrix.os == 'ubuntu-latest' && matrix.st-version == 3 && '1.5.9' || '' }}
           sublime-text-version: ${{ matrix.st-version }}
       - name: Tests
         uses: SublimeText/UnitTesting/actions/run-tests@v1
