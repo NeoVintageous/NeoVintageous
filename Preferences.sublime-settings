@@ -1,124 +1,124 @@
 {
-    // See https://neovintageous.github.com/reference/settings#vintageous-auto-complete-exit-from-insert-mode
+    // See https://neovintageous.github.io/reference/settings#vintageous-auto-complete-exit-from-insert-mode
     "vintageous_auto_complete_exit_from_insert_mode": true,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-auto-nohlsearch-on-normal-enter
+    // See https://neovintageous.github.io/reference/settings#vintageous-auto-nohlsearch-on-normal-enter
     "vintageous_auto_nohlsearch_on_normal_enter": true,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-auto-switch-input-method
+    // See https://neovintageous.github.io/reference/settings#vintageous-auto-switch-input-method
     "vintageous_auto_switch_input_method": false,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-auto-switch-input-method-default
+    // See https://neovintageous.github.io/reference/settings#vintageous-auto-switch-input-method-default
     "vintageous_auto_switch_input_method_default": "",
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-auto-switch-input-method-get-cmd
+    // See https://neovintageous.github.io/reference/settings#vintageous-auto-switch-input-method-get-cmd
     "vintageous_auto_switch_input_method_get_cmd": "/path/to/im-select",
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-auto-switch-input-method-set-cmd
+    // See https://neovintageous.github.io/reference/settings#vintageous-auto-switch-input-method-set-cmd
     "vintageous_auto_switch_input_method_set_cmd": "/path/to/im-select {im}",
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-bell
+    // See https://neovintageous.github.io/reference/settings#vintageous-bell
     "vintageous_bell": "blink",
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-bell-color-scheme
+    // See https://neovintageous.github.io/reference/settings#vintageous-bell-color-scheme
     "vintageous_bell_color_scheme": "dark",
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-clear-auto-indent-on-esc
+    // See https://neovintageous.github.io/reference/settings#vintageous-clear-auto-indent-on-esc
     "vintageous_clear_auto_indent_on_esc": true,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-default-mode
+    // See https://neovintageous.github.io/reference/settings#vintageous-default-mode
     "vintageous_default_mode": null,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-enable-abolish
+    // See https://neovintageous.github.io/reference/settings#vintageous-enable-abolish
     "vintageous_enable_abolish": true,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-enable-commentary
+    // See https://neovintageous.github.io/reference/settings#vintageous-enable-commentary
     "vintageous_enable_commentary": true,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-highlighted-yank
+    // See https://neovintageous.github.io/reference/settings#vintageous-highlighted-yank
     "vintageous_highlighted_yank": true,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-highlighted-yank-duration
+    // See https://neovintageous.github.io/reference/settings#vintageous-highlighted-yank-duration
     "vintageous_highlighted_yank_duration": 1000,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-highlighted-yank-style
+    // See https://neovintageous.github.io/reference/settings#vintageous-highlighted-yank-style
     "vintageous_highlighted_yank_style": "fill",
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-show-marks-in-gutter
+    // See https://neovintageous.github.io/reference/settings#vintageous-show-marks-in-gutter
     "vintageous_show_marks_in_gutter": true, // markology
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-enable-multiple-cursors
+    // See https://neovintageous.github.io/reference/settings#vintageous-enable-multiple-cursors
     "vintageous_enable_multiple_cursors": true,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-multi-cursor-exit-from-visual-mode
+    // See https://neovintageous.github.io/reference/settings#vintageous-multi-cursor-exit-from-visual-mode
     "vintageous_multi_cursor_exit_from_visual_mode": false,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-enable-sneak
+    // See https://neovintageous.github.io/reference/settings#vintageous-enable-sneak
     "vintageous_enable_sneak": false,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-sneak-use-ic-scs
+    // See https://neovintageous.github.io/reference/settings#vintageous-sneak-use-ic-scs
     "vintageous_sneak_use_ic_scs": 0,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-enable-sublime
+    // See https://neovintageous.github.io/reference/settings#vintageous-enable-sublime
     "vintageous_enable_sublime": true,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-enable-surround
+    // See https://neovintageous.github.io/reference/settings#vintageous-enable-surround
     "vintageous_enable_surround": true,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-enable-targets
+    // See https://neovintageous.github.io/reference/settings#vintageous-enable-targets
     "vintageous_enable_targets": true,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-enable-unimpaired
+    // See https://neovintageous.github.io/reference/settings#vintageous-enable-unimpaired
     "vintageous_enable_unimpaired": true,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-exit-when-quitting-last-window
+    // See https://neovintageous.github.io/reference/settings#vintageous-exit-when-quitting-last-window
     "vintageous_exit_when_quitting_last_window": true,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-handle-keys
+    // See https://neovintageous.github.io/reference/settings#vintageous-handle-keys
     "vintageous_handle_keys": {},
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-i-escape-jj
+    // See https://neovintageous.github.io/reference/settings#vintageous-i-escape-jj
     "vintageous_i_escape_jj": false,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-i-escape-jk
+    // See https://neovintageous.github.io/reference/settings#vintageous-i-escape-jk
     "vintageous_i_escape_jk": false,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-i-escape-kj
+    // See https://neovintageous.github.io/reference/settings#vintageous-i-escape-kj
     "vintageous_i_escape_kj": false,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-lsp-save
+    // See https://neovintageous.github.io/reference/settings#vintageous-lsp-save
     "vintageous_lsp_save": false,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-reset-mode-when-switching-tabs
+    // See https://neovintageous.github.io/reference/settings#vintageous-reset-mode-when-switching-tabs
     "vintageous_reset_mode_when_switching_tabs": true,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-save-async
+    // See https://neovintageous.github.io/reference/settings#vintageous-save-async
     "vintageous_save_async": false,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-search-cur-style
+    // See https://neovintageous.github.io/reference/settings#vintageous-search-cur-style
     "vintageous_search_cur_style": "fill",
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-search-inc-style
+    // See https://neovintageous.github.io/reference/settings#vintageous-search-inc-style
     "vintageous_search_inc_style": "fill",
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-search-occ-style
+    // See https://neovintageous.github.io/reference/settings#vintageous-search-occ-style
     "vintageous_search_occ_style": "fill",
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-shell-silent
+    // See https://neovintageous.github.io/reference/settings#vintageous-shell-silent
     "vintageous_shell_silent": false,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-source
+    // See https://neovintageous.github.io/reference/settings#vintageous-source
     "vintageous_source": null,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-terminal
+    // See https://neovintageous.github.io/reference/settings#vintageous-terminal
     "vintageous_terminal": null,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-use-ctrl-keys
+    // See https://neovintageous.github.io/reference/settings#vintageous-use-ctrl-keys
     "vintageous_use_ctrl_keys": true,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-use-super-keys
+    // See https://neovintageous.github.io/reference/settings#vintageous-use-super-keys
     "vintageous_use_super_keys": true,
 
-    // See https://neovintageous.github.com/reference/settings#vintageous-use-sys-clipboard
+    // See https://neovintageous.github.io/reference/settings#vintageous-use-sys-clipboard
     "vintageous_use_sys_clipboard": false
 }
