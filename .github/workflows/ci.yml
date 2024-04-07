@@ -16,14 +16,14 @@ jobs:
       - name: Setup
         uses: SublimeText/UnitTesting/actions/setup@v1
         with:
-          unittesting-version: ${{ matrix.os == 'ubuntu-latest' && matrix.st-version == 3 && '1.5.9' || '' }}
           sublime-text-version: ${{ matrix.st-version }}
-      - name: Tests
+      - name: Unit Tests
         uses: SublimeText/UnitTesting/actions/run-tests@v1
         with:
-          coverage: ${{ matrix.os == 'ubuntu-latest' && matrix.st-version == 3 }}
-          codecov-upload: ${{ matrix.os == 'ubuntu-latest' && matrix.st-version == 3 }}
+          coverage: true
+      - uses: codecov/codecov-action@v4
       - name: Syntax Tests
+        if: ${{ matrix.os == 'ubuntu-latest' }}
         uses: SublimeText/UnitTesting/actions/run-syntax-tests@v1
       - name: Coding guidelines check
         if: ${{ matrix.os == 'ubuntu-latest' && matrix.st-version == 4 }}
