@@ -8,7 +8,7 @@ jobs:
       fail-fast: false
       matrix:
         st-version: [3, 4]
-        os: ["ubuntu-latest", "windows-latest"]
+        os: ["ubuntu-latest", "windows-latest", "macOS-latest"]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
