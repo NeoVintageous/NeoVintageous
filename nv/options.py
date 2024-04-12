@@ -176,7 +176,7 @@ _options = {
     'autoindent': BooleanViewOption('auto_indent'),
     'belloff': StringOption('belloff', '', select=('', 'all')),
     'equalalways': BooleanOption('equalalways', True),
-    'expandtab': BooleanViewOption('translate_tabs_to_spaces', on=False, off=True),
+    'expandtab': BooleanViewOption('translate_tabs_to_spaces', on=True, off=False),
     'hlsearch': BooleanOption('hlsearch', True),
     'ignorecase': BooleanOption('ignorecase', False),
     'incsearch': BooleanOption('incsearch', True),
