@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.35.1 - Unreleased
+## 1.35.1 - 2024-04-12
 
 ### Fixed
 
