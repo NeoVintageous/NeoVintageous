@@ -22,6 +22,8 @@ jobs:
         with:
           coverage: true
       - uses: codecov/codecov-action@v4
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Syntax Tests
         if: ${{ matrix.os == 'ubuntu-latest' }}
         uses: SublimeText/UnitTesting/actions/run-syntax-tests@v1
