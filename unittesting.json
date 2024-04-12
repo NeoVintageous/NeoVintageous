@@ -2,11 +2,12 @@
     "async": false,
     "capture_console": false,
     "deferred": true,
+    "failfast": false,
+    "generate_html_report": false,
     "legacy_runner": false,
     "output": null,
     "pattern": "test*.py",
     "show_reload_progress": false,
-    "failfast": false,
     "tests_dir": "tests",
     "verbosity": 1
 }
