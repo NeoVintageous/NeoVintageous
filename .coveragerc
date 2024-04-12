@@ -1,9 +1,10 @@
 [run]
 branch = True
 omit =
-    /*/tests/test*
-    /*/tests/nv/*
-    /*/tests/fixtures/*
-    /*/tests/functional/*
-    /*/tests/__init__.py
-    /*/tests/commands.py
+    */tests/__init__.py
+    */tests/commands.py
+    */tests/fixtures/*
+    */tests/functional/*
+    */tests/nv/*
+    */tests/test_docs.py
+    */tests/test_unittest.py
