@@ -9,7 +9,6 @@
 /.gitattributes     export-ignore
 /.github/           export-ignore
 /.gitignore         export-ignore
-/appveyor.yml       export-ignore
 /mypy.ini           export-ignore
 /tests/             export-ignore
 /unittesting.json   export-ignore
