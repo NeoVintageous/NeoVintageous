@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- Pasting multiple lines inserts them within the current line [#1027](https://github.com/NeoVintageous/NeoVintageous/issues/1027)
 - Modeline large file performance (now only considers 256 chars per line) [#1028](https://github.com/NeoVintageous/NeoVintageous/issues/1028)
 - Modeline at the end of file are processed bottom-up
 
