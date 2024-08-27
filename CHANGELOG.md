@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.35.2 - 2024-08-27
+
+### Fixed
+
+- Modelines at the end of file are processed bottom-up
+
 ## 1.35.1 - 2024-04-12
 
 ### Fixed

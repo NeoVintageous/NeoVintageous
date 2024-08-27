@@ -84,10 +84,14 @@ def do_modeline(view) -> None:
         modelines = get_option(view, 'modelines')
         line_count = get_line_count(view)
         head_lines = range(0, min(modelines, line_count))
-        tail_lines = range(max(0, line_count - modelines), line_count)
-        lines = list(set(list(head_lines) + list(tail_lines)))
+        tail_lines = reversed(range(max(0, line_count - modelines), line_count))
 
-        for i in lines:
+        line_numbers = list(head_lines)
+        for line in tail_lines:
+            if line not in line_numbers:
+                line_numbers.append(line)
+
+        for i in line_numbers:
             line = view.line(view.text_point(i, 0))
             if line.size() > 0:
                 options = _parse_line(view.substr(line))

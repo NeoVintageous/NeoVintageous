@@ -160,3 +160,29 @@ class TestDoModeline(unittest.ViewTestCase):
         self.assertOption('shell', option)
         message.assert_called_with('E520: Not allowed in a modeline: %s', 'shell=sh')
         self.assertMockNotCalled(ex_cmd)
+
+    def test_top_lines_are_processed_top_down(self):
+        self.set_option('number', False)
+        self.write('# 1\n'
+                   '# vim: nonumber\n'
+                   '# vim: number\n')
+        do_modeline(self.view)
+        self.assertOption('number', True)
+        self.write('# 1\n'
+                   '# vim: number\n'
+                   '# vim: nonumber\n')
+        do_modeline(self.view)
+        self.assertOption('number', False)
+
+    def test_bottom_lines_are_processed_bottom_up(self):
+        self.set_option('number', False)
+        self.write('#1\n#2\n#3\n#4\n#5\n#6\n'
+                   '# vim: number\n'
+                   '# vim: nonumber\n')
+        do_modeline(self.view)
+        self.assertOption('number', True)
+        self.write('#1\n#2\n#3\n#4\n#5\n#6\n'
+                   '# vim: nonumber\n'
+                   '# vim: number\n')
+        do_modeline(self.view)
+        self.assertOption('number', False)
