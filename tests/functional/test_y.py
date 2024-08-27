@@ -140,6 +140,22 @@ class Test_y(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('|fiz\nbuz\nbish\nbosh\n', '3yj', '|fiz\nbuz\nbish\nbosh\n')
         self.assertLinewiseRegisters('"0', 'fiz\nbuz\nbish\nbosh\n', '1-')
 
+    def test_yip(self):
+        self.eq('_\n\n|fizz\n\n_', 'yip', '_\n\n|fizz\n\n_')
+        self.assertLinewiseRegisters('"0', 'fizz\n', '1-')
+        self.eq('_\n\na\n|b\nc\n\n_', 'yip', '_\n\n|a\nb\nc\n\n_')
+        self.assertLinewiseRegisters('"0', 'a\nb\nc\n', '1-')
+        self.eq('_\n\na\n|b\nc\n\n\n\n\n\n_', 'yip', '_\n\n|a\nb\nc\n\n\n\n\n\n_')
+        self.assertLinewiseRegisters('"0', 'a\nb\nc\n', '1-')
+
+    def test_yap(self):
+        self.eq('_\n\n|fizz\n\n_', 'yap', '_\n\n|fizz\n\n_')
+        self.assertLinewiseRegisters('"0', 'fizz\n\n', '1-')
+        self.eq('_\n\na\n|b\nc\n\n_', 'yap', '_\n\n|a\nb\nc\n\n_')
+        self.assertLinewiseRegisters('"0', 'a\nb\nc\n\n', '1-')
+        self.eq('_\n\na\n|b\nc\n\n\n\n\n\n_', 'yap', '_\n\n|a\nb\nc\n\n\n\n\n\n_')
+        self.assertLinewiseRegisters('"0', 'a\nb\nc\n\n\n\n\n\n', '1-')
+
     def test_yib(self):
         self.eq('(wo|rd)', 'yi(', '(|word)')
         self.eq('(wo|rd)', 'yi)', '(|word)')

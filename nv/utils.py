@@ -1237,7 +1237,7 @@ def is_linewise_operation(mode: str, motion):
             motion_args = motion.get('motion_args', [])
 
             if 'text_object' in motion_args:
-                if motion_args['text_object'] in '[]()b<>t{}B%`/?nN':
+                if motion_args['text_object'] in '[]()b<>t{}B%`/?nNp':
                     return 'maybe'
 
             if motion_name in ('nv_vi_j', 'nv_vi_k'):
