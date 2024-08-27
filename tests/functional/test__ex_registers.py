@@ -52,3 +52,8 @@ class Test_ex_registers(unittest.ResetRegisters, unittest.ResetCommandLineOutput
         self.feed(':registers')
         output = self.commandLineOutput()
         self.assertIn('\n  c  ""   xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx ...\n', output)  # noqa: E501
+
+    def test_no_trailing_newline(self):
+        self.eq('[\n  |{\n  }\n]', 'yaB', '[\n  |{\n  }\n]')
+        self.feed(':registers')
+        self.assertIn('l  ""   {^J  }\n', self.commandLineOutput())
