@@ -17,6 +17,7 @@
 
 import re
 
+from sublime import Region
 from sublime import active_window
 
 from NeoVintageous.nv.ex_cmds import do_ex_cmdline
@@ -29,6 +30,8 @@ _MODELINE_PATTERN = re.compile(
     '(^|\\s+)'
     '([vV]im?|ex):\\s*'
     '(?:(set)\\s+([^:]+):|(.+))')
+
+_MAX_LINE_LENGTH = 256
 
 
 def _parse_line(line: str):
@@ -94,7 +97,8 @@ def do_modeline(view) -> None:
         for i in line_numbers:
             line = view.line(view.text_point(i, 0))
             if line.size() > 0:
-                options = _parse_line(view.substr(line))
+                region = Region(line.begin(), min(line.end(), line.begin() + _MAX_LINE_LENGTH))
+                options = _parse_line(view.substr(region))
                 if options:
                     for option in options:
                         if option.strip().startswith('shell'):

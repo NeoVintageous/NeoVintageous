@@ -17,6 +17,7 @@
 
 from NeoVintageous.tests import unittest
 
+from NeoVintageous.nv.modeline import _MAX_LINE_LENGTH
 from NeoVintageous.nv.modeline import _parse_line
 from NeoVintageous.nv.modeline import do_modeline
 
@@ -186,3 +187,28 @@ class TestDoModeline(unittest.ViewTestCase):
                    '# vim: number\n')
         do_modeline(self.view)
         self.assertOption('number', False)
+
+    def test_order_of_proccessing(self):
+        self.set_option('textwidth', 80)
+        self.write('1\n'
+                   'vim: tw=1\n'
+                   'vim: tw=2\n'
+                   '4\n5\n6\n7\n8\n9\n10\n'
+                   'vim: tw=3\n'
+                   'vim: tw=4\n'
+                   'xx\n'
+                   )
+        do_modeline(self.view)
+        self.assertOption('textwidth', 3)
+
+    def test_max_line_length(self):
+        self.set_option('textwidth', 80)
+        self.write(('#' * (_MAX_LINE_LENGTH - 9)) + ' vim:tw=5\n')
+        do_modeline(self.view)
+        self.assertOption('textwidth', 5)
+
+    def test_max_line_length_noop(self):
+        self.set_option('textwidth', 80)
+        self.write(('#' * _MAX_LINE_LENGTH) + ' vim:tw=5\n')
+        do_modeline(self.view)
+        self.assertOption('textwidth', 80)
