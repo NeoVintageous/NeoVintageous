@@ -45,7 +45,8 @@ def open(view) -> None:
 
 
 def read(view, cmd: str) -> str:
-    p = subprocess.Popen([get_option(view, 'shell'), '/c', cmd],
+    cmdflag = get_option(view, 'shellcmdflag').split()
+    p = subprocess.Popen([get_option(view, 'shell'), *cmdflag, cmd],
                          stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE,
                          startupinfo=_get_startup_info())
