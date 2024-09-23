@@ -384,3 +384,12 @@ def _get_layout_groups_same_size(layout: dict) -> dict:
         layout['rows'] = equalise(row_count)
 
     return layout
+
+
+def close_pane_if_empty(window) -> bool:
+    views_in_group = window.views_in_group(window.active_group())
+    if len(views_in_group) == 0:
+        window.run_command('close_pane')
+        return True
+
+    return False

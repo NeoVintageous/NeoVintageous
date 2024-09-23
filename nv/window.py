@@ -19,6 +19,7 @@ import os
 
 from sublime import ENCODED_POSITION
 
+from NeoVintageous.nv.polyfill import close_pane_if_empty
 from NeoVintageous.nv.polyfill import goto_definition_side_by_side
 from NeoVintageous.nv.polyfill import has_dirty_buffers
 from NeoVintageous.nv.polyfill import make_all_groups_same_size
@@ -174,12 +175,13 @@ def _close_all_other_views(window) -> None:
 def _close_view(window, forceit: bool = False, close_if_last: bool = True, **kwargs) -> None:
     """Close view.
 
-    When quitting the last view, unless close_if_last is false, exit Sublime.
-    When forceit is true the view is closed and the buffer contents are lost.
+    Close pane if empty.
+
+    If {forceit} is True the view is closed and the buffer contents are lost.
+
+    If {close_if_last} is False and it is the only view left, it is not closed.
     """
-    views_in_group = window.views_in_group(window.active_group())
-    if len(views_in_group) == 0:
-        window.run_command('destroy_pane', {'direction': 'self'})
+    if close_pane_if_empty(window):
         return
 
     if not close_if_last and len(window.views()) < 2:
@@ -202,9 +204,8 @@ def _close_view(window, forceit: bool = False, close_if_last: bool = True, **kwa
 
     view.close()
 
-    views_in_group = window.views_in_group(window.active_group())
-    if len(views_in_group) == 0:
-        window.run_command('destroy_pane', {'direction': 'self'})
+    if close_pane_if_empty(window):
+        return
 
 
 def _close_active_view(window, close_if_last=False) -> None:
