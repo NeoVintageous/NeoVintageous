@@ -16,7 +16,7 @@
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
 from NeoVintageous.tests import unittest
-from NeoVintageous.tests.fixtures.text_object_targets import all_one_line_targets
+from NeoVintageous.tests.text_object_targets import all_one_line_targets
 
 
 class Test_c(unittest.ResetRegisters, unittest.FunctionalTestCase):
