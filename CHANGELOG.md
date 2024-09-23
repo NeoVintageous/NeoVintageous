@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.35.3 - Unreleased
+
+### Fixed
+
+- Close other views leaves empty pane in some cases
+
 ## 1.35.2 - 2024-08-27
 
 ### Fixed
