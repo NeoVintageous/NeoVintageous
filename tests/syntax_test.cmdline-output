@@ -9,8 +9,8 @@ xx   a^Jb^Jc
 "     ^^ comment
 "        ^^ comment
 xx   a^Vb^Vc
-"     ^^ comment
-"        ^^ comment
+"     ^^ region.purplish
+"        ^^ region.purplish
 "%   /path/to/file.txt
 "1   xxx
 

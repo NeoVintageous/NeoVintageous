@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- Output panel syntax fixes
 - Close pane/view commands don't need Origami
 - Close other views leaves empty pane in some cases
 
