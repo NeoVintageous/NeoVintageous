@@ -21,7 +21,7 @@ jobs:
         uses: SublimeText/UnitTesting/actions/run-tests@v1
         with:
           coverage: true
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Syntax Tests
