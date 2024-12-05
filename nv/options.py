@@ -171,6 +171,14 @@ def _get_default_shell() -> str:
     else:
         return ''
 
+def _get_default_shell_flags() -> str:
+    if sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
+        return '-c'
+    elif sys.platform.startswith('win'):
+        return '/c'
+    else:
+        return ''
+
 
 _options = {
     'autoindent': BooleanViewOption('auto_indent'),
@@ -190,6 +198,7 @@ _options = {
     'relativenumber': BooleanViewOption('relative_line_numbers'),
     'scrolloff': NumberViewOption('scroll_context_lines', 0),
     'shell': StringOption('shell', _get_default_shell()),
+    'shellcmdflag': StringOption('shellcmdflag', _get_default_shell_flags()),
     'sidebar': BooleanIsVisibleOption('sidebar', True),  # {not in Vim}
     'sidescrolloff': NumberOption('sidescrolloff', 5),
     'smartcase': BooleanOption('smartcase', False),

@@ -45,9 +45,10 @@ def read(view, cmd: str) -> str:
 
 
 def filter_region(view, text: str, cmd: str) -> str:
+    cmdflag = get_option(view, 'shellcmdflag').split()
     # Redirect STDERR to STDOUT to capture both.
     # This seems to be the behavior of vim as well.
-    p = subprocess.Popen([get_option(view, 'shell'), '-c', cmd],
+    p = subprocess.Popen([get_option(view, 'shell'), *cmdflag, cmd],
                          stdin=subprocess.PIPE,
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT)
