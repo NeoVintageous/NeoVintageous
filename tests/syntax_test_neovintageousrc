@@ -66,6 +66,18 @@ set modelines="4"
 set modelines='4'
 " ^^^^^^^^^^^^^^^ invalid
 
+set shellcmdflag=-c
+" ^ keyword
+"   ^ entity
+"               ^ keyword.operator.assignment
+"                 ^^ string
+
+set shellcmdflag=-c -v
+" ^ keyword
+"   ^ entity
+"               ^ keyword.operator.assignment
+"                 ^^^^^ string
+
 nnoremap <space> :
 " ^^^^^^ keyword.control
 "        ^^^^^^^ storage.type

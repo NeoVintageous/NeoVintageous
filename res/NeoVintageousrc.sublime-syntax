@@ -42,7 +42,7 @@ contexts:
         3: keyword.operator.assignment.neovintageousrc
 
     # Set.
-    - match: ^\s*:?(set) ([a-z]+)(=)?(?:([a-z]+)|([0-9]+))?$
+    - match: ^\s*:?(set) ([a-z]+)(=)?(?:([a-zA-Z\s-]+)|([0-9]+))?$
       captures:
         1: keyword.control.neovintageousrc
         2: entity.name.neovintageousrc

@@ -21,8 +21,8 @@ import sys
 import tempfile
 import traceback
 
-from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.settings import get_setting
+from NeoVintageous.nv.utils import build_shell_cmd
 
 # https://mypy.readthedocs.io/en/latest/common_issues.html#python-version-and-system-platform-checks
 assert sys.platform.startswith('win')
@@ -45,8 +45,7 @@ def open(view) -> None:
 
 
 def read(view, cmd: str) -> str:
-    cmdflag = get_option(view, 'shellcmdflag').split()
-    p = subprocess.Popen([get_option(view, 'shell'), *cmdflag, cmd],
+    p = subprocess.Popen(build_shell_cmd(view, cmd),
                          stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE,
                          startupinfo=_get_startup_info())

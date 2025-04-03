@@ -171,6 +171,7 @@ def _get_default_shell() -> str:
     else:
         return ''
 
+
 def _get_default_shell_flags() -> str:
     if sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
         return '-c'

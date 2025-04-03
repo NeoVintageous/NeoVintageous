@@ -18,8 +18,8 @@
 import os
 import subprocess
 
-from NeoVintageous.nv.options import get_option
 from NeoVintageous.nv.settings import get_setting
+from NeoVintageous.nv.utils import build_shell_cmd
 
 
 def open(view) -> None:
@@ -29,7 +29,7 @@ def open(view) -> None:
 
 
 def read(view, cmd: str) -> str:
-    p = subprocess.Popen([get_option(view, 'shell'), '-c', cmd],
+    p = subprocess.Popen(build_shell_cmd(view, cmd),
                          stdout=subprocess.PIPE,
                          stderr=subprocess.PIPE)
 
@@ -45,10 +45,9 @@ def read(view, cmd: str) -> str:
 
 
 def filter_region(view, text: str, cmd: str) -> str:
-    cmdflag = get_option(view, 'shellcmdflag').split()
     # Redirect STDERR to STDOUT to capture both.
     # This seems to be the behavior of vim as well.
-    p = subprocess.Popen([get_option(view, 'shell'), *cmdflag, cmd],
+    p = subprocess.Popen(build_shell_cmd(view, cmd),
                          stdin=subprocess.PIPE,
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT)

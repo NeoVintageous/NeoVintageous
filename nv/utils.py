@@ -1485,3 +1485,11 @@ def show_ascii(view) -> None:
     c_oct = oct(c_ord)
     c_not = _char_to_notation(c_str)
     status_message('%7s %3s,  Hex %4s,  Octal %5s' % (c_not, c_ord, c_hex, c_oct))
+
+
+def build_shell_cmd(view, cmd: str):
+    builder = [get_option(view, 'shell')]
+    builder.extend(get_option(view, 'shellcmdflag').split())
+    builder.append(cmd)
+
+    return builder
