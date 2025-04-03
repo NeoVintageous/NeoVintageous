@@ -18,15 +18,17 @@
 from NeoVintageous.tests import unittest
 
 
-class Test_minus(unittest.FunctionalTestCase):
+class Test_minus(unittest.PatchFeedCommandXpos, unittest.FunctionalTestCase):
 
     def test_n(self):
         self.eq('1\n2\n|3', 'n_-', '1\n|2\n3')
         self.eq('1\n    fizz\n|3', 'n_-', '1\n    |fizz\n3')
         self.eq('1\n2\n3\n4\n5\n|6\n7', 'n_4-', '1\n|2\n3\n4\n5\n6\n7')
+        self.eq('  1\n  fizz\n    |y\n', 'n_-', '  1\n  |fizz\n    y\n')
 
     def test_v(self):
         self.eq('1\n    fizz\n3\n4\n5\nf|izz bu|zz\n7', 'v_4-', 'r_1\n    |fizz\n3\n4\n5\nfi|zz buzz\n7')
+        self.eq('|  fizz\nbuzz\n|x', 'v_-', '|  f|izz\nbuzz\nx')
 
     def test_V(self):
         self.eq('1\nfizz\n|buzz\n|4', 'V_-', 'r_1\n|fizz\nbuzz\n|4')

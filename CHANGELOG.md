@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.35.3 - Unreleased
+
+### Fixed
+
+- `+` should move cursor to first non blank
+- `-` should move cursor to first non blank
+- Output panel syntax fixes
+- Close pane/view commands don't need Origami
+- Close other views leaves empty pane in some cases
+
 ## 1.35.2 - 2024-08-27
 
 ### Fixed

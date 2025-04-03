@@ -13,8 +13,11 @@ contexts:
     - match: '--- .+ ---'
       scope: entity.name.cmdline-output
 
-    - match: '\^(J|V)'
+    - match: '\^J'
       scope: comment.cmdline-output
+
+    - match: '\^V'
+      scope: region.purplish.cmdline-output
 
     - match: 'Press ENTER .+'
       scope: markup.raw.inline.cmdline-output

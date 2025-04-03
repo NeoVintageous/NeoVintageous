@@ -19,6 +19,7 @@ import os
 
 from sublime import ENCODED_POSITION
 
+from NeoVintageous.nv.polyfill import close_pane_if_empty
 from NeoVintageous.nv.polyfill import goto_definition_side_by_side
 from NeoVintageous.nv.polyfill import has_dirty_buffers
 from NeoVintageous.nv.polyfill import make_all_groups_same_size
@@ -139,46 +140,48 @@ def _layout_group_width(layout, group: int, width: int = None) -> dict:
 
 
 def _close_all_other_views(window) -> None:
-    """Make the current view the only one on the screen.
+    """Make the active view the only one on the screen.
 
-    All other views are closed.
+    All other views are closed, unless they are modified.
 
-    Modified views are merged into current group. Modified views
+    Modified views are merged into active group. Modified views
     are not removed, so changes cannot get lost.
     """
-    current_view = window.active_view()
-    if not current_view:
+    active_view = window.active_view()
+    if not active_view:
         return
 
     views = window.views()
-    if len(views) == 1:
-        return
+    if len(views) > 1:
+        # NOTE The non-active *unmodified* views are closed first and then the
+        # groups. This effectivly collapses unmodified views into the same group as
+        # the active view. Looping over the groups and closing views won't work.
 
-    # NOTE The non-active *unmodified* views are closed first and then the
-    # groups. This effectivly collapses unmodified views into the same group as
-    # the active view. Looping over the groups and closing views won't work.
+        # Close all other unmodified views.
+        for view in views:
+            if view != active_view and not view.is_dirty():
+                view.close()
 
-    # Close all other unmodified views.
-    for view in views:
-        if view != current_view and not view.is_dirty():
-            view.close()
-
-    # Close all other groups.
-    current_group_num = window.active_group()
-    for i in range(window.num_groups()):
-        if i != current_group_num:
-            window.run_command('close_pane', {'group': i})
+    # Close inactive panes.
+    active_group = window.active_group()
+    for group in range(window.num_groups()):
+        if group != active_group:
+            # The "close_pane" command will not close views, instead it moves
+            # views into the first or next pane. If the pane is the last
+            # remaining pane and it has views, the pane is not closed.
+            window.run_command('close_pane', {'group': group})
 
 
 def _close_view(window, forceit: bool = False, close_if_last: bool = True, **kwargs) -> None:
     """Close view.
 
-    When quitting the last view, unless close_if_last is false, exit Sublime.
-    When forceit is true the view is closed and the buffer contents are lost.
+    Close pane if empty.
+
+    If {forceit} is True the view is closed and the buffer contents are lost.
+
+    If {close_if_last} is False and it is the only view left, it is not closed.
     """
-    views_in_group = window.views_in_group(window.active_group())
-    if len(views_in_group) == 0:
-        window.run_command('destroy_pane', {'direction': 'self'})
+    if close_pane_if_empty(window):
         return
 
     if not close_if_last and len(window.views()) < 2:
@@ -201,9 +204,8 @@ def _close_view(window, forceit: bool = False, close_if_last: bool = True, **kwa
 
     view.close()
 
-    views_in_group = window.views_in_group(window.active_group())
-    if len(views_in_group) == 0:
-        window.run_command('destroy_pane', {'direction': 'self'})
+    if close_pane_if_empty(window):
+        return
 
 
 def _close_active_view(window, close_if_last=False) -> None:
