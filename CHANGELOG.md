@@ -1,15 +1,15 @@
 # Changelog
 
-## 1.35.3 - Unreleased
+## 1.35.3 - 2025-04-03
 
 ### Fixed
 
-- Add `'shellcmdflag'` option
+- Missing `'shellcmdflag'` option
 - `+` should move cursor to first non blank
 - `-` should move cursor to first non blank
 - Output panel syntax fixes
-- Close pane/view commands don't need Origami
-- Close other views leaves empty pane in some cases
+- Closing panes and views should not depend on Origami
+- Closing other views leaves empty pane in some cases
 
 ## 1.35.2 - 2024-08-27
 
