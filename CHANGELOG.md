@@ -4,6 +4,7 @@
 
 ### Fixed
 
+- Add `'shellcmdflag'` option
 - `+` should move cursor to first non blank
 - `-` should move cursor to first non blank
 - Output panel syntax fixes

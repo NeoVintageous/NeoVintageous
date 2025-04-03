@@ -156,10 +156,20 @@ class TestDoModeline(unittest.ViewTestCase):
     @unittest.mock.patch('NeoVintageous.nv.modeline.message')
     def test_shell_dissallowed(self, message, ex_cmd):
         option = self.get_option('shell')
-        self.write('1\nvim: shell=sh\n\n')
+        self.write('1\nvim: shell=foo\n\n')
         do_modeline(self.view)
-        self.assertOption('shell', option)
-        message.assert_called_with('E520: Not allowed in a modeline: %s', 'shell=sh')
+        self.assertOption('shell', option, 'option should not change')
+        message.assert_called_with('E520: Not allowed in a modeline: %s', 'shell=foo')
+        self.assertMockNotCalled(ex_cmd)
+
+    @unittest.mock.patch('NeoVintageous.nv.modeline.do_ex_cmdline')
+    @unittest.mock.patch('NeoVintageous.nv.modeline.message')
+    def test_shellcmdflag_dissallowed(self, message, ex_cmd):
+        option = self.get_option('shellcmdflag')
+        self.write('1\nvim: shellcmdflag=\n\n')
+        do_modeline(self.view)
+        self.assertOption('shellcmdflag', option, 'option should not change')
+        message.assert_called_with('E520: Not allowed in a modeline: %s', 'shellcmdflag=')
         self.assertMockNotCalled(ex_cmd)
 
     def test_top_lines_are_processed_top_down(self):
