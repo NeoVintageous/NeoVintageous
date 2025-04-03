@@ -14,15 +14,12 @@
         <a href="https://github.com/NeoVintageous/NeoVintageous/stargazers">
             <img alt="Stars" src="https://img.shields.io/github/stars/NeoVintageous/NeoVintageous?style=for-the-badge&logo=starship">
         </a>
-        <a href="https://x.com/intent/follow?screen_name=neovintageous">
-            <img alt="Follow on X" src="https://img.shields.io/twitter/follow/neovintageous?style=for-the-badge&logo=x">
-        </a>
     </p>
 </div>
 
 ## About NeoVintageous
 
-NeoVintageous is the Vim engine for [Sublime Text](https://www.sublimetext.com/), designed to be fast, reliable, and zero configuration required. A fork of Vintageous, it is the ideal drop-in replacement.
+NeoVintageous is a powerful Vim emulator for [Sublime Text](https://www.sublimetext.com/). Designed to be fast, reliable, and with zero configuration required. A fork of Vintageous, it is the ideal drop-in replacement.
 
 ## Documentation
 
