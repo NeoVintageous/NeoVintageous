@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-import unittest
+from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.variables import _defaults
 from NeoVintageous.nv.variables import _special
