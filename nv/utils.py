@@ -281,11 +281,21 @@ def get_line_count(view: View) -> int:
 
 def get_file_type(view: View) -> str:
     file_name = view.file_name()
+
+    # First try to get from syntax
+    syntax = view.settings().get('syntax', '')
+    if syntax:
+        # Extract syntax name from path
+        # ie: "Packages/Dockerfile/Dockerfile.sublime-syntax"
+        syntax_name = os.path.splitext(os.path.basename(syntax))[0]
+        if syntax_name and syntax_name != 'Plain text':
+            return syntax_name.lower()
+
+    # Fall back to extension-based detection
     if not file_name:
         return ''
 
     parts = os.path.splitext(file_name)
-
     ext = parts[1]
     if ext and ext[0] == '.':
         ext = ext[1:]
