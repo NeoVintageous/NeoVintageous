@@ -413,9 +413,8 @@ class ViewTestCase(unittest.TestCase):
 
     def assertMarksOutput(self, expected: str):
         self.assertEqual('mark line  col file/text\n' +
-                          expected + ('' if expected == '' else '\n') +
-                          '\nPress ENTER to continue',
-                          self.commandLineOutput())
+                         expected + ('' if expected == '' else '\n') +
+                         '\nPress ENTER to continue', self.commandLineOutput())
 
     def assertNoMarksOutput(self):
         self.assertMarksOutput('')

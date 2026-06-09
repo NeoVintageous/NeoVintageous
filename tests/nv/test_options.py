@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with NeoVintageous.  If not, see <https://www.gnu.org/licenses/>.
 
-from unittest.mock import patch
 import sys
 
 from sublime import Settings
