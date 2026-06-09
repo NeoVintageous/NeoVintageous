@@ -34,6 +34,7 @@
 from collections import Counter
 from contextlib import contextmanager
 from functools import wraps
+from pathlib import Path
 import os
 import re
 
@@ -284,13 +285,12 @@ def get_file_type(view: View) -> str:
     if not file_name:
         return ''
 
-    parts = os.path.splitext(file_name)
+    name = Path(file_name).name
+    suffix = Path(name).suffix
+    if suffix:
+        return suffix[1:]
 
-    ext = parts[1]
-    if ext and ext[0] == '.':
-        ext = ext[1:]
-
-    return ext
+    return name.lstrip('.')
 
 
 # Used for example by commands like f{char}, t{char}, r{char}

@@ -21,12 +21,39 @@ from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.utils import VisualBlockSelection
 from NeoVintageous.nv.utils import extract_url
+from NeoVintageous.nv.utils import get_file_type
 from NeoVintageous.nv.utils import resolve_visual_line_target
 from NeoVintageous.nv.utils import resolve_visual_target
 from NeoVintageous.nv.utils import sel_observer
 from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.vim import DIRECTION_DOWN
 from NeoVintageous.nv.vim import DIRECTION_UP
+
+
+class TestGetFileType(unittest.ViewTestCase):
+
+    @unittest.mock.patch('sublime.View.file_name')
+    def test_basic(self, fn):
+        fn.return_value = 'fizz.txt'
+        self.assertEqual('txt', get_file_type(self.view))
+        fn.return_value = '/tmp/fizz.json'
+        self.assertEqual('json', get_file_type(self.view))
+        fn.return_value = '/tmp/path/fizz.css'
+        self.assertEqual('css', get_file_type(self.view))
+
+    @unittest.mock.patch('sublime.View.file_name')
+    def test_dotless_files(self, fn):
+        fn.return_value = 'Dockerfile'
+        self.assertEqual('Dockerfile', get_file_type(self.view))
+        fn.return_value = '/tmp/Containerfile'
+        self.assertEqual('Containerfile', get_file_type(self.view))
+        fn.return_value = '/tmp/path/fizz'
+        self.assertEqual('fizz', get_file_type(self.view))
+
+    @unittest.mock.patch('sublime.View.file_name')
+    def test_dotfiles(self, fn):
+        fn.return_value = '.gitignore'
+        self.assertEqual('gitignore', get_file_type(self.view))
 
 
 class TestTranslateChar(unittest.TestCase):
