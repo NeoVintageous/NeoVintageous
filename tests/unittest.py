@@ -412,7 +412,7 @@ class ViewTestCase(unittest.TestCase):
         self._assertContentSelection([get_mark(self.view, name)], expected)
 
     def assertMarksOutput(self, expected: str):
-        self.assertEquals('mark line  col file/text\n' +
+        self.assertEqual('mark line  col file/text\n' +
                           expected + ('' if expected == '' else '\n') +
                           '\nPress ENTER to continue',
                           self.commandLineOutput())
@@ -491,7 +491,7 @@ class ViewTestCase(unittest.TestCase):
                 content.insert(sel.end() + counter, '|')
                 counter += 1
 
-        self.assertEquals(expected, ''.join(content), msg)
+        self.assertEqual(expected, ''.join(content), msg)
 
     def _assertContentRegion(self, key: str, expected, msg: str = None) -> None:
         self._assertContentSelection(self.view.get_regions(key), expected, msg)
@@ -582,7 +582,7 @@ class ViewTestCase(unittest.TestCase):
         self.assertSelectionIsReversed()
 
     def _assertMode(self, mode: str) -> None:
-        self.assertEquals(mode, get_mode(self.view))
+        self.assertEqual(mode, get_mode(self.view))
 
     def assertInsertMode(self) -> None:
         self._assertMode(INSERT)
@@ -1235,10 +1235,10 @@ def mock_bell():
                     'expects %s bell(s)' % self.assert_bell_count)
 
             def _assertBellCount(count: int) -> None:
-                self.assertEquals(count, self.bell.call_count, 'expects %s bell' % count)
+                self.assertEqual(count, self.bell.call_count, 'expects %s bell' % count)
 
             def _assertNoBell() -> None:
-                self.assertEquals(0, self.bell.call_count, 'expected no bell')
+                self.assertEqual(0, self.bell.call_count, 'expected no bell')
 
             self.assertBell = _assertBell
             self.assertBellCount = _assertBellCount

@@ -121,4 +121,4 @@ class TestVariables(unittest.TestCase):
     @unittest.mock.patch.dict('NeoVintageous.nv.variables._variables', {'x': 'y'})
     def test_clear(self):
         clear_variables()
-        self.assertEquals({}, _variables)
+        self.assertEqual({}, _variables)
