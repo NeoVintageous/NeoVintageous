@@ -17,6 +17,8 @@
 
 import sys
 
+from sublime import Settings
+
 from NeoVintageous.tests import unittest
 
 from NeoVintageous.nv.options import BooleanIsVisibleOption
@@ -121,24 +123,20 @@ class TestBooleanViewOption(unittest.ViewTestCase):
     def test_set_false_only_mutates_setting_if_dirty(self):
         self.settings().set('spell_check', False)
         option = BooleanViewOption('spell_check')
-        self.view.settings().set = unittest.mock.Mock()  # type: ignore[method-assign]
-
-        option.set(self.view, False)
-        self.assertEqual(0, self.view.settings().set.call_count)
-
-        option.set(self.view, True)
-        self.view.settings().set.assert_called_once_with('spell_check', True)
+        with unittest.mock.patch.object(Settings, "set"):
+            option.set(self.view, False)
+            self.assertEqual(0, self.view.settings().set.call_count)
+            option.set(self.view, True)
+            self.view.settings().set.assert_called_once_with('spell_check', True)
 
     def test_set_true_only_mutates_setting_if_dirty(self):
         self.settings().set('spell_check', True)
         option = BooleanViewOption('spell_check')
-        self.view.settings().set = unittest.mock.Mock()  # type: ignore[method-assign]
-
-        option.set(self.view, True)
-        self.assertEqual(0, self.view.settings().set.call_count)
-
-        option.set(self.view, False)
-        self.view.settings().set.assert_called_once_with('spell_check', False)
+        with unittest.mock.patch.object(Settings, "set"):
+            option.set(self.view, True)
+            self.assertEqual(0, self.view.settings().set.call_count)
+            option.set(self.view, False)
+            self.view.settings().set.assert_called_once_with('spell_check', False)
 
     def test_on_off_values(self):
         self.settings().set('draw_white_space', 'none')

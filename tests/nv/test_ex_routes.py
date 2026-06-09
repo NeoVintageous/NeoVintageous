@@ -227,7 +227,7 @@ class TestRoutes(unittest.TestCase):
         return None
 
     def assertNotRoute(self, string):
-        self.assertEquals(self.matchRoute(string), None, 'failed asserting no route for {}'.format(string))
+        self.assertEqual(self.matchRoute(string), None, 'failed asserting no route for {}'.format(string))
 
     def assertRoute(self, expected, values, multiple_matches=False):
         for value in values:
