@@ -39,7 +39,7 @@
     "vintageous_highlighted_yank": true,
 
     // See https://neovintageous.github.io/reference/settings#vintageous-highlighted-yank-duration
-    "vintageous_highlighted_yank_duration": 1000,
+    "vintageous_highlighted_yank_duration": 150,
 
     // See https://neovintageous.github.io/reference/settings#vintageous-highlighted-yank-style
     "vintageous_highlighted_yank_style": "fill",
