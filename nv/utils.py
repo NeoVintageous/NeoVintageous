@@ -41,6 +41,7 @@ from sublime import FORCE_GROUP
 from sublime import Region
 from sublime import View
 from sublime import Window
+from sublime import set_timeout
 from sublime import version
 
 from NeoVintageous.nv.options import get_option
@@ -90,6 +91,17 @@ def save_view(view) -> None:
         # Override native save to handle LSP Code-Actions-On-Save.
         # See https://github.com/sublimelsp/LSP/issues/1725
         view.run_command('lsp_save')
+
+        # The lsp_save command no-ops when the view isn't managed by an LSP
+        # session (or the LSP package isn't installed), which would leave
+        # the file unsaved with no indication of failure. It also saves
+        # asynchronously when it does apply, so give it a chance to finish
+        # before falling back to a native save if the view is still dirty.
+        def save_view_fallback() -> None:
+            if view.is_dirty():
+                view.run_command('save', {'async': get_setting(view, 'save_async')})
+
+        set_timeout(save_view_fallback, 500)
     else:
         view.run_command('save', {'async': get_setting(view, 'save_async')})
 

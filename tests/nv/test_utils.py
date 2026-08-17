@@ -24,6 +24,7 @@ from NeoVintageous.nv.utils import extract_url
 from NeoVintageous.nv.utils import get_file_type
 from NeoVintageous.nv.utils import resolve_visual_line_target
 from NeoVintageous.nv.utils import resolve_visual_target
+from NeoVintageous.nv.utils import save_view
 from NeoVintageous.nv.utils import sel_observer
 from NeoVintageous.nv.utils import translate_char
 from NeoVintageous.nv.vim import DIRECTION_DOWN
@@ -545,3 +546,40 @@ class TestSelectionObserver(unittest.ViewTestCase):
             self.select((0, 4))
             observer.restore_sel()
             self.assertVisual('fi|zz bu|zz')
+
+
+class TestSaveView(unittest.ViewTestCase):
+
+    @unittest.mock.patch('NeoVintageous.nv.utils.set_timeout')
+    @unittest.mock.patch('sublime.View.run_command')
+    def test_native_save_when_lsp_save_is_disabled(self, run_command, set_timeout):
+        self.view.settings().set('vintageous_lsp_save', False)
+        self.view.settings().set('vintageous_save_async', False)
+        save_view(self.view)
+        run_command.assert_called_once_with('save', {'async': False})
+        set_timeout.assert_not_called()
+
+    @unittest.mock.patch('NeoVintageous.nv.utils.set_timeout')
+    @unittest.mock.patch('sublime.View.run_command')
+    @unittest.mock.patch('sublime.View.is_dirty')
+    def test_native_save_is_skipped_when_lsp_save_succeeds(self, is_dirty, run_command, set_timeout):
+        self.view.settings().set('vintageous_lsp_save', True)
+        self.view.settings().set('vintageous_save_async', False)
+        is_dirty.return_value = False
+        set_timeout.side_effect = lambda callback, delay: callback()
+        save_view(self.view)
+        run_command.assert_called_once_with('lsp_save')
+
+    @unittest.mock.patch('NeoVintageous.nv.utils.set_timeout')
+    @unittest.mock.patch('sublime.View.run_command')
+    @unittest.mock.patch('sublime.View.is_dirty')
+    def test_falls_back_to_native_save_when_view_is_not_managed_by_lsp(self, is_dirty, run_command, set_timeout):
+        self.view.settings().set('vintageous_lsp_save', True)
+        self.view.settings().set('vintageous_save_async', False)
+        is_dirty.return_value = True
+        set_timeout.side_effect = lambda callback, delay: callback()
+        save_view(self.view)
+        self.assertEqual(run_command.mock_calls, [
+            unittest.mock.call('lsp_save'),
+            unittest.mock.call('save', {'async': False}),
+        ])
