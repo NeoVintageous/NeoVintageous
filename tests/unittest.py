@@ -1850,6 +1850,7 @@ _SEQ2CMD = {
     'a`':           {'command': 'nv_feed_key'},  # noqa: E241
     'ab':           {'command': 'nv_feed_key'},  # noqa: E241
     'ai':           {'command': 'nv_feed_key'},  # noqa: E241
+    'al':           {'command': 'nv_feed_key'},  # noqa: E241
     'ap':           {'command': 'nv_feed_key'},  # noqa: E241
     'as':           {'command': 'nv_feed_key'},  # noqa: E241
     'at':           {'command': 'nv_feed_key'},  # noqa: E241
@@ -2277,6 +2278,7 @@ _SEQ2CMD = {
     'i`':           {'command': 'nv_feed_key'},  # noqa: E241
     'ib':           {'command': 'nv_feed_key'},  # noqa: E241
     'ii':           {'command': 'nv_feed_key'},  # noqa: E241
+    'il':           {'command': 'nv_feed_key'},  # noqa: E241
     'ip':           {'command': 'nv_feed_key'},  # noqa: E241
     'is':           {'command': 'nv_feed_key'},  # noqa: E241
     'it':           {'command': 'nv_feed_key'},  # noqa: E241
