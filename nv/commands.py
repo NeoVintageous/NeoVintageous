@@ -271,7 +271,7 @@ __all__ = [
     'nv_vi_equal_equal',
     'nv_vi_find_in_line',
     'nv_vi_g',
-    'nv_vi_g__',
+    'nv_vi_g_underscore',
     'nv_vi_g_big_e',
     'nv_vi_g_big_h',
     'nv_vi_g_big_t',
@@ -3487,7 +3487,7 @@ class nv_vi_gk(TextCommand):
                 self.view.run_command('move', {'by': 'lines', 'forward': False, 'extend': False})
 
 
-class nv_vi_g__(TextCommand):
+class nv_vi_g_underscore(TextCommand):
     def run(self, edit, mode=None, count=1):
         def _get_target(view, start, count):
             current_row = view.rowcol(start)[0]

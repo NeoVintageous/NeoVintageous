@@ -49,6 +49,7 @@
     {"keys": ["ctrl+k"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [{"key": "auto_complete_visible"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+n"], "command": "move", "args": {"by": "lines", "forward": true}, "context": [{"key": "auto_complete_visible"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
     {"keys": ["ctrl+p"], "command": "move", "args": {"by": "lines", "forward": false}, "context": [{"key": "auto_complete_visible"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
+    {"keys": ["ctrl+y"], "command": "commit_completion", "context": [{"key": "auto_complete_visible"}, {"key": "setting.vintageous_use_ctrl_keys"}]},
 
     // Escape mappings.
     { "keys": ["j", "j"], "command": "nv_enter_normal_mode", "args": {"mode": "mode_insert"}, "context": [{"key": "vi_insert_mode_aware"}, {"key": "setting.vintageous_i_escape_jj"}]},
