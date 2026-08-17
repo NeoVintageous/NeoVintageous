@@ -9,5 +9,5 @@
     "pattern": "test*.py",
     "show_reload_progress": false,
     "tests_dir": "tests",
-    "verbosity": 1
+    "verbosity": 2
 }

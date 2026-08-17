@@ -20,6 +20,10 @@ from NeoVintageous.tests import unittest
 
 class Test_y(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
+    def setUp(self):
+        super().setUp()
+        self.set_setting('use_sys_clipboard', False)
+
     def test_v(self):
         self.eq('x|ab|x', 'v_y', 'n_x|abx')
         self.assertRegisters('"0', 'ab')
