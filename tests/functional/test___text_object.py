@@ -21,6 +21,18 @@ from NeoVintageous.tests.text_object_targets import all_one_line_targets
 
 class TestTextObjectSelection(unittest.FunctionalTestCase):
 
+    def test_vil(self):
+        self.eq('a\n|fizz\nc', 'v_il', 'v_a\n|fizz|\nc')
+        self.eq('a\nfi|zz\nc', 'v_il', 'v_a\n|fizz|\nc')
+        self.eq('a\n  fi|zz  \nc', 'v_il', 'v_a\n  |fizz  |\nc')
+
+    def test_val(self):
+        self.eq('a\n|fizz\nc', 'v_al', 'v_|a\nfizz\nc|')
+        self.eq('a\nfi|zz\nc', 'v_al', 'v_|a\nfizz\nc|')
+        self.eq('a\nfi|zz\nc\n', 'v_al', 'v_|a\nfizz\nc\n|')
+        self.eq('a\nfi|zz\nc\n\n\n', 'v_al', 'v_|a\nfizz\nc\n\n\n|')
+        self.eq('a\n  fi|zz  \nc', 'v_al', 'v_|a\n  fizz  \nc|')
+
     def test_vaw(self):
         self.eq('x    fi|zz    xx', 'v_aw', 'x    |fizz    |xx')
         self.eq('x    |fizz    xx', 'v_aw', 'x    |fizz    |xx')

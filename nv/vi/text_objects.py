@@ -415,6 +415,10 @@ def _get_text_object_sentence(view, s: Region, inclusive: bool, count: int) -> R
 
 
 def _get_text_object_line(view, s: Region, inclusive: bool, count: int) -> Region:
+    if inclusive:
+        # al: "all lines" - select the whole buffer.
+        return Region(0, view.size())
+
     start, end = find_line_text_object(view, s)
 
     return Region(start, end)

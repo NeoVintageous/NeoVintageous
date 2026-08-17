@@ -43,6 +43,7 @@ class Test_ex_yank(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     @unittest.mock_bell()
     def test_yank_mark_not_set(self):
+        self.set_setting('use_sys_clipboard', False)
         self.normal('1\n|2\n3\n4\n5\n')
         self.feed(":'a,'xyank")
         self.assertRegistersEmpty('"-01')

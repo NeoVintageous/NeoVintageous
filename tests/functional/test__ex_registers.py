@@ -30,6 +30,7 @@ class Test_ex_registers(unittest.ResetRegisters, unittest.ResetCommandLineOutput
         self.assertTrue(output.endswith('Press ENTER to continue'))
 
     def test_yank_registers(self):
+        self.set_setting('use_sys_clipboard', False)
         self.normal('fi|zz buzz')
         self.feed('yiw')
         self.feed(':registers')
