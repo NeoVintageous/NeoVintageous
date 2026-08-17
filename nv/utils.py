@@ -1227,7 +1227,7 @@ def should_motion_apply_op_transformer(motion) -> bool:
         'nv_vi_bar',
         'nv_vi_dollar',
         'nv_vi_find_in_line',
-        'nv_vi_g__',
+        'nv_vi_g_underscore',
         'nv_vi_h',
         'nv_vi_hat',
         'nv_vi_l',

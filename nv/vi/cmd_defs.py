@@ -1349,7 +1349,7 @@ class ViMoveToSoftEol(ViMotionDef):
     def init(self):
         self.updates_xpos = True
         self.scroll_into_view = True
-        self.command = 'nv_vi_g__'
+        self.command = 'nv_vi_g_underscore'
 
 
 @assign(seqs.G_DOWN, MOTION_MODES)
