@@ -21,6 +21,10 @@ from NeoVintageous.tests.text_object_targets import all_one_line_targets
 
 class Test_d(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
+    def setUp(self):
+        super().setUp()
+        self.set_setting('use_sys_clipboard', False)
+
     def test_dB(self):
         self.eq('fizz bu.,!;|zz', 'dB', 'fizz |zz')
         self.assertRegisters('"-', 'bu.,!;')
