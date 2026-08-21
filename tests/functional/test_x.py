@@ -100,8 +100,8 @@ class Test_x(unittest.ResetRegisters, unittest.FunctionalTestCase):
 
     def test_V_x_empty_lines(self):
         self.eq('\n|\n\n|\n', 'V_x', 'n_\n|\n')
-        self.assertLinewiseRegister('"\n\n\n')
-        self.assertLinewiseRegister('1\n\n\n')
+        self.assertLinewiseRegister('"\n\n')
+        self.assertLinewiseRegister('1\n\n')
         self.assertRegisterEmpty('-')
         self.assertRegisterEmpty('0')
 

@@ -469,7 +469,7 @@ class Test_get_selected_text(RegistersTestCase):
         self.mock_view.sel.return_value = [self.Region(10, 10), self.Region(10, 10)]
 
         rv = _get_selected_text(self.mock_view, new_line_at_eof=False, linewise=True)
-        self.assertEqual(rv, ["\n\n\n", "\n\n\n"])
+        self.assertEqual(rv, ["\n\n", "\n\n"])
 
 
 class Test_op_change(RegistersTestCase):

@@ -39,7 +39,7 @@ class Test_X(unittest.ResetRegisters, unittest.FunctionalTestCase):
         self.eq('1\nfi|zz\nbu|zz\n2\n3', 'v_X', 'n_1\n|2\n3')
         self.assertLinewiseRegisters('"1', 'fizz\nbuzz\n')
         self.eq('1\n\n|\n\n|\n\n2\n3', 'v_X', 'n_1\n\n|\n\n2\n3')
-        self.assertLinewiseRegisters('"1', '\n\n\n')
+        self.assertLinewiseRegisters('"1', '\n\n')
         self.eq('|\n|', 'v_X', 'n_|\n')
         self.eq('r_|\n|', 'v_X', 'n_|\n')
         self.assertRegistersEmpty('-0')

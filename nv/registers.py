@@ -364,7 +364,7 @@ def _get_selected_text(view, new_line_at_eof: bool = False, linewise: bool = Fal
         for i, f in enumerate(fragments):
             # When should we add a newline character? Always except when we have
             # a non-\n-only string followed by a newline char.
-            if (not f.endswith('\n')) or f.endswith('\n\n'):
+            if not f.endswith('\n'):
                 fragments[i] = f + '\n'
 
     return fragments
