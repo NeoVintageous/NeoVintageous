@@ -1759,7 +1759,7 @@ class nv_vi_big_z_big_z(WindowCommand):
 class nv_vi_paste(TextCommand):
 
     def run(self, edit, before_cursor, mode=None, count=1, register=None, adjust_indent=False, adjust_cursor=False):
-        contents, linewise = registers_get_for_paste(self.view, register, mode)
+        contents, linewise = registers_get_for_paste(self.view, register, mode, populate_unnamed=not before_cursor)
         if not contents:
             ui_bell('E353: Nothing in register ' + register)
             return

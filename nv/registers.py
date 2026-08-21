@@ -229,7 +229,7 @@ def registers_get_all(view):
             yield ('l' if _is_register_linewise(name) else 'c', name, content)
 
 
-def registers_get_for_paste(view, register: str, mode: str) -> tuple:
+def registers_get_for_paste(view, register: str, mode: str, populate_unnamed: bool = True) -> tuple:
     values = _get(view, register)
     linewise = _is_register_linewise(register)
 
@@ -239,7 +239,7 @@ def registers_get_for_paste(view, register: str, mode: str) -> tuple:
         # Populate unnamed register with the text we're about to paste into (the
         # text we're about to replace), but only if there was something in
         # requested register (not empty), and we're in VISUAL mode.
-        if is_visual_mode(mode):
+        if populate_unnamed and is_visual_mode(mode):
             current_content = _get_selected_text(view, linewise=(mode == VISUAL_LINE))
             if current_content:
                 _set(view, _UNNAMED, current_content, linewise=(mode == VISUAL_LINE))
